@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import service.ProgramService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController("/api/programs")
 @CrossOrigin("*")
@@ -26,5 +27,10 @@ public class ProgramController {
     @PostMapping
     public Program addProgram(@RequestBody Program program) {
         return _programService.addProgram(program);
+    }
+
+    @GetMapping("/{id}")
+    public Program getProgram(@PathVariable UUID id) {
+        return _programService.getProgram(id);
     }
 }

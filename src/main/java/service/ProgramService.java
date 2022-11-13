@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import repository.ProgramRepo;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProgramService {
@@ -23,5 +24,9 @@ public class ProgramService {
 
     public List<Program> getPrograms() {
         return _programRepo.findAll();
+    }
+
+    public Program getProgram(UUID id) {
+        return _programRepo.findById(id).orElse(null);
     }
 }
