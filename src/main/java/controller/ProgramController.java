@@ -9,7 +9,8 @@ import service.ProgramService;
 import java.util.List;
 import java.util.UUID;
 
-@RestController("/api/programs")
+@RestController
+@RequestMapping("/api/programs")
 @CrossOrigin("*")
 public class ProgramController {
 
@@ -20,7 +21,7 @@ public class ProgramController {
         this._programService = programService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public List<Program> getPrograms() {
         return _programService.getPrograms();
     }
