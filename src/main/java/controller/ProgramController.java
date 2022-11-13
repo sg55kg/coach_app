@@ -1,5 +1,6 @@
 package controller;
 
+import controller.request.ProgramRequest;
 import model.Program;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProgramController {
     }
 
     @PostMapping
-    public Program addProgram(@RequestBody Program program) {
+    public Program addProgram(@RequestBody ProgramRequest program) {
         return _programService.addProgram(program);
     }
 

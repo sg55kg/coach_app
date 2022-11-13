@@ -1,5 +1,6 @@
 package service;
 
+import controller.request.ProgramRequest;
 import model.Program;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,9 @@ public class ProgramService {
         this._programRepo = programRepo;
     }
 
-    public Program addProgram(Program program) {
+    public Program addProgram(ProgramRequest programRequest) {
+        Program program = new Program();
+        program.setDays(programRequest.getDays());
         return _programRepo.save(program);
     }
 
