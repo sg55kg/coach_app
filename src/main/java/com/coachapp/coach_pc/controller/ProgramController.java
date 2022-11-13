@@ -1,10 +1,10 @@
-package controller;
+package com.coachapp.coach_pc.controller;
 
-import controller.request.ProgramRequest;
-import model.Program;
+import com.coachapp.coach_pc.request.ProgramRequest;
+import com.coachapp.coach_pc.model.Program;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import service.ProgramService;
+import com.coachapp.coach_pc.service.ProgramService;
 
 import java.util.List;
 import java.util.UUID;

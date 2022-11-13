@@ -1,4 +1,4 @@
-package controller.view;
+package com.coachapp.coach_pc.view;
 
 import java.util.Date;
 import java.util.UUID;

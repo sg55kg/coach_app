@@ -1,10 +1,10 @@
-package service;
+package com.coachapp.coach_pc.service;
 
-import controller.request.ProgramRequest;
-import model.Program;
+import com.coachapp.coach_pc.request.ProgramRequest;
+import com.coachapp.coach_pc.model.Program;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.ProgramRepo;
+import com.coachapp.coach_pc.repository.ProgramRepo;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +21,11 @@ public class ProgramService {
 
     public Program addProgram(ProgramRequest programRequest) {
         Program program = new Program();
+
         program.setDays(programRequest.getDays());
+        program.getDays().forEach(e -> e.setProgram(program));
+        program.setName(programRequest.getName());
+
         return _programRepo.save(program);
     }
 

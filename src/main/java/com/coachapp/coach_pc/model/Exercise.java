@@ -1,18 +1,23 @@
-package model;
+package com.coachapp.coach_pc.model;
+
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "exercise")
 public class Exercise {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private String name;
     private int sets;
     private int repsPerSet;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
 
@@ -56,5 +61,18 @@ public class Exercise {
 
     public void setDay(Day day) {
         this.day = day;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Exercise exercise = (Exercise) o;
+        return id.equals(exercise.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

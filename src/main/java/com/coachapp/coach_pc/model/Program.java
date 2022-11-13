@@ -1,6 +1,8 @@
-package model;
+package com.coachapp.coach_pc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -8,11 +10,12 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "program")
+@Table(name = "programs")
 public class Program {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @CreationTimestamp
     private Date createdAt;
@@ -20,7 +23,8 @@ public class Program {
     private Date updatedAt;
     private Date startDate;
     private Date endDate;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Day> days;
     private String name;
 
@@ -74,5 +78,26 @@ public class Program {
 
     public void setDays(Set<Day> days) {
         this.days = days;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Program program = (Program) o;
+        return id.equals(program.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
