@@ -22,6 +22,7 @@ public class Program {
     private Date endDate;
     @OneToMany(mappedBy = "day")
     private Set<Day> days;
+    private String name;
 
     public Program() {
 
