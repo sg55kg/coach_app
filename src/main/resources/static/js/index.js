@@ -4,6 +4,21 @@ const weightInput = document.getElementById('weight')
 const repsInput = document.getElementById('reps')
 const setsInput = document.getElementById('sets')
 const buttonSubmit = document.getElementById('submit')
+const buttonAdd = document.getElementById('add-exercise')
+const dayExercise = document.getElementById('day-exercise')
+const programArray = []
+
+
+buttonAdd.addEventListener("click", ()=>{
+    const exerciseObject = {exercise:exerciseInput.value,weight:weightInput.value,reps:repsInput.value,sets:setsInput.value};
+    programArray.push(exerciseObject);
+    console.log(programArray);
+    let textofArray = "";
+    for(let i in programArray) {
+        textofArray += programArray[i].name;
+    }
+    dayExercise.innerHTML += "<p>" + textofArray;
+})
 
 buttonSubmit.addEventListener("click", ()=>{
     const str = exerciseInput.value + "," + weightInput.value + "," + repsInput.value + "," + setsInput.value;
