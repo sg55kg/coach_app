@@ -2,6 +2,7 @@ package model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +16,8 @@ public class Day {
     @ManyToOne
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    //private UUID programId;
+    @OneToMany(mappedBy = "exercises")
+    private List<Exercise> exercises;
 
     public Day() {}
 

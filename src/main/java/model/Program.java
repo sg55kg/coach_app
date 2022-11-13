@@ -20,7 +20,7 @@ public class Program {
     private Date updatedAt;
     private Date startDate;
     private Date endDate;
-    @OneToMany(mappedBy = "day")
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
     private Set<Day> days;
     private String name;
 
