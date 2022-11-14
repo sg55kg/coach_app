@@ -27,6 +27,11 @@ public class Day {
 
     public Day() {}
 
+    public Day(Date date, List<Exercise> exercises) {
+        this.date = date;
+        this.exercises = exercises;
+    }
+
     public UUID getId() {
         return id;
     }

@@ -8,12 +8,12 @@ import java.util.UUID;
 public class ProgramRequest {
 
     private UUID id;
-    private Set<Day> days;
+    private Set<DayRequest> days;
     private String name;
 
     public ProgramRequest() {}
 
-    public ProgramRequest(UUID id, Set<Day> days, String name) {
+    public ProgramRequest(UUID id, Set<DayRequest> days, String name) {
         this.id = id;
         this.days = days;
         this.name = name;
@@ -23,7 +23,7 @@ public class ProgramRequest {
         return id;
     }
 
-    public Set<Day> getDays() {
+    public Set<DayRequest> getDays() {
         return days;
     }
 
