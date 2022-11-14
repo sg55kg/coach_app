@@ -32,7 +32,7 @@ const clearExerciseInputs = () => {
 
 addDayBtn.addEventListener('click', () => {
     const dayNode = document.createElement('p')
-    dayNode.innerText = "Day " + program.days.length
+    dayNode.innerText = "Day " + program.days.length + " " + startDateInput.value
     daysList.appendChild(dayNode)
     currentDayIdx++
     clearExerciseTable()
@@ -75,9 +75,21 @@ programInput.addEventListener("change",(e) => {
     program.name = e.target.value
 })
 
+startDateInput.addEventListener("change",(e) => {
+    program.startDate = new Date(e.target.value)
+})
+
+endDateInput.addEventListener("change",(e) => {
+    program.endDate = new Date(e.target.value)
+})
 
 buttonAdd.addEventListener("click", () => {
-    const exercise = Exercise.createExercise(exerciseInput.value, weightInput.value, repsInput.value, setsInput.value, notesInput.value)
+    const exercise = Exercise.createExercise(
+        exerciseInput.value, 
+        weightInput.value, 
+        repsInput.value, 
+        setsInput.value, 
+        notesInput.value)
     let currentDay = program.days[currentDayIdx]
     currentDay.exercises.push(exercise)
 
