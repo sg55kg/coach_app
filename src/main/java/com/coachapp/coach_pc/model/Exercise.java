@@ -20,6 +20,7 @@ public class Exercise {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
+    private String notes;
 
     public Exercise() {}
 
@@ -61,6 +62,14 @@ public class Exercise {
 
     public void setDay(Day day) {
         this.day = day;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @Override

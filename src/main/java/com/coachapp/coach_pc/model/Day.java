@@ -51,6 +51,14 @@ public class Day {
         this.program = program;
     }
 
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
