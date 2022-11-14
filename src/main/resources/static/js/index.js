@@ -27,6 +27,7 @@ const clearExerciseInputs = () => {
     weightInput.value = ''
     repsInput.value = ''
     setsInput.value = ''
+    notesInput.value = ''
 }
 
 addDayBtn.addEventListener('click', () => {
@@ -76,7 +77,7 @@ programInput.addEventListener("change",(e) => {
 
 
 buttonAdd.addEventListener("click", () => {
-    const exercise = Exercise.createExercise(exerciseInput.value, weightInput.value, repsInput.value, setsInput.value)
+    const exercise = Exercise.createExercise(exerciseInput.value, weightInput.value, repsInput.value, setsInput.value, notesInput.value)
     let currentDay = program.days[currentDayIdx]
     currentDay.exercises.push(exercise)
 
@@ -94,7 +95,7 @@ buttonAdd.addEventListener("click", () => {
 
 buttonSubmit.addEventListener("click", ()=>{
 
-    let str = "Day 1\nExercise,Weight,Reps,Sets\n";
+    let str = "Day 1\nExercise,Weight,Reps,Sets,Notes\n";
     for(let i=0;i< program.days.length; i++) {
         if(program.days[i].exercises.length < 1) continue
         if (i > 0) str += "Day " + (i+1) + "\n"
@@ -103,7 +104,8 @@ buttonSubmit.addEventListener("click", ()=>{
             str += d.exercises[j].name + "," +
                 d.exercises[j].weight + "," +
                 d.exercises[j].sets + "," +
-                d.exercises[j].repsPerSet + "\n"
+                d.exercises[j].repsPerSet + "," +
+                d.exercises[j].notes + "\n"
         }
     }
 
