@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coaching App</title>
+    <script defer th:src="@{/js/renderDom.js}"></script>
+    <script defer th:src="@{/js/classes.js}"></script>
+    <script defer th:src="@{/js/index.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+</head>
+<body>
+  <h1>Coach App</h1>
+
+  <input type="text" id="program-name" placeholder="program" autocomplete="off">
+  <div id="full-program">
+      <div id="days-list"></div>
+      <button id="navigate-day-back" disabled><</button>
+      <button id="navigate-day-forward" disabled>></button>
+      <button id="add-day-btn">Add Day</button>
+  </div>
+  <table id="day-exercise">
+
+  </table>
+
+  <div>
+      <input type="text" id="exercise-name" placeholder="exercise" autocomplete="off">
+      <input type="number" id="weight" placeholder="weight">
+      <input type="number" id="sets" placeholder="sets">
+      <input type="number" id="reps" placeholder="reps">
+      <button id="add-exercise">+</button>
+  </div>
+
+  <button id="submit">Submit</button>
+</body>
+</html>
