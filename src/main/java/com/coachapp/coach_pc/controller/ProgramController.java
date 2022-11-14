@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.ProgramService;
@@ -32,7 +33,7 @@ public class ProgramController {
     }
 
     @GetMapping("/{id}")
-    public Program getProgram(@PathVariable UUID id) {
+    public ProgramViewModel getProgram(@PathVariable UUID id) {
         return _programService.getProgram(id);
     }
 }

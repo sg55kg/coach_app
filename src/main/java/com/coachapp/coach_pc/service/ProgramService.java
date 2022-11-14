@@ -3,12 +3,13 @@ package com.coachapp.coach_pc.service;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.view.DayViewModel;
+import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.coachapp.coach_pc.repository.ProgramRepo;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProgramService {
@@ -22,8 +23,10 @@ public class ProgramService {
 
     public Program addProgram(ProgramRequest programRequest) {
         Program program = new Program();
+        Set<Day> days = new HashSet<>();
 
-        program.setDays(programRequest.getDays());
+        programRequest.getDays().forEach(d -> days.add(new Day(d.getDate(), d.getExercises())));
+        program.setDays(days);
         program.getDays().forEach(d -> format(d, program));
         program.setName(programRequest.getName());
 
@@ -41,7 +44,35 @@ public class ProgramService {
         return _programRepo.findAll();
     }
 
-    public Program getProgram(UUID id) {
-        return _programRepo.findById(id).orElse(null);
+    public ProgramViewModel getProgram(UUID id) {
+        Optional<Program> op = _programRepo.findById(id);
+        if(op.isEmpty()) {
+            return null;
+        }
+
+        Program raw = op.get();
+        ProgramViewModel program = convertProgram(raw);
+
+        return program;
+    }
+
+    private ProgramViewModel convertProgram(Program program) {
+        ProgramViewModel viewModel = new ProgramViewModel();
+
+        viewModel.setId(program.getId());
+        Set<DayViewModel> set = new HashSet<>();
+        program.getDays().forEach(d ->
+                set.add(new DayViewModel(
+                        d.getId(),
+                        d.getDate(),
+                        d.getExercises()
+                ))
+        );
+        viewModel.setDays(set);
+        viewModel.setStartDate(program.getStartDate());
+        viewModel.setEndDate(program.getEndDate());
+        viewModel.setName(program.getName());
+
+        return viewModel;
     }
 }
