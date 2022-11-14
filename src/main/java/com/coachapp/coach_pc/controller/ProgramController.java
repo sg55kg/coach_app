@@ -21,7 +21,7 @@ public class ProgramController {
         this._programService = programService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Program> getPrograms() {
         return _programService.getPrograms();
     }
