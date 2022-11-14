@@ -35,12 +35,13 @@ class Exercise {
     constructor() {
     }
 
-    static createExercise(name, weight, sets, repsPerSet) {
+    static createExercise(name, weight, sets, repsPerSet, notes) {
         let exercise = new Exercise()
         exercise.name = name
         exercise.weight = weight
         exercise.sets = sets
         exercise.repsPerSet = repsPerSet
+        exercise.notes = notes
 
         return exercise
     }
@@ -49,4 +50,5 @@ class Exercise {
     weight = 0
     sets = 0
     repsPerSet = 0
+    notes = ""
 }
