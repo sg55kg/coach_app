@@ -24,11 +24,13 @@ public class ProgramService {
     public Program addProgram(ProgramRequest programRequest) {
         Program program = new Program();
         Set<Day> days = new HashSet<>();
-
+        
         programRequest.getDays().forEach(d -> days.add(new Day(d.getDate(), d.getExercises())));
         program.setDays(days);
         program.getDays().forEach(d -> format(d, program));
         program.setName(programRequest.getName());
+        program.setStartDate(programRequest.getStartDate());
+        program.setEndDate(programRequest.getEndDate());
 
         return _programRepo.save(program);
     }

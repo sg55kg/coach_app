@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>Coaching App</title>
     <script defer th:src="@{/js/renderDom.js}"></script>
+    <script defer th:src="@{/js/programService.js}"></script>
     <script defer th:src="@{/js/classes.js}"></script>
     <script defer th:src="@{/js/index.js}"></script>
-    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
   <h1>Coach App</h1>
@@ -34,5 +35,6 @@
   </div>
 
   <button id="submit">Submit</button>
+  <a id="download-btn" hidden>Save</a>
 </body>
 </html>

@@ -105,8 +105,14 @@ buttonAdd.addEventListener("click", () => {
 
 })
 
-buttonSubmit.addEventListener("click", ()=>{
+buttonSubmit.addEventListener("click", async () => {
+    generateCSV()
+    console.log(program)
+    const savedProgram = await ProgramService.saveProgram(program)
+    console.log(savedProgram)
+})
 
+const generateCSV = () => {
     let str = "Day 1\nExercise,Weight,Reps,Sets,Notes\n";
     for(let i=0;i< program.days.length; i++) {
         if(program.days[i].exercises.length < 1) continue
@@ -121,14 +127,12 @@ buttonSubmit.addEventListener("click", ()=>{
         }
     }
 
-    const downloadLink = document.createElement("a");
+    const downloadLink = document.getElementById('download-btn');
     const csv = str
     const blob = new Blob(["\ufeff", csv], {type: 'text/csv'});
     const url = URL.createObjectURL(blob);
     const exportFilename = programInput.value;
     downloadLink.href = url;
     downloadLink.setAttribute('download', exportFilename);
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-})
+    downloadLink.hidden = false;
+}

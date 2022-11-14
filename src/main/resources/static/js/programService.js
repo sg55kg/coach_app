@@ -3,12 +3,13 @@ class ProgramService {
 
     static async saveProgram(program) {
         try {
-            const { text } = await fetch(`http://localhost:8080/api/programs`, {
+            const res = await fetch(`http://localhost:8080/api/programs`, {
                 method: 'POST',
+                mode: 'same-origin',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(program)
             })
-            const str = await text()
+            const str = await res.text()
             return JSON.parse(str)
         } catch (e) {
             console.log(e)

@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.Exercise;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DayRequest {
@@ -36,5 +37,18 @@ public class DayRequest {
 
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DayRequest that = (DayRequest) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
