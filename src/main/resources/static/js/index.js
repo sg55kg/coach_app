@@ -32,7 +32,7 @@ const clearExerciseInputs = () => {
 
 addDayBtn.addEventListener('click', () => {
     const dayNode = document.createElement('p')
-    dayNode.innerText = "Day " + program.days.length + " " + startDateInput.value
+    dayNode.innerText = "Day " + program.days.length
     daysList.appendChild(dayNode)
     currentDayIdx++
     clearExerciseTable()
