@@ -1,42 +1,112 @@
-const programInput = document.getElementById('program-name')
-const exerciseInput = document.getElementById('exercise-name')
-const weightInput = document.getElementById('weight')
-const repsInput = document.getElementById('reps')
-const setsInput = document.getElementById('sets')
-const buttonSubmit = document.getElementById('submit')
-const buttonAdd = document.getElementById('add-exercise')
-const dayExercise = document.getElementById('day-exercise')
-const fullProgram =document.getElementById('full-program')
-const programArray = []
 
-let programInputValue = ""
-programInput.addEventListener("change",(e) =>{
-    programInputValue = e.target.value;
-    fullProgram.innerHTML = programInputValue;
+const program = new Program()
+const newDay = new Day()
+let currentDayIdx = 0
+program.days.push(newDay)
+
+const clearExerciseTable = () => {
+    while (dayExercise.children.length > 0) {
+        dayExercise.removeChild(dayExercise.lastElementChild)
+    }
+}
+
+const fillExerciseTable = (exerciseArr) => {
+    for (const exercise of exerciseArr) {
+        let newRow = document.createElement('tr')
+        for (const val of Object.values(exercise)) {
+            let newColumn = document.createElement('td')
+            newColumn.innerText = val
+            newRow.appendChild(newColumn)
+        }
+        dayExercise.appendChild(newRow)
+    }
+}
+
+const clearExerciseInputs = () => {
+    exerciseInput.value = ''
+    weightInput.value = ''
+    repsInput.value = ''
+    setsInput.value = ''
+}
+
+addDayBtn.addEventListener('click', () => {
+    const dayNode = document.createElement('p')
+    dayNode.innerText = "Day " + program.days.length
+    daysList.appendChild(dayNode)
+    currentDayIdx++
+    clearExerciseTable()
+    clearExerciseInputs()
+
+    const newDay = new Day()
+    program.days.push(newDay)
+    prevDayBtn.disabled = false
 })
 
-buttonAdd.addEventListener("click", ()=>{
-    const exerciseObject = {
-        exercise:exerciseInput.value,
-        weight:weightInput.value,
-        reps:repsInput.value,
-        sets:setsInput.value
-    };
-    programArray.push(exerciseObject);
-    console.log(programArray);
-    let textofArray = "";
-    for(let i=0;i< programArray.length; i++) {
-        textofArray += "<p>exercise:" + programArray[i].exercise + " weight:" + programArray[i].weight +" reps:"+ programArray[i].reps +" sets:"+ programArray[i].sets+"</p>";
+prevDayBtn.addEventListener('click', () => {
+    if (currentDayIdx === 0) return
+
+    nextDayBtn.disabled = false
+    clearExerciseTable()
+    clearExerciseInputs()
+    currentDayIdx--
+    fillExerciseTable(program.days[currentDayIdx].exercises)
+
+    if (currentDayIdx === 0) {
+        prevDayBtn.disabled = true
     }
-    dayExercise.innerHTML = textofArray
+})
+
+nextDayBtn.addEventListener('click', () => {
+    if (currentDayIdx === program.days.length - 1) return
+
+    prevDayBtn.disabled = false
+    clearExerciseTable()
+    clearExerciseInputs()
+    currentDayIdx++
+    fillExerciseTable(program.days[currentDayIdx].exercises)
+
+    if (currentDayIdx === program.days.length - 1) {
+        nextDayBtn.disabled = true
+    }
+})
+
+programInput.addEventListener("change",(e) => {
+    program.name = e.target.value
+})
+
+
+buttonAdd.addEventListener("click", () => {
+    const exercise = Exercise.createExercise(exerciseInput.value, weightInput.value, repsInput.value, setsInput.value)
+    let currentDay = program.days[currentDayIdx]
+    currentDay.exercises.push(exercise)
+
+    let newRow = document.createElement('tr')
+
+    for (const field of Object.values(exercise)) {
+        let newColumn = document.createElement('td')
+        newColumn.innerText = field
+        newRow.appendChild(newColumn)
+    }
+
+    dayExercise.appendChild(newRow)
+
 })
 
 buttonSubmit.addEventListener("click", ()=>{
-    //const str = exerciseInput.value + "," + weightInput.value + "," + repsInput.value + "," + setsInput.value;
-    let str = "";
-    for(let i=0;i< programArray.length; i++) {
-        str += programArray[i].exercise + "," + programArray[i].weight + "," + programArray[i].reps + "," + programArray[i].sets + "\n";
+
+    let str = "Day 1\nExercise,Weight,Reps,Sets\n";
+    for(let i=0;i< program.days.length; i++) {
+        if(program.days[i].exercises.length < 1) continue
+        if (i > 0) str += "Day " + (i+1) + "\n"
+        const d = program.days[i]
+        for(let j = 0; j < d.exercises.length; j++) {
+            str += d.exercises[j].name + "," +
+                d.exercises[j].weight + "," +
+                d.exercises[j].sets + "," +
+                d.exercises[j].repsPerSet + "\n"
+        }
     }
+
     const downloadLink = document.createElement("a");
     const csv = str
     const blob = new Blob(["\ufeff", csv], {type: 'text/csv'});
