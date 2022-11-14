@@ -2,16 +2,19 @@ class Program {
     constructor() {
     }
 
-    static createProgram(name, days) {
+    static createProgram(name, days, startDate, endDate) {
         let program = new Program()
         program.name = name
         program.days = days
-
+        program.startDate = startDate
+        program.endDate = endDate
         return program
     }
 
     name = ""
     days = []
+    startDate = Date.now()
+    endDate = Date.now()
 }
 
 class Day {
