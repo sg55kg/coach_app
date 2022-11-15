@@ -4,6 +4,8 @@ import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.ProgramService;
 
@@ -35,5 +37,15 @@ public class ProgramController {
     @GetMapping("/{id}")
     public ProgramViewModel getProgram(@PathVariable UUID id) {
         return _programService.getProgram(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteProgram(@PathVariable UUID id) {
+        try {
+            _programService.deleteProgram(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
     }
 }

@@ -18,11 +18,11 @@ class ProgramService {
 
     static async getAllPrograms() {
         try {
-            const { text } = await fetch(`http://localhost:8080/api/programs`, {
+            const res = await fetch(`http://localhost:8080/api/programs`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             })
-            const str = await text()
+            const str = await res.text()
             return JSON.parse(str)
         } catch (e) {
             console.log(e)
@@ -31,12 +31,24 @@ class ProgramService {
 
     static async getProgram(id) {
         try {
-            const { text } = await fetch(`http://localhost:8080/api/programs/${id}`, {
+            const res = await fetch(`http://localhost:8080/api/programs/${id}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             })
-            const str = await text()
+            const str = await res.text()
             return JSON.parse(str)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    static async deleteProgram(id) {
+        try {
+            const res = await fetch(`http://localhost:8080/api/programs/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            return res.status
         } catch (e) {
             console.log(e)
         }

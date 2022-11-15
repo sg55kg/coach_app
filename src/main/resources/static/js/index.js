@@ -4,6 +4,13 @@ const newDay = new Day()
 let currentDayIdx = 0
 program.days.push(newDay)
 
+const fetchAllPrograms = async () => {
+    const programs = await ProgramService.getAllPrograms();
+    console.log('programs', programs)
+}
+
+fetchAllPrograms()
+
 const clearExerciseTable = () => {
     while (dayExercise.children.length > 0) {
         dayExercise.removeChild(dayExercise.lastElementChild)
@@ -30,6 +37,28 @@ const clearExerciseInputs = () => {
     notesInput.value = ''
 }
 
+const appendExercise = () => {
+    const exercise = Exercise.createExercise(
+        exerciseInput.value,
+        weightInput.value,
+        repsInput.value,
+        setsInput.value,
+        notesInput.value)
+    let currentDay = program.days[currentDayIdx]
+    currentDay.exercises.push(exercise)
+
+    let newRow = document.createElement('tr')
+
+    for (const field of Object.values(exercise)) {
+        let newColumn = document.createElement('td')
+        newColumn.innerText = field
+        newRow.appendChild(newColumn)
+    }
+
+    dayExercise.appendChild(newRow)
+    clearExerciseInputs()
+}
+
 addDayBtn.addEventListener('click', () => {
     const dayNode = document.createElement('p')
     dayNode.innerText = "Day " + program.days.length
@@ -41,6 +70,7 @@ addDayBtn.addEventListener('click', () => {
     const newDay = new Day()
     program.days.push(newDay)
     prevDayBtn.disabled = false
+    exerciseInput.focus()
 })
 
 prevDayBtn.addEventListener('click', () => {
@@ -83,27 +113,18 @@ endDateInput.addEventListener("change",(e) => {
     program.endDate = new Date(e.target.value)
 })
 
-buttonAdd.addEventListener("click", () => {
-    const exercise = Exercise.createExercise(
-        exerciseInput.value, 
-        weightInput.value, 
-        repsInput.value, 
-        setsInput.value, 
-        notesInput.value)
-    let currentDay = program.days[currentDayIdx]
-    currentDay.exercises.push(exercise)
-
-    let newRow = document.createElement('tr')
-
-    for (const field of Object.values(exercise)) {
-        let newColumn = document.createElement('td')
-        newColumn.innerText = field
-        newRow.appendChild(newColumn)
+notesInput.addEventListener('keyup', (e) => {
+    if(e.key === 'Enter') {
+        if (notesInput.value.endsWith('\n')) {
+            // remove \n that is still inserted on Enter press
+            notesInput.value = notesInput.value.replaceAll('\n', ' ')
+        }
+        appendExercise()
+        exerciseInput.focus()
     }
-
-    dayExercise.appendChild(newRow)
-
 })
+
+buttonAdd.addEventListener("click", appendExercise)
 
 buttonSubmit.addEventListener("click", async () => {
     generateCSV()
@@ -121,8 +142,8 @@ const generateCSV = () => {
         for(let j = 0; j < d.exercises.length; j++) {
             str += d.exercises[j].name + "," +
                 d.exercises[j].weight + "," +
-                d.exercises[j].sets + "," +
                 d.exercises[j].repsPerSet + "," +
+                d.exercises[j].sets + "," +
                 d.exercises[j].notes + "\n"
         }
     }
