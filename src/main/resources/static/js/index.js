@@ -134,7 +134,7 @@ buttonSubmit.addEventListener("click", async () => {
 })
 
 const generateCSV = () => {
-    let str = "Day 1\nExercise,Weight,Reps,Sets,Notes\n";
+    let str = "Day 1\nExercise,Weight,Sets,Reps,Notes\n";
     for(let i=0;i< program.days.length; i++) {
         if(program.days[i].exercises.length < 1) continue
         if (i > 0) str += "Day " + (i+1) + "\n"
