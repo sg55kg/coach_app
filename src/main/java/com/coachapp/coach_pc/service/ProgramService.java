@@ -97,4 +97,17 @@ public class ProgramService {
     public void deleteProgram(UUID id) {
         _programRepo.deleteById(id);
     }
+
+    public Program updateProgram(ProgramRequest program, UUID id) {
+        boolean exists = _programRepo.existsById(id);
+        if(exists) {
+            Program detachedProgram = new Program();
+            detachedProgram.setEndDate(program.getEndDate());
+            detachedProgram.setName(program.getName());
+            detachedProgram.setStartDate(program.getStartDate());
+            detachedProgram.setId(program.getId());
+            return _programRepo.save(detachedProgram);
+        }
+        return null;
+    }
 }

@@ -49,4 +49,14 @@ public class ProgramController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpStatus> updateProgram(@PathVariable UUID id, @RequestBody ProgramRequest program) {
+        Program programUpdated = _programService.updateProgram(program, id);
+        if (programUpdated != null) {
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
