@@ -25,7 +25,7 @@ public class Program {
     private Date endDate;
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Day> days;
+    private List<Day> days;
     private String name;
 
     public Program() {
@@ -72,11 +72,11 @@ public class Program {
         this.endDate = endDate;
     }
 
-    public Set<Day> getDays() {
+    public List<Day> getDays() {
         return days;
     }
 
-    public void setDays(Set<Day> days) {
+    public void setDays(List<Day> days) {
         this.days = days;
     }
 

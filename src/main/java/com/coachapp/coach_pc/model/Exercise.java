@@ -19,7 +19,7 @@ public class Exercise {
     private String name;
     private int sets;
     private int repsPerSet;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
     private String notes;
@@ -97,7 +97,7 @@ public class Exercise {
     }
 
     public Boolean isMax() {
-        return isMax;
+        return isMax != null ? isMax : false;
     }
 
     public void setMax(Boolean max) {

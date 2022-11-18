@@ -24,7 +24,7 @@ public class ProgramService {
 
     public Program addProgram(ProgramRequest programRequest) {
         Program program = new Program();
-        Set<Day> days = new HashSet<>();
+        List<Day> days = new ArrayList<>();
 
         programRequest.getDays().forEach(d -> days.add(new Day(d.getDate(), d.getExercises())));
         program.setDays(days);
@@ -78,7 +78,7 @@ public class ProgramService {
         ProgramViewModel viewModel = new ProgramViewModel();
 
         viewModel.setId(program.getId());
-        Set<DayViewModel> set = new HashSet<>();
+        List<DayViewModel> set = new ArrayList<>();
         program.getDays().forEach(d ->
                 set.add(new DayViewModel(
                         d.getId(),
@@ -102,7 +102,7 @@ public class ProgramService {
         boolean exists = _programRepo.existsById(id);
         if(exists) {
             Program detachedProgram = new Program();
-            Set<Day> days = new HashSet<>();
+            List<Day> days = new ArrayList<>();
          
             detachedProgram.setEndDate(program.getEndDate());
             detachedProgram.setName(program.getName());

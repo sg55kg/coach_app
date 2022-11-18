@@ -17,7 +17,7 @@ public class Day {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private Date date;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)

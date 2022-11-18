@@ -2,22 +2,19 @@ package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.Day;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ProgramRequest {
 
     private UUID id;
-    private Set<DayRequest> days;
+    private List<DayRequest> days;
     private String name;
     private Date startDate;
     private Date endDate;
 
     public ProgramRequest() {}
 
-    public ProgramRequest(UUID id, Set<DayRequest> days, String name) {
+    public ProgramRequest(UUID id, List<DayRequest> days, String name) {
         this.id = id;
         this.days = days;
         this.name = name;
@@ -27,7 +24,7 @@ public class ProgramRequest {
         return id;
     }
 
-    public Set<DayRequest> getDays() {
+    public List<DayRequest> getDays() {
         return days;
     }
 
