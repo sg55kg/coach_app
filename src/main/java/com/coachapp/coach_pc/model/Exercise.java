@@ -23,6 +23,7 @@ public class Exercise {
     private Day day;
     private String notes;
     private WeightIntensity weightIntensity;
+    private boolean isMax;
 
     public Exercise() {}
 
@@ -80,6 +81,14 @@ public class Exercise {
 
     public void setWeightIntensity(WeightIntensity weightIntensity) {
         this.weightIntensity = weightIntensity;
+    }
+
+    public boolean isMax() {
+        return isMax;
+    }
+
+    public void setMax(boolean max) {
+        isMax = max;
     }
 
     @Override
