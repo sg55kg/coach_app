@@ -16,6 +16,19 @@ class ProgramService {
         }
     }
 
+    static async updateProgram(program) {
+        try {
+            const res = await fetch(`http://localhost:8080/api/programs/${program.id}`, {
+                method: 'PUT',
+                mode: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(program)
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     static async getAllPrograms() {
         try {
             const res = await fetch(`http://localhost:8080/api/programs`, {

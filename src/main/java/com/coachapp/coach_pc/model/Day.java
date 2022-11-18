@@ -2,7 +2,6 @@ package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -28,6 +27,13 @@ public class Day {
     private List<Exercise> exercises;
 
     public Day() {}
+
+    public Day(Date date, List<Exercise> exercises, UUID id, Program program) {
+        this.date = date;
+        this.exercises = exercises;
+        this.id = id;
+        this.program = program;
+    }
 
     public Day(Date date, List<Exercise> exercises) {
         this.date = date;

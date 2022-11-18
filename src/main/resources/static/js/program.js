@@ -138,10 +138,14 @@ notesInput.addEventListener('keyup', (e) => {
 buttonAdd.addEventListener("click", appendExercise)
 
 buttonSubmit.addEventListener("click", async () => {
+    if (program.id != null) {
+        await ProgramService.updateProgram(program)
+    } else {
+        console.log(program)
+        const savedProgram = await ProgramService.saveProgram(program)
+        console.log(savedProgram)
+    }
     generateCSV()
-    console.log(program)
-    const savedProgram = await ProgramService.saveProgram(program)
-    console.log(savedProgram)
 })
 
 const generateCSV = () => {

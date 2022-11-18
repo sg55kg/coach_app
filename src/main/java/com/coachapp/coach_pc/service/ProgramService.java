@@ -102,10 +102,21 @@ public class ProgramService {
         boolean exists = _programRepo.existsById(id);
         if(exists) {
             Program detachedProgram = new Program();
+            Set<Day> days = new HashSet<>();
+         
             detachedProgram.setEndDate(program.getEndDate());
             detachedProgram.setName(program.getName());
             detachedProgram.setStartDate(program.getStartDate());
             detachedProgram.setId(program.getId());
+            detachedProgram.setDays(days);
+            program.getDays().forEach(d -> 
+            days.add(new Day(
+                d.getDate(),
+                d.getExercises(),
+                d.getId(),
+                detachedProgram
+            ))
+        );
             return _programRepo.save(detachedProgram);
         }
         return null;
