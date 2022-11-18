@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import org.hibernate.annotations.Type;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -22,10 +23,22 @@ public class Exercise {
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
     private String notes;
+    @Nullable()
     private WeightIntensity weightIntensity;
-    private boolean isMax;
+    private Boolean isMax = false;
 
     public Exercise() {}
+
+    public Exercise(UUID id, String name, int sets, int repsPerSet, Day day, String notes, WeightIntensity weightIntensity, boolean isMax) {
+        this.id = id;
+        this.name = name;
+        this.sets = sets;
+        this.repsPerSet = repsPerSet;
+        this.day = day;
+        this.notes = notes;
+        this.weightIntensity = weightIntensity;
+        this.isMax = isMax;
+    }
 
     public UUID getId() {
         return id;
@@ -83,11 +96,11 @@ public class Exercise {
         this.weightIntensity = weightIntensity;
     }
 
-    public boolean isMax() {
+    public Boolean isMax() {
         return isMax;
     }
 
-    public void setMax(boolean max) {
+    public void setMax(Boolean max) {
         isMax = max;
     }
 

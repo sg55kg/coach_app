@@ -35,8 +35,13 @@ if (window.location.pathname === "/create") {
 } else {
     let programResponse = await ProgramService.getProgram(window.location.pathname.replace('/', ''))
     program = programResponse
-    fillExerciseTable(program.days[currentDayIdx].exercises)
+    console.log(programResponse)
+    if(program.days.length > 0) {
+        fillExerciseTable(program.days[currentDayIdx].exercises)
+    }
     programInput.value = program.name
+    startDateInput.value = program.startDate
+    endDateInput.value = program.endDate
     nextDayBtn.disabled = false
 }
 

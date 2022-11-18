@@ -109,14 +109,9 @@ public class ProgramService {
             detachedProgram.setStartDate(program.getStartDate());
             detachedProgram.setId(program.getId());
             detachedProgram.setDays(days);
-            program.getDays().forEach(d -> 
-            days.add(new Day(
-                d.getDate(),
-                d.getExercises(),
-                d.getId(),
-                detachedProgram
-            ))
-        );
+            program.getDays().forEach(d ->
+                    days.add(Day.convertRequest(d, detachedProgram))
+            );
             return _programRepo.save(detachedProgram);
         }
         return null;

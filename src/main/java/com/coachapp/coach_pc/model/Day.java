@@ -1,14 +1,12 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.request.DayRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "days")
@@ -22,7 +20,7 @@ public class Day {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Exercise> exercises;
 
@@ -38,6 +36,29 @@ public class Day {
     public Day(Date date, List<Exercise> exercises) {
         this.date = date;
         this.exercises = exercises;
+    }
+
+    public static Day convertRequest(DayRequest dayRequest, Program program) {
+        Day day = new Day();
+        List<Exercise> exercises = new ArrayList<>();
+
+        day.setProgram(program);
+        day.setDate(dayRequest.getDate());
+        day.setId(dayRequest.getId());
+
+        dayRequest.getExercises().forEach(e ->
+                exercises.add(new Exercise(
+                        e.getId(),
+                        e.getName(),
+                        e.getSets(),
+                        e.getRepsPerSet(),
+                        e.getDay(),
+                        e.getNotes(),
+                        e.getWeightIntensity(),
+                        e.isMax()))
+                );
+        day.setExercises(exercises);
+        return day;
     }
 
     public UUID getId() {
