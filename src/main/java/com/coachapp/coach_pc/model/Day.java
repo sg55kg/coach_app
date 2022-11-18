@@ -1,6 +1,8 @@
 package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -21,7 +23,7 @@ public class Day {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Exercise> exercises;
 

@@ -22,4 +22,9 @@ public class PageController {
     public String program(@PathVariable UUID id) {
         return "program";
     }
+
+    @GetMapping("create")
+    public String create() {
+        return "program";
+    }
 }

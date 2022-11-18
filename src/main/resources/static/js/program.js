@@ -1,3 +1,4 @@
+(async () => {
 
 let program;
 let newDay;
@@ -9,8 +10,6 @@ const loadBlankProgram = () => {
 
     program.days.push(newDay)
 }
-
-loadBlankProgram();
 
 const clearExerciseTable = () => {
     while (dayExercise.children.length > 0) {
@@ -28,6 +27,17 @@ const fillExerciseTable = (exerciseArr) => {
         }
         dayExercise.appendChild(newRow)
     }
+}
+
+
+if (window.location.pathname === "/create") {
+    loadBlankProgram();
+} else {
+    let programResponse = await ProgramService.getProgram(window.location.pathname.replace('/', ''))
+    program = programResponse
+    fillExerciseTable(program.days[currentDayIdx].exercises)
+    programInput.value = program.name
+    nextDayBtn.disabled = false
 }
 
 const clearExerciseInputs = () => {
@@ -160,3 +170,4 @@ const generateCSV = () => {
 }
 
 
+})();
