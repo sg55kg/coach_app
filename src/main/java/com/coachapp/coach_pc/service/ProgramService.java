@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.view.DayViewModel;
+import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,23 @@ public class ProgramService {
         }
     }
 
-    public List<Program> getPrograms() {
-        return _programRepo.findAll();
+    public List<DisplayProgram> getPrograms() {
+        List<Program> programs = _programRepo.findAll();
+        List<DisplayProgram> result = new ArrayList<>();
+
+
+        programs.forEach(program -> {
+            DisplayProgram displayProgram = new DisplayProgram(
+                    program.getId(),
+                    program.getCreatedAt(),
+                    program.getUpdatedAt(),
+                    program.getStartDate(),
+                    program.getEndDate(),
+                    program.getName());
+            result.add(displayProgram);
+        });
+
+        return result;
     }
 
     public ProgramViewModel getProgram(UUID id) {

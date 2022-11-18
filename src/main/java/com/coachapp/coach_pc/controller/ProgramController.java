@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class ProgramController {
     }
 
     @GetMapping
-    public List<Program> getPrograms() {
+    public List<DisplayProgram> getPrograms() {
         return _programService.getPrograms();
     }
 
