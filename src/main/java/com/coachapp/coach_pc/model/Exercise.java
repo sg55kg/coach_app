@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.enums.WeightIntensity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Exercise {
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
     private String notes;
+    private WeightIntensity weightIntensity;
 
     public Exercise() {}
 
@@ -70,6 +72,14 @@ public class Exercise {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public WeightIntensity getWeightIntensity() {
+        return weightIntensity;
+    }
+
+    public void setWeightIntensity(WeightIntensity weightIntensity) {
+        this.weightIntensity = weightIntensity;
     }
 
     @Override

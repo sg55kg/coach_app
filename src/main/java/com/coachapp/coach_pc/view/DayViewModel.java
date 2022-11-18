@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.view;
 
+import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.Exercise;
 
 import java.util.Date;
@@ -43,4 +44,5 @@ public class DayViewModel {
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
     }
+
 }
