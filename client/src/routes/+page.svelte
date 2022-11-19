@@ -3,6 +3,7 @@
 
 	export let data
 	const { programs } = data
+	console.log(programs)
 </script>
 
 <svelte:head>

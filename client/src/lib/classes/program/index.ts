@@ -1,11 +1,9 @@
-import axios from "axios";
-
 export interface IProgram {
     id?: string,
     name: string,
     startDate: Date,
     endDate: Date,
-    days: Day[],
+    days?: Day[],
 }
 
 export interface ProgramDTO {
@@ -64,16 +62,20 @@ export class Program implements IProgram {
     days: any[] = []
 }
 
-export class ProgramService {
+export class DisplayProgram implements IProgram {
+    static build = (programDTO: ProgramDTO) => {
+        let program = new DisplayProgram()
 
-    static getPrograms = async () => {
-        const { data } = await axios.get<ProgramDTO[]>(`http://localhost:8080/api/programs`)
-        return data.map(p => Program.build(p))
+        program.id = programDTO.id
+        program.name = programDTO.name
+        program.startDate = new Date(programDTO.startDate)
+        program.endDate = new Date(programDTO.endDate)
+
+        return { ...program }
     }
 
-    static getProgram = async (id: string) => {
-        const { data } = await axios.get<ProgramDTO>(`http://localhost:8080/api/programs/${id}`)
-        return Program.build(data)
-    }
+    id: string = ''
+    name: string = ''
+    startDate: Date = new Date()
+    endDate: Date = new Date()
 }
-

@@ -1,14 +1,19 @@
-<script>
-    import {Day} from "../../../lib/server/service/ProgramService.js";
+<script lang="ts">
+    import {Day} from "../../../lib/classes/program";
 
     export let data
     const { program } = data
+    console.log(program)
+
+    let showDayForm = false
+    let newDay: Day | null = null
 
     const addDay = () => {
+        showDayForm = !showDayForm
         newDay = new Day()
+        console.log('fired')
     }
-    let showDayForm = false
-    let newDay
+
 </script>
 
 <h1>{program.name}</h1>
@@ -20,12 +25,21 @@
         {/each}
     </div>
 {/each}
-{#if showDayForm}
+{#if showDayForm && newDay}
     <div>
-
+        {#each newDay.exercises as exercise}
+            <div>Test</div>
+        {/each}
+        <div>
+            <input type="text">
+            <input type="number">
+            <input type="number">
+            <input type="number">
+            <textarea></textarea>
+        </div>
     </div>
 {/if}
-<button on:click={() => showDayForm = !showDayForm}>
+<button on:click={addDay}>
     Add Day
 </button>
 
