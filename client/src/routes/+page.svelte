@@ -1,9 +1,21 @@
 <script>
 	import Counter from './Counter.svelte';
-
+	import { user } from '../lib/stores/authStore'
+	console.log(user)
 	export let data
-	const { programs } = data
-	console.log(programs)
+	let userData
+	user.subscribe(v => userData = v)
+	console.log(userData)
+
+	let username = ''
+	let password = ''
+	let firstName = ''
+	let lastName = ''
+	let email = ''
+
+
+	//const { programs } = data
+	//console.log(programs)
 </script>
 
 <svelte:head>
@@ -12,16 +24,32 @@
 </svelte:head>
 
 <section>
+	{#if !userData}
+		<h1>Not logged in</h1>
+		<a href="/register">
+			<button>
+				Get Started
+			</button>
+		</a>
+		<small>Already have an account?</small>
+		<a href="/login">
+			<button>
+				Login
+			</button>
+		</a>
 
-	<ul>
-		{#each programs as program}
-			<li>
-				<p>{program.name}</p>
-				<a href="/program/{program.id}">View</a>
-			</li>
-		{/each}
-	</ul>
-
+	{:else }
+		<h1>Welcome</h1>
+		<ul>
+			<!--{#each programs as program}-->
+			<!--	<li>-->
+			<!--		<p>{program.name}</p>-->
+			<!--		<a href="/program/{program.id}">View</a>-->
+			<!--	</li>-->
+			<!--{/each}-->
+		</ul>
+		<button>Logout</button>
+	{/if}
 	<Counter />
 </section>
 
