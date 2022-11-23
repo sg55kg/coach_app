@@ -59,4 +59,10 @@ public class ProgramController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/coach/{coachId}")
+    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@PathVariable UUID coachId) {
+        // Like this to get the error to go away for now
+        return new ResponseEntity<>(_programService.getPrograms(), HttpStatus.OK);
+    }
 }

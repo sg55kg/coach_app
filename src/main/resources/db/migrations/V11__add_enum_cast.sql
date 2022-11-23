@@ -1,0 +1,1 @@
+CREATE CAST (character varying AS e_role) WITH INOUT AS ASSIGNMENT;

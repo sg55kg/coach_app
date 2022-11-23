@@ -1,35 +1,51 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.UserType;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class UserData {
 
     @Id
-    private String id;
+    @GeneratedValue(generator = "UUID")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
+    private UUID id;
     private Date createdAt;
     private Date updatedAt;
-    private UserType userType;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(	name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
     private String email;
+    private String username;
 
     public UserData() {}
-    public UserData(String id, Date createdAt, Date updatedAt, UserType userType, String email) {
+    public UserData(UUID id,
+                    Date createdAt,
+                    Date updatedAt,
+                    String email,
+                    String username,
+                    Set<Role> roles
+    ) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.userType = userType;
         this.email = email;
+        this.username = username;
+        this.roles = roles;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -49,19 +65,27 @@ public class UserData {
         this.updatedAt = updatedAt;
     }
 
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
