@@ -1,5 +1,5 @@
 import type {PageServerLoad} from "../../../../.svelte-kit/types/src/routes/sverdle/$types";
-import {ProgramService} from "../../../lib/server/service/ProgramService";
+
 
 
 export const load: PageServerLoad = async ({ params }) => {
