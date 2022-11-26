@@ -72,13 +72,20 @@
                 <small class="label-text-alt text-red-500">{form?.errors?.email[0]}</small>
             {/if}
         </div>
+        <div class="flex justify-center flex-col m-auto">
+            <label class="p-1">I am a...</label>
+            <select name="role" class="px-2">
+                <option value="coach">Coach</option>
+                <option value="athlete">Athlete</option>
+            </select>
+        </div>
 
         <button class="m-auto my-6 p-2 bg-yellow-400 hover:bg-yellow-600">
             Sign Up
         </button>
         <hr>
         <small class="m-auto pt-4 font-semibold">
-            Already have an account? <a class="text-teal-500" href="/login">Login</a>
+            Already have an account? <a class="text-teal-500 hover:text-teal-600" href="/login">Login</a>
         </small>
     </div>
 </form>

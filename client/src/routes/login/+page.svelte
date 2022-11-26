@@ -26,6 +26,10 @@
     <input type="text" name="username" placeholder="Username">
     <input type="password" name="password" placeholder="Password">
     <button>Login</button>
+    <hr>
+    <small class="m-auto pt-4 font-semibold">
+        New here? <a class="text-teal-500 hover:text-teal-600" href="/register">Register for an account</a>
+    </small>
 </form>
 
 <style>

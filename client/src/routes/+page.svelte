@@ -6,16 +6,6 @@
 	let userData
 	user.subscribe(v => userData = v)
 	console.log(userData)
-
-	let username = ''
-	let password = ''
-	let firstName = ''
-	let lastName = ''
-	let email = ''
-
-
-	//const { programs } = data
-	//console.log(programs)
 </script>
 
 <svelte:head>

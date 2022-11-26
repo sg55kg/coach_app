@@ -15,22 +15,9 @@ export const actions: Actions = {
 
         const username = await data.get('username')
         const password = await data.get('password')
-        console.log(username, password)
+
         try {
-            // const res = await fetch(`http://localhost:8180/auth/login`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Accept': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         username,
-            //         password
-            //     })
-            // })
             const res = await axios.post(`http://localhost:8180/auth/login`, { username, password })
-            //console.log(res)
-            //const res = await UserService.loginUser(username!.toString(), password!.toString())
             result = res.data
 
         } catch (e: any) {

@@ -64,20 +64,14 @@ export const actions: Actions = {
                 errors
             }
         }
+        console.log(data)
         try {
             const res = await fetch(`http://localhost:8180/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: data['username'], //username,
-                    password: data['password'],
-                    firstName: data['first-name'],
-                    lastName: ['last-name'],
-                    email: data['email'],
-                    role: 'athlete'
-                })
+                body: JSON.stringify(data)
             })
         } catch (e) {
             return { error: e}
