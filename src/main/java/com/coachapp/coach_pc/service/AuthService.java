@@ -45,7 +45,12 @@ public class AuthService {
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
-        Keycloak keycloak = getUserToken(loginRequest.getUsername(), loginRequest.getPassword());
+        Keycloak keycloak = null;
+        try {
+            keycloak = getUserToken(loginRequest.getUsername(), loginRequest.getPassword());
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         AccessTokenResponse accessTokenResponse = null;
 
         accessTokenResponse = keycloak.tokenManager().getAccessToken();
