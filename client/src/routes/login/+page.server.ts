@@ -1,7 +1,4 @@
 import type {Actions} from "@sveltejs/kit";
-
-import {user} from "../../lib/stores/authStore";
-import {deserialize} from "$app/forms";
 import axios from "axios";
 import {redirect} from "@sveltejs/kit";
 
@@ -31,8 +28,19 @@ export const actions: Actions = {
             secure: process.env.NODE_ENV === 'production',
             maxAge: result.token['expires_in']
         })
+        cookies.set('refresh_token', result.token['refresh_token'], {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: result.token['refresh_expires_in']
+        })
+
         const userId = result.userData.id
-        const location = result.userData.roles.includes('coach') ? `/coach/${userId}` : `/athlete/${userId}`
+        console.log(result.userData)
+        const location = result
+            .userData
+            .roles.find((r: any) => r.name.includes('coach')) ? `/coach/${userId}` : `/athlete/${userId}`
         //return { success: result.userData, location, status: 302 }
         throw redirect(302, location)
     }

@@ -140,6 +140,26 @@ public class AuthService {
         return new ResponseEntity<>("Success", HttpStatus.SEE_OTHER);
     }
 
+    public ResponseEntity<TokenResponse> refresh(TokenRequest tokenRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        map.add("refresh_token", tokenRequest.getToken());
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<TokenResponse> response = restTemplate.postForEntity(
+                "http://localhost:8080/auth/realms/dev/protocol/openid-connect/token",
+                httpEntity,
+                TokenResponse.class
+        );
+
+        return response;
+    }
+
     public RealmResource getInstance(String token, String clientId){
         return KeycloakConfig.getInstance(token, clientId).realm("dev");
     }
