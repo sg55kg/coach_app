@@ -44,4 +44,9 @@ public class AuthController {
         }
         return authService.register(userDTO);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody TokenRequest tokenRequest) {
+        return authService.refresh(tokenRequest);
+    }
 }

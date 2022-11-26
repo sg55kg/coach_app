@@ -15,9 +15,13 @@
         </div>
     {/each}
 {/if}
+<button>
+    <a href="create-program">Create New Program</a>
+</button>
 
 <style>
     #program-display-card {
         border: 1px solid black;
+        background: white;
     }
 </style>
