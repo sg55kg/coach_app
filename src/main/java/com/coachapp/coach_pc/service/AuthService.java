@@ -49,14 +49,22 @@ public class AuthService {
         AccessTokenResponse accessTokenResponse = null;
 
         accessTokenResponse = keycloak.tokenManager().getAccessToken();
+
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setAccess_token(accessTokenResponse.getToken());
+        tokenResponse.setRefresh_token(accessTokenResponse.getRefreshToken());
+        tokenResponse.setToken_type(accessTokenResponse.getTokenType());
+        tokenResponse.setExpires_in(accessTokenResponse.getExpiresIn());
+        tokenResponse.setRefresh_expires_in(accessTokenResponse.getRefreshExpiresIn());
+
         Optional<UserData> userData = _userDataRepo.findByUsername(loginRequest.getUsername());
 
         if(userData.isEmpty()) {
             return null;
         }
 
-        LoginResponse res = new LoginResponse(accessTokenResponse, userData.get());
-        return new ResponseEntity<>(res, HttpStatus.SEE_OTHER);
+        LoginResponse res = new LoginResponse(tokenResponse, userData.get());
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     public ResponseEntity<Response> logout(TokenRequest tokenRequest) {
@@ -102,6 +110,7 @@ public class AuthService {
         user.setEmail(userDTO.getEmail());
         user.setCredentials(Collections.singletonList(credential));
         user.setEnabled(true);
+        user.setEmailVerified(true);
 
         UsersResource users = instance.users();
 

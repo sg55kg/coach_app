@@ -7,15 +7,20 @@
     import {user} from "../../lib/stores/authStore";
     import {redirect} from "@sveltejs/kit";
 
+    let location = '/'
+
     if($user) {
-        redirect(302, '/')
+        console.log('fired')
+        throw redirect(302, '/')
     }
 </script>
 
 <form method="POST" use:enhance={() => {
-    return ({ result, update }) => {
+    return async ({ result, update }) => {
         console.log(result)
-        $user = result
+
+        update()
+
     }
 }}>
     <input type="text" name="username" placeholder="Username">

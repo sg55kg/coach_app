@@ -8,12 +8,14 @@
         update()
     }
 }}>
-    <input name="username" type="text">
-    <input name="password" type="password">
-    <input name="first-name" type="text">
-    <input name="last-name" type="text">
-    <input name="email" type="text">
-    <button>Sign Up</button>
+    <div>
+        <input name="username" type="text" placeholder="Username">
+        <input name="password" type="password" placeholder="Password">
+        <input name="first-name" type="text" placeholder="First Name">
+        <input name="last-name" type="text" placeholder="Last Name">
+        <input name="email" type="text" placeholder="Email Address">
+        <button>Sign Up</button>
+    </div>
 </form>
 
 <style>
