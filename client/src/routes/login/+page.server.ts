@@ -18,7 +18,7 @@ export const actions: Actions = {
             result = res.data
 
         } catch (e: any) {
-            console.log(e)
+            return { error: 'There was a problem' }
         }
 
         cookies.set('Authority', `Bearer ${result.token['access_token']}`, {
