@@ -26,6 +26,16 @@ export interface DayDTO {
     exercises: any[]
 }
 
+export class Exercise {
+    id: string = ''
+    name: string = ''
+    sets: number = 0
+    repsPerSet: number = 0
+    notes: string = ''
+    weightIntensity: string = ''
+    isMax: boolean = false
+}
+
 export class Day implements IDay {
     static build = (dayDTO: DayDTO) => {
         let day = new Day()
