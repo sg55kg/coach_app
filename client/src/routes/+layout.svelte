@@ -3,6 +3,9 @@
 </script>
 
 <div class="app bg-gray-600">
+	<header class="mb-4 p-2 bg-yellow-300">
+		Global header for coach app
+	</header>
 	<main>
 		<slot />
 	</main>

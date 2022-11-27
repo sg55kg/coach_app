@@ -1,5 +1,4 @@
 <script>
-	import Counter from './Counter.svelte';
 	import { user } from '../lib/stores/authStore'
 	console.log(user)
 	export let data
@@ -30,17 +29,8 @@
 
 	{:else }
 		<h1>Welcome</h1>
-		<ul>
-			<!--{#each programs as program}-->
-			<!--	<li>-->
-			<!--		<p>{program.name}</p>-->
-			<!--		<a href="/program/{program.id}">View</a>-->
-			<!--	</li>-->
-			<!--{/each}-->
-		</ul>
 		<button>Logout</button>
 	{/if}
-	<Counter />
 </section>
 
 <style>

@@ -72,7 +72,7 @@
                 <small class="label-text-alt text-red-500">{form?.errors?.email[0]}</small>
             {/if}
         </div>
-        <div class="flex justify-center flex-col m-auto">
+        <div class="mt-2 flex justify-center m-auto">
             <label class="p-1">I am a...</label>
             <select name="role" class="px-2">
                 <option value="coach">Coach</option>
