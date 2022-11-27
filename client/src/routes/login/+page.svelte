@@ -28,8 +28,11 @@
     <button>Login</button>
     <hr>
     <small class="m-auto pt-4 font-semibold">
-        New here? <a class="text-teal-500 hover:text-teal-600" href="/register">Register for an account</a>
+        New here?
     </small>
+    <a class="text-teal-500 hover:text-teal-600" href="register">
+        <small class="m-auto pt-4 font-semibold">Register for an account</small>
+    </a>
 </form>
 
 <style>

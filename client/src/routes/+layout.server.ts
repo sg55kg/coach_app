@@ -3,14 +3,19 @@ import {redirect} from "@sveltejs/kit";
 
 
 export const load: LayoutServerLoad = async ({ url, cookies }) => {
-    if(cookies.get('Authority') !== undefined && cookies.get('Authority')!.includes('undefined') && !url.pathname.includes('login')) {
+    const accessToken = cookies.get('Authority')
+    const refreshToken = cookies.get('refresh_token')
+    if(accessToken !== undefined && accessToken.includes('undefined') &&
+        !url.pathname.includes('login') &&
+        !url.pathname.includes('register')
+    ) {
         throw redirect(302, '/login')
     }
-    if (!cookies.get('Authority') && cookies.get('refresh_token')) {
+    if (!accessToken && refreshToken) {
         console.log('fired')
         const res = await fetch(`http://localhost:8180/auth/refresh`, {
             method: 'POST',
-            body: cookies.get('refresh_token')
+            body: refreshToken
         })
         console.log(res)
         const tokenData = await res.json()
