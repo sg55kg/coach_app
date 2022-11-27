@@ -3,13 +3,13 @@
     export let form
 </script>
 
-<form method="POST" use:enhance={() => {
+<form class="flex" method="POST" use:enhance={() => {
     return ({ result, update }) => {
         update()
     }
 }}>
 
-    <div class="bg-white border-white p-4 px-8 flex flex-col justify-items-center content-center">
+    <div class="bg-white border-white p-4 px-8 w-96 m-auto flex flex-col justify-items-center content-center drop-shadow-2xl rounded">
         <h1 class="font-extrabold text-3xl pb-2">
             Register
         </h1>
@@ -80,7 +80,7 @@
             </select>
         </div>
 
-        <button class="m-auto my-6 p-2 bg-yellow-400 hover:bg-yellow-600">
+        <button class="m-auto my-6 p-2 px-4 bg-yellow-400 hover:bg-yellow-600">
             Sign Up
         </button>
         <hr>
