@@ -1,4 +1,4 @@
-package com.coachapp.coach_pc.model;
+package com.coachapp.coach_pc.view;
 
 public class Response {
 

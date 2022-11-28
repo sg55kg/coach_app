@@ -1,14 +1,16 @@
 package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.*;
+import com.coachapp.coach_pc.request.LoginRequest;
+import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.service.AuthService;
-import org.keycloak.representations.AccessTokenResponse;
+import com.coachapp.coach_pc.view.LoginResponse;
+import com.coachapp.coach_pc.view.Response;
+import com.coachapp.coach_pc.view.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")

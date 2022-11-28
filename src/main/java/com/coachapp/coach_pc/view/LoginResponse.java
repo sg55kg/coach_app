@@ -1,6 +1,6 @@
-package com.coachapp.coach_pc.model;
+package com.coachapp.coach_pc.view;
 
-import org.keycloak.representations.AccessTokenResponse;
+import com.coachapp.coach_pc.model.UserData;
 
 public class LoginResponse {
 
