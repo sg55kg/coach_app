@@ -27,6 +27,10 @@ public class Program {
     @JsonIgnore
     private List<Day> days;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "coach_id")
+    @JsonIgnore
+    private UserData coach;
 
     public Program() {
 
@@ -86,6 +90,14 @@ public class Program {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserData getCoach() {
+        return coach;
+    }
+
+    public void setCoach(UserData coach) {
+        this.coach = coach;
     }
 
     @Override
