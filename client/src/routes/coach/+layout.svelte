@@ -3,8 +3,9 @@
     import {userId} from "../../lib/stores/authStore";
 
     export let data: PageData
+    const { userIdData } = data
     if($userId === '') {
-        userId.set(data.userId)
+        userId.set(userIdData)
     }
     console.log(data)
 </script>

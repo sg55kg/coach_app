@@ -11,12 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.ProgramService;
 
+import javax.ws.rs.Consumes;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/programs")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@Consumes({"application/json"})
 public class ProgramController {
 
     private ProgramService _programService;

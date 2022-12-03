@@ -26,13 +26,21 @@ export interface DayDTO {
     exercises: any[]
 }
 
+export enum WeightIntensity {
+    LIGHT,
+    MODERATE,
+    HEAVY,
+    BODY_WEIGHT,
+    NONE
+}
+
 export class Exercise {
     id: string = ''
     name: string = ''
     sets: number = 0
     repsPerSet: number = 0
     notes: string = ''
-    weightIntensity: string = ''
+    weightIntensity: WeightIntensity = WeightIntensity.NONE
     isMax: boolean = false
 }
 

@@ -8,7 +8,7 @@ import java.util.*;
 public class ProgramRequest {
 
     private UUID id;
-    private List<DayRequest> days;
+    private List<Day> days;
     private String name;
     private Date startDate;
     private Date endDate;
@@ -16,7 +16,7 @@ public class ProgramRequest {
 
     public ProgramRequest() {}
 
-    public ProgramRequest(UUID id, List<DayRequest> days, String name, UserData coach) {
+    public ProgramRequest(UUID id, List<Day> days, String name, UserData coach) {
         this.id = id;
         this.days = days;
         this.name = name;
@@ -27,7 +27,7 @@ public class ProgramRequest {
         return id;
     }
 
-    public List<DayRequest> getDays() {
+    public List<Day> getDays() {
         return days;
     }
 

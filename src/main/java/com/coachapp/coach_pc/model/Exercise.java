@@ -23,8 +23,8 @@ public class Exercise {
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
     private String notes;
-    @Nullable()
-    private WeightIntensity weightIntensity;
+    @Nullable
+    private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private Boolean isMax = false;
 
     public Exercise() {}

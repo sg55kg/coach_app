@@ -102,19 +102,18 @@ public class ProgramService {
     }
 
     public Program updateProgram(ProgramRequest program, UUID id) {
-        boolean exists = _programRepo.existsById(id);
-        if(exists) {
-            Program detachedProgram = new Program();
+        Optional<Program> dbProgram = _programRepo.findById(id);
+        if(dbProgram.isPresent()) {
+            Program detachedProgram = dbProgram.get();
             List<Day> days = new ArrayList<>();
          
             detachedProgram.setEndDate(program.getEndDate());
             detachedProgram.setName(program.getName());
             detachedProgram.setStartDate(program.getStartDate());
             detachedProgram.setId(program.getId());
-            detachedProgram.setDays(days);
-            program.getDays().forEach(d ->
-                    days.add(Day.convertRequest(d, detachedProgram))
-            );
+
+            detachedProgram.setDays(program.getDays());
+
             return _programRepo.save(detachedProgram);
         }
         return null;
