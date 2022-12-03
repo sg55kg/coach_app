@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,6 +28,10 @@ public class Program {
     @JsonIgnore
     private List<Day> days;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "coach_id")
+    @JsonIgnore
+    private UserData coach;
 
     public Program() {
 
@@ -78,6 +83,10 @@ public class Program {
 
     public void setDays(List<Day> days) {
         this.days = days;
+        for(Day day : days) {
+            day.setProgram(this);
+            day.getExercises().forEach(e -> e.setDay(day));
+        }
     }
 
     public String getName() {
@@ -86,6 +95,14 @@ public class Program {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserData getCoach() {
+        return coach;
+    }
+
+    public void setCoach(UserData coach) {
+        this.coach = coach;
     }
 
     @Override

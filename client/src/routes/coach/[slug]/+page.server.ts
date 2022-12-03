@@ -1,6 +1,4 @@
-import type { PageServerLoad } from "../../../../.svelte-kit/types/src/routes/login/$types";
-import {ProgramService} from "../../../lib/server/service/ProgramService";
-
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 
@@ -8,10 +6,10 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
         method: 'GET',
        // credentials: 'include',
         headers: {
-            'Authorization': cookies.get('Authority')!
+            'Authorization': "Bearer " + cookies.get('Authority')!
         }
     })
-
+    console.log(res)
     const programs = await res.json()
     return { programs }
 }

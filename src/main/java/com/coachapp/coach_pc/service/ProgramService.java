@@ -1,12 +1,15 @@
 package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.view.DayViewModel;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.coachapp.coach_pc.repository.ProgramRepo;
 
@@ -99,21 +102,38 @@ public class ProgramService {
     }
 
     public Program updateProgram(ProgramRequest program, UUID id) {
-        boolean exists = _programRepo.existsById(id);
-        if(exists) {
-            Program detachedProgram = new Program();
+        Optional<Program> dbProgram = _programRepo.findById(id);
+        if(dbProgram.isPresent()) {
+            Program detachedProgram = dbProgram.get();
             List<Day> days = new ArrayList<>();
          
             detachedProgram.setEndDate(program.getEndDate());
             detachedProgram.setName(program.getName());
             detachedProgram.setStartDate(program.getStartDate());
             detachedProgram.setId(program.getId());
-            detachedProgram.setDays(days);
-            program.getDays().forEach(d ->
-                    days.add(Day.convertRequest(d, detachedProgram))
-            );
+
+            detachedProgram.setDays(program.getDays());
+
             return _programRepo.save(detachedProgram);
         }
         return null;
+    }
+
+    public ResponseEntity<List<DisplayProgram>> getProgramsByCoachId(UUID coachId, TokenRequest tokenRequest) {
+        List<Program> dbPrograms = _programRepo.getProgramsByCoachId(coachId);
+        List<DisplayProgram> programs = new ArrayList<>();
+
+        dbPrograms.forEach(program -> {
+            DisplayProgram displayProgram = new DisplayProgram(
+                    program.getId(),
+                    program.getCreatedAt(),
+                    program.getUpdatedAt(),
+                    program.getStartDate(),
+                    program.getEndDate(),
+                    program.getName());
+            programs.add(displayProgram);
+        });
+
+        return new ResponseEntity<>(programs, HttpStatus.OK);
     }
 }

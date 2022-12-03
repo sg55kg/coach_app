@@ -1,8 +1,7 @@
 import type {Actions} from "@sveltejs/kit";
 import axios from "axios";
-import {redirect} from "@sveltejs/kit";
-
-
+import {invalid, redirect} from "@sveltejs/kit";
+import type {PageServerLoad} from "./$types";
 
 
 export const actions: Actions = {
@@ -18,10 +17,14 @@ export const actions: Actions = {
             result = res.data
 
         } catch (e: any) {
-            return { error: 'There was a problem' }
+            return invalid(404, { error: 'Could not login' })
         }
 
-        cookies.set('Authority', `Bearer ${result.token['access_token']}`, {
+        if (result.token['access_token'] === undefined || result.token['access_token'].includes('undefined')) {
+            return invalid(500, { error: 'Token not found' })
+        }
+
+        cookies.set('Authority', `${result.token['access_token']}`, {
             path: '/',
             httpOnly: true,
             sameSite: 'strict',
@@ -35,13 +38,13 @@ export const actions: Actions = {
             secure: process.env.NODE_ENV === 'production',
             maxAge: result.token['refresh_expires_in']
         })
-
+        console.log(result)
         const userId = result.userData.id
         console.log(result.userData)
         const location = result
             .userData
             .roles.find((r: any) => r.name.includes('coach')) ? `/coach/${userId}` : `/athlete/${userId}`
-        //return { success: result.userData, location, status: 302 }
-        throw redirect(302, location)
+        return { success: result.userData, location, status: 302 }
+        //throw redirect(302, location)
     }
 }

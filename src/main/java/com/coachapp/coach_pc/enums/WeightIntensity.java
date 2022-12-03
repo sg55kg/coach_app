@@ -5,4 +5,5 @@ public enum WeightIntensity {
     MODERATE,
     HEAVY,
     BODY_WEIGHT,
+    NONE
 }

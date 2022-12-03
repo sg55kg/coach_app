@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
+import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.view.DisplayProgram;
@@ -10,12 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.ProgramService;
 
+import javax.ws.rs.Consumes;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/programs")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@Consumes({"application/json"})
 public class ProgramController {
 
     private ProgramService _programService;
@@ -61,8 +64,8 @@ public class ProgramController {
     }
 
     @GetMapping("/coach/{coachId}")
-    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@PathVariable UUID coachId) {
-        // Like this to get the error to go away for now
-        return new ResponseEntity<>(_programService.getPrograms(), HttpStatus.OK);
+    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@RequestBody TokenRequest tokenRequest,
+                                                                 @PathVariable UUID coachId) {
+        return _programService.getProgramsByCoachId(coachId, tokenRequest);
     }
 }

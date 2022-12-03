@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.model;
 import com.coachapp.coach_pc.request.DayRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -40,24 +41,12 @@ public class Day {
 
     public static Day convertRequest(DayRequest dayRequest, Program program) {
         Day day = new Day();
-        List<Exercise> exercises = new ArrayList<>();
 
         day.setProgram(program);
         day.setDate(dayRequest.getDate());
         day.setId(dayRequest.getId());
+        day.setExercises(dayRequest.getExercises());
 
-        dayRequest.getExercises().forEach(e ->
-                exercises.add(new Exercise(
-                        e.getId(),
-                        e.getName(),
-                        e.getSets(),
-                        e.getRepsPerSet(),
-                        e.getDay(),
-                        e.getNotes(),
-                        e.getWeightIntensity(),
-                        e.isMax()))
-                );
-        day.setExercises(exercises);
         return day;
     }
 
@@ -91,6 +80,7 @@ public class Day {
 
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
+        exercises.forEach(e -> e.setDay(this));
     }
 
     @Override

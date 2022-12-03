@@ -6,21 +6,28 @@
     import {enhance} from '$app/forms'
     import {user} from "../../lib/stores/authStore";
     import {redirect} from "@sveltejs/kit";
+    import {beforeUpdate} from "svelte";
 
     let location = '/'
-
-    if($user) {
-        console.log('fired')
-        throw redirect(302, '/')
-    }
+    beforeUpdate(() => {
+        if($user) {
+            console.log('fired')
+            //throw redirect(302, )
+        }
+    })
 </script>
 
 <form method="POST" use:enhance={() => {
     return async ({ result, update }) => {
         console.log(result)
+        if (result.data?.success) {
+            user.set(result.data.success)
+            window.location.replace(result.data.location)
+        } else {
+            console.log(result)
+        }
 
-        update()
-
+       // update()
     }
 }}>
     <input type="text" name="username" placeholder="Username">

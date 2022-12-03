@@ -1,30 +1,33 @@
 package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.model.UserData;
 
 import java.util.*;
 
 public class ProgramRequest {
 
     private UUID id;
-    private List<DayRequest> days;
+    private List<Day> days;
     private String name;
     private Date startDate;
     private Date endDate;
+    private UserData coach;
 
     public ProgramRequest() {}
 
-    public ProgramRequest(UUID id, List<DayRequest> days, String name) {
+    public ProgramRequest(UUID id, List<Day> days, String name, UserData coach) {
         this.id = id;
         this.days = days;
         this.name = name;
+        this.coach = coach;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public List<DayRequest> getDays() {
+    public List<Day> getDays() {
         return days;
     }
 
@@ -46,6 +49,10 @@ public class ProgramRequest {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public UserData getCoach() {
+        return coach;
     }
 
     @Override
