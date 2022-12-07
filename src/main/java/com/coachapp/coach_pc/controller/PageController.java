@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/")
-@CrossOrigin("*")
+@CrossOrigin
 public class PageController {
 
     @GetMapping

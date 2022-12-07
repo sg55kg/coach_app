@@ -50,3 +50,24 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
         return invalid(405)
     }
 }
+
+export const GET: RequestHandler = async ({ request }) => {
+    const headers = request.headers
+    const token = headers.get('Authority')
+
+    try {
+        const res = await fetch(`http://localhost:8180/api/programs`, {
+            method: 'GET',
+            headers: { 'Authority': 'Bearer ' + token }
+        })
+
+        //const other = await res.text()
+        //console.log(other)
+        const resData = await res.json()
+        console.log('this is new', resData)
+
+        return { programs: resData }
+    } catch (e) {
+        console.log(e)
+    }
+}

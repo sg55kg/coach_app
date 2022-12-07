@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/days")
-@CrossOrigin("*")
+@CrossOrigin
 public class DayController {
 
     private DayService _dayService;

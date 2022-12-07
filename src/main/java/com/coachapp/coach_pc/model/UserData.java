@@ -25,13 +25,23 @@ public class UserData {
     private String email;
     private String username;
 
+    @OneToOne
+    @JoinColumn(name = "coach_id", referencedColumnName = "id")
+    private CoachData coachData;
+
+    @OneToOne
+    @JoinColumn(name = "athlete_id", referencedColumnName = "id")
+    private AthleteData athleteData;
+
     public UserData() {}
     public UserData(UUID id,
                     Date createdAt,
                     Date updatedAt,
                     String email,
                     String username,
-                    Set<Role> roles
+                    Set<Role> roles,
+                    CoachData coachData,
+                    AthleteData athleteData
     ) {
         this.id = id;
         this.createdAt = createdAt;
@@ -39,6 +49,8 @@ public class UserData {
         this.email = email;
         this.username = username;
         this.roles = roles;
+        this.coachData = coachData;
+        this.athleteData = athleteData;
     }
 
     public UUID getId() {
@@ -87,5 +99,21 @@ public class UserData {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public CoachData getCoachData() {
+        return coachData;
+    }
+
+    public void setCoachData(CoachData coachData) {
+        this.coachData = coachData;
+    }
+
+    public AthleteData getAthleteData() {
+        return athleteData;
+    }
+
+    public void setAthleteData(AthleteData athleteData) {
+        this.athleteData = athleteData;
     }
 }

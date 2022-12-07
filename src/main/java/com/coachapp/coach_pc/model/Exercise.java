@@ -19,6 +19,7 @@ public class Exercise {
     private String name;
     private int sets;
     private int repsPerSet;
+    private int weight;
     @ManyToOne
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
@@ -29,7 +30,7 @@ public class Exercise {
 
     public Exercise() {}
 
-    public Exercise(UUID id, String name, int sets, int repsPerSet, Day day, String notes, WeightIntensity weightIntensity, boolean isMax) {
+    public Exercise(UUID id, String name, int sets, int repsPerSet, Day day, String notes, WeightIntensity weightIntensity, boolean isMax, int weight) {
         this.id = id;
         this.name = name;
         this.sets = sets;
@@ -38,6 +39,7 @@ public class Exercise {
         this.notes = notes;
         this.weightIntensity = weightIntensity;
         this.isMax = isMax;
+        this.weight = weight;
     }
 
     public UUID getId() {
@@ -102,6 +104,18 @@ public class Exercise {
 
     public void setMax(Boolean max) {
         isMax = max;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public Boolean getMax() {
+        return isMax;
     }
 
     @Override

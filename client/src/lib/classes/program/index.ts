@@ -1,9 +1,13 @@
+import {Day} from "../day";
+import type {DayDTO} from "../day";
+
 export interface IProgram {
     id?: string,
     name: string,
     startDate: Date,
     endDate: Date,
     days?: Day[],
+    //coach: string
 }
 
 export interface ProgramDTO {
@@ -11,27 +15,18 @@ export interface ProgramDTO {
     name: string,
     startDate: string,
     endDate: string,
-    days: DayDTO[]
+    days: DayDTO[],
+    //coach: string
 }
 
-export interface IDay {
-    id?: string,
-    date: Date,
-    exercises: any[]
-}
 
-export interface DayDTO {
-    id: string,
-    date: string,
-    exercises: any[]
-}
 
 export enum WeightIntensity {
-    LIGHT,
-    MODERATE,
-    HEAVY,
-    BODY_WEIGHT,
-    NONE
+    LIGHT = "LIGHT",
+    MODERATE = "MODERATE",
+    HEAVY = "HEAVY",
+    BODY_WEIGHT = "BODY_WEIGHT",
+    NONE = "NONE"
 }
 
 export class Exercise {
@@ -44,21 +39,7 @@ export class Exercise {
     isMax: boolean = false
 }
 
-export class Day implements IDay {
-    static build = (dayDTO: DayDTO) => {
-        let day = new Day()
 
-        day.id = dayDTO.id
-        day.date = new Date(dayDTO.date)
-        day.exercises = dayDTO.exercises
-
-        return { ...day }
-    }
-
-    id: string = ''
-    date: Date = new Date()
-    exercises: any[] = []
-}
 
 export class Program implements IProgram {
     static build = (programDTO: ProgramDTO) => {
@@ -69,6 +50,7 @@ export class Program implements IProgram {
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
         program.days = programDTO.days.map(d => Day.build(d))
+        //program.coach = programDTO.coach
 
         return { ...program }
     }
@@ -78,6 +60,7 @@ export class Program implements IProgram {
     startDate: Date = new Date()
     endDate: Date = new Date()
     days: any[] = []
+    //coach: string = ''
 }
 
 export class DisplayProgram implements IProgram {
@@ -88,6 +71,7 @@ export class DisplayProgram implements IProgram {
         program.name = programDTO.name
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
+        //program.coach = programDTO.coach
 
         return { ...program }
     }
@@ -96,4 +80,5 @@ export class DisplayProgram implements IProgram {
     name: string = ''
     startDate: Date = new Date()
     endDate: Date = new Date()
+    //coach: string = ''
 }

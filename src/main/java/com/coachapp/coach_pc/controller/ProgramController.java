@@ -11,14 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.ProgramService;
 
-import javax.ws.rs.Consumes;
+
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/programs")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-@Consumes({"application/json"})
 public class ProgramController {
 
     private ProgramService _programService;
@@ -33,9 +31,9 @@ public class ProgramController {
         return _programService.getPrograms();
     }
 
-    @PostMapping
-    public Program addProgram(@RequestBody ProgramRequest program) {
-        return _programService.addProgram(program);
+    @PostMapping("/coach/{coachId}")
+    public Program addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
+        return _programService.addProgram(program, coachId);
     }
 
     @GetMapping("/{id}")
@@ -64,8 +62,7 @@ public class ProgramController {
     }
 
     @GetMapping("/coach/{coachId}")
-    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@RequestBody TokenRequest tokenRequest,
-                                                                 @PathVariable UUID coachId) {
-        return _programService.getProgramsByCoachId(coachId, tokenRequest);
+    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@PathVariable UUID coachId) {
+        return _programService.getProgramsByCoachId(coachId);
     }
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
-    import {program} from "../../../../lib/stores/programStore";
+    import {program} from "../../../../../lib/stores/programStore";
     import {onDestroy, onMount} from "svelte";
-    import {Program} from "../../../../lib/classes/program";
-    import ProgramForm from "../../../../lib/components/ProgramForm.svelte";
+    import {Program} from "../../../../../lib/classes/program";
+    import ProgramForm from "../../../../../lib/components/ProgramForm.svelte";
     export let data
 
     const { programResponse } = data

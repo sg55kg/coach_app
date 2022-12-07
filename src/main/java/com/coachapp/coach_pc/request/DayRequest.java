@@ -1,6 +1,8 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.Program;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,18 @@ public class DayRequest {
 
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
+    }
+
+    public static Day convertRequest(DayRequest dayRequest, Program program) {
+        Day day = new Day();
+        day.setDate(dayRequest.getDate());
+        day.setProgram(program);
+        for (Exercise exercise : dayRequest.getExercises()) {
+            exercise.setDay(day);
+        }
+        day.setExercises(dayRequest.getExercises());
+
+        return day;
     }
 
     @Override

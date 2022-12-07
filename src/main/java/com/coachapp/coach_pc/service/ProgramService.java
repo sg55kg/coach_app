@@ -25,16 +25,9 @@ public class ProgramService {
         this._programRepo = programRepo;
     }
 
-    public Program addProgram(ProgramRequest programRequest) {
-        Program program = new Program();
-        List<Day> days = new ArrayList<>();
+    public Program addProgram(ProgramRequest programRequest, UUID coachId) {
 
-        programRequest.getDays().forEach(d -> days.add(new Day(d.getDate(), d.getExercises())));
-        program.setDays(days);
-        program.getDays().forEach(d -> format(d, program));
-        program.setName(programRequest.getName());
-        program.setStartDate(programRequest.getStartDate());
-        program.setEndDate(programRequest.getEndDate());
+        Program program = ProgramRequest.convertRequest(programRequest);
 
         return _programRepo.save(program);
     }
@@ -104,22 +97,15 @@ public class ProgramService {
     public Program updateProgram(ProgramRequest program, UUID id) {
         Optional<Program> dbProgram = _programRepo.findById(id);
         if(dbProgram.isPresent()) {
-            Program detachedProgram = dbProgram.get();
-            List<Day> days = new ArrayList<>();
-         
-            detachedProgram.setEndDate(program.getEndDate());
-            detachedProgram.setName(program.getName());
-            detachedProgram.setStartDate(program.getStartDate());
-            detachedProgram.setId(program.getId());
+            Program updatedProgram = ProgramRequest.convertRequest(program);
+            updatedProgram = _programRepo.save(updatedProgram);
 
-            detachedProgram.setDays(program.getDays());
-
-            return _programRepo.save(detachedProgram);
+            return updatedProgram;
         }
         return null;
     }
 
-    public ResponseEntity<List<DisplayProgram>> getProgramsByCoachId(UUID coachId, TokenRequest tokenRequest) {
+    public ResponseEntity<List<DisplayProgram>> getProgramsByCoachId(UUID coachId) {
         List<Program> dbPrograms = _programRepo.getProgramsByCoachId(coachId);
         List<DisplayProgram> programs = new ArrayList<>();
 

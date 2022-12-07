@@ -1,11 +1,30 @@
-<script>
+<script lang="ts">
 	import '../app.css';
-</script>
+	import {onMount} from "svelte";
+	import UserService from "../lib/service/userService";
+	import {auth0Client, user, loadingAuth} from "../lib/stores/authStore";
+	import AuthHeader from "../lib/components/AuthHeader.svelte";
 
+
+	onMount(async () => {
+		if($auth0Client === null) {
+			console.log('fireeddd')
+			await UserService.initializeAuth0Client()
+		}
+	})
+
+</script>
 <div class="app bg-gray-600">
-	<header class="mb-4 p-2 bg-yellow-300">
-		Global header for coach app
-	</header>
+{#if !$loadingAuth}
+
+	{#if $user !== undefined}
+		<AuthHeader />
+	{:else }
+		<header class="mb-4 p-2 bg-yellow-300">
+			Global header for coach app
+		</header>
+	{/if}
+
 	<main>
 		<slot />
 	</main>
@@ -13,6 +32,10 @@
 	<footer>
 		<p>Global footer for coach app</p>
 	</footer>
+	{:else}
+	<h1>Loading</h1>
+{/if}
+
 </div>
 
 <style>

@@ -2,8 +2,9 @@
     import {program} from "../stores/programStore";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
-    import {Day, Exercise} from "../classes/program";
-    import {onMount} from "svelte";
+    import {Exercise, Program} from "../classes/program";
+    import {onDestroy, onMount} from "svelte";
+    import {Day} from "../classes/day";
 
     export let handleSubmit
     export let initialIndex = -1
@@ -100,6 +101,10 @@
         if (document !== undefined)
             document.addEventListener('keyup', handleHotKeys)
     })
+
+    onDestroy(() => {
+        program.set(new Program())
+    })
 </script>
 
 <div>
@@ -180,13 +185,10 @@
                            class="exercise-input"
                            bind:value={exercise.repsPerSet}>
                 </div>
-                <textarea placeholder="Notes" name="notes" class="exercise-input"></textarea>
+                <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="exercise-input"></textarea>
             </div>
         {/each}
         <div class="flex">
-            <!--            <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2 mx-2" on:click={addExercise}>-->
-            <!--                Add exercise (Shift +)-->
-            <!--            </button>-->
             <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2 mx-2">
                 Make rest day (Shift *)
             </button>

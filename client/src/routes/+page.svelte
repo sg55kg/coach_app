@@ -1,19 +1,28 @@
-<script>
-	import { user } from '../lib/stores/authStore'
-	console.log(user)
-	export let data
-	let userData
-	user.subscribe(v => userData = v)
-	console.log(userData)
+
+
+<script lang="ts">
+	import {auth0Client, isAuthenticated} from '$lib/stores/authStore'
+	import UserService from "../lib/service/userService";
+	import {goto} from '$app/navigation'
+
+	const login = async () => {
+		await UserService.loginWithPopUp($auth0Client)
+		await goto('/home')
+	}
+
+	const logout = async () => {
+		await UserService.logout($auth0Client)
+	}
+
 </script>
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="Coachable app" />
 </svelte:head>
 
 <section>
-	{#if !userData}
+	{#if !$isAuthenticated}
 		<h1>Not logged in</h1>
 		<a href="/register">
 			<button>
@@ -21,15 +30,15 @@
 			</button>
 		</a>
 		<small>Already have an account?</small>
-		<a href="/login">
-			<button>
+
+			<button on:click={login}>
 				Login
 			</button>
-		</a>
+
 
 	{:else }
 		<h1>Welcome</h1>
-		<button>Logout</button>
+		<button on:click={logout}>Logout</button>
 	{/if}
 </section>
 

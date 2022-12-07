@@ -31,7 +31,13 @@ public class Program {
     @ManyToOne
     @JoinColumn(name = "coach_id")
     @JsonIgnore
-    private UserData coach;
+    private CoachData coach;
+
+    @ManyToOne
+    @JoinColumn(name = "athlete_id")
+    @JsonIgnore
+    private AthleteData athlete;
+    
 
     public Program() {
 
@@ -97,12 +103,20 @@ public class Program {
         this.name = name;
     }
 
-    public UserData getCoach() {
+    public CoachData getCoach() {
         return coach;
     }
 
-    public void setCoach(UserData coach) {
+    public void setCoach(CoachData coach) {
         this.coach = coach;
+    }
+
+    public AthleteData getAthlete() {
+        return athlete;
+    }
+
+    public void setAthlete(AthleteData athlete) {
+        this.athlete = athlete;
     }
 
     @Override
