@@ -9,25 +9,29 @@ export default class UserService {
 
     static initializeAuth0Client = async () => {
         loadingAuth.set(true)
-        let config = {
-            "domain": "dev-iubbkos4gue16ad5.us.auth0.com",
-            "clientId": "iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ",
-        }
-
-        const client = await createAuth0Client({
-            domain: config.domain,
-            clientId: config.clientId,
-            authorizationParams: {
-                audience: 'http://localhost:8180',
+        try {
+            let config = {
+                "domain": "dev-iubbkos4gue16ad5.us.auth0.com",
+                "clientId": "iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ",
             }
-        })
 
-        auth0Client.set(client)
-        isAuthenticated.set(await client.isAuthenticated())
-        const data = await client.getUser()
-        user.set(data as User)
-        if (data !== undefined) {
-            await UserService.fetchUserData(client, data.email as string)
+            const client = await createAuth0Client({
+                domain: config.domain,
+                clientId: config.clientId,
+                authorizationParams: {
+                    audience: 'http://localhost:8180',
+                }
+            })
+
+            auth0Client.set(client)
+            isAuthenticated.set(await client.isAuthenticated())
+            const data = await client.getUser()
+            user.set(data as User)
+            if (data !== undefined) {
+                await UserService.fetchUserData(client, data.email as string)
+            }
+        } catch (e) {
+            console.log(e)
         }
 
         loadingAuth.set(false)
