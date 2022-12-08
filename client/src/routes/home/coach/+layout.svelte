@@ -8,7 +8,8 @@
     onMount(async () => {
         if (!$auth0Client || !$userDB) return
         try {
-            const res = await ProgramService.getCoachPrograms($auth0Client, $userDB.id)
+            const res = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData.id)
+            console.log(res)
             displayPrograms.set(res)
         } catch (e) {
             console.log(e)

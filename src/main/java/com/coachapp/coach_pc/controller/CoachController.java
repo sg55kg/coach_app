@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.request.CoachRequest;
 import com.coachapp.coach_pc.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class CoachController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CoachData> updateCoachData(@RequestBody CoachData data) {
+    public ResponseEntity<CoachData> updateCoachData(@RequestBody CoachRequest data) {
         return coachService.updateCoachData(data);
     }
 }

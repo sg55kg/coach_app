@@ -27,25 +27,18 @@ export class ProgramService {
     }
 
     static createProgram = async (client: Auth0Client, program: Program, userDB: User) => {
-        console.log(userDB)
         const accessToken = await client.getTokenSilently()
-        const id = userDB.id
-        console.log(program)
-        console.log(JSON.stringify(program))
+        const id = userDB.coachData.id
 
-        const data = { ...program }
-        for (let day of data.days) {
-            day = { ...day }
-            day.exercises.forEach((e: any) => e = { ...e })
-        }
+
         const res = await fetch(`http://localhost:8180/api/programs/coach/${id}`, {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify({ ...program, coach: { id: userDB.coachData.id }}),
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
         })
 
         const savedProgram = await res.json()
-        console.log(savedProgram)
+
         return savedProgram
     }
 }
