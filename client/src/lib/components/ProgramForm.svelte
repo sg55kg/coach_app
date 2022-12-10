@@ -137,7 +137,7 @@
     <hr>
     <div class="flex justify-between">
         <div>
-            <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-3" on:click={addDay}>
+            <button type="button" class="bg-yellow text-white hover:bg-yellow-shade p-3" on:click={addDay}>
                 Add Day (Shift ^)
             </button>
         </div>

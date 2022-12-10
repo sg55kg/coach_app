@@ -14,7 +14,7 @@
 	})
 
 </script>
-<div class="app bg-gray-600">
+<div class="app bg-gray-100 text-textgray">
 {#if !$loadingAuth}
 
 	{#if $user !== undefined}
@@ -29,7 +29,7 @@
 		<slot />
 	</main>
 
-	<footer>
+	<footer class="text-textblue">
 		<p>Global footer for coach app</p>
 	</footer>
 	{:else}

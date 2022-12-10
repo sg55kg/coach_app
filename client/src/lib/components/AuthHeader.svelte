@@ -9,9 +9,9 @@
 
 </script>
 
-<header class="mb-4 p-2 bg-yellow-300 flex justify-between align-middle">
-    <div class="flex items-center">
-        <h1 class="font-bold">Coachable</h1>
+<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
+    <div class="flex items-center align-baseline">
+        <h1 class="font-semibold tracking-widest uppercase text-2xl ml-3 text-yellow-lt">Coachable</h1>
         <p>&nbsp | &nbsp</p>
         <a href="/home/coach">My Teams</a>
     </div>
@@ -19,13 +19,13 @@
         <button on:click={logout}>
             Logout
         </button>
-        <img src={$user.picture} alt="profile">
+        <img src={$user.picture} alt="profile" class="ml-4 mr-2">
     </div>
 </header>
 
 <style>
     img {
         border-radius: 50%;
-        height: 50px;
+        height: 45px;
     }
 </style>

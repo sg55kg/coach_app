@@ -12,11 +12,11 @@
             </div>
         {/each}
         {:else}
-        <h1 class="font-bold m-8">It doesn't look like you have any programs right now</h1>
+        <h1 class="font-light m-8">It doesn't look like you have any programs right now</h1>
     {/if}
     <div>
         <a href="/home/coach/create-program">
-            <button class="text-white bg-yellow-500 hover:bg-yellow-600 p-2 rounded font-bold">
+            <button class="text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
                 Add New Program
             </button>
         </a>
