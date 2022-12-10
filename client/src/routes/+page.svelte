@@ -37,7 +37,7 @@
 
 
 	{:else }
-		<h1>Welcome</h1>
+		<h1 class="text-xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
 		<button on:click={logout}>Logout</button>
 	{/if}
 </section>
