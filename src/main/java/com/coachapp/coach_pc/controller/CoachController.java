@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.request.CoachRequest;
+import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class CoachController {
     }
 
     @PostMapping
-    public ResponseEntity<CoachData> createCoachData(@RequestBody CoachData data) {
-        return coachService.createCoachData(data);
+    public ResponseEntity<CoachData> createCoachData(@RequestBody NewCoachRequest coachRequest) {
+        return coachService.createCoachData(coachRequest);
     }
 
     @PutMapping("/{id}")

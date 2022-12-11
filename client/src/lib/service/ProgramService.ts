@@ -26,20 +26,33 @@ export class ProgramService {
         return await res.json()
     }
 
-    static createProgram = async (client: Auth0Client, program: Program, userDB: User) => {
+    static createProgram = async (client: Auth0Client, program: Program, coachId: string) => {
         const accessToken = await client.getTokenSilently()
-        const id = userDB.coachData.id
 
 
-        const res = await fetch(`http://localhost:8180/api/programs/coach/${id}`, {
+        const res = await fetch(`http://localhost:8180/api/programs/coach/${coachId}`, {
             method: 'POST',
-            body: JSON.stringify({ ...program, coach: { id: userDB.coachData.id }}),
+            body: JSON.stringify(program),
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
         })
 
         const savedProgram = await res.json()
 
         return savedProgram
+    }
+
+    static updateCoachPrograms = async (client: Auth0Client, coachData: any) => {
+        const accessToken = await client.getTokenSilently()
+        const id = coachData.id
+
+        const res = await fetch(`http://localhost:8180/api/coach/${id}`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + accessToken },
+            body: JSON.stringify(coachData)
+        })
+
+        const programs = await res.json()
+        return programs
     }
 }
 
