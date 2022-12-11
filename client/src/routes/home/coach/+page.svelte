@@ -4,7 +4,7 @@
 
 <div class="flex flex-col justify-center items-center">
     {#if $displayPrograms.length > 0}
-        {#each displayPrograms as program}
+        {#each $displayPrograms as program}
             <div class="bg-white rounded border-black m-8 p-4 shadow-black">
                 <h1>{program.name}</h1>
                 <hr>
