@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
@@ -25,12 +26,6 @@ public class ProgramService {
         this._programRepo = programRepo;
     }
 
-    public Program addProgram(ProgramRequest programRequest, UUID coachId) {
-
-        Program program = ProgramRequest.convertRequest(programRequest);
-
-        return _programRepo.save(program);
-    }
 
     private void format(Day day, Program program) {
         day.setProgram(program);
@@ -92,6 +87,17 @@ public class ProgramService {
 
     public void deleteProgram(UUID id) {
         _programRepo.deleteById(id);
+    }
+
+    public ResponseEntity<Program> addProgram(ProgramRequest program, UUID coachId) {
+        CoachData coach = new CoachData();
+
+        coach.setId(coachId);
+        Program newProgram = ProgramRequest.convertRequest(program);
+        newProgram.setCoach(coach);
+
+        _programRepo.save(newProgram);
+        return new ResponseEntity<>(newProgram, HttpStatus.CREATED);
     }
 
     public Program updateProgram(ProgramRequest program, UUID id) {

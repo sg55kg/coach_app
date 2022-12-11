@@ -1,6 +1,8 @@
 package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.request.NewCoachRequest;
+import com.coachapp.coach_pc.request.NewUserRequest;
 import com.coachapp.coach_pc.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,7 +25,12 @@ public class UsersController {
     }
 
     @PostMapping
-    public ResponseEntity<UserData> addUser(@RequestBody String email, @RequestBody String name) {
-        return userService.addUser(email, name);
+    public ResponseEntity<UserData> addUser(@RequestBody NewUserRequest userRequest) {
+        return userService.addUser(userRequest);
+    }
+
+    @PutMapping("/coach")
+    public ResponseEntity<UserData>  addCoachData(@RequestBody NewCoachRequest coachRequest) {
+        return userService.addCoachData(coachRequest);
     }
 }

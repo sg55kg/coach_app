@@ -32,7 +32,7 @@ public class ProgramController {
     }
 
     @PostMapping("/coach/{coachId}")
-    public Program addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
+    public ResponseEntity<Program> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
         return _programService.addProgram(program, coachId);
     }
 

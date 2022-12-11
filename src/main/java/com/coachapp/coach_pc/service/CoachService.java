@@ -2,8 +2,10 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.repository.CoachRepo;
 import com.coachapp.coach_pc.request.CoachRequest;
+import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +36,16 @@ public class CoachService {
         }
     }
 
-    public ResponseEntity<CoachData> createCoachData(CoachData coachData) {
-        CoachData coach = coachRepo.save(coachData);
+    public ResponseEntity<CoachData> createCoachData(NewCoachRequest coachRequest) {
+        CoachData coach = new CoachData();
+        UserData user = new UserData();
+
+        user.setEmail(coachRequest.getEmail());
+        user.setId(coachRequest.getUserId());
+        user.setUsername(coachRequest.getUsername());
+        coach.setUser(user);
+
+        coach = coachRepo.save(coach);
         return new ResponseEntity<>(coach, HttpStatus.OK);
     }
 

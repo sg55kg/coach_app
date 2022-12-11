@@ -73,28 +73,31 @@ export default class UserService {
         if (res.status === 404) {
             const fields = await client.getUser()
 
-
             res = await fetch(`http://localhost:8180/api/users`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({ email: fields!.email, name: fields!.name })
-            })
-        }
-        const userData = await res.json()
-
-        if (!userData.coachData) {
-            res = await fetch(`http://localhost:8180/api/coach`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: null, user: userData })
+                body: JSON.stringify({ email: fields!.email, name: fields!.name })
+            })
+        }
+        let userData = await res.json()
+
+        if (!userData.coachData) {
+            res = await fetch(`http://localhost:8180/api/users/coach`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userData.id, email: userData.email, username: userData.username })
             })
 
-            userData.coachData = await res.json()
+            if (res.status !== 405 && res.status !== 500) {
+                userData = await res.json()
+            }
+
         }
 
         // if (!userData.athleteData) {
