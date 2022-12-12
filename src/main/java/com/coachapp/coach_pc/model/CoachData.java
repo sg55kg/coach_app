@@ -15,7 +15,7 @@ public class CoachData {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
 
-    @OneToMany(mappedBy = "coach", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Program> programs;
 
     @OneToOne(mappedBy = "coachData")

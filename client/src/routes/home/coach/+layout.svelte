@@ -3,19 +3,15 @@
     import {displayPrograms, programError} from "../../../lib/stores/programStore";
     import {onMount} from "svelte";
     import {ProgramService} from "../../../lib/service/ProgramService";
+    import {Program} from "$lib/classes/program";
 
 
     onMount(async () => {
         if (!$auth0Client || !$userDB) return
-        try {
-            const res = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData.id)
-            console.log(res)
-            displayPrograms.set(res)
-        } catch (e) {
-            console.log(e)
-            programError.set(e.message)
-        }
+        displayPrograms.set($userDB.coachData.programs)
 
+        const test = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData.id)
+        console.log(test)
     })
 </script>
 

@@ -1,8 +1,8 @@
 package com.coachapp.coach_pc.controller;
 
-import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +52,8 @@ public class ProgramController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateProgram(@PathVariable UUID id, @RequestBody ProgramRequest program) {
-        Program programUpdated = _programService.updateProgram(program, id);
-        if (programUpdated != null) {
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ProgramViewModel> updateProgram(@PathVariable UUID id, @RequestBody UpdateProgramRequest program) {
+        return _programService.updateProgram(program, id);
     }
 
     @GetMapping("/coach/{coachId}")

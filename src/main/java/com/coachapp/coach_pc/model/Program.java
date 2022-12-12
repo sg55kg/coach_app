@@ -28,7 +28,7 @@ public class Program {
     @JsonIgnore
     private List<Day> days;
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "coach_id")
     @JsonIgnore
     private CoachData coach;

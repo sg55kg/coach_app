@@ -56,6 +56,7 @@ public class CoachService {
 
         for (ProgramRequest r : data.getPrograms()) {
             Program program = ProgramRequest.convertRequest(r);
+            program.setCoach(coach);
             programs.add(program);
         }
 
@@ -63,5 +64,24 @@ public class CoachService {
 
         CoachData updatedCoach = coachRepo.save(coach);
         return new ResponseEntity<>(updatedCoach, HttpStatus.OK);
+    }
+
+    public ResponseEntity<CoachData> addProgram(ProgramRequest programRequest, UUID id) {
+        Optional<CoachData> c = coachRepo.findById(id);
+
+        if (c.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        CoachData coach = c.get();
+        List<Program> programs = coach.getPrograms();
+
+        Program program = ProgramRequest.convertRequest(programRequest);
+        program.setCoach(coach);
+
+        programs.add(program);
+        coach = coachRepo.save(coach);
+
+        return new ResponseEntity<>(coach, HttpStatus.CREATED);
     }
 }

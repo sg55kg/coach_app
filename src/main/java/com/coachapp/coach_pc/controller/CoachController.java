@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.controller;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.request.CoachRequest;
 import com.coachapp.coach_pc.request.NewCoachRequest;
+import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +36,10 @@ public class CoachController {
     @PutMapping("/{id}")
     public ResponseEntity<CoachData> updateCoachData(@RequestBody CoachRequest data) {
         return coachService.updateCoachData(data);
+    }
+
+    @PutMapping("/{id}/programs")
+    public ResponseEntity<CoachData> addProgram(@RequestBody ProgramRequest programRequest, @PathVariable UUID id) {
+        return coachService.addProgram(programRequest, id);
     }
 }

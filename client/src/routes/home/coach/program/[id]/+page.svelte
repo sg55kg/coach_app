@@ -1,27 +1,28 @@
 <script lang="ts">
-    import {program} from "../../../../../lib/stores/programStore";
+    import {program} from "$lib/stores/programStore";
     import {onDestroy, onMount} from "svelte";
-    import {Program} from "../../../../../lib/classes/program";
-    import ProgramForm from "../../../../../lib/components/ProgramForm.svelte";
+    import {Program} from "$lib/classes/program";
+    import ProgramForm from "$lib/components/ProgramForm.svelte";
+    import {ProgramService} from "$lib/service/ProgramService";
+    import {auth0Client} from "$lib/stores/authStore";
     export let data
 
-    const { programResponse } = data
-    console.log(programResponse)
+    const { programId } = data
 
     const handleSubmit = async (event, programData: Program) => {
+        if (!$auth0Client) return
         event.preventDefault()
-        //const data = Object.assign(pro, )
-        const res = await fetch('/api/programs', {
-            method: 'PUT',
-            body: JSON.stringify(programData),
-        })
 
-        const program = await res.json()
-        console.log(program)
+        const updatedProgram = await ProgramService.updateProgram($auth0Client, programData)
+
+        program.set(Program.build(updatedProgram))
     }
 
-    onMount(() => {
-        program.set(Program.build(programResponse))
+    onMount(async () => {
+        if (!$auth0Client) return
+
+        const programDto = await ProgramService.getProgram($auth0Client, programId)
+        program.set(Program.build(programDto))
     })
 
     onDestroy(() => {

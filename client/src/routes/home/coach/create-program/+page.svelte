@@ -8,14 +8,14 @@
 
 
     const handleSubmit = async (event, programData: Program) => {
-        if($auth0Client === null) return
+        if($auth0Client === null || $userDB === null) return
         event.preventDefault()
 
         const coachData = { ...$userDB!.coachData }
         coachData.programs = coachData.programs ? [...coachData.programs, programData] : [programData]
 
         try {
-            const savedProgram = await ProgramService.createProgram($auth0Client, programData, $userDB?.coachData.id)
+            const savedProgram = await ProgramService.createProgram($auth0Client, programData, $userDB)
             console.log(savedProgram)
         } catch (e) {
             console.log(e)

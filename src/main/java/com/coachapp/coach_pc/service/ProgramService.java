@@ -2,9 +2,9 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Day;
-import com.coachapp.coach_pc.request.TokenRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DayViewModel;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
@@ -100,15 +100,17 @@ public class ProgramService {
         return new ResponseEntity<>(newProgram, HttpStatus.CREATED);
     }
 
-    public Program updateProgram(ProgramRequest program, UUID id) {
+    public ResponseEntity<ProgramViewModel> updateProgram(UpdateProgramRequest request, UUID id) {
         Optional<Program> dbProgram = _programRepo.findById(id);
-        if(dbProgram.isPresent()) {
-            Program updatedProgram = ProgramRequest.convertRequest(program);
-            updatedProgram = _programRepo.save(updatedProgram);
-
-            return updatedProgram;
+        if(dbProgram.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return null;
+
+        Program program = UpdateProgramRequest.convertRequest(request, dbProgram.get());
+        program = _programRepo.save(program);
+
+        ProgramViewModel vm = convertProgram(program);
+        return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 
     public ResponseEntity<List<DisplayProgram>> getProgramsByCoachId(UUID coachId) {

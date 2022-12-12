@@ -19,27 +19,27 @@ export class ProgramService {
         return programsResponse.map((p: ProgramDTO) => DisplayProgram.build(p))
     }
 
-    static getProgram = async (id: string) => {
+    static getProgram = async (client: Auth0Client, id: string) => {
+        const accessToken = await client.getTokenSilently()
+
         const res = await fetch(`http://localhost:8180/api/programs/${id}`, {
             method: 'GET',
-            headers: { 'Content-Type':'application/json' }
+            headers: { 'Authorization':'Bearer ' + accessToken}
         })
         return await res.json()
     }
 
-    static createProgram = async (client: Auth0Client, program: Program, coachId: string) => {
+    static createProgram = async (client: Auth0Client, program: Program, user: User) => {
         const accessToken = await client.getTokenSilently()
+        const coachId = user.coachData.id
 
-
-        const res = await fetch(`http://localhost:8180/api/programs/coach/${coachId}`, {
-            method: 'POST',
+        const res = await fetch(`http://localhost:8180/api/coach/${coachId}/programs`, {
+            method: 'PUT',
             body: JSON.stringify(program),
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
         })
 
-        const savedProgram = await res.json()
-
-        return savedProgram
+        return await res.json()
     }
 
     static updateCoachPrograms = async (client: Auth0Client, coachData: any) => {
@@ -54,6 +54,19 @@ export class ProgramService {
 
         const programs = await res.json()
         return programs
+    }
+
+    static updateProgram = async (client: Auth0Client, program: Program) => {
+        const accessToken = await client.getTokenSilently()
+        const id = program.id
+
+        const res = await fetch(`http://localhost:8180/api/programs/${id}`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify(program)
+        })
+
+        return await res.json()
     }
 }
 

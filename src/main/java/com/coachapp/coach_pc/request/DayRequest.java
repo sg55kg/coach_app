@@ -45,6 +45,7 @@ public class DayRequest {
         Day day = new Day();
         day.setDate(dayRequest.getDate());
         day.setProgram(program);
+        day.setId(dayRequest.getId());
         for (Exercise exercise : dayRequest.getExercises()) {
             exercise.setDay(day);
         }
