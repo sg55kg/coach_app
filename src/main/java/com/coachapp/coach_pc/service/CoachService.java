@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.model.UserData;
@@ -74,10 +75,17 @@ public class CoachService {
         }
 
         CoachData coach = c.get();
+        AthleteData athlete = new AthleteData();
+        athlete.setId(programRequest.getAthleteId());
+
+
+
         List<Program> programs = coach.getPrograms();
 
         Program program = ProgramRequest.convertRequest(programRequest);
+
         program.setCoach(coach);
+        program.setAthlete(athlete);
 
         programs.add(program);
         coach = coachRepo.save(coach);

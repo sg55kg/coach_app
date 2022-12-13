@@ -11,6 +11,9 @@ public class ProgramRequest {
     private Date startDate;
     private Date endDate;
 
+    private UUID coachId;
+    private UUID athleteId;
+
     public ProgramRequest() {}
 
     public ProgramRequest(List<DayRequest> days, String name) {
@@ -43,6 +46,21 @@ public class ProgramRequest {
         this.endDate = endDate;
     }
 
+    public UUID getCoachId() {
+        return coachId;
+    }
+
+    public void setCoachId(UUID coachId) {
+        this.coachId = coachId;
+    }
+
+    public UUID getAthleteId() {
+        return athleteId;
+    }
+
+    public void setAthleteId(UUID athleteId) {
+        this.athleteId = athleteId;
+    }
 
     public static Program convertRequest(ProgramRequest request) {
         Program program = new Program();

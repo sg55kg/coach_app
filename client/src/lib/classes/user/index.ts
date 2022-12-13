@@ -1,12 +1,29 @@
+import type {Program} from "$lib/classes/program";
+
 export interface UserDTO {
     id: string,
-    athleteData: any,
-    coachData: any,
+    athleteData: AthleteData | null,
+    coachData: CoachData | null,
     createdAt: string,
     email: string,
     roles: any[],
     updatedAt: string,
     username: string
+}
+
+export interface AthleteData {
+    id: string,
+    name: string,
+    currentProgram: Program,
+    programs: Program[],
+    coach: CoachData
+}
+
+export interface CoachData {
+    id: string,
+    programs: Program[],
+    athletes: AthleteData[]
+
 }
 
 export class User {
@@ -26,8 +43,8 @@ export class User {
         return user;
     }
 
-    athleteData: any = null;
-    coachData: any = null;
+    athleteData: AthleteData | null = null;
+    coachData: CoachData | null = null;
     createdAt: Date = new Date();
     email: string = '';
     id: string = '';

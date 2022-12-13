@@ -100,15 +100,20 @@ export default class UserService {
 
         }
 
-        // if (!userData.athleteData) {
-        //     res = await fetch(`http://localhost:8180/api/athlete`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Authorization': 'Bearer ' + token
-        //         },
-        //         body: JSON.stringify({})
-        //     })
-        // }
+        if (!userData.athleteData) {
+            res = await fetch(`http://localhost:8180/api/users/athlete`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userData.id, name: userData.username })
+            })
+
+            if (res.status !== 405 && res.status !== 500) {
+                userData = await res.json()
+            }
+        }
         console.log(userData)
         userDB.set(userData)
     }

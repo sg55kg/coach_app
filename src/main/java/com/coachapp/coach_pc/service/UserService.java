@@ -1,8 +1,10 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.repository.UserDataRepo;
+import com.coachapp.coach_pc.request.NewAthleteRequest;
 import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.NewUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,21 @@ public class UserService {
         user.setUsername(coachRequest.getUsername());
         coach.setUser(user);
         user.setCoachData(coach);
+
+        user = userDataRepo.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    public ResponseEntity<UserData> addAthleteData(NewAthleteRequest athleteRequest) {
+        Optional<UserData> o = userDataRepo.findById(athleteRequest.getUserId());
+        if(o.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        AthleteData athlete = new AthleteData();
+        UserData user = o.get();
+        user.setAthleteData(athlete);
+        athlete.setUser(user);
+        athlete.setName(user.getUsername());
 
         user = userDataRepo.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);

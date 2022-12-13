@@ -35,8 +35,9 @@ public class UserData {
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private CoachData coachData;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "athlete_id", referencedColumnName = "id")
+    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private AthleteData athleteData;
 
     public UserData() {}

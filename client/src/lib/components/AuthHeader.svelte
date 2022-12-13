@@ -11,9 +11,13 @@
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
     <div class="flex items-center align-baseline">
-        <h1 class="font-semibold tracking-widest uppercase text-2xl ml-3 text-yellow-lt">Coachable</h1>
+        <a href="/" class="font-semibold tracking-widest uppercase text-2xl ml-3 text-yellow-lt">
+            Coachable
+        </a>
         <p>&nbsp | &nbsp</p>
         <a href="/home/coach">My Teams</a>
+        <p>&nbsp | &nbsp</p>
+        <a href="/home/athlete">My Program</a>
     </div>
     <div class="flex">
         <button on:click={logout}>
