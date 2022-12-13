@@ -191,7 +191,7 @@
                 <div class="flex flex-col mr-4">
                     <label>Start Date</label>
                     <input type="date"
-                           class="bg-gray-300 text-textgray decoration-color-textgray"
+                           class="p-1 bg-gray-300 text-textgray decoration-color-textgray"
                            name="startDate"
                            bind:value={startDateString}
                            on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
@@ -200,7 +200,7 @@
                     <label>End Date</label>
                     <input type="date"
                            name="endDate"
-                           class= "bg-gray-300"
+                           class= "bg-gray-300 p-1"
                            bind:value={endDateString}
                            on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
                 </div>
@@ -208,8 +208,8 @@
         </div>
 
         <div class="flex flex-col self-start">
-            <label>Athlete</label>
-            <select class="bg-gray-300 text-textgray p-2" on:change={(e) => handleChangeAthlete(e.target.value)}>
+            <label></label>
+            <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
                 <option disabled selected>No Athlete Selected</option>
                 {#each athleteOptions as athlete}
                     <option value={athlete.id}>{athlete.name}</option>
@@ -255,7 +255,7 @@
     </div>
     {#if selectedIndex > -1}
         {#each $program.days[selectedIndex].exercises as exercise, idx}
-            <div class="flex flex-col p-2 justify-items-center">
+            <div class="flex flex-col p-2 justify-items-center border-0 pt-5">
                 <div class="flex flex-row p-2 justify-between">
                     <input type="text"
                            name="name"
@@ -281,7 +281,7 @@
                 <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2 m-2"></textarea>
             </div>
         {/each}
-        <footer class="flex mt-2 justify-end w-full">
+        <footer class="flex mt-4 justify-end w-full">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
                     class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
