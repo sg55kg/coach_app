@@ -5,10 +5,21 @@
     import {Exercise, Program} from "../classes/program";
     import {onDestroy, onMount} from "svelte";
     import {Day} from "../classes/day";
+    import {DateInput, DatePicker} from "date-picker-svelte";
+    import dayjs from "dayjs";
+    import type {Dayjs} from "dayjs";
 
     export let handleSubmit
     export let initialIndex = -1
     let selectedIndex = initialIndex
+
+    const formatDateString = (date: Date) => {
+        return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate()
+    }
+
+    let startDateString = $program?.startDate ? formatDateString($program.startDate) : ''
+    let endDateString = $program?.endDate ? formatDateString($program.endDate) : ''
+
 
     const generateCSV = () => {
         let str = "Day 1\nExercise,Weight,Sets,Reps,Notes\n";
@@ -35,19 +46,21 @@
         // downloadLink.hidden = false;
     }
 
-    const addDay = () => {
-        let day = new Day()
-        console.log($program.days.length)
-        if($program.days.length > 0) {
-            let today = $program.days[$program.days.length - 1].date
-            day.date.setDate(today.getDate() + $program.days.length)
-        }
+    const addDay = (currentDate: Dayjs, index: number) => {
+        if (index > $program.days.length - 1) {
+            let day = new Day()
+            day.date = currentDate.toDate()
 
-        program.update(p => {
-            p.days.push(day)
-            return p
-        })
-        selectedIndex = $program.days.length - 1
+            program.update(p => {
+                p.days.push(day)
+                return p
+            })
+        } else {
+            program.update(p => {
+                p.days[index].date = currentDate.toDate()
+                return p
+            })
+        }
     }
 
     const addExercise = () => {
@@ -97,8 +110,37 @@
         }
     }
 
+    const handleDateChange = (startDate: Dayjs, endDate: Dayjs) => {
+        console.log('start', startDate)
+        console.log('end', endDate)
+        if ((!startDate || !endDate) || (endDate.toDate() < startDate.toDate())) {
+            console.log('caught')
+            return
+        }
+
+        startDateString = formatDateString(startDate.toDate())
+        endDateString = formatDateString(endDate.toDate())
+
+        program.update(p => {
+            p.endDate = endDate.toDate()
+            p.startDate = startDate.toDate()
+            return p
+        })
+
+        const daysDiff = endDate.diff(startDate, 'days')
+        console.log(daysDiff)
+
+        let currentDate = startDate
+        for (let i = 0; i <= daysDiff; i++) {
+            addDay(currentDate, i)
+            currentDate = currentDate.add(1, 'day')
+        }
+        selectedIndex = selectedIndex === -1 ? 0 : selectedIndex
+        console.log($program)
+    }
+
     onMount(() => {
-        if (document !== undefined)
+        if (document)
             document.addEventListener('keyup', handleHotKeys)
     })
 
@@ -121,15 +163,15 @@
                 <label>Start Date</label>
                 <input type="date"
                        name="startDate"
-                       bind:value={$program.startDate}
-                       on:change={(e) => $program.startDate = new Date(e.target.value)}>
+                       bind:value={startDateString}
+                       on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
             </div>
             <div class="flex flex-col">
                 <label>End Date</label>
                 <input type="date"
                        name="endDate"
-                       bind:value={$program.endDate}
-                       on:change={(e) => $program.endDate = new Date(e.target.value)}>
+                       bind:value={endDateString}
+                       on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
             </div>
         </div>
 
@@ -137,9 +179,11 @@
     <hr>
     <div class="flex justify-between">
         <div>
-            <button type="button" class="bg-yellow text-white hover:bg-yellow-shade p-3" on:click={addDay}>
-                Add Day (Shift ^)
-            </button>
+            {#if $program?.days.length > 0}
+                <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2" on:click={addExercise}>
+                    Add exercise (Shift +)
+                </button>
+            {/if}
         </div>
         {#if $program && $program.days.length > 0 && selectedIndex > -1}
             <div class="flex justify-center align-middle">
@@ -154,8 +198,8 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2" on:click={addExercise}>
-                    Add exercise (Shift +)
+                <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2 mx-2">
+                    Make rest day (Shift *)
                 </button>
             </div>
         {/if}
@@ -188,11 +232,6 @@
                 <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="exercise-input"></textarea>
             </div>
         {/each}
-        <div class="flex">
-            <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2 mx-2">
-                Make rest day (Shift *)
-            </button>
-        </div>
         <footer class="flex mt-2 justify-end w-full">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
