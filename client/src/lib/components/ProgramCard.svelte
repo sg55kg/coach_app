@@ -6,18 +6,18 @@
 </script>
 
 <div class=" m-2 bg-gray-200 px-4 py-6 lg:w-10/12 shadow-black shadow-md">
-    <h1 class="text-3xl text-yellow-lt my-1 font-bold">{program.name}</h1>
-    <hr class="text-orange">
+    <h1 class="text-lg text-yellow-lt my-1 font-semibold tracking-wider">{program.name}</h1>
+    <hr class="text-gray-100">
     <div class="mt-2">
-        <p class="m-0 text-textblue text-lg font-semibold">More data here?</p>
+        <p class="m-0 text-textgray text-base font-normal tracking-wide">More data here?</p>
     </div>
     <div class="mt-2 flex justify-around">
-        <div class="h-8 text-link hover:text-link-shade">
+        <div class="h-6 text-link hover:text-link-shade duration-300">
             <a href={`/home/coach/program/${program.id}`}>
                 <FaRegEdit></FaRegEdit>
             </a>
         </div>
-        <div class="h-8 text-link hover:text-link-shade">
+        <div class="h-6 text-link hover:text-link-shade duration-300">
             <a href={`/home/coach/program/${program.id}/stats`}>
                 <FaRegChartBar></FaRegChartBar>
             </a>

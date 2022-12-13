@@ -13,7 +13,7 @@
     {/if}
     <div>
         <a href="/home/coach/create-program">
-            <button class="text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
+            <button class="mt-5 text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
                 Add New Program
             </button>
         </a>
