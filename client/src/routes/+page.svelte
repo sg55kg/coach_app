@@ -6,11 +6,13 @@
 	import {goto} from '$app/navigation'
 
 	const login = async () => {
+		if (!$auth0Client) return
 		await UserService.loginWithPopUp($auth0Client)
 		await goto('/home')
 	}
 
 	const logout = async () => {
+		if (!$auth0Client) return
 		await UserService.logout($auth0Client)
 	}
 
@@ -21,7 +23,7 @@
 	<meta name="description" content="Coachable app" />
 </svelte:head>
 
-<section>
+<section class="flex flex-col">
 	{#if !$isAuthenticated}
 		<h1>Not logged in</h1>
 		<a href="/register">
@@ -38,7 +40,17 @@
 
 	{:else }
 		<h1 class="text-xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
-		<button on:click={logout}>Logout</button>
+		<div class="flex flex-row justify-self-center justify-around w-5/12">
+			<a class="text-gray-200 bg-yellow rounded-xl p-2 font-bold text-center text-sm w-5/12 hover:bg-yellow-shade"
+			   href="/home/coach">
+				Coach Dashboard
+			</a>
+			<a class="text-gray-200 bg-yellow rounded-xl p-2 font-bold text-center text-sm w-5/12 hover:bg-yellow-shade"
+			   href="/home/athlete">
+				Athlete Dashboard
+			</a>
+		</div>
+
 	{/if}
 </section>
 

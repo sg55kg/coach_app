@@ -3,18 +3,21 @@
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
     import {Exercise, Program} from "../classes/program";
-    import {onDestroy, onMount} from "svelte";
+    import {afterUpdate, onDestroy, onMount} from "svelte";
     import {Day} from "../classes/day";
     import {DateInput, DatePicker} from "date-picker-svelte";
     import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
+    import type {AthleteData} from "$lib/classes/user";
+    import {user, userDB} from "$lib/stores/authStore";
 
     export let handleSubmit
     export let initialIndex = -1
     let selectedIndex = initialIndex
+    $: athleteOptions = []
 
     const formatDateString = (date: Date) => {
-        return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate()
+        return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}`
     }
 
     let startDateString = $program?.startDate ? formatDateString($program.startDate) : ''
@@ -93,9 +96,6 @@
                 if (selectedIndex > -1)
                     addExercise()
                 break;
-            case '^':
-                addDay()
-                break;
             case '-':
                 removeLastExercise()
                 break;
@@ -139,9 +139,36 @@
         console.log($program)
     }
 
+    const handleChangeAthlete = (athleteId: string) => {
+        console.log(athleteId)
+        program.update(p => {
+            p.athleteId = athleteId
+            return p
+        })
+    }
+
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)
+        if ($userDB?.coachData?.athletes) {
+            athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
+        }
+
+           // athleteOptions.push({ name: $userDB.username, id: $userDB.id })
+        console.log(athleteOptions)
+    })
+
+    afterUpdate(() => {
+        if ($userDB && athleteOptions.length < 1) {
+            program.update(p => {
+                p.coachId = $userDB?.coachData?.id!
+                return p
+            })
+            athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
+            console.log(athleteOptions)
+            $userDB?.coachData?.athletes?.forEach(a => athleteOptions.push({ name: a.name, id: a.id }))
+        }
+        console.log($program)
     })
 
     onDestroy(() => {
@@ -150,31 +177,51 @@
 </script>
 
 <div>
-    <div class="p-4">
-        <div class="flex justify-center">
-            <input type="text"
-                   placeholder="Program Name"
-                   name="name"
-                   bind:value={$program.name}
-                   class="p-1">
-        </div>
-        <div class="p-4 flex justify-around w-9/12 m-auto">
-            <div class="flex flex-col">
-                <label>Start Date</label>
-                <input type="date"
-                       name="startDate"
-                       bind:value={startDateString}
-                       on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
+    <div class="p-4 flex flex-row justify-between">
+        <div class="flex flex-col justify-start">
+            <div class="flex justify-start">
+                <input type="text"
+                       placeholder="Program Name"
+                       name="name"
+                       bind:value={$program.name}
+                       class="p-1">
             </div>
-            <div class="flex flex-col">
-                <label>End Date</label>
-                <input type="date"
-                       name="endDate"
-                       bind:value={endDateString}
-                       on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
+
+            <div class="py-4 flex justify-start w-9/12">
+                <div class="flex flex-col mr-4">
+                    <label>Start Date</label>
+                    <input type="date"
+                           name="startDate"
+                           bind:value={startDateString}
+                           on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
+                </div>
+                <div class="flex flex-col">
+                    <label>End Date</label>
+                    <input type="date"
+                           name="endDate"
+                           bind:value={endDateString}
+                           on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
+                </div>
             </div>
         </div>
 
+        <div class="flex flex-col self-start">
+            <label>Athlete</label>
+            <select class="text-gray-shade p-2" on:change={(e) => handleChangeAthlete(e.target.value)}>
+                <option disabled selected>No Athlete Selected</option>
+                {#each athleteOptions as athlete}
+                    <option value={athlete.id}>{athlete.name}</option>
+                {/each}
+            </select>
+            <div class="flex-row">
+                <input checked={$program.isCurrent}
+                       type="checkbox"
+                       id="current_program"
+                       on:change={(e) => $program.isCurrent = e.target.checked}>
+                <label for="current_program">Current Program</label>
+            </div>
+
+        </div>
     </div>
     <hr>
     <div class="flex justify-between">

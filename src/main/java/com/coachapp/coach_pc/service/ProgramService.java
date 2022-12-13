@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.request.ProgramRequest;
@@ -91,10 +92,14 @@ public class ProgramService {
 
     public ResponseEntity<Program> addProgram(ProgramRequest program, UUID coachId) {
         CoachData coach = new CoachData();
-
+        AthleteData athlete = new AthleteData();
+        athlete.setId(program.getAthleteId());
         coach.setId(coachId);
+
         Program newProgram = ProgramRequest.convertRequest(program);
         newProgram.setCoach(coach);
+        newProgram.setAthlete(athlete);
+
 
         _programRepo.save(newProgram);
         return new ResponseEntity<>(newProgram, HttpStatus.CREATED);

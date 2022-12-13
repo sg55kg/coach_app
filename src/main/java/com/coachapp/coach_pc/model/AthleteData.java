@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class AthleteData {
     private UUID id;
 
     @OneToOne(mappedBy = "athleteData")
+    @JsonIgnore
     private UserData user;
 
     @OneToOne
@@ -27,6 +29,8 @@ public class AthleteData {
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private CoachData coach;
+
+    private String name;
 
 
     public AthleteData() {}
@@ -69,5 +73,13 @@ public class AthleteData {
 
     public void setCoach(CoachData coach) {
         this.coach = coach;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -7,7 +7,9 @@ export interface IProgram {
     startDate: Date,
     endDate: Date,
     days?: Day[],
-    //coach: string
+    athleteId?: string,
+    coachId?: string,
+    isCurrent?: boolean
 }
 
 export interface ProgramDTO {
@@ -16,7 +18,6 @@ export interface ProgramDTO {
     startDate: string,
     endDate: string,
     days: DayDTO[],
-    //coach: string
 }
 
 
@@ -60,7 +61,9 @@ export class Program implements IProgram {
     startDate: Date = new Date()
     endDate: Date = new Date()
     days: any[] = []
-    //coach: string = ''
+    athleteId: string = ''
+    coachId: string = ''
+    isCurrent: boolean = true
 }
 
 export class DisplayProgram implements IProgram {

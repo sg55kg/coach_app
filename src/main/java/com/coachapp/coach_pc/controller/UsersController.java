@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.request.NewAthleteRequest;
 import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.NewUserRequest;
 import com.coachapp.coach_pc.service.UserService;
@@ -32,5 +33,10 @@ public class UsersController {
     @PutMapping("/coach")
     public ResponseEntity<UserData>  addCoachData(@RequestBody NewCoachRequest coachRequest) {
         return userService.addCoachData(coachRequest);
+    }
+
+    @PutMapping("/athlete")
+    public ResponseEntity<UserData> addAthleteData(@RequestBody NewAthleteRequest athleteRequest) {
+        return userService.addAthleteData(athleteRequest);
     }
 }

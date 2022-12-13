@@ -28,12 +28,12 @@ public class Program {
     @JsonIgnore
     private List<Day> days;
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "coach_id")
     @JsonIgnore
     private CoachData coach;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "athlete_id")
     @JsonIgnore
     private AthleteData athlete;

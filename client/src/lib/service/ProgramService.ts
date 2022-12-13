@@ -31,15 +31,30 @@ export class ProgramService {
 
     static createProgram = async (client: Auth0Client, program: Program, user: User) => {
         const accessToken = await client.getTokenSilently()
-        const coachId = user.coachData.id
+        const coachId = user?.coachData?.id as string
+        console.log(program)
 
-        const res = await fetch(`http://localhost:8180/api/coach/${coachId}/programs`, {
-            method: 'PUT',
+        let res = await fetch(`http://localhost:8180/api/programs/coach/${coachId}`, {
+            method: 'POST',
             body: JSON.stringify(program),
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
         })
 
-        return await res.json()
+        if (res.status > 205) return
+
+        const dbProgram = await res.json()
+
+        if (program.isCurrent) {
+            res = await fetch(`http://localhost:8180/api/athletes/${program.athleteId}/currentProgram/${dbProgram.id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + accessToken }
+            })
+
+            const athleteData = await res.json()
+            console.log(athleteData)
+        }
+
+        return dbProgram
     }
 
     static updateCoachPrograms = async (client: Auth0Client, coachData: any) => {
