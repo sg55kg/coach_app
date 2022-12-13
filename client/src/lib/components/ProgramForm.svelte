@@ -260,25 +260,25 @@
                     <input type="text"
                            name="name"
                            placeholder="Exercise name"
-                           class="exercise-input"
+                           class="bg-gray-300 p-2"
                            bind:value={exercise.name}>
                     <input type="number"
                            name="weight"
                            placeholder="Weight"
-                           class="exercise-input"
+                           class="bg-gray-300 p-2"
                            bind:value={exercise.weight}>
                     <input type="number"
                            name="sets"
                            placeholder="Sets"
-                           class="exercise-input"
+                           class="bg-gray-300 p-2"
                            bind:value={exercise.sets}>
                     <input type="number"
                            name="repsPerSet"
                            placeholder="Reps"
-                           class="exercise-input"
+                           class="bg-gray-300 p-2"
                            bind:value={exercise.repsPerSet}>
                 </div>
-                <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="exercise-input"></textarea>
+                <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2 m-2"></textarea>
             </div>
         {/each}
         <footer class="flex mt-2 justify-end w-full">
