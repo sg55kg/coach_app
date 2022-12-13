@@ -184,13 +184,14 @@
                        placeholder="Program Name"
                        name="name"
                        bind:value={$program.name}
-                       class="p-1">
+                       class="p-1 bg-gray-300">
             </div>
 
             <div class="py-4 flex justify-start w-9/12">
                 <div class="flex flex-col mr-4">
                     <label>Start Date</label>
                     <input type="date"
+                           class="bg-gray-300 text-textgray decoration-color-textgray"
                            name="startDate"
                            bind:value={startDateString}
                            on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
@@ -199,6 +200,7 @@
                     <label>End Date</label>
                     <input type="date"
                            name="endDate"
+                           class= "bg-gray-300"
                            bind:value={endDateString}
                            on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
                 </div>
@@ -207,7 +209,7 @@
 
         <div class="flex flex-col self-start">
             <label>Athlete</label>
-            <select class="text-gray-shade p-2" on:change={(e) => handleChangeAthlete(e.target.value)}>
+            <select class="bg-gray-300 text-textgray p-2" on:change={(e) => handleChangeAthlete(e.target.value)}>
                 <option disabled selected>No Athlete Selected</option>
                 {#each athleteOptions as athlete}
                     <option value={athlete.id}>{athlete.name}</option>
@@ -227,25 +229,25 @@
     <div class="flex justify-between">
         <div>
             {#if $program?.days.length > 0}
-                <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2" on:click={addExercise}>
+                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
                     Add exercise (Shift +)
                 </button>
             {/if}
         </div>
         {#if $program && $program.days.length > 0 && selectedIndex > -1}
             <div class="flex justify-center align-middle">
-                <div class="w-8 text-white hover:text-gray-200 hover:cursor-pointer"
+                <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
                      on:click={decrementSelectedIndex}>
                     <FaAngleLeft />
                 </div>
                 <h4 class="m-0 mx-2 self-center text-xl">{$program.days[selectedIndex].date.toDateString()}</h4>
-                <div class="w-8 text-white hover:text-gray-200 hover:cursor-pointer"
+                <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
                      on:click={incrementSelectedIndex}>
                     <FaAngleRight />
                 </div>
             </div>
             <div>
-                <button type="button" class="bg-blue-500 text-white hover:bg-blue-600 p-2 mx-2">
+                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2">
                     Make rest day (Shift *)
                 </button>
             </div>
@@ -282,10 +284,10 @@
         <footer class="flex mt-2 justify-end w-full">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
-                    class="bg-emerald-500 hover:bg-emerald-700 mx-2 p-2 rounded-md">
+                    class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
                 Save (Ctrl s)
             </button>
-            <button type="button" class="bg-blue-500 hover:bg-blue-700 mx-2 p-2 rounded-md">
+            <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md">
                 Download CSV
             </button>
         </footer>
