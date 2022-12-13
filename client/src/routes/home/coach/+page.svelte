@@ -1,15 +1,12 @@
 <script lang="ts">
     import {displayPrograms} from "../../../lib/stores/programStore";
+    import ProgramCard from "$lib/components/ProgramCard.svelte";
 </script>
 
 <div class="flex flex-col justify-center items-center">
     {#if $displayPrograms.length > 0}
         {#each $displayPrograms as program}
-            <div class="bg-white rounded border-black m-8 p-4 shadow-black">
-                <h1>{program.name}</h1>
-                <hr>
-                <a href={`/home/coach/program/${program.id}`}>View</a>
-            </div>
+            <ProgramCard program={program} />
         {/each}
         {:else}
         <h1 class="font-light m-8">It doesn't look like you have any programs right now</h1>
