@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
 
 import java.util.UUID;
@@ -30,11 +31,14 @@ public class NewTeamRequest {
         return coachId;
     }
 
-    public Team convertRequest(NewTeamRequest request) {
+    public static Team convertRequest(NewTeamRequest request) {
         Team team = new Team();
+        CoachData coach = new CoachData();
+        coach.setId(request.getCoachId());
 
         team.setDescription(request.getDescription());
         team.setName(request.getName());
+        team.setCoach(coach);
 
         return team;
     }
