@@ -1,0 +1,2 @@
+ALTER TABLE team ADD COLUMN coach_id uuid REFERENCES coach_data ON DELETE SET NULL;
+ALTER TABLE athlete_data ADD COLUMN team_id uuid REFERENCES team ON DELETE SET NULL;
