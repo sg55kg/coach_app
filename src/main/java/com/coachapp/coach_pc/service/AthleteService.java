@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.service;
 import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.repository.AthleteRepo;
+import com.coachapp.coach_pc.request.AthleteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -36,5 +37,18 @@ public class AthleteService {
         athleteData = athleteRepo.save(athleteData);
 
         return new ResponseEntity<>(athleteData, HttpStatus.OK);
+    }
+
+    public ResponseEntity<AthleteData> updateAthlete(UUID id, AthleteRequest request) {
+        boolean exists = athleteRepo.existsById(id);
+
+        if (!exists) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        AthleteData athlete = AthleteRequest.convertRequest(request);
+        athlete = athleteRepo.save(athlete);
+
+        return new ResponseEntity<>(athlete, HttpStatus.OK);
     }
 }
