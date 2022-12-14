@@ -19,6 +19,7 @@ public class Team {
     private String name;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private CoachData coach;
     @OneToMany
     private List<AthleteData> athletes;

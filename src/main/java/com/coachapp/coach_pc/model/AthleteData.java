@@ -30,6 +30,10 @@ public class AthleteData {
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private CoachData coach;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
+    private Team team;
+
     private String name;
 
 
@@ -81,5 +85,13 @@ public class AthleteData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
