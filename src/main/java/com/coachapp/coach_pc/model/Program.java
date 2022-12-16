@@ -39,7 +39,7 @@ public class Program {
     private AthleteData athlete;
 
     @ManyToOne
-    @JoinColumn(name = "program_id")
+    @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;
     
