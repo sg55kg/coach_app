@@ -84,7 +84,7 @@ export default class UserService {
         }
         let userData = await res.json()
 
-        if (!userData.coachData) {
+        if (!userData.coachData && res.status !== 500) {
             res = await fetch(`http://localhost:8180/api/users/coach`, {
                 method: 'PUT',
                 headers: {
@@ -100,7 +100,7 @@ export default class UserService {
 
         }
 
-        if (!userData.athleteData) {
+        if (!userData.athleteData && res.status !== 500) {
             res = await fetch(`http://localhost:8180/api/users/athlete`, {
                 method: 'PUT',
                 headers: {

@@ -135,4 +135,22 @@ public class ProgramService {
 
         return new ResponseEntity<>(programs, HttpStatus.OK);
     }
+
+    public ResponseEntity<List<DisplayProgram>> getProgramsByTeamId(UUID teamId) {
+        List<Program> dbPrograms = _programRepo.getProgramsByTeamId(teamId);
+        List<DisplayProgram> programs = new ArrayList<>();
+
+        dbPrograms.forEach(program -> {
+            DisplayProgram displayProgram = new DisplayProgram(
+                    program.getId(),
+                    program.getCreatedAt(),
+                    program.getUpdatedAt(),
+                    program.getStartDate(),
+                    program.getEndDate(),
+                    program.getName());
+            programs.add(displayProgram);
+        });
+
+        return new ResponseEntity<>(programs, HttpStatus.OK);
+    }
 }

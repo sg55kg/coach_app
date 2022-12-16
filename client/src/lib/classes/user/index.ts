@@ -1,4 +1,5 @@
 import type {Program} from "$lib/classes/program";
+import type {Team} from "$lib/classes/team";
 
 export interface UserDTO {
     id: string,
@@ -22,7 +23,8 @@ export interface AthleteData {
 export interface CoachData {
     id: string,
     programs: Program[],
-    athletes: AthleteData[]
+    athletes: AthleteData[],
+    teams: Team[]
 
 }
 

@@ -20,6 +20,8 @@ module.exports = {
       'yellow-shade': '#fddd4c',
       'white': '#efefef',
       'black': '#030303',
+      'green': '#41d531',
+      'green-dark': '#1d6216'
     },
     extend: {},
   },
