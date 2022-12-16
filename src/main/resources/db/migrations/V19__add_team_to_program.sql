@@ -1,0 +1,1 @@
+ALTER TABLE programs ADD COLUMN team_id uuid REFERENCES team;

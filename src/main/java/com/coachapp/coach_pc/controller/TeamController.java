@@ -4,6 +4,8 @@ import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.request.NewTeamRequest;
 import com.coachapp.coach_pc.request.TeamRequest;
 import com.coachapp.coach_pc.service.TeamService;
+import com.coachapp.coach_pc.view.DisplayProgram;
+import com.coachapp.coach_pc.view.ProgramViewModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

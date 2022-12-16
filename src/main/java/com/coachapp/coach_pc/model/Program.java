@@ -37,6 +37,11 @@ public class Program {
     @JoinColumn(name = "athlete_id")
     @JsonIgnore
     private AthleteData athlete;
+
+    @ManyToOne
+    @JoinColumn(name = "program_id")
+    @JsonIgnore
+    private Team team;
     
 
     public Program() {
@@ -117,6 +122,14 @@ public class Program {
 
     public void setAthlete(AthleteData athlete) {
         this.athlete = athlete;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     @Override

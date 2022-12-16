@@ -1,8 +1,12 @@
+import type {AthleteData} from "$lib/classes/user";
 
 
 export interface TeamDTO {
     name: string,
     description: string,
+    coachName?: string,
+    coachId?: string,
+    athletes?: AthleteData[]
 }
 
 export class Team {
@@ -12,10 +16,16 @@ export class Team {
 
         team.name = teamDto.name
         team.description = teamDto.description
+        team.coachId = teamDto.coachId ? teamDto.coachId : ''
+        team.coachName = teamDto.coachName ? teamDto.coachName : ''
+        team.athletes = teamDto.athletes ? [...teamDto.athletes] : []
 
         return team
     }
 
     name: string = ''
     description: string = ''
+    coachId: string = ''
+    coachName: string = ''
+    athletes: AthleteData[] = []
 }

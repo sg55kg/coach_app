@@ -1,22 +1,38 @@
 <script lang="ts">
-    import {createEventDispatcher} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
+    import {Team} from "$lib/classes/team";
+    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {TeamService} from "$lib/service/TeamService";
 
     export let open
     const dispatch = createEventDispatcher()
+    let success: boolean = false
 
-    let team = {
-        name: '',
-        description: ''
-    }
+    let team = new Team()
 
     const createTeam = async () => {
+        if (!$userDB?.coachData || !$auth0Client) return
 
+        if (team.coachId === '' && team.coachName === '') {
+            team.coachId = $userDB.coachData.id
+            team.coachName = $userDB.username
+        }
+
+        try {
+            const savedTeam = await TeamService.createTeam($auth0Client, team)
+            console.log(savedTeam)
+            team = new Team()
+            success = true
+        } catch (e) {
+            console.log(e)
+            success = false
+        }
     }
 
 </script>
 
 {#if open}
-<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" on:click={() => dispatch('closeModal')}>
     <!--
       Background backdrop, show/hide based on modal state.
 
@@ -50,12 +66,17 @@
                             <h2 class="text-xl font-bold leading-6 text-white" id="modal-title">
                                 Create New Team
                             </h2>
+                            {#if success}
+                                <div class="w-10/12 self-center border-green text-green">
+                                    <p>Successfully added team!</p>
+                                </div>
+                            {/if}
                             <div class="mt-2 flex flex-col">
                                 <small>Name</small>
                                 <input bind:value={team.name}
                                        type="text"
                                        placeholder="Team Name"
-                                       class="text-md p-2 font-medium rounded w-4/12">
+                                       class="text-md text-gray-shade p-2 font-medium rounded w-4/12">
                             </div>
                             <div class="mt-2 flex flex-col">
                                 <small>Description</small>
@@ -73,7 +94,7 @@
                         Create
                     </button>
                     <button type="button"
-                            on:click={() => dispatch('close')}
+                            on:click={() => dispatch('closeModal')}
                             class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red px-4 py-2 text-base font-medium text-gray-shade shadow-sm hover:bg-yellow-shade focus:outline-none focus:ring-2  focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancel
                     </button>

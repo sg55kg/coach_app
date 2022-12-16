@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,8 +21,10 @@ public class Team {
     private String description;
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
+    @JsonIgnore
     private CoachData coach;
     @OneToMany
+    @JsonIgnore
     private List<AthleteData> athletes;
     @CreationTimestamp
     private Date createdAt;

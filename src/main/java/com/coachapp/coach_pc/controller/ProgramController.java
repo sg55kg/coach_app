@@ -60,4 +60,9 @@ public class ProgramController {
     public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@PathVariable UUID coachId) {
         return _programService.getProgramsByCoachId(coachId);
     }
+
+    @GetMapping("/team/{id}")
+    public ResponseEntity<List<DisplayProgram>> getTeamPrograms(@PathVariable UUID id) {
+        return _programService.getProgramsByTeamId(id);
+    }
 }

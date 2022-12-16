@@ -1,5 +1,5 @@
 import type {Team} from "$lib/classes/team";
-import {Auth0Client} from "@auth0/auth0-spa-js";
+import type {Auth0Client} from "@auth0/auth0-spa-js";
 
 
 export class TeamService {

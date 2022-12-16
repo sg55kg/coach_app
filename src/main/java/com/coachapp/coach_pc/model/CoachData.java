@@ -21,7 +21,7 @@ public class CoachData {
     private UserData user;
     @OneToMany(mappedBy = "coach")
     private List<AthleteData> athletes;
-    @OneToMany(mappedBy = "coach")
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;
 
 
