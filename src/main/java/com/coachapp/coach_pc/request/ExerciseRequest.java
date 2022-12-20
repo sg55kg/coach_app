@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.Exercise;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ public class ExerciseRequest {
     private int totalRepsCompleted;
     private boolean isMax;
     private WeightIntensity weightIntensity;
-    private List<AthleteExerciseComment> comments;
+    private List<AthleteExerciseCommentRequest> comments;
 
     public ExerciseRequest() {}
 
@@ -32,7 +33,7 @@ public class ExerciseRequest {
             int totalRepsCompleted,
             boolean isMax,
             WeightIntensity weightIntensity,
-            List<AthleteExerciseComment> comments
+            List<AthleteExerciseCommentRequest> comments
     ) {
         this.id = id;
         this.name = name;
@@ -82,14 +83,16 @@ public class ExerciseRequest {
         return weightIntensity;
     }
 
-    public List<AthleteExerciseComment> getComments() {
+    public List<AthleteExerciseCommentRequest> getComments() {
         return comments;
     }
 
     public static Exercise convertRequest(ExerciseRequest request) {
         Exercise exercise = new Exercise();
+        List<AthleteExerciseComment> comments = new ArrayList<>();
+
         request.getComments().forEach(c -> {
-            c.setExercise(exercise);
+            comments.add(AthleteExerciseCommentRequest.convertRequest(c));
         });
 
         exercise.setId(request.getId());
@@ -100,7 +103,7 @@ public class ExerciseRequest {
         exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
         exercise.setWeightIntensity(request.getWeightIntensity());
         exercise.setIsMax(request.isMax());
-        exercise.setComments(request.getComments());
+        exercise.setComments(comments);
 
         return exercise;
     }

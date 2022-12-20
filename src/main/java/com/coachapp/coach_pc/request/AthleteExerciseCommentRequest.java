@@ -1,5 +1,9 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.Exercise;
+
 import java.util.UUID;
 
 public class AthleteExerciseCommentRequest {
@@ -33,5 +37,23 @@ public class AthleteExerciseCommentRequest {
 
     public String getContent() {
         return content;
+    }
+
+    public static AthleteExerciseComment convertRequest(AthleteExerciseCommentRequest request) {
+        AthleteExerciseComment comment = new AthleteExerciseComment();
+        AthleteData athlete = new AthleteData();
+        Exercise exercise = new Exercise();
+        exercise.setId(request.getExerciseId());
+        athlete.setId(request.getAthleteId());
+
+        if (request.getId() != null) {
+            comment.setId(request.getId());
+        }
+
+        comment.setAthlete(athlete);
+        comment.setExercise(exercise);
+        comment.setContent(request.getContent());
+
+        return comment;
     }
 }
