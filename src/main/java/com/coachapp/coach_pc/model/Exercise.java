@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,10 +28,30 @@ public class Exercise {
     @Nullable
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private Boolean isMax = false;
+    private int weightCompleted = 0;
+    private int totalRepsCompleted = 0;
+    @ManyToOne
+    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
+    private AthleteData athleteCommentId;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<AthleteExerciseComment> comments;
+
 
     public Exercise() {}
 
-    public Exercise(UUID id, String name, int sets, int repsPerSet, Day day, String notes, WeightIntensity weightIntensity, boolean isMax, int weight) {
+    public Exercise(
+            UUID id,
+            String name,
+            int sets,
+            int repsPerSet,
+            Day day,
+            String notes,
+            WeightIntensity weightIntensity,
+            boolean isMax,
+            int weight,
+            int weightCompleted,
+            int totalRepsCompleted
+    ) {
         this.id = id;
         this.name = name;
         this.sets = sets;
@@ -40,6 +61,8 @@ public class Exercise {
         this.weightIntensity = weightIntensity;
         this.isMax = isMax;
         this.weight = weight;
+        this.weightCompleted = weightCompleted;
+        this.totalRepsCompleted = totalRepsCompleted;
     }
 
     public UUID getId() {
@@ -102,6 +125,10 @@ public class Exercise {
         return isMax != null ? isMax : false;
     }
 
+    public void setIsMax(boolean isMax) {
+        this.isMax = isMax;
+    }
+
     public void setMax(Boolean max) {
         isMax = max;
     }
@@ -116,6 +143,38 @@ public class Exercise {
 
     public Boolean getMax() {
         return isMax;
+    }
+
+    public int getWeightCompleted() {
+        return weightCompleted;
+    }
+
+    public void setWeightCompleted(int weightCompleted) {
+        this.weightCompleted = weightCompleted;
+    }
+
+    public int getTotalRepsCompleted() {
+        return totalRepsCompleted;
+    }
+
+    public void setTotalRepsCompleted(int totalRepsCompleted) {
+        this.totalRepsCompleted = totalRepsCompleted;
+    }
+
+    public AthleteData getAthleteCommentId() {
+        return athleteCommentId;
+    }
+
+    public void setAthleteCommentId(AthleteData athleteCommentId) {
+        this.athleteCommentId = athleteCommentId;
+    }
+
+    public List<AthleteExerciseComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<AthleteExerciseComment> comments) {
+        this.comments = comments;
     }
 
     @Override
