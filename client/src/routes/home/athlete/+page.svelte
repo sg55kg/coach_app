@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import {userDB} from "$lib/stores/authStore";
-    import CurrentProgram from "$lib/components/CurrentProgram.svelte";
+    import CurrentProgram from "$lib/components/CurrentProgram/CurrentProgram.svelte";
 
 
 </script>

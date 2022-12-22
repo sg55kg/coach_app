@@ -94,8 +94,11 @@ public class ExerciseRequest {
         request.getComments().forEach(c -> {
             comments.add(AthleteExerciseCommentRequest.convertRequest(c));
         });
+        // Needs Athlete etc for comments, potentially could overwrite the connection to null
+        // Exercise.day can't be null either
 
         exercise.setId(request.getId());
+        exercise.setWeight(request.getWeight());
         exercise.setName(request.getName());
         exercise.setSets(request.getSets());
         exercise.setRepsPerSet(request.getRepsPerSet());
