@@ -26,7 +26,6 @@ public class AthleteExerciseComment {
     @UpdateTimestamp
     private Date updatedAt;
     @ManyToOne
-    @JsonIgnore
     private Exercise exercise;
 
     public AthleteExerciseComment() {}

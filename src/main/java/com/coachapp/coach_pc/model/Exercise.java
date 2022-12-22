@@ -18,9 +18,9 @@ public class Exercise {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private String name;
-    private int sets;
-    private int repsPerSet;
-    private int weight;
+    private Integer sets;
+    private Integer repsPerSet;
+    private Integer weight;
     @ManyToOne
     @JoinColumn(name="day_id", nullable = false)
     private Day day;
@@ -28,8 +28,9 @@ public class Exercise {
     @Nullable
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private Boolean isMax = false;
-    private int weightCompleted = 0;
-    private int totalRepsCompleted = 0;
+    private Integer weightCompleted = 0;
+    @Column(name = "reps_completed")
+    private Integer totalRepsCompleted = 0;
     @ManyToOne
     @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
     private AthleteData athleteCommentId;
@@ -42,15 +43,15 @@ public class Exercise {
     public Exercise(
             UUID id,
             String name,
-            int sets,
-            int repsPerSet,
+            Integer sets,
+            Integer repsPerSet,
             Day day,
             String notes,
             WeightIntensity weightIntensity,
             boolean isMax,
-            int weight,
-            int weightCompleted,
-            int totalRepsCompleted
+            Integer weight,
+            Integer weightCompleted,
+            Integer totalRepsCompleted
     ) {
         this.id = id;
         this.name = name;
@@ -81,7 +82,7 @@ public class Exercise {
         this.name = name;
     }
 
-    public int getSets() {
+    public Integer getSets() {
         return sets;
     }
 
@@ -89,11 +90,11 @@ public class Exercise {
         this.sets = sets;
     }
 
-    public int getRepsPerSet() {
+    public Integer getRepsPerSet() {
         return repsPerSet;
     }
 
-    public void setRepsPerSet(int repsPerSet) {
+    public void setRepsPerSet(Integer repsPerSet) {
         this.repsPerSet = repsPerSet;
     }
 
@@ -133,11 +134,11 @@ public class Exercise {
         isMax = max;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
@@ -145,19 +146,19 @@ public class Exercise {
         return isMax;
     }
 
-    public int getWeightCompleted() {
+    public Integer getWeightCompleted() {
         return weightCompleted;
     }
 
-    public void setWeightCompleted(int weightCompleted) {
+    public void setWeightCompleted(Integer weightCompleted) {
         this.weightCompleted = weightCompleted;
     }
 
-    public int getTotalRepsCompleted() {
+    public Integer getTotalRepsCompleted() {
         return totalRepsCompleted;
     }
 
-    public void setTotalRepsCompleted(int totalRepsCompleted) {
+    public void setTotalRepsCompleted(Integer totalRepsCompleted) {
         this.totalRepsCompleted = totalRepsCompleted;
     }
 
