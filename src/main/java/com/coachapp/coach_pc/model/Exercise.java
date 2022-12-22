@@ -34,7 +34,7 @@ public class Exercise {
     @ManyToOne
     @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
     private AthleteData athleteCommentId;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise")
     private List<AthleteExerciseComment> comments;
 
 
