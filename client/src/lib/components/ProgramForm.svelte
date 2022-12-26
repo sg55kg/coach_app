@@ -68,7 +68,10 @@
 
     const addExercise = () => {
         program.update(p => {
-            p.days[selectedIndex].exercises.push(new Exercise())
+            const newExercise: Exercise = new Exercise()
+            newExercise.order = p.days[selectedIndex].exercises.length
+
+            p.days[selectedIndex].exercises.push(newExercise)
             return p
         })
     }

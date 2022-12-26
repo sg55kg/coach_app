@@ -1,10 +1,12 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,20 +19,47 @@ public class Exercise {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private String name;
-    private int sets;
-    private int repsPerSet;
-    private int weight;
-    @ManyToOne
+    private Integer sets;
+    private Integer repsPerSet;
+    private Integer weight;
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="day_id", nullable = false)
+    @JsonIgnore
     private Day day;
     private String notes;
     @Nullable
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private Boolean isMax = false;
+    private Integer weightCompleted = 0;
+    @Column(name = "reps_completed")
+    private Integer totalRepsCompleted = 0;
+    @ManyToOne
+    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
+    private AthleteData athleteCommentId;
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise")
+    private List<AthleteExerciseComment> comments;
+    private Boolean isComplete;
+    @Column(name = "list_order")
+    private int order;
+
 
     public Exercise() {}
 
-    public Exercise(UUID id, String name, int sets, int repsPerSet, Day day, String notes, WeightIntensity weightIntensity, boolean isMax, int weight) {
+    public Exercise(
+            UUID id,
+            String name,
+            Integer sets,
+            Integer repsPerSet,
+            Day day,
+            String notes,
+            WeightIntensity weightIntensity,
+            boolean isMax,
+            Integer weight,
+            Integer weightCompleted,
+            Integer totalRepsCompleted,
+            boolean isComplete,
+            int order
+    ) {
         this.id = id;
         this.name = name;
         this.sets = sets;
@@ -40,6 +69,10 @@ public class Exercise {
         this.weightIntensity = weightIntensity;
         this.isMax = isMax;
         this.weight = weight;
+        this.weightCompleted = weightCompleted;
+        this.totalRepsCompleted = totalRepsCompleted;
+        this.isComplete = isComplete;
+        this.order = order;
     }
 
     public UUID getId() {
@@ -58,7 +91,7 @@ public class Exercise {
         this.name = name;
     }
 
-    public int getSets() {
+    public Integer getSets() {
         return sets;
     }
 
@@ -66,11 +99,11 @@ public class Exercise {
         this.sets = sets;
     }
 
-    public int getRepsPerSet() {
+    public Integer getRepsPerSet() {
         return repsPerSet;
     }
 
-    public void setRepsPerSet(int repsPerSet) {
+    public void setRepsPerSet(Integer repsPerSet) {
         this.repsPerSet = repsPerSet;
     }
 
@@ -102,20 +135,76 @@ public class Exercise {
         return isMax != null ? isMax : false;
     }
 
+    public void setIsMax(boolean isMax) {
+        this.isMax = isMax;
+    }
+
     public void setMax(Boolean max) {
         isMax = max;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
     public Boolean getMax() {
         return isMax;
+    }
+
+    public Integer getWeightCompleted() {
+        return weightCompleted;
+    }
+
+    public void setWeightCompleted(Integer weightCompleted) {
+        this.weightCompleted = weightCompleted;
+    }
+
+    public Integer getTotalRepsCompleted() {
+        return totalRepsCompleted;
+    }
+
+    public void setTotalRepsCompleted(Integer totalRepsCompleted) {
+        this.totalRepsCompleted = totalRepsCompleted;
+    }
+
+    public AthleteData getAthleteCommentId() {
+        return athleteCommentId;
+    }
+
+    public void setAthleteCommentId(AthleteData athleteCommentId) {
+        this.athleteCommentId = athleteCommentId;
+    }
+
+    public List<AthleteExerciseComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<AthleteExerciseComment> comments) {
+        this.comments = comments;
+    }
+
+    public void setSets(Integer sets) {
+        this.sets = sets;
+    }
+
+    public boolean getIsComplete() {
+        return isComplete != null ? isComplete : false;
+    }
+
+    public void setIsComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @Override

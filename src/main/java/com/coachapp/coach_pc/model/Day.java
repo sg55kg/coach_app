@@ -18,11 +18,10 @@ public class Day {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private Date date;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE)
     private List<Exercise> exercises;
 
     public Day() {}

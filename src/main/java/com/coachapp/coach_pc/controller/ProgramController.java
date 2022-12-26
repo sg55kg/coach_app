@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
+import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
@@ -64,5 +65,10 @@ public class ProgramController {
     @GetMapping("/team/{id}")
     public ResponseEntity<List<DisplayProgram>> getTeamPrograms(@PathVariable UUID id) {
         return _programService.getProgramsByTeamId(id);
+    }
+
+    @PutMapping("/{id}/day")
+    public ResponseEntity<ProgramViewModel> updateProgramDay(@PathVariable UUID id, @RequestBody ExerciseRequest request) {
+        return _programService.updateProgramDay(id, request);
     }
 }

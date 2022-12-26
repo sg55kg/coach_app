@@ -33,13 +33,29 @@ export enum WeightIntensity {
 export class Exercise {
     id: string = ''
     name: string = ''
+    weight: number = 0
     sets: number = 0
     repsPerSet: number = 0
     notes: string = ''
     weightIntensity: WeightIntensity = WeightIntensity.NONE
     isMax: boolean = false
+    weightCompleted: number = 0
+    totalRepsCompleted: number = 0
+    comments: ExerciseComment[] = []
+    isComplete: boolean = false
+    order: number = 0
 }
 
+
+export class ExerciseComment {
+    id: string = ''
+    athleteId: string = ''
+    content: string = ''
+    exerciseId: string = ''
+    commenterName: string = ''
+    createdAt?: Date = new Date()
+    updatedAt?: Date = new Date()
+}
 
 
 export class Program implements IProgram {
@@ -60,7 +76,7 @@ export class Program implements IProgram {
     name: string = ''
     startDate: Date = new Date()
     endDate: Date = new Date()
-    days: any[] = []
+    days: Day[] = []
     athleteId: string = ''
     coachId: string = ''
     isCurrent: boolean = true

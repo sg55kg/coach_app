@@ -1,10 +1,8 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.CoachData;
-import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.model.*;
+import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
-import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DayViewModel;
 import com.coachapp.coach_pc.view.DisplayProgram;
@@ -152,5 +150,34 @@ public class ProgramService {
         });
 
         return new ResponseEntity<>(programs, HttpStatus.OK);
+    }
+
+    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
+        Optional<Program> optional = _programRepo.findById(id);
+
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        Exercise exercise = ExerciseRequest.convertRequest(request);
+        Program program = optional.get();
+
+        boolean dayFound = false;
+        for (Day day : program.getDays()) {
+            if (dayFound) break;
+
+            for (int i = 0; i < day.getExercises().size(); i++) {
+                if (day.getExercises().get(i).getId().equals(exercise.getId())) {
+                    exercise.setDay(day.getExercises().get(i).getDay());
+                    day.getExercises().set(i, exercise);
+                    dayFound = true;
+                    break;
+                }
+            }
+        }
+
+        program = _programRepo.save(program);
+        ProgramViewModel viewModel = convertProgram(program);
+        return new ResponseEntity<>(viewModel, HttpStatus.OK);
     }
 }
