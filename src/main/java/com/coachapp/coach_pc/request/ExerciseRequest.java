@@ -2,7 +2,9 @@ package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,11 @@ public class ExerciseRequest {
     private boolean isMax;
     private WeightIntensity weightIntensity;
     private List<AthleteExerciseCommentRequest> comments;
+    private boolean isComplete;
+    private UUID dayId;
+    private UUID programId;
+    private String notes;
+    private int order;
 
     public ExerciseRequest() {}
 
@@ -33,7 +40,12 @@ public class ExerciseRequest {
             int totalRepsCompleted,
             boolean isMax,
             WeightIntensity weightIntensity,
-            List<AthleteExerciseCommentRequest> comments
+            List<AthleteExerciseCommentRequest> comments,
+            UUID dayId,
+            UUID programId,
+            boolean isComplete,
+            String notes,
+            int order
     ) {
         this.id = id;
         this.name = name;
@@ -45,6 +57,11 @@ public class ExerciseRequest {
         this.isMax = isMax;
         this.weightIntensity = weightIntensity;
         this.comments = comments;
+        this.isComplete = isComplete;
+        this.dayId = dayId;
+        this.programId = programId;
+        this.notes = notes;
+        this.order = order;
     }
 
     public UUID getId() {
@@ -87,15 +104,38 @@ public class ExerciseRequest {
         return comments;
     }
 
+    public boolean getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public UUID getDayId() {
+        return dayId;
+    }
+
+    public UUID getProgramId() {
+        return programId;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
     public static Exercise convertRequest(ExerciseRequest request) {
         Exercise exercise = new Exercise();
         List<AthleteExerciseComment> comments = new ArrayList<>();
 
+
         request.getComments().forEach(c -> {
             comments.add(AthleteExerciseCommentRequest.convertRequest(c));
         });
-        // Needs Athlete etc for comments, potentially could overwrite the connection to null
-        // Exercise.day can't be null either
 
         exercise.setId(request.getId());
         exercise.setWeight(request.getWeight());
@@ -107,6 +147,9 @@ public class ExerciseRequest {
         exercise.setWeightIntensity(request.getWeightIntensity());
         exercise.setIsMax(request.isMax());
         exercise.setComments(comments);
+        exercise.setNotes(request.getNotes());
+        exercise.setIsComplete(request.getIsComplete());
+        exercise.setOrder(request.getOrder());
 
         return exercise;
     }

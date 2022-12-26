@@ -39,9 +39,11 @@ export class Exercise {
     notes: string = ''
     weightIntensity: WeightIntensity = WeightIntensity.NONE
     isMax: boolean = false
-    weightedCompleted: number = 0
+    weightCompleted: number = 0
     totalRepsCompleted: number = 0
     comments: ExerciseComment[] = []
+    isComplete: boolean = false
+    order: number = 0
 }
 
 
@@ -50,6 +52,7 @@ export class ExerciseComment {
     athleteId: string = ''
     content: string = ''
     exerciseId: string = ''
+    commenterName: string = ''
     createdAt?: Date = new Date()
     updatedAt?: Date = new Date()
 }
@@ -73,7 +76,7 @@ export class Program implements IProgram {
     name: string = ''
     startDate: Date = new Date()
     endDate: Date = new Date()
-    days: any[] = []
+    days: Day[] = []
     athleteId: string = ''
     coachId: string = ''
     isCurrent: boolean = true

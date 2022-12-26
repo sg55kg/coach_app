@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.springframework.lang.Nullable;
 
@@ -21,8 +22,9 @@ public class Exercise {
     private Integer sets;
     private Integer repsPerSet;
     private Integer weight;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="day_id", nullable = false)
+    @JsonIgnore
     private Day day;
     private String notes;
     @Nullable
@@ -36,6 +38,9 @@ public class Exercise {
     private AthleteData athleteCommentId;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise")
     private List<AthleteExerciseComment> comments;
+    private Boolean isComplete;
+    @Column(name = "list_order")
+    private int order;
 
 
     public Exercise() {}
@@ -51,7 +56,9 @@ public class Exercise {
             boolean isMax,
             Integer weight,
             Integer weightCompleted,
-            Integer totalRepsCompleted
+            Integer totalRepsCompleted,
+            boolean isComplete,
+            int order
     ) {
         this.id = id;
         this.name = name;
@@ -64,6 +71,8 @@ public class Exercise {
         this.weight = weight;
         this.weightCompleted = weightCompleted;
         this.totalRepsCompleted = totalRepsCompleted;
+        this.isComplete = isComplete;
+        this.order = order;
     }
 
     public UUID getId() {
@@ -176,6 +185,26 @@ public class Exercise {
 
     public void setComments(List<AthleteExerciseComment> comments) {
         this.comments = comments;
+    }
+
+    public void setSets(Integer sets) {
+        this.sets = sets;
+    }
+
+    public boolean getIsComplete() {
+        return isComplete != null ? isComplete : false;
+    }
+
+    public void setIsComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @Override

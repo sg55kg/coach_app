@@ -16,17 +16,19 @@ public class AthleteExerciseComment {
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
-    @ManyToOne
-    @JoinColumn(name = "athlete_id", referencedColumnName = "id")
-    @JsonIgnore
-    private AthleteData athlete;
+    @Column(name = "athlete_id")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
+    private UUID athleteId;
     private String content;
     @CreationTimestamp
     private Date createdAt;
     @UpdateTimestamp
     private Date updatedAt;
     @ManyToOne
+    @JoinColumn(name = "exercise_id")
+    @JsonIgnore
     private Exercise exercise;
+    private String commenterName;
 
     public AthleteExerciseComment() {}
 
@@ -36,14 +38,6 @@ public class AthleteExerciseComment {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public AthleteData getAthlete() {
-        return athlete;
-    }
-
-    public void setAthlete(AthleteData athlete) {
-        this.athlete = athlete;
     }
 
     public String getContent() {
@@ -70,11 +64,28 @@ public class AthleteExerciseComment {
         this.updatedAt = updatedAt;
     }
 
+
+    public UUID getAthleteId() {
+        return athleteId;
+    }
+
+    public void setAthleteId(UUID athleteId) {
+        this.athleteId = athleteId;
+    }
+
     public Exercise getExercise() {
         return exercise;
     }
 
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
+    }
+
+    public String getCommenterName() {
+        return commenterName;
+    }
+
+    public void setCommenterName(String commenterName) {
+        this.commenterName = commenterName;
     }
 }

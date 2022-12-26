@@ -1,0 +1,1 @@
+ALTER TABLE exercise ADD COLUMN is_complete bool DEFAULT FALSE;

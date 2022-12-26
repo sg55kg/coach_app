@@ -84,11 +84,11 @@ export class ProgramService {
         return await res.json()
     }
 
-    static updateExercise = async (client: Auth0Client, exercise: Exercise) => {
+    static updateExercise = async (client: Auth0Client, exercise: Exercise, programId: string) => {
         const accessToken = await client.getTokenSilently()
-        const id = exercise.id
+        console.debug(exercise)
 
-        const res = await fetch(`http://localhost:8180/api/exercise/${id}`, {
+        const res = await fetch(`http://localhost:8180/api/programs/${programId}/day`, {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
             body: JSON.stringify(exercise)

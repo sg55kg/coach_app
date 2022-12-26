@@ -1,13 +1,15 @@
+import type {Exercise} from "$lib/classes/program";
+
 export interface IDay {
     id?: string,
     date: Date,
-    exercises: any[]
+    exercises: Exercise[]
 }
 
 export interface DayDTO {
     id: string,
     date: string,
-    exercises: any[]
+    exercises: Exercise[]
 }
 
 export class Day implements IDay {
@@ -23,5 +25,5 @@ export class Day implements IDay {
 
     id: string = ''
     date: Date = new Date()
-    exercises: any[] = []
+    exercises: Exercise[] = []
 }

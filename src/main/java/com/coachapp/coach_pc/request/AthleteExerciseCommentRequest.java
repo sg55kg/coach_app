@@ -12,15 +12,17 @@ public class AthleteExerciseCommentRequest {
     private UUID athleteId;
     private UUID exerciseId;
     private String content;
+    private String commenterName;
 
     public AthleteExerciseCommentRequest() {
     }
 
-    public AthleteExerciseCommentRequest(UUID id, UUID athleteId, UUID exerciseId, String content) {
+    public AthleteExerciseCommentRequest(UUID id, UUID athleteId, UUID exerciseId, String content, String commenterName) {
         this.id = id;
         this.athleteId = athleteId;
         this.exerciseId = exerciseId;
         this.content = content;
+        this.commenterName = commenterName;
     }
 
     public UUID getId() {
@@ -39,20 +41,23 @@ public class AthleteExerciseCommentRequest {
         return content;
     }
 
+    public String getCommenterName() {
+        return commenterName;
+    }
+
     public static AthleteExerciseComment convertRequest(AthleteExerciseCommentRequest request) {
         AthleteExerciseComment comment = new AthleteExerciseComment();
-        AthleteData athlete = new AthleteData();
         Exercise exercise = new Exercise();
         exercise.setId(request.getExerciseId());
-        athlete.setId(request.getAthleteId());
 
         if (request.getId() != null) {
             comment.setId(request.getId());
         }
 
-        comment.setAthlete(athlete);
+        comment.setAthleteId(request.getAthleteId());
         comment.setExercise(exercise);
         comment.setContent(request.getContent());
+        comment.setCommenterName(request.getCommenterName());
 
         return comment;
     }

@@ -98,21 +98,21 @@
             {#each $incompleteExercises as exercise}
                 <IncompleteExercise exercise={exercise} />
             {/each}
-            {#each $completedExercises as exercise}
-                <div class="flex-col border-b-green">
-                    <div>
-                        <p class="w-fit m-0">{exercise.name}</p>
-                        <p class="w-fit m-0">{exercise.weight}</p>
-                        <p class="w-fit m-0">{exercise.sets}</p>
-                        <p class="w-fit m-0">{exercise.repsPerSet}</p>
-                    </div>
-                    <div>
-                        <button>
-                            Edit
-                        </button>
-                    </div>
-                </div>
-            {/each}
+            <!--{#each $completedExercises as exercise}-->
+            <!--    <div class="flex-col border-b-green">-->
+            <!--        <div>-->
+            <!--            <p class="w-fit m-0">{exercise.name}</p>-->
+            <!--            <p class="w-fit m-0">{exercise.weight}</p>-->
+            <!--            <p class="w-fit m-0">{exercise.sets}</p>-->
+            <!--            <p class="w-fit m-0">{exercise.repsPerSet}</p>-->
+            <!--        </div>-->
+            <!--        <div>-->
+            <!--            <button>-->
+            <!--                Edit-->
+            <!--            </button>-->
+            <!--        </div>-->
+            <!--    </div>-->
+            <!--{/each}-->
         {/if}
     </div>
 {/if}
