@@ -134,7 +134,9 @@ public class ExerciseRequest {
 
 
         request.getComments().forEach(c -> {
-            comments.add(AthleteExerciseCommentRequest.convertRequest(c));
+            AthleteExerciseComment comment = AthleteExerciseCommentRequest.convertRequest(c);
+            comment.setExercise(exercise);
+            comments.add(comment);
         });
 
         exercise.setId(request.getId());

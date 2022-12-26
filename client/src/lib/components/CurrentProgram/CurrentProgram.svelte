@@ -20,7 +20,7 @@
 
         if (programDay instanceof Day) {
             const arr = [...programDay.exercises]
-            incompleteExercises.set(arr)
+            incompleteExercises.set(arr.sort((a, b) => a.order - b.order))
             return programDay
         } else if ($currentProgram.days.length > 0) {
             programDay = $currentProgram.days[$currentProgram.days.length - 1]
@@ -37,7 +37,7 @@
 
         let programDay: Day | undefined = $currentProgram.days.find(d => dayjs(d.date).isSame(day, 'day'))
         if (programDay !== undefined) {
-            incompleteExercises.set([...programDay.exercises])
+            incompleteExercises.set([...programDay.exercises].sort((a, b) => a.order - b.order))
             currentDay.set(programDay)
         }
     }

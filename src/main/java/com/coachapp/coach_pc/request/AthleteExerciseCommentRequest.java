@@ -47,15 +47,15 @@ public class AthleteExerciseCommentRequest {
 
     public static AthleteExerciseComment convertRequest(AthleteExerciseCommentRequest request) {
         AthleteExerciseComment comment = new AthleteExerciseComment();
-        Exercise exercise = new Exercise();
-        exercise.setId(request.getExerciseId());
+        //Exercise exercise = new Exercise();
+       //exercise.setId(request.getExerciseId());
 
         if (request.getId() != null) {
             comment.setId(request.getId());
         }
 
         comment.setAthleteId(request.getAthleteId());
-        comment.setExercise(exercise);
+        //comment.setExercise(exercise);
         comment.setContent(request.getContent());
         comment.setCommenterName(request.getCommenterName());
 

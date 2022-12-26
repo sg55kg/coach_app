@@ -37,7 +37,7 @@
             const updatedDay = updatedProgram.days.find(d => d.id === $currentDay!.id)
             currentProgram.set(updatedProgram)
             currentDay.set(updatedDay)
-            incompleteExercises.set(updatedDay.exercises)
+            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
         } catch (e) {
             console.log(e)
         }
@@ -57,7 +57,7 @@
             const updatedProgram: Program = await ProgramService.updateExercise($auth0Client!, updatedExercise, $currentProgram!.id)
             const updatedDay: Day = updatedProgram.days.find(d => d.id === $currentDay!.id)
             currentDay.set(updatedDay)
-            incompleteExercises.set(updatedDay.exercises)
+            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
             currentProgram.set(updatedProgram)
             newCommentContent = ''
         } catch (e) {
