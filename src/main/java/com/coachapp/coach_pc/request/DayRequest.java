@@ -14,6 +14,7 @@ public class DayRequest {
     private UUID id;
     private Date date;
     private List<Exercise> exercises;
+    private boolean isRestDay;
 
     public DayRequest() {}
 
@@ -41,11 +42,20 @@ public class DayRequest {
         this.exercises = exercises;
     }
 
+    public void setIsRestDay(boolean isRestDay) {
+        this.isRestDay = isRestDay;
+    }
+
+    public boolean getIsRestDay() {
+        return isRestDay;
+    }
+
     public static Day convertRequest(DayRequest dayRequest, Program program) {
         Day day = new Day();
         day.setDate(dayRequest.getDate());
         day.setProgram(program);
         day.setId(dayRequest.getId());
+        day.setIsRestDay(dayRequest.getIsRestDay());
         for (Exercise exercise : dayRequest.getExercises()) {
             exercise.setDay(day);
         }

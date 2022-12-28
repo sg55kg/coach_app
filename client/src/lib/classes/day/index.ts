@@ -3,13 +3,15 @@ import type {Exercise} from "$lib/classes/program";
 export interface IDay {
     id?: string,
     date: Date,
-    exercises: Exercise[]
+    exercises: Exercise[],
+    isRestDay: boolean
 }
 
 export interface DayDTO {
     id: string,
     date: string,
-    exercises: Exercise[]
+    exercises: Exercise[],
+    isRestDay: boolean
 }
 
 export class Day implements IDay {
@@ -19,6 +21,7 @@ export class Day implements IDay {
         day.id = dayDTO.id
         day.date = new Date(dayDTO.date)
         day.exercises = dayDTO.exercises
+        day.isRestDay = dayDTO.isRestDay
 
         return { ...day }
     }
@@ -26,4 +29,5 @@ export class Day implements IDay {
     id: string = ''
     date: Date = new Date()
     exercises: Exercise[] = []
+    isRestDay: boolean = false
 }

@@ -3,10 +3,7 @@ package com.coachapp.coach_pc.view;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ProgramViewModel {
 
@@ -66,5 +63,26 @@ public class ProgramViewModel {
 
     public void setDays(List<DayViewModel> days) {
         this.days = days;
+    }
+
+    public static ProgramViewModel convertProgram(Program program) {
+        ProgramViewModel viewModel = new ProgramViewModel();
+
+        viewModel.setId(program.getId());
+        List<DayViewModel> set = new ArrayList<>();
+        program.getDays().forEach(d ->
+                set.add(new DayViewModel(
+                        d.getId(),
+                        d.getDate(),
+                        d.getExercises(),
+                        d.getIsRestDay()
+                ))
+        );
+        viewModel.setDays(set);
+        viewModel.setStartDate(program.getStartDate());
+        viewModel.setEndDate(program.getEndDate());
+        viewModel.setName(program.getName());
+
+        return viewModel;
     }
 }

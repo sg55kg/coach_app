@@ -2,7 +2,13 @@
     import {Exercise, ExerciseComment, Program} from "$lib/classes/program";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
-    import {completedExercises, currentDay, currentProgram, incompleteExercises} from "$lib/stores/athleteProgramStore";
+    import {
+        completedExercises,
+        currentDay,
+        currentProgram,
+        incompleteExercises,
+        loadingAthleteProgram
+    } from "$lib/stores/athleteProgramStore";
     import {Day} from "$lib/classes/day";
     import dayjs from "dayjs";
 
@@ -15,6 +21,7 @@
 
     const completeExercise = async (exercise: Exercise) => {
         if (!$auth0Client) return
+        loadingAthleteProgram.set(true)
 
         let updatedExercise: Exercise = !exercise.isComplete ? {
             ...exercise,
@@ -41,10 +48,12 @@
         } catch (e) {
             console.log(e)
         }
+        loadingAthleteProgram.set(false)
     }
 
     // There is a bug here where all inputs will share the same text
     const addComment = async (exercise: Exercise) => {
+        loadingAthleteProgram.set(true)
         let comment: ExerciseComment = {
             content: newCommentContent,
             athleteId: $userDB!.athleteData.id,
@@ -63,6 +72,7 @@
         } catch (e) {
             console.log(e)
         }
+        loadingAthleteProgram.set(false)
     }
 
 </script>
@@ -82,8 +92,12 @@
         <textarea class="w-full break-words text-left h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
     </div>
     <div>
-        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade" on:click={() => addComment(exercise)}>Comment</button>
-        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade" on:click={() => completeExercise(exercise)}>
+        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
+                disabled={loadingAthleteProgram}
+                on:click={() => addComment(exercise)}>Comment</button>
+        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
+                disabled={loadingAthleteProgram}
+                on:click={() => completeExercise(exercise)}>
             {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
         </button>
         <div class={(exercise.isComplete ? 'bg-green' : 'bg-red-shade') + ' h-1 absolute bottom-0 w-full left-0'}></div>

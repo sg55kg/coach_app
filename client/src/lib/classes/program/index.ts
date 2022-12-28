@@ -66,7 +66,7 @@ export class Program implements IProgram {
         program.name = programDTO.name
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
-        program.days = programDTO.days.map(d => Day.build(d))
+        program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date - b.date)
         //program.coach = programDTO.coach
 
         return { ...program }

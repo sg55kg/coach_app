@@ -14,11 +14,11 @@
     const today: Dayjs = dayjs()
 
     const setCurrentDay = (day: Dayjs) => {
-        if ($currentProgram === null) return
+        if (!$currentProgram) return
 
         let programDay: Day | undefined = $currentProgram.days.find(d => dayjs(d.date).isSame(day, 'day'))
 
-        if (programDay instanceof Day) {
+        if (programDay) {
             const arr = [...programDay.exercises]
             incompleteExercises.set(arr.sort((a, b) => a.order - b.order))
             return programDay
@@ -94,25 +94,18 @@
             </div>
         </div>
 
-        {#if $currentDay}
+        {#if $currentDay && $currentDay.isRestDay === false && $currentDay.exercises.length > 0}
             {#each $incompleteExercises as exercise}
                 <IncompleteExercise exercise={exercise} />
             {/each}
-            <!--{#each $completedExercises as exercise}-->
-            <!--    <div class="flex-col border-b-green">-->
-            <!--        <div>-->
-            <!--            <p class="w-fit m-0">{exercise.name}</p>-->
-            <!--            <p class="w-fit m-0">{exercise.weight}</p>-->
-            <!--            <p class="w-fit m-0">{exercise.sets}</p>-->
-            <!--            <p class="w-fit m-0">{exercise.repsPerSet}</p>-->
-            <!--        </div>-->
-            <!--        <div>-->
-            <!--            <button>-->
-            <!--                Edit-->
-            <!--            </button>-->
-            <!--        </div>-->
-            <!--    </div>-->
-            <!--{/each}-->
+        {:else if $currentDay.isRestDay}
+            <div>
+                Rest Day
+            </div>
+        {:else}
+            <div>
+                Your coach has not entered any information for this day yet
+            </div>
         {/if}
     </div>
 {/if}
