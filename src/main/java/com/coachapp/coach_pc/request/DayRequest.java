@@ -42,6 +42,10 @@ public class DayRequest {
         this.exercises = exercises;
     }
 
+    public void setIsRestDay(boolean isRestDay) {
+        this.isRestDay = isRestDay;
+    }
+
     public boolean getIsRestDay() {
         return isRestDay;
     }
@@ -51,6 +55,7 @@ public class DayRequest {
         day.setDate(dayRequest.getDate());
         day.setProgram(program);
         day.setId(dayRequest.getId());
+        day.setIsRestDay(dayRequest.getIsRestDay());
         for (Exercise exercise : dayRequest.getExercises()) {
             exercise.setDay(day);
         }

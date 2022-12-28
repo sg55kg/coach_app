@@ -26,7 +26,8 @@ export class ProgramService {
             method: 'GET',
             headers: { 'Authorization':'Bearer ' + accessToken}
         })
-        return await res.json()
+        const program: ProgramDTO = await res.json()
+        return Program.build(program)
     }
 
     static createProgram = async (client: Auth0Client, program: Program, user: User) => {

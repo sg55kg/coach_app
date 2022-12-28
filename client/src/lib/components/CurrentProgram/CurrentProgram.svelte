@@ -14,11 +14,11 @@
     const today: Dayjs = dayjs()
 
     const setCurrentDay = (day: Dayjs) => {
-        if ($currentProgram === null) return
+        if (!$currentProgram) return
 
         let programDay: Day | undefined = $currentProgram.days.find(d => dayjs(d.date).isSame(day, 'day'))
 
-        if (programDay instanceof Day) {
+        if (programDay) {
             const arr = [...programDay.exercises]
             incompleteExercises.set(arr.sort((a, b) => a.order - b.order))
             return programDay

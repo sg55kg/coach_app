@@ -40,18 +40,6 @@ public class Day {
         this.exercises = exercises;
     }
 
-    public static Day convertRequest(DayRequest dayRequest, Program program) {
-        Day day = new Day();
-
-        day.setProgram(program);
-        day.setDate(dayRequest.getDate());
-        day.setId(dayRequest.getId());
-        day.setExercises(dayRequest.getExercises());
-        day.setIsRestDay(dayRequest.getIsRestDay());
-
-        return day;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -90,7 +78,7 @@ public class Day {
     }
 
     public void setIsRestDay(boolean isRestDay) {
-        isRestDay = isRestDay;
+        this.isRestDay = isRestDay;
     }
 
     @Override

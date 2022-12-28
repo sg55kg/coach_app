@@ -74,7 +74,8 @@ public class ProgramViewModel {
                 set.add(new DayViewModel(
                         d.getId(),
                         d.getDate(),
-                        d.getExercises()
+                        d.getExercises(),
+                        d.getIsRestDay()
                 ))
         );
         viewModel.setDays(set);
