@@ -23,14 +23,16 @@ public class Day {
     private Program program;
     @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE)
     private List<Exercise> exercises;
+    private boolean isRestDay;
 
     public Day() {}
 
-    public Day(Date date, List<Exercise> exercises, UUID id, Program program) {
+    public Day(Date date, List<Exercise> exercises, UUID id, Program program, boolean isRestDay) {
         this.date = date;
         this.exercises = exercises;
         this.id = id;
         this.program = program;
+        this.isRestDay = isRestDay;
     }
 
     public Day(Date date, List<Exercise> exercises) {
@@ -45,6 +47,7 @@ public class Day {
         day.setDate(dayRequest.getDate());
         day.setId(dayRequest.getId());
         day.setExercises(dayRequest.getExercises());
+        day.setIsRestDay(dayRequest.getIsRestDay());
 
         return day;
     }
@@ -80,6 +83,14 @@ public class Day {
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
         exercises.forEach(e -> e.setDay(this));
+    }
+
+    public boolean getIsRestDay() {
+        return isRestDay;
+    }
+
+    public void setIsRestDay(boolean isRestDay) {
+        isRestDay = isRestDay;
     }
 
     @Override

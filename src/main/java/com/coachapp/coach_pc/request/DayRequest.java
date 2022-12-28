@@ -14,6 +14,7 @@ public class DayRequest {
     private UUID id;
     private Date date;
     private List<Exercise> exercises;
+    private boolean isRestDay;
 
     public DayRequest() {}
 
@@ -39,6 +40,10 @@ public class DayRequest {
 
     public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
+    }
+
+    public boolean getIsRestDay() {
+        return isRestDay;
     }
 
     public static Day convertRequest(DayRequest dayRequest, Program program) {

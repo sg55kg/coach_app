@@ -59,30 +59,12 @@ public class ProgramService {
         }
 
         Program raw = op.get();
-        ProgramViewModel program = convertProgram(raw);
+        ProgramViewModel program = ProgramViewModel.convertProgram(raw);
 
         return program;
     }
 
-    private ProgramViewModel convertProgram(Program program) {
-        ProgramViewModel viewModel = new ProgramViewModel();
 
-        viewModel.setId(program.getId());
-        List<DayViewModel> set = new ArrayList<>();
-        program.getDays().forEach(d ->
-                set.add(new DayViewModel(
-                        d.getId(),
-                        d.getDate(),
-                        d.getExercises()
-                ))
-        );
-        viewModel.setDays(set);
-        viewModel.setStartDate(program.getStartDate());
-        viewModel.setEndDate(program.getEndDate());
-        viewModel.setName(program.getName());
-
-        return viewModel;
-    }
 
     public void deleteProgram(UUID id) {
         _programRepo.deleteById(id);
@@ -112,7 +94,7 @@ public class ProgramService {
         Program program = UpdateProgramRequest.convertRequest(request, dbProgram.get());
         program = _programRepo.save(program);
 
-        ProgramViewModel vm = convertProgram(program);
+        ProgramViewModel vm = ProgramViewModel.convertProgram(program);
         return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 
@@ -177,7 +159,7 @@ public class ProgramService {
         }
 
         program = _programRepo.save(program);
-        ProgramViewModel viewModel = convertProgram(program);
+        ProgramViewModel viewModel = ProgramViewModel.convertProgram(program);
         return new ResponseEntity<>(viewModel, HttpStatus.OK);
     }
 }

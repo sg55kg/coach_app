@@ -1,0 +1,1 @@
+ALTER TABLE days ADD COLUMN is_rest_day bool DEFAULT FALSE;
