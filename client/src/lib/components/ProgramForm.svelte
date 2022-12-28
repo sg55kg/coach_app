@@ -89,6 +89,7 @@
         selectedIndex === $program.days.length - 1 ? null : selectedIndex++
         console.log(selectedIndex)
     }
+
     const decrementSelectedIndex = () => selectedIndex === 0 ? null : selectedIndex--
 
     const handleHotKeys = (e: KeyboardEvent) => {
@@ -149,6 +150,8 @@
             return p
         })
     }
+
+    const toggleRestDay = () => $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay
 
     onMount(() => {
         if (document)
@@ -250,40 +253,46 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2">
-                    Make rest day (Shift *)
+                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                    {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
                 </button>
             </div>
         {/if}
     </div>
     {#if selectedIndex > -1}
-        {#each $program.days[selectedIndex].exercises as exercise, idx}
-            <div class="flex flex-col p-2 justify-items-center border-0 pt-5">
-                <div class="flex flex-row p-2 justify-between">
-                    <input type="text"
-                           name="name"
-                           placeholder="Exercise name"
-                           class="bg-gray-300 p-2"
-                           bind:value={exercise.name}>
-                    <input type="number"
-                           name="weight"
-                           placeholder="Weight"
-                           class="bg-gray-300 p-2"
-                           bind:value={exercise.weight}>
-                    <input type="number"
-                           name="sets"
-                           placeholder="Sets"
-                           class="bg-gray-300 p-2"
-                           bind:value={exercise.sets}>
-                    <input type="number"
-                           name="repsPerSet"
-                           placeholder="Reps"
-                           class="bg-gray-300 p-2"
-                           bind:value={exercise.repsPerSet}>
+        {#if $program.days[selectedIndex].isRestDay === false}
+            {#each $program.days[selectedIndex].exercises as exercise, idx}
+                <div class="flex flex-col p-2 justify-items-center border-0 pt-5">
+                    <div class="flex flex-row p-2 justify-between">
+                        <input type="text"
+                               name="name"
+                               placeholder="Exercise name"
+                               class="bg-gray-300 p-2"
+                               bind:value={exercise.name}>
+                        <input type="number"
+                               name="weight"
+                               placeholder="Weight"
+                               class="bg-gray-300 p-2"
+                               bind:value={exercise.weight}>
+                        <input type="number"
+                               name="sets"
+                               placeholder="Sets"
+                               class="bg-gray-300 p-2"
+                               bind:value={exercise.sets}>
+                        <input type="number"
+                               name="repsPerSet"
+                               placeholder="Reps"
+                               class="bg-gray-300 p-2"
+                               bind:value={exercise.repsPerSet}>
+                    </div>
+                    <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2 m-2"></textarea>
                 </div>
-                <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2 m-2"></textarea>
+            {/each}
+        {:else}
+            <div>
+                Rest Day
             </div>
-        {/each}
+        {/if}
         <footer class="flex mt-4 justify-end w-full">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
