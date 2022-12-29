@@ -11,6 +11,9 @@
     } from "$lib/stores/athleteProgramStore";
     import {Day} from "$lib/classes/day";
     import dayjs from "dayjs";
+    import type {AthleteData, AthleteRecord} from "$lib/classes/user";
+    import UserService from "$lib/service/userService";
+    import {onMount} from "svelte";
 
     export let exercise: Exercise
 
@@ -19,8 +22,21 @@
 
     const toggleShowComments = () => showComments = !showComments
 
+    const isPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
+        for (const key in records) {
+            const formattedName = exercise.name.trim().toUpperCase().split(' ').join('')
+            if (key.toUpperCase() === formattedName) {
+                return (records[key] <= exercise.weightCompleted && exercise.weightCompleted !== 0) ? key : ''
+            }
+        }
+        return ''
+    }
+
+    // rename this to isPersonalBest and rename function to more fitting name
+    let hitPersonalBest: boolean = false
+
     const completeExercise = async (exercise: Exercise) => {
-        if (!$auth0Client) return
+        if (!$auth0Client || !$userDB?.athleteData) return
         loadingAthleteProgram.set(true)
 
         let updatedExercise: Exercise = !exercise.isComplete ? {
@@ -33,6 +49,30 @@
             isComplete: false,
             weightCompleted: 0,
             totalRepsCompleted: 0
+        }
+
+        if (updatedExercise.weightCompleted > 0) {
+            const recordKey = isPersonalBest(updatedExercise, $userDB.athleteData.records)
+            if (recordKey !== '') {
+                const updatedAthleteData = {
+                    ...$userDB.athleteData,
+                    records: {
+                        ...$userDB.athleteData.records,
+                        [recordKey]: updatedExercise.weightCompleted
+                    }
+                }
+                try {
+                    const res = await UserService.updateAthleteRecords($auth0Client, updatedAthleteData)
+                    userDB.update(prev => {
+                        prev!.athleteData!.records = res
+                        return prev
+                    })
+                    hitPersonalBest = true
+                    console.log(res)
+                } catch (e) {
+                    console.log(e)
+                }
+            }
         }
 
         try {
@@ -51,7 +91,6 @@
         loadingAthleteProgram.set(false)
     }
 
-    // There is a bug here where all inputs will share the same text
     const addComment = async (exercise: Exercise) => {
         loadingAthleteProgram.set(true)
         let comment: ExerciseComment = {
@@ -75,6 +114,11 @@
         loadingAthleteProgram.set(false)
     }
 
+    onMount(() => {
+        // this may need tweaking. If they tie a PR, it probably should show it was a tie vs saying PERSONAL RECORD!!!
+        hitPersonalBest = isPersonalBest(exercise, $userDB!.athleteData!.records) !== ''
+    })
+
 </script>
 
 
@@ -93,13 +137,18 @@
     </div>
     <div>
         <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
-                disabled={loadingAthleteProgram}
+                disabled={$loadingAthleteProgram}
                 on:click={() => addComment(exercise)}>Comment</button>
         <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
-                disabled={loadingAthleteProgram}
+                disabled={$loadingAthleteProgram}
                 on:click={() => completeExercise(exercise)}>
             {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
         </button>
+        {#if hitPersonalBest}
+            <div class="m-2 p-2 flex justify-center">
+                <p class="text-green">Personal Record!</p>
+            </div>
+        {/if}
         <div class={(exercise.isComplete ? 'bg-green' : 'bg-red-shade') + ' h-1 absolute bottom-0 w-full left-0'}></div>
     </div>
 </div>

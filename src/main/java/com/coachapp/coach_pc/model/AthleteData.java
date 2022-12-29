@@ -14,28 +14,23 @@ public class AthleteData {
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
-
     @OneToOne(mappedBy = "athleteData")
     @JsonIgnore
     private UserData user;
-
     @OneToOne
     @JoinColumn(name = "current_program_id")
     private Program currentProgram;
-
     @OneToMany(mappedBy = "athlete")
     private List<Program> programs;
-
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private CoachData coach;
-
     @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
-
     private String name;
-
+    @OneToOne(cascade = CascadeType.MERGE, mappedBy = "athlete")
+    private AthleteRecord records;
 
     public AthleteData() {}
 
@@ -93,5 +88,13 @@ public class AthleteData {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public AthleteRecord getRecords() {
+        return records;
+    }
+
+    public void setRecords(AthleteRecord records) {
+        this.records = records;
     }
 }
