@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.request.AthleteRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,5 +52,20 @@ public class AthleteService {
         athlete = athleteRepo.save(athlete);
 
         return new ResponseEntity<>(athlete, HttpStatus.OK);
+    }
+
+    public ResponseEntity<AthleteRecord> updateAthleteRecord(UUID athleteId, AthleteRecord record) {
+        Optional<AthleteData> optional = athleteRepo.findById(athleteId);
+
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        AthleteData athlete = optional.get();
+        athlete.setRecords(record);
+        record.setAthlete(athlete);
+        athlete = athleteRepo.save(athlete);
+
+        return new ResponseEntity<>(athlete.getRecords(), HttpStatus.OK);
     }
 }

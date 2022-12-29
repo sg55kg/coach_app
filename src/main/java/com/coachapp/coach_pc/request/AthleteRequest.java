@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
 
@@ -12,14 +13,16 @@ public class AthleteRequest {
     private UUID teamId;
     private UUID coachId;
     private String name;
+    private AthleteRecord records;
 
     public AthleteRequest() {}
 
-    public AthleteRequest(UUID id, UUID teamId, UUID coachId, String name) {
+    public AthleteRequest(UUID id, UUID teamId, UUID coachId, String name, AthleteRecord records) {
         this.id = id;
         this.teamId = teamId;
         this.coachId = coachId;
         this.name = name;
+        this.records = records;
     }
 
     public UUID getId() {
@@ -38,6 +41,10 @@ public class AthleteRequest {
         return name;
     }
 
+    public AthleteRecord getRecords() {
+        return records;
+    }
+
     public static AthleteData convertRequest(AthleteRequest request) {
         AthleteData athlete = new AthleteData();
         Team team = new Team();
@@ -50,6 +57,7 @@ public class AthleteRequest {
         athlete.setName(request.getName());
         athlete.setTeam(team);
         athlete.setCoach(coach);
+        athlete.setRecords(request.getRecords());
 
         return athlete;
     }

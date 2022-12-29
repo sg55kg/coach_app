@@ -2,6 +2,7 @@ import * as devalue from 'devalue'
 import {Auth0Client, createAuth0Client, User} from "@auth0/auth0-spa-js";
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
 import Cookies from "js-cookie";
+import type {AthleteData, AthleteRecord} from "$lib/classes/user";
 
 
 
@@ -114,7 +115,26 @@ export default class UserService {
                 userData = await res.json()
             }
         }
-        console.log(userData)
         userDB.set(userData)
+    }
+
+    static updateAthleteRecords = async (client: Auth0Client, athlete: AthleteData) => {
+        const accessToken = await client.getTokenSilently()
+        const id = athlete.id
+
+        const res = await fetch(`http://localhost:8180/api/athletes/${id}/record`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(athlete.records)
+        })
+
+        if (res.status === 404 || res.status === 500) {
+            throw new Error('Could not update athlete records')
+        }
+
+        return await res.json()
     }
 }
