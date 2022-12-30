@@ -15,9 +15,9 @@
             Coachable
         </a>
         <p>&nbsp | &nbsp</p>
-        <a href="/home/coach">My Teams</a>
+        <a href="/home/coach">Coach Home</a>
         <p>&nbsp | &nbsp</p>
-        <a href="/home/athlete">My Program</a>
+        <a href="/home/athlete">Athlete Home</a>
     </div>
     <div class="flex">
         <button on:click={logout}>

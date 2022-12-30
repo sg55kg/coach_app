@@ -25,7 +25,7 @@ public class AthleteData {
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private CoachData coach;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;

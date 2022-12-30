@@ -1,19 +1,18 @@
 <script lang="ts">
 
-    import {userDB} from "$lib/stores/authStore";
-    import CurrentProgram from "$lib/components/CurrentProgram/CurrentProgram.svelte";
-
 
 </script>
 
-<h1>Athlete Page</h1>
-{#if $userDB?.athleteData?.currentProgram}
-    <CurrentProgram currentProgramId={$userDB.athleteData.currentProgram.id} />
-{:else}
-    <div>
-        You do not have a program currently
+<div>
+    <h1 class="font-bold text-2xl">Athlete Home</h1>
+    <div class="flex justify-around mt-6 font-bold text-link">
+        <a href="/home/athlete/program">My Program</a>
+        <a href="/home/athlete/team">My Team</a>
+        <a href="/home/athlete/teams">Teams</a>
     </div>
-{/if}
+
+</div>
+
 
 <style>
 

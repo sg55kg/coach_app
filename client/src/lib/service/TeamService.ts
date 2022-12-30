@@ -15,4 +15,15 @@ export class TeamService {
         
         return await res.json()
     }
+
+    static getDisplayTeams = async (client: Auth0Client) => {
+        const accessToken = await client.getTokenSilently()
+
+        const res = await fetch(`http://localhost:8180/api/teams/`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }
+        })
+
+        return await res.json()
+    }
 }

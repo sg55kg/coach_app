@@ -29,3 +29,12 @@ export class Team {
     coachName: string = ''
     athletes: AthleteData[] = []
 }
+
+export class DisplayTeam {
+    id: string = ''
+    name: string = ''
+    description: string = ''
+    coachName: string = ''
+    coachId: string = ''
+    numAthletes: number = 0
+}

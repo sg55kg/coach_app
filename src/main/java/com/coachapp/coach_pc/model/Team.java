@@ -23,7 +23,7 @@ public class Team {
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     @JsonIgnore
     private CoachData coach;
-    @OneToMany
+    @OneToMany(mappedBy = "team")
     @JsonIgnore
     private List<AthleteData> athletes;
     @CreationTimestamp
