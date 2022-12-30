@@ -1,10 +1,11 @@
 import type {Program} from "$lib/classes/program"
 import type {Team} from "$lib/classes/team"
+import dayjs, {Dayjs} from "dayjs";
 
 export interface UserDTO {
     id: string,
-    athleteData: AthleteData | null,
-    coachData: CoachData | null,
+    athleteData: AthleteDataDTO | null,
+    coachData: CoachDataDTO | null,
     createdAt: string,
     email: string,
     roles: any[],
@@ -12,24 +13,64 @@ export interface UserDTO {
     username: string
 }
 
-export interface AthleteData {
+export interface AthleteDataDTO {
     id: string,
     name: string,
     currentProgram: Program,
     programs: Program[],
-    coach: CoachData,
-    records: AthleteRecord
+    coach: CoachDataDTO,
+    records: AthleteRecordDTO
 }
 
-export interface CoachData {
+export interface CoachDataDTO {
     id: string,
     programs: Program[],
-    athletes: AthleteData[],
+    athletes: AthleteDataDTO[],
     teams: Team[]
+}
+
+export class AthleteData {
+    id: string = ''
+    name: string = ''
+    currentProgram: Program | null = null
+    programs: Program[] = []
+    coach: CoachData | null = null
+    records: AthleteRecord | null = null
+
+    public static createFrom(data: AthleteDataDTO) {
+        const athlete = new AthleteData()
+
+        athlete.id = data.id
+        athlete.name = data.name
+        athlete.currentProgram = data.currentProgram
+        athlete.programs = data.programs
+        athlete.coach = data.coach ? CoachData.createFrom(data.coach) : null
+        athlete.records = new AthleteRecord(data.records)
+
+        return athlete
+    }
+}
+
+export class CoachData {
+    id: string = ''
+    programs: Program[] = []
+    athletes: AthleteData[] = []
+    teams: Team[] = []
+
+    public static createFrom(data: CoachDataDTO) {
+        const coach = new CoachData()
+
+        coach.id = data.id
+        coach.programs = data.programs
+        coach.athletes = data.athletes.map(athlete => AthleteData.createFrom(athlete))
+        coach.teams = data.teams
+
+        return coach
+    }
 
 }
 
-export interface AthleteRecord {
+export interface AthleteRecordDTO {
     id: string,
     snatch: number
     cleanAndJerk: number
@@ -72,15 +113,27 @@ export interface AthleteRecord {
     farmerCarryWeight: number
 }
 
+export class AthleteRecord {
+
+    public records: Map<string,number> = new Map<string, number>()
+
+    constructor(data: AthleteRecordDTO) {
+        for (const [key, value] of Object.entries(data)) {
+            this.records.set(key.toUpperCase(), value)
+        }
+    }
+}
+
 export class User {
 
     static build(userDTO: UserDTO) {
         const user = new User()
+        console.log('coach', userDTO.coachData)
 
-        user.athleteData = userDTO.athleteData
-        user.coachData = userDTO.coachData
-        user.createdAt = new Date(userDTO.createdAt)
-        user.updatedAt = new Date(userDTO.updatedAt)
+        user.athleteData = userDTO.athleteData ? AthleteData.createFrom(userDTO.athleteData) : null
+        user.coachData = userDTO.coachData ? CoachData.createFrom(userDTO.coachData) : null
+        user.createdAt = dayjs(userDTO.createdAt)
+        user.updatedAt = dayjs(userDTO.updatedAt)
         user.email = userDTO.email
         user.id = userDTO.id
         user.username = userDTO.username
@@ -91,10 +144,10 @@ export class User {
 
     athleteData: AthleteData | null = null
     coachData: CoachData | null = null
-    createdAt: Date = new Date()
+    createdAt: Dayjs = dayjs()
     email: string = ''
     id: string = ''
     roles: any[] = []
-    updatedAt: Date = new Date()
+    updatedAt: Dayjs = dayjs()
     username: string = ''
 }

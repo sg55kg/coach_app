@@ -1,8 +1,7 @@
 import * as devalue from 'devalue'
-import {Auth0Client, createAuth0Client, User} from "@auth0/auth0-spa-js";
+import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
-import Cookies from "js-cookie";
-import type {AthleteData, AthleteRecord} from "$lib/classes/user";
+import {type AthleteData, User} from "$lib/classes/user";
 
 
 
@@ -27,7 +26,7 @@ export default class UserService {
             auth0Client.set(client)
             isAuthenticated.set(await client.isAuthenticated())
             const data = await client.getUser()
-            user.set(data as User)
+            user.set(data as Auth0User)
             if (data !== undefined) {
                 await UserService.fetchUserData(client, data.email as string)
             }
@@ -84,6 +83,7 @@ export default class UserService {
             })
         }
         let userData = await res.json()
+        console.log(userData)
 
         if (!userData.coachData && res.status !== 500) {
             res = await fetch(`http://localhost:8180/api/users/coach`, {
@@ -115,7 +115,10 @@ export default class UserService {
                 userData = await res.json()
             }
         }
-        userDB.set(userData)
+        if (userData) {
+            userDB.set(User.build(userData))
+        }
+
     }
 
     static updateAthleteRecords = async (client: Auth0Client, athlete: AthleteData) => {
@@ -131,7 +134,7 @@ export default class UserService {
             body: JSON.stringify(athlete.records)
         })
 
-        if (res.status === 404 || res.status === 500) {
+        if (res.status > 299) {
             throw new Error('Could not update athlete records')
         }
 
