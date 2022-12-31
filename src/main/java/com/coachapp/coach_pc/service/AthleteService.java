@@ -42,13 +42,14 @@ public class AthleteService {
     }
 
     public ResponseEntity<AthleteData> updateAthlete(UUID id, AthleteRequest request) {
-        boolean exists = athleteRepo.existsById(id);
+        Optional<AthleteData> optional = athleteRepo.findById(id);
 
-        if (!exists) {
+        if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        AthleteData athlete = AthleteRequest.convertRequest(request);
+        AthleteData athlete = optional.get();
+        athlete = AthleteRequest.convertRequest(request, athlete);
         athlete = athleteRepo.save(athlete);
 
         return new ResponseEntity<>(athlete, HttpStatus.OK);

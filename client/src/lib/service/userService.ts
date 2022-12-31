@@ -140,4 +140,26 @@ export default class UserService {
 
         return await res.json()
     }
+
+    static updateAthleteData = async (client: Auth0Client, athlete: AthleteData) => {
+        const accessToken = await client.getTokenSilently()
+        const id = athlete.id
+
+        const res = await fetch(`http://localhost:8180/api/athletes/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id,
+                teamId: athlete.team ? athlete.team.id : null,
+                coachId: athlete.coach ? athlete.coach.id : null,
+                name: athlete.name,
+                records: athlete.records
+            })
+        })
+
+        return await res.json()
+    }
 }

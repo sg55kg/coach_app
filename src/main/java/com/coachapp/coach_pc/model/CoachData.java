@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class CoachData {
     @JsonIgnore
     private UserData user;
     @OneToMany(mappedBy = "coach")
+    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<AthleteData> athletes;
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;

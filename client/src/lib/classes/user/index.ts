@@ -1,5 +1,5 @@
 import type {Program} from "$lib/classes/program"
-import type {Team} from "$lib/classes/team"
+import {Team, type TeamDTO} from "$lib/classes/team"
 import dayjs, {Dayjs} from "dayjs";
 
 export interface UserDTO {
@@ -20,13 +20,14 @@ export interface AthleteDataDTO {
     programs: Program[],
     coach: CoachDataDTO,
     records: AthleteRecordDTO
+    team: TeamDTO
 }
 
 export interface CoachDataDTO {
     id: string,
     programs: Program[],
     athletes: AthleteDataDTO[],
-    teams: Team[]
+    teams: TeamDTO[]
 }
 
 export class AthleteData {
@@ -36,6 +37,7 @@ export class AthleteData {
     programs: Program[] = []
     coach: CoachData | null = null
     records: AthleteRecord | null = null
+    team: Team | null = null
 
     public static createFrom(data: AthleteDataDTO) {
         const athlete = new AthleteData()
@@ -46,6 +48,7 @@ export class AthleteData {
         athlete.programs = data.programs
         athlete.coach = data.coach ? CoachData.createFrom(data.coach) : null
         athlete.records = new AthleteRecord(data.records)
+        athlete.team = data.team ? Team.createFrom(data.team) : null
 
         return athlete
     }
@@ -63,7 +66,7 @@ export class CoachData {
         coach.id = data.id
         coach.programs = data.programs
         coach.athletes = data.athletes.map(athlete => AthleteData.createFrom(athlete))
-        coach.teams = data.teams
+        coach.teams = data.teams ? data.teams.map(t => Team.createFrom(t)) : []
 
         return coach
     }

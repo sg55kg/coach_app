@@ -24,12 +24,13 @@ public class AthleteData {
     private List<Program> programs;
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
+    @JsonIgnore
     private CoachData coach;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
-    @OneToOne(cascade = CascadeType.MERGE, mappedBy = "athlete")
+    @OneToOne(cascade = { CascadeType.PERSIST }, mappedBy = "athlete")
     private AthleteRecord records;
 
     public AthleteData() {}

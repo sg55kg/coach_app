@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Day} from "../../../lib/classes/program";
+    import {Day} from "$lib/classes/program/day";
 
     export let data
     const { program } = data

@@ -2,14 +2,13 @@
     import {program} from "../stores/programStore";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
-    import {Exercise, Program} from "../classes/program";
+    import {Program} from "../classes/program";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {Day} from "../classes/day";
-    import {DateInput, DatePicker} from "date-picker-svelte";
+    import {Day} from "../classes/program/day";
     import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
-    import type {AthleteData} from "$lib/classes/user";
-    import {user, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
+    import {Exercise} from "$lib/classes/program/exercise";
 
     export let handleSubmit
     export let initialIndex = -1

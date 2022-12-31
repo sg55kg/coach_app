@@ -45,8 +45,7 @@ public class AthleteRequest {
         return records;
     }
 
-    public static AthleteData convertRequest(AthleteRequest request) {
-        AthleteData athlete = new AthleteData();
+    public static AthleteData convertRequest(AthleteRequest request, AthleteData athlete) {
         Team team = new Team();
         CoachData coach = new CoachData();
 
@@ -54,10 +53,15 @@ public class AthleteRequest {
         coach.setId(request.getCoachId());
 
         athlete.setId(request.getId());
-        athlete.setName(request.getName());
+        if (request.getName() != null) {
+            athlete.setName(request.getName());
+        }
         athlete.setTeam(team);
         athlete.setCoach(coach);
-        athlete.setRecords(request.getRecords());
+        if (request.getRecords() != null && request.getRecords().getId() != null) {
+            athlete.setRecords(request.getRecords());
+        }
+
 
         return athlete;
     }

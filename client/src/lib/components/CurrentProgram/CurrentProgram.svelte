@@ -1,10 +1,9 @@
 <script lang="ts">
-    import {Exercise, ExerciseComment, Program} from "$lib/classes/program";
     import dayjs, {Dayjs} from "dayjs";
     import {onDestroy, onMount} from "svelte";
     import {ProgramService} from "$lib/service/ProgramService";
     import {auth0Client, userDB} from "$lib/stores/authStore";
-    import {Day} from "$lib/classes/day";
+    import {Day} from "$lib/classes/program/day";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
     import IncompleteExercise from "$lib/components/CurrentProgram/IncompleteExercise.svelte";

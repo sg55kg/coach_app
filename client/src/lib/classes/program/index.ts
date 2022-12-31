@@ -1,5 +1,6 @@
-import {Day} from "../day";
-import type {DayDTO} from "../day";
+import {Day} from "./day";
+import type {DayDTO} from "./day";
+import type {CoachDataDTO} from "$lib/classes/user";
 
 export interface IProgram {
     id?: string,
@@ -18,6 +19,7 @@ export interface ProgramDTO {
     startDate: string,
     endDate: string,
     days: DayDTO[],
+    coach?: CoachDataDTO
 }
 
 
@@ -30,32 +32,7 @@ export enum WeightIntensity {
     NONE = "NONE"
 }
 
-export class Exercise {
-    id: string = ''
-    name: string = ''
-    weight: number = 0
-    sets: number = 0
-    repsPerSet: number = 0
-    notes: string = ''
-    weightIntensity: WeightIntensity = WeightIntensity.NONE
-    isMax: boolean = false
-    weightCompleted: number = 0
-    totalRepsCompleted: number = 0
-    comments: ExerciseComment[] = []
-    isComplete: boolean = false
-    order: number = 0
-}
 
-
-export class ExerciseComment {
-    id: string = ''
-    athleteId: string = ''
-    content: string = ''
-    exerciseId: string = ''
-    commenterName: string = ''
-    createdAt?: Date = new Date()
-    updatedAt?: Date = new Date()
-}
 
 
 export class Program implements IProgram {
@@ -66,8 +43,8 @@ export class Program implements IProgram {
         program.name = programDTO.name
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
-        program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date - b.date)
-        //program.coach = programDTO.coach
+        program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
+        program.coachId = programDTO.coach ? programDTO.coach.id : ''
 
         return { ...program }
     }

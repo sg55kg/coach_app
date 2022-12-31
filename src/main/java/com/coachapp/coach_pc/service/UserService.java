@@ -30,7 +30,8 @@ public class UserService {
         if(optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(optional.get(), HttpStatus.OK);
+            UserData user = optional.get();
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
 

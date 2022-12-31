@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Exercise, ExerciseComment, Program} from "$lib/classes/program";
+    import {Program} from "$lib/classes/program";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {
@@ -9,11 +9,12 @@
         incompleteExercises,
         loadingAthleteProgram
     } from "$lib/stores/athleteProgramStore";
-    import {Day} from "$lib/classes/day";
+    import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
     import {AthleteRecord} from "$lib/classes/user";
     import UserService from "$lib/service/userService";
     import {onMount} from "svelte";
+    import {Exercise} from "$lib/classes/program/exercise";
 
     export let exercise: Exercise
 

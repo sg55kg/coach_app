@@ -2,9 +2,8 @@
     import {auth0Client, user} from "../stores/authStore";
     import UserService from "../service/userService";
 
-    console.log($user)
     const logout = async () => {
-        await UserService.logout($auth0Client)
+        await UserService.logout($auth0Client!)
     }
 
 </script>
