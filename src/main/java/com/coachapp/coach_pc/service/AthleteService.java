@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class AthleteService {
         return new ResponseEntity<>(athlete, HttpStatus.OK);
     }
 
-    public ResponseEntity<AthleteRecord> updateAthleteRecord(UUID athleteId, AthleteRecord record) {
+    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(UUID athleteId, AthleteRecord record) {
         Optional<AthleteData> optional = athleteRepo.findById(athleteId);
 
         if (optional.isEmpty()) {
@@ -63,7 +64,7 @@ public class AthleteService {
         }
 
         AthleteData athlete = optional.get();
-        athlete.setRecords(record);
+        athlete.addRecord(record);
         record.setAthlete(athlete);
         athlete = athleteRepo.save(athlete);
 

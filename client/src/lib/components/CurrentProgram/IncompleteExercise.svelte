@@ -11,10 +11,10 @@
     } from "$lib/stores/athleteProgramStore";
     import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
-    import {AthleteRecord} from "$lib/classes/user";
+    import {AthleteData, AthleteRecord} from "$lib/classes/user";
     import UserService from "$lib/service/userService";
     import {onMount} from "svelte";
-    import {Exercise} from "$lib/classes/program/exercise";
+    import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
 
     export let exercise: Exercise
 
@@ -24,7 +24,7 @@
     const toggleShowComments = () => showComments = !showComments
 
     const weightIsNewPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
-        const formattedName = exercise.name.trim().toUpperCase().split(' ').join('')
+        const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
         if (!records.records.has(formattedName)) {
             return ''
         }
@@ -36,7 +36,7 @@
     }
 
     const weightIsTiedPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
-        const formattedName = exercise.name.trim().toUpperCase().split(' ').join('')
+        const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
         if (!records.records.has(formattedName)) {
             return ''
         }
@@ -67,15 +67,16 @@
         }
 
         if (updatedExercise.weightCompleted > 0) {
-            const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records)
+            const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records!)
             if (recordKey !== '') {
                 const updatedAthleteData = {
                     ...$userDB.athleteData,
                     records: {
-                        ...$userDB.athleteData.records,
+                        ...$userDB.athleteData.records?.records,
+                        lastUpdated: recordKey,
                         [recordKey]: updatedExercise.weightCompleted
                     }
-                }
+                } as AthleteData
                 try {
                     const res = await UserService.updateAthleteRecords($auth0Client, updatedAthleteData)
                     userDB.update(prev => {
@@ -85,6 +86,10 @@
                     isNewPersonalBest = true
                     isPersonalBest = false
                     console.log(res)
+                    userDB.update(prev => {
+                        prev!.athleteData!.records!.records[recordKey] = updatedExercise.weightCompleted
+                        return prev
+                    })
                 } catch (e) {
                     console.log(e)
                 }

@@ -30,8 +30,8 @@ public class AthleteData {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
-    @OneToOne(cascade = { CascadeType.PERSIST }, mappedBy = "athlete")
-    private AthleteRecord records;
+    @OneToMany(mappedBy = "athlete")
+    private List<AthleteRecord> records;
 
     public AthleteData() {}
 
@@ -91,11 +91,15 @@ public class AthleteData {
         this.team = team;
     }
 
-    public AthleteRecord getRecords() {
+    public List<AthleteRecord> getRecords() {
         return records;
     }
 
-    public void setRecords(AthleteRecord records) {
+    public void setRecords(List<AthleteRecord> records) {
         this.records = records;
+    }
+
+    public void addRecord(AthleteRecord record) {
+        this.records.add(record);
     }
 }

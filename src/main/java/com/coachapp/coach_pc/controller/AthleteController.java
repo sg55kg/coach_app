@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -35,7 +36,7 @@ public class AthleteController {
     }
 
     @PutMapping("/{athleteId}/record")
-    public ResponseEntity<AthleteRecord> updateAthleteRecord(@PathVariable UUID athleteId, @RequestBody AthleteRecord record) {
+    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(@PathVariable UUID athleteId, @RequestBody AthleteRecord record) {
         return athleteService.updateAthleteRecord(athleteId, record);
     }
 }

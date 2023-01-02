@@ -1,60 +1,110 @@
 package com.coachapp.coach_pc.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Table(name = "athlete_record")
 public class AthleteRecord {
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "athlete_id", referencedColumnName = "id")
     @JsonIgnore
     private AthleteData athlete;
+    @CreationTimestamp
+    private Date createdAt;
+    private String lastUpdated;
+    @JsonAlias("snatch")
     private int snatch;
+    @JsonAlias("clean_and_jerk")
     private int cleanAndJerk;
+    @JsonAlias("jerk")
     private int jerk;
+    @JsonAlias("clean")
     private int clean;
+    @JsonAlias("back_squat")
     private int backSquat;
+    @JsonAlias("front_squat")
     private int frontSquat;
+    @JsonAlias("deadlift")
     private int deadlift;
+    @JsonAlias("snatch_deadlift")
     private int snatchDeadlift;
+    @JsonAlias("push_press")
     private int pushPress;
+    @JsonAlias("strict_press")
     private int strictPress;
+    @JsonAlias("bent_over_row")
     private int bentOverRow;
+    @JsonAlias("power_snatch")
     private int powerSnatch;
+    @JsonAlias("power_clean")
     private int powerClean;
+    @JsonAlias("power_jerk")
     private int powerJerk;
+    @JsonAlias("hang_snatch")
     private int hangSnatch;
+    @JsonAlias("hang_power_snatch")
     private int hangPowerSnatch;
+    @JsonAlias("hang_power_clean")
     private int hangPowerClean;
+    @JsonAlias("block_snatch")
     private int blockSnatch;
+    @JsonAlias("block_clean")
     private int blockClean;
+    @JsonAlias("block_power_snatch")
     private int blockPowerSnatch;
+    @JsonAlias("block_power_clean")
     private int blockPowerClean;
+    @JsonAlias("clean_pull")
     private int cleanPull;
+    @JsonAlias("snatch_pull")
     private int snatchPull;
+    @JsonAlias("snatch_high_pull")
     private int snatchHighPull;
+    @JsonAlias("bench_press")
     private int benchPress;
+    @JsonAlias("pendlay_row")
     private int pendlayRow;
+    @JsonAlias("snatch_push_press")
     private int snatchPushPress;
+    @JsonAlias("overhead_squat")
     private int overheadSquat;
+    @JsonAlias("squat_jerk")
     private int squatJerk;
+    @JsonAlias("max_pull_ups")
     private int maxPullUps;
+    @JsonAlias("weighted_pull_up")
     private int weightedPullUp;
+    @JsonAlias("max_chin_ups")
     private int maxChinUps;
+    @JsonAlias("weighted_chin_up")
     private int weightedChinUp;
+    @JsonAlias("pause_snatch")
     private int pauseSnatch;
+    @JsonAlias("pause_clean")
     private int pauseClean;
+    @JsonAlias("sandbag_carry_meters")
     private int sandbagCarryMeters;
+    @JsonAlias("sandbag_carry_weight")
     private int sandbagCarryWeight;
+    @JsonAlias("farmer_carry_meters")
     private int farmerCarryMeters;
+    @JsonAlias("farmer_carry_weight")
     private int farmerCarryWeight;
+    @JsonAlias("snatch_balance")
+    private int snatchBalance;
 
     public AthleteRecord() {}
 
@@ -384,5 +434,29 @@ public class AthleteRecord {
 
     public void setFarmerCarryWeight(int farmerCarryWeight) {
         this.farmerCarryWeight = farmerCarryWeight;
+    }
+
+    public int getSnatchBalance() {
+        return snatchBalance;
+    }
+
+    public void setSnatchBalance(int snatchBalance) {
+        this.snatchBalance = snatchBalance;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

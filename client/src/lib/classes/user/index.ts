@@ -75,54 +75,64 @@ export class CoachData {
 
 export interface AthleteRecordDTO {
     id: string,
+    createdAt: string,
+    lastUpdated: string,
     snatch: number
-    cleanAndJerk: number
+    clean_and_jerk: number
     jerk: number
     clean: number
-    backSquat: number
-    frontSquat: number
+    back_squat: number
+    front_squat: number
     deadlift: number
-    snatchDeadlift: number
-    pushPress: number
-    strictPress: number
-    bentOverRow: number
-    powerSnatch: number
-    powerClean: number
-    powerJerk: number
-    hangSnatch: number
-    hangPowerSnatch: number
-    hangPowerClean: number
-    blockSnatch: number
-    blockClean: number
-    blockPowerSnatch: number
-    blockPowerClean: number
-    cleanPull: number
-    snatchPull: number
-    snatchHighPull: number
-    benchPress: number
-    pendlayRows: number
-    snatchPushPress: number
-    overheadSquat: number
-    squatJerk: number
-    maxPullUps: number
-    weightedPullUp: number
-    maxChinUps: number
-    weightedChinUp: number
-    pauseSnatch: number
-    pauseClean: number
-    sandbagCarryMeters: number
-    sandbagCarryWeight: number
-    farmerCarryMeters: number
-    farmerCarryWeight: number
+    snatch_deadlift: number
+    push_press: number
+    strict_press: number
+    bent_over_row: number
+    power_snatch: number
+    power_clean: number
+    power_jerk: number
+    hang_snatch: number
+    hang_power_snatch: number
+    hang_power_clean: number
+    block_snatch: number
+    block_clean: number
+    block_power_snatch: number
+    block_power_clean: number
+    clean_pull: number
+    snatch_pull: number
+    snatch_high_pull: number
+    bench_press: number
+    pendlay_rows: number
+    snatch_push_press: number
+    overhead_squat: number
+    squat_jerk: number
+    max_pull_ups: number
+    weighted_pull_up: number
+    max_chin_ups: number
+    weighted_chin_up: number
+    pause_snatch: number
+    pause_clean: number
+    sandbag_carry_meters: number
+    sandbag_carry_weight: number
+    farmer_carry_meters: number
+    farmer_carry_weight: number
 }
 
 export class AthleteRecord {
 
     public records: Map<string,number> = new Map<string, number>()
+    public createdAt: Dayjs = dayjs()
+    public lastUpdated: string = ''
 
     constructor(data: AthleteRecordDTO) {
         for (const [key, value] of Object.entries(data)) {
-            this.records.set(key.toUpperCase(), value)
+            if (key === 'createdAt') {
+                this.createdAt = dayjs(value)
+            } else if (key === 'lastUpdated') {
+                this.lastUpdated = value;
+            } else {
+                this.records.set(key.toLowerCase(), value)
+            }
         }
     }
 }
