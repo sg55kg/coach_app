@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {program} from "$lib/stores/programStore";
     import {onDestroy, onMount} from "svelte";
     import {Program} from "$lib/classes/program";
-    import ProgramForm from "$lib/components/ProgramForm.svelte";
+    import ProgramForm from "$lib/components/WriteProgram/ProgramForm.svelte";
     import {ProgramService} from "$lib/service/ProgramService";
     import {auth0Client} from "$lib/stores/authStore";
+    import {program} from "$lib/stores/writeProgramStore";
     export let data
 
     const { programId } = data

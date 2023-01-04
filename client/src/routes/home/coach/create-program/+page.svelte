@@ -1,9 +1,10 @@
 <script lang="ts">
-    import ProgramForm from "../../../../lib/components/ProgramForm.svelte";
+    import ProgramForm from "$lib/components/WriteProgram/ProgramForm.svelte";
     import type {Program} from "../../../../lib/classes/program";
     import {auth0Client, userDB} from "../../../../lib/stores/authStore";
     import {ProgramService} from "../../../../lib/service/ProgramService";
-    import {program, programError} from "../../../../lib/stores/programStore";
+    import {programError} from "../../../../lib/stores/programStore";
+    import {program} from "$lib/stores/writeProgramStore";
 
 
 

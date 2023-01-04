@@ -1,14 +1,15 @@
 <script lang="ts">
-    import {program} from "../stores/programStore";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
-    import {Program} from "../classes/program";
+    import {Program} from "../../classes/program";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {Day} from "../classes/program/day";
+    import {Day} from "../../classes/program/day";
     import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
     import {userDB} from "$lib/stores/authStore";
     import {Exercise} from "$lib/classes/program/exercise";
+    import {program} from "$lib/stores/writeProgramStore";
+    import WeekNav from "$lib/components/WriteProgram/WeekNav.svelte";
 
     export let handleSubmit
     export let initialIndex = -1
@@ -181,7 +182,8 @@
     })
 </script>
 
-<div>
+<div class="flex">
+    <WeekNav selectedIndex={selectedIndex} />
     <div class="p-4 flex flex-row justify-between">
         <div class="flex flex-col justify-start">
             <div class="flex justify-start">

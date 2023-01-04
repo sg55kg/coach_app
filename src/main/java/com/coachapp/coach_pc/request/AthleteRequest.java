@@ -5,6 +5,7 @@ import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
 
+import java.util.List;
 import java.util.UUID;
 
 public class AthleteRequest {
@@ -13,11 +14,11 @@ public class AthleteRequest {
     private UUID teamId;
     private UUID coachId;
     private String name;
-    private AthleteRecord records;
+    private List<AthleteRecord> records;
 
     public AthleteRequest() {}
 
-    public AthleteRequest(UUID id, UUID teamId, UUID coachId, String name, AthleteRecord records) {
+    public AthleteRequest(UUID id, UUID teamId, UUID coachId, String name, List<AthleteRecord> records) {
         this.id = id;
         this.teamId = teamId;
         this.coachId = coachId;
@@ -41,7 +42,7 @@ public class AthleteRequest {
         return name;
     }
 
-    public AthleteRecord getRecords() {
+    public List<AthleteRecord> getRecords() {
         return records;
     }
 
@@ -58,7 +59,7 @@ public class AthleteRequest {
         }
         athlete.setTeam(team);
         athlete.setCoach(coach);
-        if (request.getRecords() != null && request.getRecords().getId() != null) {
+        if (request.getRecords().size() > 0 && request.getRecords().get(0).getId() != null) {
             athlete.setRecords(request.getRecords());
         }
 
