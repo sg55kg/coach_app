@@ -5,7 +5,9 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import {auth0Client} from "$lib/stores/authStore";
     import {program} from "$lib/stores/writeProgramStore";
+
     export let data
+    console.log(data)
 
     const { programId } = data
 
@@ -19,10 +21,11 @@
     }
 
     onMount(async () => {
+        console.log(programId)
         if (!$auth0Client) return
 
-        const programDto = await ProgramService.getProgram($auth0Client, programId)
-        program.set(Program.build(programDto))
+        const programRes: Program = await ProgramService.getProgram($auth0Client, programId)
+        program.set(programRes)
     })
 
     onDestroy(() => {
@@ -30,7 +33,7 @@
     })
 </script>
 
-{#if $program.id}
+{#if $program?.id}
     <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
 {/if}
 

@@ -1,7 +1,8 @@
 import type {Auth0Client} from "@auth0/auth0-spa-js";
-import {DisplayProgram, Exercise, Program} from "../classes/program";
+import {DisplayProgram, Program} from "../classes/program";
 import type {ProgramDTO} from "../classes/program"
 import type {User} from "../classes/user";
+import type {Exercise} from "$lib/classes/program/exercise";
 
 
 export class ProgramService {

@@ -1,16 +1,15 @@
 <script lang="ts">
-    import {auth0Client, userDB} from "../../../lib/stores/authStore";
-    import {displayPrograms, programError} from "../../../lib/stores/programStore";
+    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {displayPrograms, programError} from "$lib/stores/programStore";
     import {onMount} from "svelte";
-    import {ProgramService} from "../../../lib/service/ProgramService";
-    import {Program} from "$lib/classes/program";
+    import {ProgramService} from "$lib/service/ProgramService";
 
 
     onMount(async () => {
         if (!$auth0Client || !$userDB) return
-        displayPrograms.set($userDB.coachData.programs)
+        displayPrograms.set($userDB.coachData!.programs!)
 
-        const test = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData.id)
+        const test = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData!.id!)
         console.log(test)
     })
 </script>

@@ -1,9 +1,9 @@
 <script lang="ts">
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
-    import {Program} from "../../classes/program";
+    import {Program} from "$lib/classes/program";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {Day} from "../../classes/program/day";
+    import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
     import {userDB} from "$lib/stores/authStore";
@@ -12,8 +12,9 @@
     import WeekNav from "$lib/components/WriteProgram/WeekNav.svelte";
 
     export let handleSubmit
-    export let initialIndex = -1
-    let selectedIndex = initialIndex
+    export let initialIndex: number = -1
+    let selectedIndex: number = initialIndex
+    let selectedDayId: string = ''
     $: athleteOptions = []
 
     const formatDateString = (date: Date) => {
@@ -26,18 +27,18 @@
 
     const generateCSV = () => {
         let str = "Day 1\nExercise,Weight,Sets,Reps,Notes\n";
-        for(let i=0;i< $program.days.length; i++) {
-            if($program.days[i].exercises.length < 1) continue
-            if (i > 0) str += "Day " + (i+1) + "\n"
-            const d = $program.days[i]
-            for(let j = 0; j < d.exercises.length; j++) {
-                str += d.exercises[j].name + "," +
-                    d.exercises[j].weight + "," +
-                    d.exercises[j].repsPerSet + "," +
-                    d.exercises[j].sets + "," +
-                    d.exercises[j].notes + "\n"
-            }
-        }
+        // for(let i=0;i< $program.days.length; i++) {
+        //     if($program.days[i].exercises.length < 1) continue
+        //     if (i > 0) str += "Day " + (i+1) + "\n"
+        //     const d = $program.days[i]
+        //     for(let j = 0; j < d.exercises.length; j++) {
+        //         str += d.exercises[j].name + "," +
+        //             d.exercises[j].weight + "," +
+        //             d.exercises[j].repsPerSet + "," +
+        //             d.exercises[j].sets + "," +
+        //             d.exercises[j].notes + "\n"
+        //     }
+        // }
 
         //const downloadLink = document.getElementById('download-btn');
         const csv = str
@@ -84,13 +85,13 @@
     }
 
     const incrementSelectedIndex = () => {
-        console.log(selectedIndex)
-        console.log($program.days.length)
         selectedIndex === $program.days.length - 1 ? null : selectedIndex++
-        console.log(selectedIndex)
+        selectedDayId = $program.days[selectedIndex].id
     }
-
-    const decrementSelectedIndex = () => selectedIndex === 0 ? null : selectedIndex--
+    const decrementSelectedIndex = () => {
+        selectedIndex === 0 ? null : selectedIndex--
+        selectedDayId = $program.days[selectedIndex].id
+    }
 
     const handleHotKeys = (e: KeyboardEvent) => {
         e.stopPropagation()
@@ -115,10 +116,7 @@
     }
 
     const handleDateChange = (startDate: Dayjs, endDate: Dayjs) => {
-        console.log('start', startDate)
-        console.log('end', endDate)
         if ((!startDate || !endDate) || (endDate.toDate() < startDate.toDate())) {
-            console.log('caught')
             return
         }
 
@@ -140,7 +138,8 @@
             currentDate = currentDate.add(1, 'day')
         }
         selectedIndex = selectedIndex === -1 ? 0 : selectedIndex
-        console.log($program)
+        selectedDayId = $program.days[selectedIndex].id
+        console.log(selectedDayId)
     }
 
     const handleChangeAthlete = (athleteId: string) => {
@@ -151,13 +150,16 @@
         })
     }
 
-    const toggleRestDay = () => $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay
+    const toggleRestDay = () => $program ? $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay : null
 
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)
         if ($userDB?.coachData?.athletes) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
+        }
+        if (selectedIndex > -1) {
+            selectedDayId = $program.days[selectedIndex].id
         }
 
            // athleteOptions.push({ name: $userDB.username, id: $userDB.id })
@@ -182,8 +184,10 @@
     })
 </script>
 
-<div class="flex">
-    <WeekNav selectedIndex={selectedIndex} />
+<div class="flex w-screen justify-center">
+    <WeekNav bind:selectedDayIndex={selectedIndex} dayId={selectedDayId} />
+
+    <div class="flex flex-col self-start w-9/12">
     <div class="p-4 flex flex-row justify-between">
         <div class="flex flex-col justify-start">
             <div class="flex justify-start">
@@ -260,9 +264,9 @@
             </div>
         {/if}
     </div>
-    {#if selectedIndex > -1}
-        {#if $program.days[selectedIndex].isRestDay === false}
-            {#each $program.days[selectedIndex].exercises as exercise, idx}
+    {#if selectedIndex > -1 && $program}
+        {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
+            {#each $program?.days[selectedIndex]?.exercises as exercise, idx}
                 <div class="flex flex-col p-2 justify-items-center border-0 pt-5">
                     <div class="flex flex-row p-2 justify-between">
                         <input type="text"
@@ -289,9 +293,13 @@
                     <textarea placeholder="Notes" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2 m-2"></textarea>
                 </div>
             {/each}
-        {:else}
-            <div>
+        {:else if $program?.days[selectedIndex]?.isRestDay === true}
+            <div class="flex justify-center m-8 font-bold text-2xl">
                 Rest Day
+            </div>
+        {:else}
+            <div class="flex justify-center m-8 font-bold text-xl">
+                <i>You haven't added any exercises to this day yet</i>
             </div>
         {/if}
         <footer class="flex mt-4 justify-end w-full">
@@ -305,6 +313,7 @@
             </button>
         </footer>
     {/if}
+    </div>
 </div>
 
 <style>

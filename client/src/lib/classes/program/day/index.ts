@@ -1,4 +1,4 @@
-import type {Exercise} from "$lib/classes/program";
+import type {Exercise} from "$lib/classes/program/exercise";
 
 export interface IDay {
     id?: string,

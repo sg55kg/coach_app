@@ -23,7 +23,7 @@
 	<meta name="description" content="Coachable app" />
 </svelte:head>
 
-<section class="flex flex-col">
+<section class="flex flex-col w-screen">
 	{#if !$isAuthenticated}
 		<h1>Not logged in</h1>
 		<a href="/register">

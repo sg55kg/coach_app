@@ -14,7 +14,7 @@
 	})
 
 </script>
-<div class="app bg-gray-100 text-textgray">
+<div class="app bg-gray-100 text-textgray w-screen">
 {#if !$loadingAuth}
 
 	{#if $user !== undefined}
@@ -29,7 +29,7 @@
 		</header>
 	{/if}
 
-	<main>
+	<main class="w-screen m-0">
 		<slot />
 	</main>
 
@@ -54,7 +54,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		max-width: 64rem;
+		/*max-width: 64rem;*/
 		margin: 0 auto;
 		box-sizing: border-box;
 	}

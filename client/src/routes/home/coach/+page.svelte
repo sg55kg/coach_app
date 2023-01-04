@@ -10,7 +10,7 @@
     const toggleModal = () => showModal = !showModal
 </script>
 
-<div class="flex flex-col justify-center items-center">
+<div class="flex flex-col justify-center items-center w-screen">
     <h1>My Teams</h1>
     <button on:click={toggleModal} class="mt-5 text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
         Create New Team

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {Program} from "../../../../lib/classes/program";
+    import type {Program} from "$lib/classes/program";
 
     export let data
     console.log('data', data)
