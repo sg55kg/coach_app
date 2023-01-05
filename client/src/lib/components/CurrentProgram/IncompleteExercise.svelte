@@ -24,20 +24,27 @@
     const toggleShowComments = () => showComments = !showComments
 
     const weightIsNewPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
+        console.log('isPR',records)
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
-        if (!records.records.has(formattedName)) {
+        console.log('formattedName', formattedName)
+        console.log(records.records.get(formattedName))
+        if (records.records.get(formattedName) === undefined) {
+            console.log('notFound')
             return ''
         }
         const weight = records.records.get(formattedName)
         if (weight < exercise.weightCompleted && exercise.weightCompleted !== 0) {
+            console.log('found',formattedName)
             return formattedName
         }
         return ''
     }
 
     const weightIsTiedPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
+        if (!exercise || !records) return
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
-        if (!records.records.has(formattedName)) {
+
+        if (!records.records.get(formattedName)) {
             return ''
         }
         const weight = records.records.get(formattedName)
@@ -65,31 +72,44 @@
             weightCompleted: 0,
             totalRepsCompleted: 0
         }
+        console.log('updatedExercise',updatedExercise)
 
         if (updatedExercise.weightCompleted > 0) {
-            const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records!)
+            const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
+
             if (recordKey !== '') {
                 const updatedAthleteData = {
                     ...$userDB.athleteData,
-                    records: {
-                        ...$userDB.athleteData.records?.records,
-                        lastUpdated: recordKey,
-                        [recordKey]: updatedExercise.weightCompleted
-                    }
+                    records: $userDB.athleteData.records.map(r => {
+                        return { ...r, records: Object.fromEntries(r.records)}
+                    })
                 } as AthleteData
+                console.log('beforeRecords', updatedAthleteData)
+                const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
+
+                updatedAthleteData.records.push({
+                    ...newRecord,
+                    id: null,
+                    lastUpdated: $currentDay!.date,
+                    ...newRecord.records,
+                    [recordKey]: updatedExercise.weightCompleted
+
+                } as AthleteRecord)
+                console.log('updatedRecords',updatedAthleteData.records)
+
                 try {
-                    const res = await UserService.updateAthleteRecords($auth0Client, updatedAthleteData)
+                    const res = await UserService.updateAthleteRecords(
+                        $auth0Client,
+                        updatedAthleteData.records[updatedAthleteData.records.length-1],
+                        $userDB.athleteData.id
+                    )
                     userDB.update(prev => {
-                        prev!.athleteData!.records = new AthleteRecord(res)
+                        prev!.athleteData!.records.push(res)
                         return prev
                     })
                     isNewPersonalBest = true
                     isPersonalBest = false
                     console.log(res)
-                    userDB.update(prev => {
-                        prev!.athleteData!.records!.records[recordKey] = updatedExercise.weightCompleted
-                        return prev
-                    })
                 } catch (e) {
                     console.log(e)
                 }
@@ -137,7 +157,7 @@
 
     onMount(() => {
         // this may need tweaking. If they tie a PR, it probably should show it was a tie vs saying PERSONAL RECORD!!!
-        isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records) !== ''
+        isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
     })
 
 </script>
@@ -159,7 +179,7 @@
     <div>
         <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
                 disabled={$loadingAthleteProgram}
-                on:click={() => addComment(exercise)}>Comment</button>
+                on:click={() => addComment(exercise)}>{!$loadingAthleteProgram ? 'Comment' : 'Loading'}</button>
         <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
                 disabled={$loadingAthleteProgram}
                 on:click={() => completeExercise(exercise)}>

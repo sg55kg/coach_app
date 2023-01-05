@@ -8,8 +8,8 @@
     let recordChart: LineChart
     let moreCheckOptions: any[] = []
     let basicCheckOptions: string[] = []
-    let series
-    let labels
+    let series: number[] = []
+    let labels: string[]
     let selectedOptions: string = 'back_squat'
 
     const changeRecordExercise = (name: string) => {

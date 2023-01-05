@@ -134,7 +134,6 @@ export class AthleteRecord {
             } else if (key === 'id') {
                 this.id = value;
             } else {
-                console.log(key)
                 this.records.set(key.toLowerCase(), value)
             }
         }

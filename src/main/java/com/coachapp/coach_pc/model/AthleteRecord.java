@@ -1,6 +1,9 @@
 package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
@@ -21,87 +24,100 @@ public class AthleteRecord {
     private AthleteData athlete;
     @CreationTimestamp
     private Date createdAt;
-    private String lastUpdated;
+    private Date lastUpdated;
     @JsonProperty("snatch")
+    @JsonAlias("snatch")
     private int snatch;
     @JsonProperty("clean_and_jerk")
-    private int cleanAndJerk;
+    @JsonAlias("clean_and_jerk")
+    private int clean_and_jerk;
     @JsonProperty("jerk")
+    @JsonAlias("jerk")
     private int jerk;
     @JsonProperty("clean")
     private int clean;
     @JsonProperty("back_squat")
-    private int backSquat;
+    @JsonAlias("back_squat")
+    private int back_squat;
     @JsonProperty("front_squat")
-    private int frontSquat;
+    @JsonAlias("front_squat")
+    private int front_squat;
     @JsonProperty("deadlift")
     private int deadlift;
     @JsonProperty("snatch_deadlift")
-    private int snatchDeadlift;
+    @JsonAlias("snatch_deadlift")
+    private int snatch_deadlift;
     @JsonProperty("push_press")
-    private int pushPress;
+    @JsonAlias("push_press")
+    private int push_press;
     @JsonProperty("strict_press")
-    private int strictPress;
+    @JsonAlias("strict_press")
+    private int strict_press;
     @JsonProperty("bent_over_row")
-    private int bentOverRow;
+    @JsonAlias("bent_over_row")
+    private int bent_over_row;
     @JsonProperty("power_snatch")
-    private int powerSnatch;
+    @JsonAlias("power_snatch")
+    private int power_snatch;
     @JsonProperty("power_clean")
-    private int powerClean;
+    @JsonAlias("power_clean")
+    private int power_clean;
     @JsonProperty("power_jerk")
-    private int powerJerk;
+    @JsonAlias("power_jerk")
+    private int power_jerk;
     @JsonProperty("hang_snatch")
-    private int hangSnatch;
+    @JsonAlias("hang_snatch")
+    private int hang_snatch;
     @JsonProperty("hang_power_snatch")
-    private int hangPowerSnatch;
+    private int hang_power_snatch;
     @JsonProperty("hang_power_clean")
-    private int hangPowerClean;
+    private int hang_power_clean;
     @JsonProperty("block_snatch")
-    private int blockSnatch;
+    private int block_snatch;
     @JsonProperty("block_clean")
-    private int blockClean;
+    private int block_clean;
     @JsonProperty("block_power_snatch")
-    private int blockPowerSnatch;
+    private int block_power_snatch;
     @JsonProperty("block_power_clean")
-    private int blockPowerClean;
+    private int block_power_clean;
     @JsonProperty("clean_pull")
-    private int cleanPull;
+    private int clean_pull;
     @JsonProperty("snatch_pull")
-    private int snatchPull;
+    private int snatch_pull;
     @JsonProperty("snatch_high_pull")
-    private int snatchHighPull;
+    private int snatch_high_pull;
     @JsonProperty("bench_press")
-    private int benchPress;
+    private int bench_press;
     @JsonProperty("pendlay_row")
-    private int pendlayRow;
+    private int pendlay_row;
     @JsonProperty("snatch_push_press")
-    private int snatchPushPress;
+    private int snatch_push_press;
     @JsonProperty("overhead_squat")
-    private int overheadSquat;
+    private int overhead_squat;
     @JsonProperty("squat_jerk")
-    private int squatJerk;
+    private int squat_jerk;
     @JsonProperty("max_pull_ups")
-    private int maxPullUps;
+    private int max_pull_ups;
     @JsonProperty("weighted_pull_up")
-    private int weightedPullUp;
+    private int weighted_pull_up;
     @JsonProperty("max_chin_ups")
-    private int maxChinUps;
+    private int max_chin_ups;
     @JsonProperty("weighted_chin_up")
-    private int weightedChinUp;
+    private int weighted_chin_up;
     @JsonProperty("pause_snatch")
-    private int pauseSnatch;
+    private int pause_snatch;
     @JsonProperty("pause_clean")
-    private int pauseClean;
+    private int pause_clean;
     @JsonProperty("sandbag_carry_meters")
-    private int sandbagCarryMeters;
+    private int sandbag_carry_meters;
     @JsonProperty("sandbag_carry_weight")
-    private int sandbagCarryWeight;
+    private int sandbag_carry_weight;
     @JsonProperty("farmer_carry_meters")
-    private int farmerCarryMeters;
+    private int farmer_carry_meters;
     @JsonProperty("farmer_carry_weight")
-    private int farmerCarryWeight;
+    private int farmer_carry_weight;
     @JsonProperty("snatch_balance")
-    private int snatchBalance;
+    private int snatch_balance;
 
     public AthleteRecord() {}
 
@@ -121,6 +137,18 @@ public class AthleteRecord {
         this.athlete = athlete;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public int getSnatch() {
         return snatch;
     }
@@ -129,12 +157,12 @@ public class AthleteRecord {
         this.snatch = snatch;
     }
 
-    public int getCleanAndJerk() {
-        return cleanAndJerk;
+    public int getClean_and_jerk() {
+        return clean_and_jerk;
     }
 
-    public void setCleanAndJerk(int cleanAndJerk) {
-        this.cleanAndJerk = cleanAndJerk;
+    public void setClean_and_jerk(int clean_and_jerk) {
+        this.clean_and_jerk = clean_and_jerk;
     }
 
     public int getJerk() {
@@ -153,20 +181,20 @@ public class AthleteRecord {
         this.clean = clean;
     }
 
-    public int getBackSquat() {
-        return backSquat;
+    public int getBack_squat() {
+        return back_squat;
     }
 
-    public void setBackSquat(int backSquat) {
-        this.backSquat = backSquat;
+    public void setBack_squat(int back_squat) {
+        this.back_squat = back_squat;
     }
 
-    public int getFrontSquat() {
-        return frontSquat;
+    public int getFront_squat() {
+        return front_squat;
     }
 
-    public void setFrontSquat(int frontSquat) {
-        this.frontSquat = frontSquat;
+    public void setFront_squat(int front_squat) {
+        this.front_squat = front_squat;
     }
 
     public int getDeadlift() {
@@ -177,283 +205,267 @@ public class AthleteRecord {
         this.deadlift = deadlift;
     }
 
-    public int getSnatchDeadlift() {
-        return snatchDeadlift;
+    public int getSnatch_deadlift() {
+        return snatch_deadlift;
     }
 
-    public void setSnatchDeadlift(int snatchDeadlift) {
-        this.snatchDeadlift = snatchDeadlift;
+    public void setSnatch_deadlift(int snatch_deadlift) {
+        this.snatch_deadlift = snatch_deadlift;
     }
 
-    public int getPushPress() {
-        return pushPress;
+    public int getPush_press() {
+        return push_press;
     }
 
-    public void setPushPress(int pushPress) {
-        this.pushPress = pushPress;
+    public void setPush_press(int push_press) {
+        this.push_press = push_press;
     }
 
-    public int getStrictPress() {
-        return strictPress;
+    public int getStrict_press() {
+        return strict_press;
     }
 
-    public void setStrictPress(int strictPress) {
-        this.strictPress = strictPress;
+    public void setStrict_press(int strict_press) {
+        this.strict_press = strict_press;
     }
 
-    public int getBentOverRow() {
-        return bentOverRow;
+    public int getBent_over_row() {
+        return bent_over_row;
     }
 
-    public void setBentOverRow(int bentOverRow) {
-        this.bentOverRow = bentOverRow;
+    public void setBent_over_row(int bent_over_row) {
+        this.bent_over_row = bent_over_row;
     }
 
-    public int getPowerSnatch() {
-        return powerSnatch;
+    public int getPower_snatch() {
+        return power_snatch;
     }
 
-    public void setPowerSnatch(int powerSnatch) {
-        this.powerSnatch = powerSnatch;
+    public void setPower_snatch(int power_snatch) {
+        this.power_snatch = power_snatch;
     }
 
-    public int getPowerClean() {
-        return powerClean;
+    public int getPower_clean() {
+        return power_clean;
     }
 
-    public void setPowerClean(int powerClean) {
-        this.powerClean = powerClean;
+    public void setPower_clean(int power_clean) {
+        this.power_clean = power_clean;
     }
 
-    public int getPowerJerk() {
-        return powerJerk;
+    public int getPower_jerk() {
+        return power_jerk;
     }
 
-    public void setPowerJerk(int powerJerk) {
-        this.powerJerk = powerJerk;
+    public void setPower_jerk(int power_jerk) {
+        this.power_jerk = power_jerk;
     }
 
-    public int getHangSnatch() {
-        return hangSnatch;
+    public int getHang_snatch() {
+        return hang_snatch;
     }
 
-    public void setHangSnatch(int hangSnatch) {
-        this.hangSnatch = hangSnatch;
+    public void setHang_snatch(int hang_snatch) {
+        this.hang_snatch = hang_snatch;
     }
 
-    public int getHangPowerSnatch() {
-        return hangPowerSnatch;
+    public int getHang_power_snatch() {
+        return hang_power_snatch;
     }
 
-    public void setHangPowerSnatch(int hangPowerSnatch) {
-        this.hangPowerSnatch = hangPowerSnatch;
+    public void setHang_power_snatch(int hang_power_snatch) {
+        this.hang_power_snatch = hang_power_snatch;
     }
 
-    public int getHangPowerClean() {
-        return hangPowerClean;
+    public int getHang_power_clean() {
+        return hang_power_clean;
     }
 
-    public void setHangPowerClean(int hangPowerClean) {
-        this.hangPowerClean = hangPowerClean;
+    public void setHang_power_clean(int hang_power_clean) {
+        this.hang_power_clean = hang_power_clean;
     }
 
-    public int getBlockSnatch() {
-        return blockSnatch;
+    public int getBlock_snatch() {
+        return block_snatch;
     }
 
-    public void setBlockSnatch(int blockSnatch) {
-        this.blockSnatch = blockSnatch;
+    public void setBlock_snatch(int block_snatch) {
+        this.block_snatch = block_snatch;
     }
 
-    public int getBlockClean() {
-        return blockClean;
+    public int getBlock_clean() {
+        return block_clean;
     }
 
-    public void setBlockClean(int blockClean) {
-        this.blockClean = blockClean;
+    public void setBlock_clean(int block_clean) {
+        this.block_clean = block_clean;
     }
 
-    public int getBlockPowerSnatch() {
-        return blockPowerSnatch;
+    public int getBlock_power_snatch() {
+        return block_power_snatch;
     }
 
-    public void setBlockPowerSnatch(int blockPowerSnatch) {
-        this.blockPowerSnatch = blockPowerSnatch;
+    public void setBlock_power_snatch(int block_power_snatch) {
+        this.block_power_snatch = block_power_snatch;
     }
 
-    public int getBlockPowerClean() {
-        return blockPowerClean;
+    public int getBlock_power_clean() {
+        return block_power_clean;
     }
 
-    public void setBlockPowerClean(int blockPowerClean) {
-        this.blockPowerClean = blockPowerClean;
+    public void setBlock_power_clean(int block_power_clean) {
+        this.block_power_clean = block_power_clean;
     }
 
-    public int getCleanPull() {
-        return cleanPull;
+    public int getClean_pull() {
+        return clean_pull;
     }
 
-    public void setCleanPull(int cleanPull) {
-        this.cleanPull = cleanPull;
+    public void setClean_pull(int clean_pull) {
+        this.clean_pull = clean_pull;
     }
 
-    public int getSnatchPull() {
-        return snatchPull;
+    public int getSnatch_pull() {
+        return snatch_pull;
     }
 
-    public void setSnatchPull(int snatchPull) {
-        this.snatchPull = snatchPull;
+    public void setSnatch_pull(int snatch_pull) {
+        this.snatch_pull = snatch_pull;
     }
 
-    public int getSnatchHighPull() {
-        return snatchHighPull;
+    public int getSnatch_high_pull() {
+        return snatch_high_pull;
     }
 
-    public void setSnatchHighPull(int snatchHighPull) {
-        this.snatchHighPull = snatchHighPull;
+    public void setSnatch_high_pull(int snatch_high_pull) {
+        this.snatch_high_pull = snatch_high_pull;
     }
 
-    public int getBenchPress() {
-        return benchPress;
+    public int getBench_press() {
+        return bench_press;
     }
 
-    public void setBenchPress(int benchPress) {
-        this.benchPress = benchPress;
+    public void setBench_press(int bench_press) {
+        this.bench_press = bench_press;
     }
 
-    public int getPendlayRow() {
-        return pendlayRow;
+    public int getPendlay_row() {
+        return pendlay_row;
     }
 
-    public void setPendlayRow(int pendlayRow) {
-        this.pendlayRow = pendlayRow;
+    public void setPendlay_row(int pendlay_row) {
+        this.pendlay_row = pendlay_row;
     }
 
-    public int getSnatchPushPress() {
-        return snatchPushPress;
+    public int getSnatch_push_press() {
+        return snatch_push_press;
     }
 
-    public void setSnatchPushPress(int snatchPushPress) {
-        this.snatchPushPress = snatchPushPress;
+    public void setSnatch_push_press(int snatch_push_press) {
+        this.snatch_push_press = snatch_push_press;
     }
 
-    public int getOverheadSquat() {
-        return overheadSquat;
+    public int getOverhead_squat() {
+        return overhead_squat;
     }
 
-    public void setOverheadSquat(int overheadSquat) {
-        this.overheadSquat = overheadSquat;
+    public void setOverhead_squat(int overhead_squat) {
+        this.overhead_squat = overhead_squat;
     }
 
-    public int getSquatJerk() {
-        return squatJerk;
+    public int getSquat_jerk() {
+        return squat_jerk;
     }
 
-    public void setSquatJerk(int squatJerk) {
-        this.squatJerk = squatJerk;
+    public void setSquat_jerk(int squat_jerk) {
+        this.squat_jerk = squat_jerk;
     }
 
-    public int getMaxPullUps() {
-        return maxPullUps;
+    public int getMax_pull_ups() {
+        return max_pull_ups;
     }
 
-    public void setMaxPullUps(int maxPullUps) {
-        this.maxPullUps = maxPullUps;
+    public void setMax_pull_ups(int max_pull_ups) {
+        this.max_pull_ups = max_pull_ups;
     }
 
-    public int getWeightedPullUp() {
-        return weightedPullUp;
+    public int getWeighted_pull_up() {
+        return weighted_pull_up;
     }
 
-    public void setWeightedPullUp(int weightedPullUp) {
-        this.weightedPullUp = weightedPullUp;
+    public void setWeighted_pull_up(int weighted_pull_up) {
+        this.weighted_pull_up = weighted_pull_up;
     }
 
-    public int getMaxChinUps() {
-        return maxChinUps;
+    public int getMax_chin_ups() {
+        return max_chin_ups;
     }
 
-    public void setMaxChinUps(int maxChinUps) {
-        this.maxChinUps = maxChinUps;
+    public void setMax_chin_ups(int max_chin_ups) {
+        this.max_chin_ups = max_chin_ups;
     }
 
-    public int getWeightedChinUp() {
-        return weightedChinUp;
+    public int getWeighted_chin_up() {
+        return weighted_chin_up;
     }
 
-    public void setWeightedChinUp(int weightedChinUp) {
-        this.weightedChinUp = weightedChinUp;
+    public void setWeighted_chin_up(int weighted_chin_up) {
+        this.weighted_chin_up = weighted_chin_up;
     }
 
-    public int getPauseSnatch() {
-        return pauseSnatch;
+    public int getPause_snatch() {
+        return pause_snatch;
     }
 
-    public void setPauseSnatch(int pauseSnatch) {
-        this.pauseSnatch = pauseSnatch;
+    public void setPause_snatch(int pause_snatch) {
+        this.pause_snatch = pause_snatch;
     }
 
-    public int getPauseClean() {
-        return pauseClean;
+    public int getPause_clean() {
+        return pause_clean;
     }
 
-    public void setPauseClean(int pauseClean) {
-        this.pauseClean = pauseClean;
+    public void setPause_clean(int pause_clean) {
+        this.pause_clean = pause_clean;
     }
 
-    public int getSandbagCarryMeters() {
-        return sandbagCarryMeters;
+    public int getSandbag_carry_meters() {
+        return sandbag_carry_meters;
     }
 
-    public void setSandbagCarryMeters(int sandbagCarryMeters) {
-        this.sandbagCarryMeters = sandbagCarryMeters;
+    public void setSandbag_carry_meters(int sandbag_carry_meters) {
+        this.sandbag_carry_meters = sandbag_carry_meters;
     }
 
-    public int getSandbagCarryWeight() {
-        return sandbagCarryWeight;
+    public int getSandbag_carry_weight() {
+        return sandbag_carry_weight;
     }
 
-    public void setSandbagCarryWeight(int sandbagCarryWeight) {
-        this.sandbagCarryWeight = sandbagCarryWeight;
+    public void setSandbag_carry_weight(int sandbag_carry_weight) {
+        this.sandbag_carry_weight = sandbag_carry_weight;
     }
 
-    public int getFarmerCarryMeters() {
-        return farmerCarryMeters;
+    public int getFarmer_carry_meters() {
+        return farmer_carry_meters;
     }
 
-    public void setFarmerCarryMeters(int farmerCarryMeters) {
-        this.farmerCarryMeters = farmerCarryMeters;
+    public void setFarmer_carry_meters(int farmer_carry_meters) {
+        this.farmer_carry_meters = farmer_carry_meters;
     }
 
-    public int getFarmerCarryWeight() {
-        return farmerCarryWeight;
+    public int getFarmer_carry_weight() {
+        return farmer_carry_weight;
     }
 
-    public void setFarmerCarryWeight(int farmerCarryWeight) {
-        this.farmerCarryWeight = farmerCarryWeight;
+    public void setFarmer_carry_weight(int farmer_carry_weight) {
+        this.farmer_carry_weight = farmer_carry_weight;
     }
 
-    public int getSnatchBalance() {
-        return snatchBalance;
+    public int getSnatch_balance() {
+        return snatch_balance;
     }
 
-    public void setSnatchBalance(int snatchBalance) {
-        this.snatchBalance = snatchBalance;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public void setSnatch_balance(int snatch_balance) {
+        this.snatch_balance = snatch_balance;
     }
 }
