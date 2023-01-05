@@ -84,10 +84,10 @@
                 </div>
             {/each}
             <div class="px-2 text-black">
-                <select>
+                <select on:change={(e) => changeRecordExercise(e.target.value)}>
                     <option disabled selected>More...</option>
                     {#each moreCheckOptions as option, index (index)}
-                        <option>{option}</option>
+                        <option selected={selectedOptions === option.split(' ').join('_')}>{option}</option>
                     {/each}
                 </select>
             </div>
