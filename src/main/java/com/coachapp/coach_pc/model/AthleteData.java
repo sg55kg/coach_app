@@ -30,7 +30,7 @@ public class AthleteData {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
-    @OneToMany(mappedBy = "athlete")
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL)
     private List<AthleteRecord> records;
 
     public AthleteData() {}

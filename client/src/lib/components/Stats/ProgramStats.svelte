@@ -50,9 +50,12 @@
         series = $userDB.athleteData.records.map(record => {
             return record.records.get('back_squat')
         })
+        console.log($userDB.athleteData.records)
         labels = $userDB.athleteData.records.map(record => {
-            return dayjs().format('ddd MMM D')
+            console.log(record.lastUpdated)
+            return record.lastUpdated ? dayjs(record.lastUpdated).format('ddd MMM D') : dayjs().format('ddd MMM D')
         })
+        console.log(labels)
         recordChart = new LineChart('#record-chart', {
             series: [series],
             labels: labels,
@@ -105,6 +108,9 @@
         color: #adbdd2 !important;
     }
     :global(.ct-point) {
+        stroke: #fddd4c !important;
+    }
+    :global(.ct-line) {
         stroke: #fddd4c !important;
     }
 
