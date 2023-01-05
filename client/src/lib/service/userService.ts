@@ -83,7 +83,8 @@ export default class UserService {
             })
         }
         let userData = await res.json()
-        console.log(userData)
+
+        console.log('user fetch', userData)
 
         if (!userData.coachData && res.status !== 500) {
             res = await fetch(`http://localhost:8180/api/users/coach`, {
