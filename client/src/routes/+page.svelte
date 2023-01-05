@@ -25,8 +25,8 @@
 
 <section class="flex flex-col">
 	{#if !$isAuthenticated}
-		<h1 class="text-3xl">Team Building</h1>
-		<h1 class="text-2xl my-4 tracking-widest">Track multiple athletes' progress across several teams. Write better programs with Coachable.</h1>
+		<h1 class="text-3xl tracking-wider">Connect with your Team</h1>
+		<h1 class="text-2xl my-4 tracking-wider">Track multiple athletes' progress across several teams. Write better programs with Coachable.</h1>
 		<a href="/register">
 			<button class="text-gray-200 bg-yellow rounded p-2 font-bold text-center hover:bg-yellow-shade m-5">
 				Get Started
