@@ -25,15 +25,16 @@
 
 <section class="flex flex-col">
 	{#if !$isAuthenticated}
-		<h1>Not logged in</h1>
+		<h1 class="text-3xl">Hey Coach!</h1>
+		<h1 class="text-2xl my-4 tracking-wider">Manage multiple athletes across several teams and stay organized. Track athletes' progress and make smarter choices when writing programs.</h1>
 		<a href="/register">
-			<button>
+			<button class="text-gray-200 bg-yellow rounded p-2 font-bold text-center hover:bg-yellow-shade m-5">
 				Get Started
 			</button>
 		</a>
 		<small>Already have an account?</small>
 
-			<button on:click={login}>
+			<button class="tracking-wider font-semibold hover:text-yellow-lt" on:click={login}>
 				Login
 			</button>
 
