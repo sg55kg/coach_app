@@ -19,7 +19,7 @@ export interface AthleteDataDTO {
     currentProgram: Program,
     programs: Program[],
     coach: CoachDataDTO,
-    records: AthleteRecordDTO
+    records: AthleteRecordDTO[]
     team: TeamDTO
 }
 
@@ -36,7 +36,7 @@ export class AthleteData {
     currentProgram: Program | null = null
     programs: Program[] = []
     coach: CoachData | null = null
-    records: AthleteRecord | null = null
+    records: AthleteRecord[] = []
     team: Team | null = null
 
     public static createFrom(data: AthleteDataDTO) {
@@ -47,7 +47,7 @@ export class AthleteData {
         athlete.currentProgram = data.currentProgram
         athlete.programs = data.programs
         athlete.coach = data.coach ? CoachData.createFrom(data.coach) : null
-        athlete.records = new AthleteRecord(data.records)
+        athlete.records = data.records.map(r => new AthleteRecord(r))
         athlete.team = data.team ? Team.createFrom(data.team) : null
 
         return athlete
@@ -120,6 +120,7 @@ export interface AthleteRecordDTO {
 
 export class AthleteRecord {
 
+    public id: string = ''
     public records: Map<string,number> = new Map<string, number>()
     public createdAt: Dayjs = dayjs()
     public lastUpdated: string = ''
@@ -130,7 +131,10 @@ export class AthleteRecord {
                 this.createdAt = dayjs(value)
             } else if (key === 'lastUpdated') {
                 this.lastUpdated = value;
+            } else if (key === 'id') {
+                this.id = value;
             } else {
+                console.log(key)
                 this.records.set(key.toLowerCase(), value)
             }
         }

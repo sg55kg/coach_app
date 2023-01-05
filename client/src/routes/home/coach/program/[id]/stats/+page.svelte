@@ -1,8 +1,9 @@
 <script lang="ts">
 
+import ProgramStats from "$lib/components/Stats/ProgramStats.svelte";
 </script>
 
-<h1>TODO</h1>
+<ProgramStats />
 
 <style>
 

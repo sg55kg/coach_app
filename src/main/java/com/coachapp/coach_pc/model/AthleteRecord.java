@@ -1,9 +1,6 @@
 package com.coachapp.coach_pc.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
@@ -25,85 +22,85 @@ public class AthleteRecord {
     @CreationTimestamp
     private Date createdAt;
     private String lastUpdated;
-    @JsonAlias("snatch")
+    @JsonProperty("snatch")
     private int snatch;
-    @JsonAlias("clean_and_jerk")
+    @JsonProperty("clean_and_jerk")
     private int cleanAndJerk;
-    @JsonAlias("jerk")
+    @JsonProperty("jerk")
     private int jerk;
-    @JsonAlias("clean")
+    @JsonProperty("clean")
     private int clean;
-    @JsonAlias("back_squat")
+    @JsonProperty("back_squat")
     private int backSquat;
-    @JsonAlias("front_squat")
+    @JsonProperty("front_squat")
     private int frontSquat;
-    @JsonAlias("deadlift")
+    @JsonProperty("deadlift")
     private int deadlift;
-    @JsonAlias("snatch_deadlift")
+    @JsonProperty("snatch_deadlift")
     private int snatchDeadlift;
-    @JsonAlias("push_press")
+    @JsonProperty("push_press")
     private int pushPress;
-    @JsonAlias("strict_press")
+    @JsonProperty("strict_press")
     private int strictPress;
-    @JsonAlias("bent_over_row")
+    @JsonProperty("bent_over_row")
     private int bentOverRow;
-    @JsonAlias("power_snatch")
+    @JsonProperty("power_snatch")
     private int powerSnatch;
-    @JsonAlias("power_clean")
+    @JsonProperty("power_clean")
     private int powerClean;
-    @JsonAlias("power_jerk")
+    @JsonProperty("power_jerk")
     private int powerJerk;
-    @JsonAlias("hang_snatch")
+    @JsonProperty("hang_snatch")
     private int hangSnatch;
-    @JsonAlias("hang_power_snatch")
+    @JsonProperty("hang_power_snatch")
     private int hangPowerSnatch;
-    @JsonAlias("hang_power_clean")
+    @JsonProperty("hang_power_clean")
     private int hangPowerClean;
-    @JsonAlias("block_snatch")
+    @JsonProperty("block_snatch")
     private int blockSnatch;
-    @JsonAlias("block_clean")
+    @JsonProperty("block_clean")
     private int blockClean;
-    @JsonAlias("block_power_snatch")
+    @JsonProperty("block_power_snatch")
     private int blockPowerSnatch;
-    @JsonAlias("block_power_clean")
+    @JsonProperty("block_power_clean")
     private int blockPowerClean;
-    @JsonAlias("clean_pull")
+    @JsonProperty("clean_pull")
     private int cleanPull;
-    @JsonAlias("snatch_pull")
+    @JsonProperty("snatch_pull")
     private int snatchPull;
-    @JsonAlias("snatch_high_pull")
+    @JsonProperty("snatch_high_pull")
     private int snatchHighPull;
-    @JsonAlias("bench_press")
+    @JsonProperty("bench_press")
     private int benchPress;
-    @JsonAlias("pendlay_row")
+    @JsonProperty("pendlay_row")
     private int pendlayRow;
-    @JsonAlias("snatch_push_press")
+    @JsonProperty("snatch_push_press")
     private int snatchPushPress;
-    @JsonAlias("overhead_squat")
+    @JsonProperty("overhead_squat")
     private int overheadSquat;
-    @JsonAlias("squat_jerk")
+    @JsonProperty("squat_jerk")
     private int squatJerk;
-    @JsonAlias("max_pull_ups")
+    @JsonProperty("max_pull_ups")
     private int maxPullUps;
-    @JsonAlias("weighted_pull_up")
+    @JsonProperty("weighted_pull_up")
     private int weightedPullUp;
-    @JsonAlias("max_chin_ups")
+    @JsonProperty("max_chin_ups")
     private int maxChinUps;
-    @JsonAlias("weighted_chin_up")
+    @JsonProperty("weighted_chin_up")
     private int weightedChinUp;
-    @JsonAlias("pause_snatch")
+    @JsonProperty("pause_snatch")
     private int pauseSnatch;
-    @JsonAlias("pause_clean")
+    @JsonProperty("pause_clean")
     private int pauseClean;
-    @JsonAlias("sandbag_carry_meters")
+    @JsonProperty("sandbag_carry_meters")
     private int sandbagCarryMeters;
-    @JsonAlias("sandbag_carry_weight")
+    @JsonProperty("sandbag_carry_weight")
     private int sandbagCarryWeight;
-    @JsonAlias("farmer_carry_meters")
+    @JsonProperty("farmer_carry_meters")
     private int farmerCarryMeters;
-    @JsonAlias("farmer_carry_weight")
+    @JsonProperty("farmer_carry_weight")
     private int farmerCarryWeight;
-    @JsonAlias("snatch_balance")
+    @JsonProperty("snatch_balance")
     private int snatchBalance;
 
     public AthleteRecord() {}

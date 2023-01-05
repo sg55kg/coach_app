@@ -33,8 +33,10 @@
 		<slot />
 	</main>
 
-	<footer class="text-textblue">
-		<p>Global footer for coach app</p>
+	<footer>
+		<p class="text-link underline">Contact Us</p>
+		<p>&nbsp;|&nbsp;</p>
+		<p class="text-link underline">About</p>
 	</footer>
 	{:else}
 	<h1>Loading</h1>
@@ -61,7 +63,7 @@
 
 	footer {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 		padding: 12px;
