@@ -25,15 +25,16 @@
 
 <section class="flex flex-col w-screen">
 	{#if !$isAuthenticated}
-		<h1>Not logged in</h1>
+		<h1 class="text-3xl tracking-wider">Connect with your Team</h1>
+		<h1 class="text-2xl my-4 tracking-wider">Track multiple athletes' progress across several teams. Write better programs with Coachable.</h1>
 		<a href="/register">
-			<button>
+			<button class="text-gray-200 bg-yellow rounded p-2 font-bold text-center hover:bg-yellow-shade m-5">
 				Get Started
 			</button>
 		</a>
 		<small>Already have an account?</small>
 
-			<button on:click={login}>
+			<button class="tracking-wider font-semibold hover:text-yellow-lt" on:click={login}>
 				Login
 			</button>
 
