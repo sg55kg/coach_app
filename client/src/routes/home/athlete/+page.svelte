@@ -8,18 +8,21 @@
     let currentDay: Day
 
     onMount(async () => {
-        if (!$userDB?.athleteData?.currentProgram) return
+        if (!$auth0Client) {
+            window.location.replace('/')
+        }
+        if (!$userDB?.athleteData?.currentProgram) {
+            return
+        }
 
         const program = await ProgramService.getProgram($auth0Client!, $userDB.athleteData.currentProgram.id)
         console.log('program Response', program)
         const today = dayjs()
 
-        let day = program.days.find(d => {
-            return dayjs(d.date).isSame(today, 'days')
-        })
+        let day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
         if (day) {
             currentDay = day
-            console.log(currentDay)
+            console.log('currentDay',currentDay)
         }
     })
 
@@ -36,10 +39,13 @@
         <h3 class="text-xl font-bold">My Program</h3>
         <h5 class="text-lg">Today:</h5>
 
-        {#if currentDay && !currentDay.isRestDay && !currentDay.exercises.length > 0}
-            <div>
+        {#if currentDay && currentDay.isRestDay === false && currentDay.exercises.length > 0}
+            <div class="bg-gray-300 m-4 flex flex-col justify-center items-center p-5">
                 {#each currentDay.exercises as exercise, index (index)}
-                    <p>{exercise.name + ": " + exercise.weight + "lbs " + exercise.sets + "x" + exercise.repsPerSet}</p>
+                    <p class="font-bold text-lg">
+                        {exercise.name + ": " + exercise.weight + "lbs " + exercise.sets + "x" + exercise.repsPerSet}
+                    </p>
+                    <p>{exercise.isComplete ? 'Finished' : 'Incomplete'}</p>
                 {/each}
             </div>
         {:else if currentDay && currentDay.isRestDay}
@@ -57,6 +63,7 @@
     <div class="m-4">
         <h3 class="text-xl font-bold" href="/home/athlete/team">My Team</h3>
         {#if $userDB?.athleteData?.team}
+            <h4 class="text-2xl text-center">{$userDB.athleteData.team.name}</h4>
             <a class="text-lg underline text-link" href="/home/athlete/team">View</a>
         {:else}
             <a class="text-lg underline text-link" href="/home/athlete/teams">Join a team</a>

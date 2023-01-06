@@ -4,7 +4,7 @@
 
 </script>
 
-<a href="/home/coach">Back to teams</a>
+<a href="/home/coach" class="font-bold mx-4">{'<-'} Back to teams</a>
 <div class="flex flex-col items-center">
 {#if $displayPrograms.length > 0}
     {#each $displayPrograms as program}

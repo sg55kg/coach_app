@@ -20,7 +20,10 @@
 
         try {
             const savedTeam = await TeamService.createTeam($auth0Client, team)
-            console.log(savedTeam)
+            userDB.update(prev => {
+                prev?.coachData?.teams.push(savedTeam)
+                return prev
+            })
             team = new Team()
             success = true
         } catch (e) {
@@ -67,7 +70,7 @@
                                 Create New Team
                             </h2>
                             {#if success}
-                                <div class="w-10/12 self-center border-green text-green">
+                                <div class="w-10/12 self-center font-bold border-green text-green">
                                     <p>Successfully added team!</p>
                                 </div>
                             {/if}

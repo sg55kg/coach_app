@@ -43,11 +43,14 @@ export default class UserService {
         try {
             await client.loginWithPopup()
             const data = await client.getUser()
+            if (!data) {
+                throw new Error('Could not log in')
+            }
             user.set(data)
             isAuthenticated.set(await client.isAuthenticated())
             await UserService.fetchUserData(client, data!.email as string)
         } catch (e) {
-            console.log(e)
+            throw new Error('Could not log in')
         }
 
     }
