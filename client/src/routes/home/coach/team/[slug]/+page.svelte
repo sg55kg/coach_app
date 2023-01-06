@@ -2,7 +2,6 @@
     import {displayPrograms} from "$lib/stores/programStore";
     import ProgramCard from "$lib/components/ProgramCard.svelte";
 
-
 </script>
 
 <a href="/home/coach">Back to teams</a>

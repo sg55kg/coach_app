@@ -16,7 +16,7 @@ export class ProgramService {
         })
 
         const programsResponse = await res.json()
-        console.log(programsResponse)
+        console.log('prog res', programsResponse)
         return programsResponse.map((p: ProgramDTO) => DisplayProgram.build(p))
     }
 

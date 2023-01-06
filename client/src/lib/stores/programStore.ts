@@ -1,7 +1,7 @@
 import type {Writable} from "svelte/store";
 import {writable} from "svelte/store";
-import type {Program} from "../classes/program";
+import type {DisplayProgram} from "../classes/program";
 
 
-export const displayPrograms: Writable<Program[]> = writable([])
+export const displayPrograms: Writable<DisplayProgram[]> = writable([])
 export const programError: Writable<string> = writable('')

@@ -19,7 +19,8 @@ export interface ProgramDTO {
     startDate: string,
     endDate: string,
     days: DayDTO[],
-    coach?: CoachDataDTO
+    coach?: CoachDataDTO,
+    lastEnteredDay?: string
 }
 
 
@@ -67,14 +68,15 @@ export class DisplayProgram implements IProgram {
         program.name = programDTO.name
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
-        //program.coach = programDTO.coach
+        program.lastEnteredDay = new Date(programDTO.lastEnteredDay!)
 
-        return { ...program }
+        return program
     }
 
     id: string = ''
     name: string = ''
     startDate: Date = new Date()
     endDate: Date = new Date()
+    lastEnteredDay: Date = new Date()
     //coach: string = ''
 }
