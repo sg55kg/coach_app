@@ -25,19 +25,31 @@
 
 <section class="flex flex-col w-screen">
 	{#if !$isAuthenticated}
-		<h1 class="text-3xl tracking-wider">Connect with your Team</h1>
-		<h1 class="text-2xl my-4 tracking-wider">Track multiple athletes' progress across several teams. Write better programs with Coachable.</h1>
-		<a href="/register">
-			<button class="text-gray-200 bg-yellow rounded p-2 font-bold text-center hover:bg-yellow-shade m-5">
-				Get Started
-			</button>
-		</a>
-		<small>Already have an account?</small>
+		<div class="w-full px-16">
+			<h1 class="text-5xl font-bold tracking-wider">Connect with your Team</h1>
+			<div class="w-6/12">
+				<h1 class="text-xl text-wrap w-2 my-4 tracking-wider">
+					Track all of your athletes' progress and stay organized across multiple teams. Use athlete feedback and data from your programs to make better decisions. Write better programs with Coachable.
+				</h1>
+			</div>
 
-			<button class="tracking-wider font-semibold hover:text-yellow-lt" on:click={login}>
-				Login
-			</button>
 
+			<div class="flex flex-col text-center justify-center items-start m-2 mt-10">
+				<button on:click={login} class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
+					Get Started
+				</button>
+
+				<div class="flex flex-col items-start">
+					<small>Already have an account?</small>
+
+					<button class="tracking-wider font-semibold hover:text-yellow-lt self-center" on:click={login}>
+						Login
+					</button>
+				</div>
+
+			</div>
+
+		</div>
 
 	{:else }
 		<h1 class="text-xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
