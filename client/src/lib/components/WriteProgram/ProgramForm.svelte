@@ -283,7 +283,7 @@
             {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
                 <div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2">
                     <div class="flex flex-col md:flex-row p-2 justify-between">
-                        <div class="flex flex-col">
+                        <div class="flex flex-col m-1">
                             <label class="text-sm m-0">Name</label>
                             <input type="text"
                                    name="name"
@@ -293,7 +293,7 @@
                         </div>
 
                         {#if !exercise.isMax}
-                            <div class="flex flex-col">
+                            <div class="flex flex-col m-1">
                                 <label class="text-sm m-0">Weight</label>
                                 <input type="number"
                                        name="weight"
@@ -302,7 +302,7 @@
                                        bind:value={exercise.weight}>
                             </div>
 
-                            <div class="flex flex-col">
+                            <div class="flex flex-col m-1">
                                 <label class="text-sm m-0">Sets</label>
                                 <input type="number"
                                        name="sets"
@@ -311,7 +311,7 @@
                                        bind:value={exercise.sets}>
                             </div>
 
-                            <div class="flex flex-col">
+                            <div class="flex flex-col m-1">
                                 <label class="text-sm m-0">Reps</label>
                                 <input type="number"
                                        name="repsPerSet"
@@ -321,12 +321,14 @@
                             </div>
 
                         {:else}
-                            <input type="number"
+                            <div class="flex flex-col m-1">
+                                <lable class="text-sm m-0">RM</lable>
+                                <input type="number"
                                    name="repsPerSet"
                                    placeholder="Sets"
                                    class="bg-gray-300 p-2"
                                    bind:value={exercise.repsPerSet}>
-                            <label>RM</label>
+                            </div>
                         {/if}
                         <div class="flex justify-center items-center m-2">
                             <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
@@ -353,13 +355,13 @@
                 <i>You haven't added any exercises to this day yet</i>
             </div>
         {/if}
-        <footer class="flex mt-4 justify-start md:justify-end w-full">
+        <footer class="fixed bottom-10 right-5 md:static flex mt-4 justify-end md:w-full ">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
                     class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
                 Save (Ctrl s)
             </button>
-            <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md">
+            <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
                 Download CSV
             </button>
         </footer>
