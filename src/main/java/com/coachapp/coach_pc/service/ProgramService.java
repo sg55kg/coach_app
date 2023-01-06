@@ -110,10 +110,25 @@ public class ProgramService {
                     program.getStartDate(),
                     program.getEndDate(),
                     program.getName());
+            Date d = getLastUpdatedDay(program);
+            displayProgram.setLastEnteredDay(d);
             programs.add(displayProgram);
         });
 
         return new ResponseEntity<>(programs, HttpStatus.OK);
+    }
+
+    private Date getLastUpdatedDay(Program program) {
+        Date result = new Date();
+        for (int i = 0; i <= program.getDays().size() - 1; i++) {
+            Day day = program.getDays().get(i);
+
+            if (!day.getIsRestDay() && day.getExercises().size() < 1) {
+                result = day.getDate();
+                break;
+            }
+        }
+        return result;
     }
 
     public ResponseEntity<List<DisplayProgram>> getProgramsByTeamId(UUID teamId) {

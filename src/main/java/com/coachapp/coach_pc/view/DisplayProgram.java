@@ -10,6 +10,7 @@ public class DisplayProgram {
     private Date updatedAt;
     private Date startDate;
     private Date endDate;
+    private Date lastEnteredDay;
     private String name;
 
     public DisplayProgram(UUID id, Date createdAt, Date updatedAt, Date startDate, Date endDate, String name) {
@@ -43,5 +44,13 @@ public class DisplayProgram {
 
     public String getName() {
         return name;
+    }
+
+    public Date getLastEnteredDay() {
+        return lastEnteredDay;
+    }
+
+    public void setLastEnteredDay(Date lastEnteredDay) {
+        this.lastEnteredDay = lastEnteredDay;
     }
 }
