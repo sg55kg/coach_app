@@ -282,7 +282,7 @@
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
             {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
                 <div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2">
-                    <div class="flex flex-row p-2 justify-between">
+                    <div class="flex flex-col md:flex-row p-2 justify-between">
                         <div class="flex flex-col">
                             <label class="text-sm m-0">Name</label>
                             <input type="text"
