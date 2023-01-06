@@ -14,15 +14,15 @@
             Coachable
         </a>
         <p>&nbsp | &nbsp</p>
-        <a href="/home/coach">Coach Home</a>
+        <a href="/home/coach">Coach</a>
         <p>&nbsp | &nbsp</p>
-        <a href="/home/athlete">Athlete Home</a>
+        <a href="/home/athlete">Athlete</a>
     </div>
     <div class="flex">
         <button on:click={logout}>
-            Logout
+            <img src={$user.picture} alt="profile" class="ml-4 mr-2">
         </button>
-        <img src={$user.picture} alt="profile" class="ml-4 mr-2">
+
     </div>
 </header>
 
