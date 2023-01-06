@@ -251,14 +251,6 @@
     </div>
 
     <hr>
-    <div class="flex justify-between">
-        <div>
-            {#if $program?.days.length > 0}
-                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
-                    Add exercise (Shift +)
-                </button>
-            {/if}
-        </div>
         {#if $program && $program.days.length > 0 && selectedIndex > -1}
             <div class="flex justify-center align-middle">
                 <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
@@ -271,13 +263,21 @@
                     <FaAngleRight />
                 </div>
             </div>
+            <div class="flex justify-between">
+            <div>
+                        {#if $program?.days.length > 0}
+                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                                Add exercise (Shift +)
+                            </button>
+                        {/if}
+                    </div>
             <div>
                 <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
                     {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
                 </button>
             </div>
+            </div>
         {/if}
-    </div>
     {#if selectedIndex > -1 && $program}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
             {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
