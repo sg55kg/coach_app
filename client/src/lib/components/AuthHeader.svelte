@@ -10,7 +10,7 @@
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
     <div class="flex items-center align-baseline">
-        <a href="/" class="font-semibold tracking-widest uppercase text-2xl ml-3 text-yellow-lt">
+        <a href="/" class="font-semibold tracking-widest uppercase text-2xl ml-1 text-yellow-lt">
             Coachable
         </a>
         <p>&nbsp | &nbsp</p>
@@ -20,7 +20,7 @@
     </div>
     <div class="flex">
         <button on:click={logout}>
-            <img src={$user.picture} alt="profile" class="ml-4 mr-2">
+            <img src={$user.picture} alt="profile" class="ml-2 mr-1">
         </button>
 
     </div>

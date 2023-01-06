@@ -41,12 +41,12 @@
 
 	{:else }
 		<h1 class="text-xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
-		<div class="flex flex-row justify-self-center justify-around w-5/12">
-			<a class="text-gray-200 bg-yellow rounded-xl p-2 font-bold text-center text-sm w-5/12 hover:bg-yellow-shade"
+		<div class="flex flex-row justify-self-center justify-around">
+			<a class="text-gray-200 bg-yellow rounded-xl p-2 m-2 font-bold text-center text-sm hover:bg-yellow-shade"
 			   href="/home/coach">
 				Coach Dashboard
 			</a>
-			<a class="text-gray-200 bg-yellow rounded-xl p-2 font-bold text-center text-sm w-5/12 hover:bg-yellow-shade"
+			<a class="text-gray-200 bg-yellow rounded-xl p-2 m-2 font-bold text-center text-sm hover:bg-yellow-shade"
 			   href="/home/athlete">
 				Athlete Dashboard
 			</a>
