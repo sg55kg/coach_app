@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
+import com.coachapp.coach_pc.manager.ProgramManager;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.model.Program;
@@ -21,10 +22,12 @@ import java.util.UUID;
 public class ProgramController {
 
     private ProgramService _programService;
+    private ProgramManager programManager;
 
     @Autowired
-    public ProgramController(ProgramService programService) {
+    public ProgramController(ProgramService programService, ProgramManager programManager) {
         this._programService = programService;
+        this.programManager = programManager;
     }
 
     @GetMapping
@@ -34,7 +37,7 @@ public class ProgramController {
 
     @PostMapping("/coach/{coachId}")
     public ResponseEntity<Program> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
-        return _programService.addProgram(program, coachId);
+        return programManager.createProgram(program);
     }
 
     @GetMapping("/{id}")

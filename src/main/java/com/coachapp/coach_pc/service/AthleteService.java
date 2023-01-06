@@ -70,4 +70,10 @@ public class AthleteService {
 
         return new ResponseEntity<>(athlete.getRecords(), HttpStatus.OK);
     }
+
+    public AthleteData getAthleteData(UUID athleteId) {
+        Optional<AthleteData> optional = athleteRepo.findById(athleteId);
+
+        return optional.get();
+    }
 }

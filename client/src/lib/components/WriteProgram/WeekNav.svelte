@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {program} from "$lib/stores/writeProgramStore";
-    import {onMount} from "svelte";
+    import {program, programSuccess} from "$lib/stores/writeProgramStore";
+    import {afterUpdate, onMount} from "svelte";
     import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
     import FaAngleUp from 'svelte-icons/fa/FaAngleUp.svelte'
@@ -20,9 +20,7 @@
         console.log(selectedDayIndex)
     }
 
-
-
-    onMount(() => {
+    const initializeWeeks = () => {
         let count = 1
         let currentWeek = []
         for (const day of $program.days) {
@@ -43,6 +41,16 @@
 
         if (weeks.length > 0) {
             selectedWeekIndex = weeks.length - 1
+        }
+    }
+
+    onMount(() => {
+        initializeWeeks()
+    })
+
+    afterUpdate(() => {
+        if ($programSuccess) {
+            initializeWeeks()
         }
     })
 

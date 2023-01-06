@@ -1,7 +1,7 @@
 import * as devalue from 'devalue'
 import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
-import {type AthleteData, AthleteRecord, User} from "$lib/classes/user";
+import {AthleteData, type AthleteDataDTO, AthleteRecord, User} from "$lib/classes/user";
 
 
 
@@ -159,7 +159,9 @@ export default class UserService {
                 records: athlete.records
             })
         })
-
-        return await res.json()
+        if (res.status > 299) {
+            throw new Error('Could not update athlete data')
+        }
+        return AthleteData.createFrom(await res.json() as AthleteDataDTO)
     }
 }

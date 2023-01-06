@@ -12,7 +12,7 @@
         const today = dayjs()
         const lastUpdatedDay = dayjs(program.lastEnteredDay)
         console.log(program)
-        const diff = today.diff(lastUpdatedDay.get('days'), 'days')
+        const diff = lastUpdatedDay.diff(today, 'days')
         console.log(diff.toString())
 
         console.log(today.valueOf() )

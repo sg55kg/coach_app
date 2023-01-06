@@ -11,7 +11,7 @@
     } from "$lib/stores/athleteProgramStore";
     import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
-    import {AthleteData, AthleteRecord} from "$lib/classes/user";
+    import {AthleteData, AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user";
     import UserService from "$lib/service/userService";
     import {onMount} from "svelte";
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
@@ -27,7 +27,10 @@
         console.log('isPR',records)
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
         console.log('formattedName', formattedName)
-        console.log(records.records.get(formattedName))
+        console.log(records?.records?.get(formattedName))
+        if (!records) {
+            records = new AthleteRecord({ id: '', [formattedName]: exercise.weightCompleted } as AthleteRecordDTO);
+        }
         if (records.records.get(formattedName) === undefined) {
             console.log('notFound')
             return ''

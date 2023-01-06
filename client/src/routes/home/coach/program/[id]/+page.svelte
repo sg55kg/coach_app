@@ -4,7 +4,7 @@
     import ProgramForm from "$lib/components/WriteProgram/ProgramForm.svelte";
     import {ProgramService} from "$lib/service/ProgramService";
     import {auth0Client} from "$lib/stores/authStore";
-    import {program} from "$lib/stores/writeProgramStore";
+    import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
 
     export let data
     console.log(data)
@@ -14,10 +14,16 @@
     const handleSubmit = async (event, programData: Program) => {
         if (!$auth0Client) return
         event.preventDefault()
+        programError.set('')
 
-        const updatedProgram = await ProgramService.updateProgram($auth0Client, programData)
-
-        program.set(Program.build(updatedProgram))
+        try {
+            const updatedProgram = await ProgramService.updateProgram($auth0Client, programData)
+            program.set(Program.build(updatedProgram))
+            programSuccess.set('Updated')
+        } catch (e) {
+            console.log(e)
+            programError.set('Could not update program at this time')
+        }
     }
 
     onMount(async () => {
