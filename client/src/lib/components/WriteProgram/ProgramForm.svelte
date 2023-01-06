@@ -202,7 +202,7 @@
     <WeekNav bind:selectedDayIndex={selectedIndex} dayId={selectedDayId} />
 
     <div class="flex flex-col self-start w-9/12">
-    <div class="p-4 flex flex-row justify-between">
+    <div class="flex flex-row justify-between">
         <div class="flex flex-col justify-start">
             <div class="flex justify-start">
                 <input type="text"
@@ -213,7 +213,7 @@
             </div>
 
             <div class="py-4 flex justify-start w-9/12">
-                <div class="flex flex-col mr-4">
+                <div class="flex flex-col mr-4 w-1/2">
                     <label>Start Date</label>
                     <input type="date"
                            class="p-1 bg-gray-300 text-textgray decoration-color-textgray"
@@ -221,7 +221,7 @@
                            bind:value={startDateString}
                            on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col w-1/2">
                     <label>End Date</label>
                     <input type="date"
                            name="endDate"
@@ -230,26 +230,26 @@
                            on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
                 </div>
             </div>
-        </div>
+            <div class="flex flex-col self-start">
+                            <label></label>
+                            <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
+                                <option disabled selected>No Athlete Selected</option>
+                                {#each athleteOptions as athlete}
+                                    <option value={athlete.id}>{athlete.name}</option>
+                                {/each}
+                            </select>
+                            <div class="flex-row my-3">
+                                <input checked={$program.isCurrent}
+                                       type="checkbox"
+                                       id="current_program"
+                                       on:change={(e) => $program.isCurrent = e.target.checked}>
+                                <label for="current_program">Current Program</label>
+                            </div>
 
-        <div class="flex flex-col self-start">
-            <label></label>
-            <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
-                <option disabled selected>No Athlete Selected</option>
-                {#each athleteOptions as athlete}
-                    <option value={athlete.id}>{athlete.name}</option>
-                {/each}
-            </select>
-            <div class="flex-row">
-                <input checked={$program.isCurrent}
-                       type="checkbox"
-                       id="current_program"
-                       on:change={(e) => $program.isCurrent = e.target.checked}>
-                <label for="current_program">Current Program</label>
             </div>
-
         </div>
     </div>
+
     <hr>
     <div class="flex justify-between">
         <div>
@@ -353,7 +353,7 @@
                 <i>You haven't added any exercises to this day yet</i>
             </div>
         {/if}
-        <footer class="flex mt-4 justify-end w-full">
+        <footer class="flex mt-4 justify-start md:justify-end w-full">
             <button type="button"
                     on:click={(e) => handleSubmit(e, $program)}
                     class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">

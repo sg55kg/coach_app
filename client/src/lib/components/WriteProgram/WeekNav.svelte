@@ -48,7 +48,7 @@
 
 </script>
 
-<div class="flex flex-col mx-2">
+<div class="hidden md:flex flex-col mx-2">
     {#if selectedWeekIndex > -1 && weeks.length > 0}
         <div class="flex flex-row w-full justify-center items-center">
             <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
