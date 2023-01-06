@@ -8,7 +8,7 @@
     import type {Dayjs} from "dayjs";
     import {userDB} from "$lib/stores/authStore";
     import {Exercise} from "$lib/classes/program/exercise";
-    import {program} from "$lib/stores/writeProgramStore";
+    import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import WeekNav from "$lib/components/WriteProgram/WeekNav.svelte";
 
     export let handleSubmit
@@ -190,7 +190,18 @@
             console.log(athleteOptions)
             $userDB?.coachData?.athletes?.forEach(a => athleteOptions.push({ name: a.name, id: a.id }))
         }
-        console.log($program)
+
+        if ($programError) {
+            setTimeout(() => {
+                programError.set('')
+            }, 5000)
+        }
+
+        if ($programSuccess) {
+            setTimeout(() => {
+                programSuccess.set('')
+            }, 5000)
+        }
     })
 
     onDestroy(() => {

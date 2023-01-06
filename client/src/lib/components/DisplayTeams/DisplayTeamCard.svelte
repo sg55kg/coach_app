@@ -14,8 +14,11 @@
             { ...$userDB.athleteData, team, coach: { id: team.coachId } } as AthleteData :
             { ...$userDB.athleteData, team: null, coach: null } as AthleteData
         try {
-            const res = await UserService.updateAthleteData($auth0Client, updatedAthlete)
-
+            const res: AthleteData = await UserService.updateAthleteData($auth0Client, updatedAthlete)
+            userDB.update(prev => {
+                prev!.athleteData = res
+                return prev
+            })
         } catch (e) {
             console.log(e)
         }

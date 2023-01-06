@@ -4,4 +4,3 @@ import type {DisplayProgram} from "../classes/program";
 
 
 export const displayPrograms: Writable<DisplayProgram[]> = writable([])
-export const programError: Writable<string> = writable('')

@@ -1,6 +1,7 @@
 import {Day} from "./day";
 import type {DayDTO} from "./day";
 import type {CoachDataDTO} from "$lib/classes/user";
+import type {TeamDTO} from "$lib/classes/team";
 
 export interface IProgram {
     id?: string,
@@ -20,6 +21,7 @@ export interface ProgramDTO {
     endDate: string,
     days: DayDTO[],
     coach?: CoachDataDTO,
+    team?: TeamDTO,
     lastEnteredDay?: string
 }
 
@@ -46,6 +48,7 @@ export class Program implements IProgram {
         program.endDate = new Date(programDTO.endDate)
         program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
         program.coachId = programDTO.coach ? programDTO.coach.id : ''
+        program.teamId = programDTO.team ? programDTO.team.id : ''
 
         return { ...program }
     }
@@ -57,6 +60,7 @@ export class Program implements IProgram {
     days: Day[] = []
     athleteId: string = ''
     coachId: string = ''
+    teamId: string = ''
     isCurrent: boolean = true
 }
 

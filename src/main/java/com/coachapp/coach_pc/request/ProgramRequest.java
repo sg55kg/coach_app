@@ -10,9 +10,10 @@ public class ProgramRequest {
     private String name;
     private Date startDate;
     private Date endDate;
-
     private UUID coachId;
     private UUID athleteId;
+    private UUID teamId;
+    private boolean isCurrent;
 
     public ProgramRequest() {}
 
@@ -60,6 +61,22 @@ public class ProgramRequest {
 
     public void setAthleteId(UUID athleteId) {
         this.athleteId = athleteId;
+    }
+
+    public boolean getIsCurrent() {
+        return isCurrent;
+    }
+
+    public void setIsCurrent(boolean isCurrent) {
+        this.isCurrent = isCurrent;
+    }
+
+    public UUID getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(UUID teamId) {
+        this.teamId = teamId;
     }
 
     public static Program convertRequest(ProgramRequest request) {

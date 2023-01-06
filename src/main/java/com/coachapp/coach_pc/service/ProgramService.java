@@ -70,19 +70,9 @@ public class ProgramService {
         _programRepo.deleteById(id);
     }
 
-    public ResponseEntity<Program> addProgram(ProgramRequest program, UUID coachId) {
-        CoachData coach = new CoachData();
-        AthleteData athlete = new AthleteData();
-        athlete.setId(program.getAthleteId());
-        coach.setId(coachId);
-
-        Program newProgram = ProgramRequest.convertRequest(program);
-        newProgram.setCoach(coach);
-        newProgram.setAthlete(athlete);
-
-
-        _programRepo.save(newProgram);
-        return new ResponseEntity<>(newProgram, HttpStatus.CREATED);
+    public Program addProgram(Program program) {
+        program = _programRepo.save(program);
+        return program;
     }
 
     public ResponseEntity<ProgramViewModel> updateProgram(UpdateProgramRequest request, UUID id) {
