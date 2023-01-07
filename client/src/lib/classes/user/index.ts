@@ -141,6 +141,48 @@ export class AthleteRecord {
     }
 }
 
+export const athleteRecordFields = [
+    'snatch',
+    'clean and jerk',
+    'jerk',
+    'clean',
+    'back squat',
+    'front squat',
+    'deadlift',
+    'snatch deadlift',
+    'push press',
+    'strict press',
+    'bent over row',
+    'power snatch',
+    'power clean',
+    'power jerk',
+    'hang snatch',
+    'hang power snatch',
+    'hang power clean',
+    'block snatch',
+    'block clean',
+    'block power snatch',
+    'block power clean',
+    'clean pull',
+    'snatch pull',
+    'snatch high pull',
+    'bench press',
+    'pendlay rows',
+    'snatch push press',
+    'overhead squat',
+    'squat jerk',
+    'max pull ups',
+    'weighted pull up',
+    'max chin ups',
+    'weighted chin up',
+    'pause snatch',
+    'pause clean',
+    'sandbag carry meters',
+    'sandbag carry weight',
+    'farmer carry meters',
+    'farmer carry weight',
+]
+
 export class User {
 
     static build(userDTO: UserDTO) {
