@@ -10,6 +10,7 @@
     import {Exercise} from "$lib/classes/program/exercise";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import WeekNav from "$lib/components/WriteProgram/WeekNav.svelte";
+    import ExerciseForm from "$lib/components/WriteProgram/ExerciseForm.svelte";
 
     export let handleSubmit
     export let initialIndex: number = -1
@@ -175,7 +176,6 @@
         if (selectedIndex > -1) {
             selectedDayId = $program.days[selectedIndex].id
         }
-
            // athleteOptions.push({ name: $userDB.username, id: $userDB.id })
         console.log(athleteOptions)
     })
@@ -242,21 +242,20 @@
                 </div>
             </div>
             <div class="flex flex-col self-start">
-                            <label></label>
-                            <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
-                                <option disabled selected>No Athlete Selected</option>
-                                {#each athleteOptions as athlete}
-                                    <option value={athlete.id}>{athlete.name}</option>
-                                {/each}
-                            </select>
-                            <div class="flex-row my-3">
-                                <input checked={$program.isCurrent}
-                                       type="checkbox"
-                                       id="current_program"
-                                       on:change={(e) => $program.isCurrent = e.target.checked}>
-                                <label for="current_program">Current Program</label>
-                            </div>
-
+                <label></label>
+                <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
+                    <option disabled selected>No Athlete Selected</option>
+                    {#each athleteOptions as athlete}
+                        <option value={athlete.id}>{athlete.name}</option>
+                    {/each}
+                </select>
+                <div class="flex-row my-3">
+                    <input checked={$program.isCurrent}
+                           type="checkbox"
+                           id="current_program"
+                           on:change={(e) => $program.isCurrent = e.target.checked}>
+                    <label for="current_program">Current Program</label>
+                </div>
             </div>
         </div>
     </div>
@@ -276,12 +275,12 @@
             </div>
             <div class="flex justify-between">
             <div>
-                        {#if $program?.days.length > 0}
-                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
-                                Add exercise (Shift +)
-                            </button>
-                        {/if}
-                    </div>
+                {#if $program?.days.length > 0}
+                    <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                        Add exercise (Shift +)
+                    </button>
+                {/if}
+            </div>
             <div>
                 <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
                     {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
@@ -292,70 +291,7 @@
     {#if selectedIndex > -1 && $program}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
             {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
-                <div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2">
-                    <div class="flex flex-col md:flex-row p-2 justify-between">
-                        <div class="flex flex-col m-1">
-                            <label class="text-sm m-0">Name</label>
-                            <input type="text"
-                                   name="name"
-                                   placeholder="Exercise name"
-                                   class="bg-gray-300 p-2"
-                                   bind:value={exercise.name}>
-                        </div>
-
-                        {#if !exercise.isMax}
-                            <div class="flex flex-col m-1">
-                                <label class="text-sm m-0">Weight</label>
-                                <input type="number"
-                                       name="weight"
-                                       placeholder="Weight"
-                                       class="bg-gray-300 p-2"
-                                       bind:value={exercise.weight}>
-                            </div>
-
-                            <div class="flex flex-col m-1">
-                                <label class="text-sm m-0">Sets</label>
-                                <input type="number"
-                                       name="sets"
-                                       placeholder="Sets"
-                                       class="bg-gray-300 p-2"
-                                       bind:value={exercise.sets}>
-                            </div>
-
-                            <div class="flex flex-col m-1">
-                                <label class="text-sm m-0">Reps</label>
-                                <input type="number"
-                                       name="repsPerSet"
-                                       placeholder="Reps"
-                                       class="bg-gray-300 p-2"
-                                       bind:value={exercise.repsPerSet}>
-                            </div>
-
-                        {:else}
-                            <div class="flex flex-col m-1">
-                                <lable class="text-sm m-0">RM</lable>
-                                <input type="number"
-                                   name="repsPerSet"
-                                   placeholder="Sets"
-                                   class="bg-gray-300 p-2"
-                                   bind:value={exercise.repsPerSet}>
-                            </div>
-                        {/if}
-                        <div class="flex justify-center items-center m-2">
-                            <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
-                            <label class="switch">
-                                <input type="checkbox" bind:value={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="flex flex-col m-2">
-                        <label class="text-sm m-0">Notes</label>
-                        <textarea placeholder="Add notes for your athlete" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2"></textarea>
-                    </div>
-
-                </div>
+                <ExerciseForm bind:exercise={exercise} />
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
             <div class="flex justify-center m-8 font-bold text-2xl">
