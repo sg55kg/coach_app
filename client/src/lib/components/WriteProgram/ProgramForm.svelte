@@ -290,7 +290,7 @@
         {/if}
     {#if selectedIndex > -1 && $program}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
-            {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
+            {#each $program?.days[selectedIndex]?.exercises.sort((a, b) => a.order - b.order) as exercise, idx (idx)}
                 <ExerciseForm bind:exercise={exercise} />
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
