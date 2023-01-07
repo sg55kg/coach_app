@@ -30,18 +30,18 @@
 	<meta name="description" content="Coachable app" />
 </svelte:head>
 
-<section class="flex flex-col w-screen">
+<section class="flex flex-col w-screen mt-0 md:mt-8">
 
-		<div class="w-full px-16">
+		<div class="w-full md:w-9/12 px-16">
 			<h1 class="text-5xl font-bold tracking-wider">Connect with your Team</h1>
-			<div class="w-6/12">
-				<h1 class="text-xl text-wrap w-2 my-4 tracking-wider">
+			<div class="w-full md:w-6/12">
+				<h1 class="text-xl text-wrap w-full md:w-2 my-4 tracking-wider">
 					Track all of your athletes' progress and stay organized across multiple teams. Use athlete feedback and data from your programs to make better decisions. Write better programs with Coachable.
 				</h1>
 			</div>
-			<div class="flex flex-col text-center justify-center items-start m-2 mt-10">
+			<div class="flex flex-col text-center justify-center items-center m-2 mt-8">
 				{#if !$isAuthenticated}
-					<button on:click={login} class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
+					<button on:click={login} class="justify-center text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
 						Get Started
 					</button>
 					<div class="flex flex-col items-start">
