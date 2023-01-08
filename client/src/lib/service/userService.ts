@@ -67,7 +67,7 @@ export default class UserService {
 
     static fetchUserData = async (client: Auth0Client, email: string) => {
         const token = await client.getTokenSilently()
-        let res = await fetch(`http://localhost:8180/api/users/${email}`, {
+        let res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${email}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -76,7 +76,7 @@ export default class UserService {
         if (res.status === 404) {
             const fields = await client.getUser()
 
-            res = await fetch(`http://localhost:8180/api/users`, {
+            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -90,7 +90,7 @@ export default class UserService {
         console.log('user fetch', userData)
 
         if (!userData.coachData && res.status !== 500) {
-            res = await fetch(`http://localhost:8180/api/users/coach`, {
+            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -106,7 +106,7 @@ export default class UserService {
         }
 
         if (!userData.athleteData && res.status !== 500) {
-            res = await fetch(`http://localhost:8180/api/users/athlete`, {
+            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/athlete`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -128,7 +128,7 @@ export default class UserService {
     static updateAthleteRecords = async (client: Auth0Client, record: AthleteRecord, id: string) => {
         const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`http://localhost:8180/api/athletes/${id}/record`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${id}/record`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
@@ -148,7 +148,7 @@ export default class UserService {
         const accessToken = await client.getTokenSilently()
         const id = athlete.id
 
-        const res = await fetch(`http://localhost:8180/api/athletes/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + accessToken,

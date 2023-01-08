@@ -1,5 +1,5 @@
 import { invalid } from '@sveltejs/kit';
-import { words, allowed } from './words.server';
+import { words, allowed } from './words';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = ({ cookies }) => {
