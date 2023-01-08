@@ -85,7 +85,7 @@ export class ProgramService {
 
         return await res.json()
     }
-
+//
     static updateExercise = async (client: Auth0Client, exercise: Exercise, programId: string) => {
         const accessToken = await client.getTokenSilently()
         console.debug(exercise)
