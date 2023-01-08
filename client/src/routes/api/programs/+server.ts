@@ -1,5 +1,4 @@
 import type {RequestHandler, RequestEvent} from "./$types";
-import {invalid} from '@sveltejs/kit';
 import axios from "axios";
 
 
@@ -25,7 +24,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         return new Response(savedProgram)
     } catch (e) {
         console.log(e)
-        return invalid(405)
+        return Error(e.message)
     }
 }
 
@@ -47,7 +46,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
         const updatedProgram = await res.json()
         return new Response(JSON.stringify(updatedProgram))
     } catch (e) {
-        return invalid(405)
+        return Error(e.message)
     }
 }
 

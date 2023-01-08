@@ -7,7 +7,7 @@ export class TeamService {
     static createTeam = async (client: Auth0Client, team: Team) => {
         const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`http://localhost:8180/api/teams`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
             body: JSON.stringify(team)
@@ -19,7 +19,7 @@ export class TeamService {
     static getDisplayTeams = async (client: Auth0Client) => {
         const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`http://localhost:8180/api/teams/`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }
         })
