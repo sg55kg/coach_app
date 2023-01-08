@@ -20,31 +20,31 @@
 
     let newCommentContent: string = ''
     let showComments: boolean = false
+    let setsComplete: number = 0
+    let repsPerSetComplete: number = 0
+    let weightUnitsSelected: 'kg' | 'lb' = 'kg'
 
     const toggleShowComments = () => showComments = !showComments
 
     const weightIsNewPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
-        console.log('isPR',records)
+        if (!exercise.isComplete) return ''
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
-        console.log('formattedName', formattedName)
-        console.log(records?.records?.get(formattedName))
+
         if (!records) {
             records = new AthleteRecord({ id: '', [formattedName]: exercise.weightCompleted } as AthleteRecordDTO);
         }
         if (records.records.get(formattedName) === undefined) {
-            console.log('notFound')
             return ''
         }
         const weight = records.records.get(formattedName)
         if (weight < exercise.weightCompleted && exercise.weightCompleted !== 0) {
-            console.log('found',formattedName)
             return formattedName
         }
         return ''
     }
 
     const weightIsTiedPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
-        if (!exercise || !records) return
+        if (!exercise || !records || !exercise.isComplete) return ''
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
 
         if (!records.records.get(formattedName)) {
@@ -62,21 +62,38 @@
 
     const completeExercise = async (exercise: Exercise) => {
         if (!$auth0Client || !$userDB?.athleteData) return
-        loadingAthleteProgram.set(true)
 
-        let updatedExercise: Exercise = !exercise.isComplete ? {
-            ...exercise,
-            isComplete: true,
-            weightCompleted: exercise.weight,
-            totalRepsCompleted: (exercise.sets * exercise.repsPerSet)
-        } : {
-            ...exercise,
-            isComplete: false,
-            weightCompleted: 0,
-            totalRepsCompleted: 0
+        let sets = 0
+        let reps = 0
+        let weight = 0
+
+        // determine if user manually entered reps/sets/weight, or if we should just use the coaches prescribed values
+        // ...provided that the athlete is marking the exercise completed
+        if (!exercise.isComplete) {
+            sets = setsComplete > 0 ? setsComplete : exercise.sets
+            reps = repsPerSetComplete > 0 ? repsPerSetComplete : exercise.repsPerSet
+            weight = exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
         }
-        console.log('updatedExercise',updatedExercise)
+        console.log('sets', sets)
+        console.log('reps', reps)
+        console.log('weight', weight)
 
+        let updatedExercise: Exercise = {
+            ...exercise,
+            isComplete: !exercise.isComplete,
+            weightCompleted: weight,
+            totalRepsCompleted: (sets * reps)
+        }
+        repsPerSetComplete = reps
+        setsComplete = sets
+        console.log('updatedExercise',updatedExercise)
+        await saveExerciseChanges(updatedExercise)
+    }
+
+    const saveExerciseChanges = async (updatedExercise: Exercise) => {
+        if (!$auth0Client || !$userDB?.athleteData || !$currentProgram) return
+        console.log('currentProgram', $currentProgram)
+        loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
             const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
 
@@ -158,20 +175,71 @@
         loadingAthleteProgram.set(false)
     }
 
+    const handleEditRepsComplete = (repsStr: string) => {
+        let reps: number
+        if (repsStr === '') {
+            reps = 0
+        } else {
+            reps = parseInt(repsStr)
+        }
+        repsPerSetComplete = reps
+    }
+
+    const handleEditSetsComplete = (setsStr: string) => {
+        let sets: number
+        if (setsStr === '') {
+            sets = 0
+        } else {
+            sets = parseInt(setsStr)
+        }
+        if (repsPerSetComplete === 0) {
+            setsComplete = 0
+        } else {
+            setsComplete = sets
+        }
+    }
+
+    const handleChangeWeightUnits = (units: 'kg' | 'lb') => {
+        if (units === 'kg' && weightUnitsSelected === 'lb') {
+            weightUnitsSelected = 'kg'
+            exercise.weight = Math.round(exercise.weight / 2.2042)
+            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted / 2.2042) : 0
+        } else if (units === 'lb' && weightUnitsSelected === 'kg') {
+            weightUnitsSelected = 'lb'
+            exercise.weight = Math.round(exercise.weight * 2.2042)
+            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted * 2.2042) : 0
+        }
+    }
+
     onMount(() => {
-        // this may need tweaking. If they tie a PR, it probably should show it was a tie vs saying PERSONAL RECORD!!!
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
+        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? exercise.totalRepsCompleted / exercise.sets : 0
+        setsComplete = exercise.totalRepsCompleted > 0 ? exercise.sets : 0
     })
 
 </script>
 
-
-<div class="flex-col bg-gray-300 p-4 my-2 rounded relative">
-    <div class="flex flex-row justify-around">
-        <p class="w-fit m-0">{exercise.name}</p>
-        <p class="w-fit m-0">{exercise.weight}</p>
-        <p class="w-fit m-0">{exercise.sets}</p>
-        <p class="w-fit m-0">{exercise.repsPerSet}</p>
+<div class="flex-col bg-gray-300 lg:p-4 my-2 rounded relative sm:p-2 md:p-2">
+    <div class="flex flex-col lg:flex-row lg:justify-around">
+        <p class="lg:w-fit sm:w-fit m-0 text-lg p-1 font-bold bg-gray-300 text-textblue self-center">{exercise.name}</p>
+        <div class="m-0 p-1 text-lg text-textblue flex justify-center items-center">
+            <input class="bg-gray-300 w-12" bind:value={exercise.weightCompleted}>
+            <p class="bg-gray-300 w-13">/&nbsp;&nbsp;&nbsp;{exercise.weight}</p>
+            <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-300">
+                <option selected>kg</option>
+                <option>lb</option>
+            </select>
+        </div>
+        <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
+            <input class="bg-gray-300 w-12 text-center" bind:value={setsComplete} on:input={(e) => handleEditSetsComplete(e.target.value)}>
+            <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.sets}</p>
+            <p>Sets</p>
+        </div>
+        <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
+            <input class="bg-gray-300 w-12 text-center" bind:value={repsPerSetComplete} on:input={(e) => handleEditRepsComplete(e.target.value)}>
+            <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.repsPerSet}</p>
+            <p>Reps</p>
+        </div>
     </div>
     <div>
         <p>{exercise.notes}</p>
@@ -180,14 +248,17 @@
         <textarea class="w-full break-words text-left h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
     </div>
     <div>
-        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
-                disabled={$loadingAthleteProgram}
-                on:click={() => addComment(exercise)}>{!$loadingAthleteProgram ? 'Comment' : 'Loading'}</button>
-        <button class="bg-yellow text-black p-2 rounded hover:bg-yellow-shade"
-                disabled={$loadingAthleteProgram}
-                on:click={() => completeExercise(exercise)}>
-            {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
-        </button>
+        <div class="flex sm:justify-around md:justify-around lg:justify-start m-2">
+            <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
+                    disabled={$loadingAthleteProgram}
+                    on:click={() => addComment(exercise)}>{!$loadingAthleteProgram ? 'Comment' : 'Loading'}</button>
+            <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
+                    disabled={$loadingAthleteProgram}
+                    on:click={() => completeExercise(exercise)}>
+                {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
+            </button>
+        </div>
+
         {#if isPersonalBest}
             <div class="m-2 p-2 flex justify-center">
                 <p class="text-yellow">Current Record</p>
