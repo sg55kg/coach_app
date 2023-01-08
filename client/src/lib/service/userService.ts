@@ -11,15 +11,15 @@ export default class UserService {
         loadingAuth.set(true)
         try {
             let config = {
-                "domain": "dev-iubbkos4gue16ad5.us.auth0.com",
-                "clientId": "iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ",
+                "domain": import.meta.env.VITE_AUTH0_DOMAIN,
+                "clientId": import.meta.env.VITE_AUTH0_CLIENT_ID,
             }
 
             const client = await createAuth0Client({
                 domain: config.domain,
                 clientId: config.clientId,
                 authorizationParams: {
-                    audience: 'http://localhost:8180',
+                    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                 }
             })
 
