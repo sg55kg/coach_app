@@ -38,6 +38,7 @@
 		"date-picker-svelte": "^2.2.4",
 		"dayjs": "^1.11.7",
 		"devalue": "^4.2.0",
+		"dotenv": "^16.0.3",
 		"js-cookie": "^3.0.1",
 		"svelte-icons": "^2.1.0",
 		"zod": "^3.19.1"

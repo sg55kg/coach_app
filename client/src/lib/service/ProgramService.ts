@@ -10,7 +10,7 @@ export class ProgramService {
     static getCoachPrograms = async (client: Auth0Client, coachId: string) => {
         const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`http://localhost:8180/api/programs/coach/${coachId}`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/coach/${coachId}`, {
             method: 'GET',
             headers: { 'Authorization':'Bearer ' + accessToken }
         })
@@ -23,7 +23,7 @@ export class ProgramService {
     static getProgram = async (client: Auth0Client, id: string) => {
         const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`http://localhost:8180/api/programs/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/${id}`, {
             method: 'GET',
             headers: { 'Authorization':'Bearer ' + accessToken}
         })
@@ -36,7 +36,7 @@ export class ProgramService {
         const coachId = user?.coachData?.id as string
         console.log(program)
 
-        let res = await fetch(`http://localhost:8180/api/programs/coach/${coachId}`, {
+        let res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/coach/${coachId}`, {
             method: 'POST',
             body: JSON.stringify(program),
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
@@ -47,7 +47,7 @@ export class ProgramService {
         const dbProgram = await res.json()
 
         if (program.isCurrent) {
-            res = await fetch(`http://localhost:8180/api/athletes/${program.athleteId}/currentProgram/${dbProgram.id}`, {
+            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${program.athleteId}/currentProgram/${dbProgram.id}`, {
                 method: 'PUT',
                 headers: { 'Authorization': 'Bearer ' + accessToken }
             })
@@ -63,7 +63,7 @@ export class ProgramService {
         const accessToken = await client.getTokenSilently()
         const id = coachData.id
 
-        const res = await fetch(`http://localhost:8180/api/coach/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/coach/${id}`, {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + accessToken },
             body: JSON.stringify(coachData)
@@ -77,7 +77,7 @@ export class ProgramService {
         const accessToken = await client.getTokenSilently()
         const id = program.id
 
-        const res = await fetch(`http://localhost:8180/api/programs/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/${id}`, {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
             body: JSON.stringify(program)
@@ -90,7 +90,7 @@ export class ProgramService {
         const accessToken = await client.getTokenSilently()
         console.debug(exercise)
 
-        const res = await fetch(`http://localhost:8180/api/programs/${programId}/day`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/${programId}/day`, {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
             body: JSON.stringify(exercise)

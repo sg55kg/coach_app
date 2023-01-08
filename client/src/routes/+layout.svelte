@@ -33,11 +33,11 @@
 		<slot />
 	</main>
 
-	<footer>
-		<p class="text-link underline">Contact Us</p>
-		<p>&nbsp;|&nbsp;</p>
-		<p class="text-link underline">About</p>
-	</footer>
+<!--	<footer>-->
+<!--		<p class="text-link underline">Contact Us</p>-->
+<!--		<p>&nbsp;|&nbsp;</p>-->
+<!--		<p class="text-link underline">About</p>-->
+<!--	</footer>-->
 	{:else}
 	<h1>Loading</h1>
 {/if}
