@@ -6,6 +6,8 @@
         await UserService.logout($auth0Client!)
     }
 
+    let showDropdown: boolean = false
+
 </script>
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
@@ -18,11 +20,16 @@
         <p>&nbsp | &nbsp</p>
         <a href="/home/athlete">Athlete</a>
     </div>
-    <div class="flex">
-        <button on:click={logout}>
+    <div class="relative">
+        <button on:click={() => { showDropdown = !showDropdown }}>
             <img src={$user.picture} alt="profile" class="ml-2 mr-1">
         </button>
-
+        {#if showDropdown}
+            <div on:blur={() => showDropdown = false} id="header-dropdown" class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-4">
+                <button on:click={logout} class="w-full py-2 hover:bg-gray-200">Sign Out</button>
+                <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>
+            </div>
+        {/if}
     </div>
 </header>
 
