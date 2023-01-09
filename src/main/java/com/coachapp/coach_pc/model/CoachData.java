@@ -20,7 +20,7 @@ public class CoachData {
     @OneToOne(mappedBy = "coachData")
     @JsonIgnore
     private UserData user;
-    @OneToMany(mappedBy = "coach")
+    @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<AthleteData> athletes;
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

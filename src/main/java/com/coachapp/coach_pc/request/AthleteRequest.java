@@ -47,18 +47,25 @@ public class AthleteRequest {
     }
 
     public static AthleteData convertRequest(AthleteRequest request, AthleteData athlete) {
-        Team team = new Team();
-        CoachData coach = new CoachData();
-
-        team.setId(request.getTeamId());
-        coach.setId(request.getCoachId());
-
+        if (request.getCoachId() != null) {
+            CoachData coach = new CoachData();
+            coach.setId(request.getCoachId());
+            athlete.setCoach(coach);
+        } else {
+            athlete.setCoach(null);
+        }
+        if (request.getTeamId() != null) {
+            Team team = new Team();
+            team.setId(request.getTeamId());
+            athlete.setTeam(team);
+        } else {
+            athlete.setTeam(null);
+        }
         athlete.setId(request.getId());
         if (request.getName() != null) {
             athlete.setName(request.getName());
         }
-        athlete.setTeam(team);
-        athlete.setCoach(coach);
+
         if (request.getRecords().size() > 0 && request.getRecords().get(0).getId() != null) {
             athlete.setRecords(request.getRecords());
         }

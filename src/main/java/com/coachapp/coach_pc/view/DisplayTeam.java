@@ -66,12 +66,15 @@ public class DisplayTeam {
     public static DisplayTeam convertTeam(Team team) {
         DisplayTeam displayTeam = new DisplayTeam();
 
-        displayTeam.setCoachName(team.getCoach().getUser().getUsername());
+        if (team.getCoach() != null) {
+            displayTeam.setCoachName(team.getCoach().getUser().getUsername());
+            displayTeam.setCoachId(team.getCoach().getId());
+        }
+
         displayTeam.setDescription(team.getDescription());
         displayTeam.setId(team.getId());
         displayTeam.setName(team.getName());
         displayTeam.setNumAthletes(team.getAthletes().size());
-        displayTeam.setCoachId(team.getCoach().getId());
 
         return displayTeam;
     }

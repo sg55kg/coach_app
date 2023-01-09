@@ -144,11 +144,13 @@
     }
 
     const handleChangeAthlete = (athleteId: string) => {
-        console.log(athleteId)
+        const athlete = $userDB!.coachData!.athletes!.find(a => a.id === athleteId)
         program.update(p => {
             p.athleteId = athleteId
+            p.teamId = athlete.team.id
             return p
         })
+        console.log('program after athlete change', $program)
     }
 
     const toggleRestDay = () => $program ? $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay : null
@@ -172,12 +174,14 @@
             document.addEventListener('keyup', handleHotKeys)
         if ($userDB?.coachData?.athletes) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
+            program.update(prev => ({ ...prev, coachId: $userDB!.coachData!.id! }))
         }
         if (selectedIndex > -1) {
             selectedDayId = $program.days[selectedIndex].id
         }
            // athleteOptions.push({ name: $userDB.username, id: $userDB.id })
         console.log(athleteOptions)
+        console.log('program on mount', $program)
     })
 
     afterUpdate(() => {
@@ -261,7 +265,7 @@
     </div>
 
     <hr>
-        {#if $program && $program.days.length > 0 && selectedIndex > -1}
+        {#if $program && $program?.days?.length > 0 && selectedIndex > -1}
             <div class="flex justify-center align-middle">
                 <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
                      on:click={decrementSelectedIndex}>
