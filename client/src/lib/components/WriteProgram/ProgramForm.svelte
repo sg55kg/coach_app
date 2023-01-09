@@ -174,6 +174,7 @@
             document.addEventListener('keyup', handleHotKeys)
         if ($userDB?.coachData?.athletes) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
+            athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
             program.update(prev => ({ ...prev, coachId: $userDB!.coachData!.id! }))
         }
         if (selectedIndex > -1) {
