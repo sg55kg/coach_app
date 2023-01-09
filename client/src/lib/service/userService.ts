@@ -21,7 +21,9 @@ export default class UserService {
                 authorizationParams: {
                     audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                 }
-            }) //
+            })
+
+            console.log(import.meta.env.VITE_AUTH0_AUDIENCE)
 
             auth0Client.set(client)
             isAuthenticated.set(await client.isAuthenticated())
