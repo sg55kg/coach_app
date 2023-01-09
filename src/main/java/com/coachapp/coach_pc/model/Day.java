@@ -21,7 +21,7 @@ public class Day {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Exercise> exercises;
     private boolean isRestDay;
 

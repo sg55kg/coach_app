@@ -24,7 +24,7 @@ public class Program {
     private Date updatedAt;
     private Date startDate;
     private Date endDate;
-    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Day> days;
     private String name;

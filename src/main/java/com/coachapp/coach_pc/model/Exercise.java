@@ -36,7 +36,7 @@ public class Exercise {
     @ManyToOne
     @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
     private AthleteData athleteCommentId;
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise")
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise", orphanRemoval = true)
     private List<AthleteExerciseComment> comments;
     private Boolean isComplete;
     @Column(name = "list_order")

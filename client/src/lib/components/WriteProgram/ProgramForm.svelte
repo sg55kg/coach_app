@@ -153,7 +153,14 @@
         console.log('program after athlete change', $program)
     }
 
-    const toggleRestDay = () => $program ? $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay : null
+    const toggleRestDay = () => {
+        if ($program) {
+            if (!$program.days[selectedIndex].isRestDay) {
+                $program.days[selectedIndex].exercises = []
+            }
+            $program.days[selectedIndex].isRestDay = !$program.days[selectedIndex].isRestDay
+        }
+    }
 
      const toggleIsMax = (exerciseIdx: string) => {
 
