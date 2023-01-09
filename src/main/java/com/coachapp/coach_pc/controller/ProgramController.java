@@ -37,11 +37,13 @@ public class ProgramController {
 
     @PostMapping("/coach/{coachId}")
     public ResponseEntity<Program> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
+        System.out.println("Received request to add new program");
         return programManager.createProgram(program);
     }
 
     @GetMapping("/{id}")
     public ProgramViewModel getProgram(@PathVariable UUID id) {
+        System.out.println("Received Request to get program " + id);
         return _programService.getProgram(id);
     }
 
@@ -57,6 +59,7 @@ public class ProgramController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProgramViewModel> updateProgram(@PathVariable UUID id, @RequestBody UpdateProgramRequest program) {
+        System.out.println("Received request to update program " + id);
         return _programService.updateProgram(program, id);
     }
 
@@ -67,6 +70,7 @@ public class ProgramController {
 
     @GetMapping("/team/{id}")
     public ResponseEntity<List<DisplayProgram>> getTeamPrograms(@PathVariable UUID id) {
+        System.out.println("Received request to get programs by team id: " + id);
         return _programService.getProgramsByTeamId(id);
     }
 
