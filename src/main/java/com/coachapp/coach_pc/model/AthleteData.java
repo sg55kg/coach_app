@@ -22,11 +22,11 @@ public class AthleteData {
     private Program currentProgram;
     @OneToMany(mappedBy = "athlete")
     private List<Program> programs;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     @JsonIgnore
     private CoachData coach;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;

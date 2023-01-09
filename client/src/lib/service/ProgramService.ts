@@ -44,19 +44,9 @@ export class ProgramService {
 
         if (res.status > 205) return
 
-        const dbProgram = await res.json()
+        const dbProgram: ProgramDTO = await res.json()
 
-        if (program.isCurrent) {
-            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${program.athleteId}/currentProgram/${dbProgram.id}`, {
-                method: 'PUT',
-                headers: { 'Authorization': 'Bearer ' + accessToken }
-            })
-
-            const athleteData = await res.json()
-            console.log(athleteData)
-        }
-
-        return dbProgram
+        return Program.build(dbProgram)
     }
 
     static updateCoachPrograms = async (client: Auth0Client, coachData: any) => {

@@ -45,12 +45,17 @@ public class ProgramManager {
 
         program = programService.addProgram(program);
 
-        if (programRequest.getAthleteId() != null && programRequest.getIsCurrent()) {
+        if (programRequest.getAthleteId() != null) {
             Optional<AthleteData> optional = athleteRepo.findById(programRequest.getAthleteId());
             AthleteData athlete = optional.get();
-            athlete.setCurrentProgram(program);
+            if (programRequest.getIsCurrent()) {
+                athlete.setCurrentProgram(program);
+                athleteRepo.save(athlete);
+            }
+            program.setAthlete(athlete);
 
-            athleteRepo.save(athlete);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         if (programRequest.getCoachId() != null) {
             Optional<CoachData> optional = coachRepo.findById(programRequest.getCoachId());

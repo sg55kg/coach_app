@@ -62,7 +62,7 @@ export default class UserService {
 
         await client.logout({
             logoutParams: {
-                returnTo: 'https://localhost:5173'
+                returnTo: window.location.origin
             }
         })
     }

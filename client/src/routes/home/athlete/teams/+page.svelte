@@ -5,18 +5,20 @@
     import {TeamService} from "$lib/service/TeamService";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import DisplayTeamCard from "$lib/components/DisplayTeams/DisplayTeamCard.svelte";
+    import UserService from "$lib/service/userService";
 
     let displayTeams: DisplayTeam[] = []
     let loadingDisplayTeams: boolean = false
 
     onMount(async () => {
         if (!$auth0Client) {
+            //await UserService.initializeAuth0Client()
             return
         }
         loadingDisplayTeams = true
         try {
             // need to limit this query eventually to 20 results or so
-            const displayTeamsRes: DisplayTeam[] = await TeamService.getDisplayTeams($auth0Client)
+            const displayTeamsRes: DisplayTeam[] = await TeamService.getDisplayTeams($auth0Client!)
             if ($userDB?.coachData !== null) {
                 displayTeams = displayTeamsRes.filter(t => t.coachId !== $userDB!.coachData.id)
             } else {

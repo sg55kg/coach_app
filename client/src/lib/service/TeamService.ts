@@ -26,4 +26,5 @@ export class TeamService {
 
         return await res.json()
     }
+
 }
