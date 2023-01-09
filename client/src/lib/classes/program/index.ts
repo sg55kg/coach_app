@@ -41,6 +41,7 @@ export enum WeightIntensity {
 export class Program implements IProgram {
     static build = (programDTO: ProgramDTO) => {
         let program = new Program()
+        console.log(programDTO)
 
         program.id = programDTO.id
         program.name = programDTO.name

@@ -3,7 +3,7 @@
     import {DisplayTeam} from "$lib/classes/team";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import UserService from "$lib/service/userService";
-    import {AthleteData} from "$lib/classes/user";
+    import {AthleteData, CoachData} from "$lib/classes/user";
 
     export let team: DisplayTeam
 
@@ -11,14 +11,23 @@
         if (!$userDB?.athleteData || !$auth0Client) return
 
         let updatedAthlete = $userDB.athleteData.team === null ?
-            { ...$userDB.athleteData, team, coach: { id: team.coachId } } as AthleteData :
-            { ...$userDB.athleteData, team: null, coach: null } as AthleteData
+            { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
+            { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
+        console.log('before server athlete data', updatedAthlete)
         try {
             const res: AthleteData = await UserService.updateAthleteData($auth0Client, updatedAthlete)
+            console.log('Updated team athlete response', res)
             userDB.update(prev => {
                 prev!.athleteData = res
+                prev!.athleteData.coach = { id: team.coachId } as CoachData
                 return prev
             })
+            if (updatedAthlete.team) {
+                team.numAthletes++
+                team = team
+            } else {
+                team.numAthletes--
+            }
         } catch (e) {
             console.log(e)
         }
