@@ -12,17 +12,23 @@ public class ProgramViewModel {
     private Date startDate;
     private Date endDate;
     private List<DayViewModel> days;
+    private UUID athleteId;
+    private UUID coachId;
+    private UUID teamId;
 
     public ProgramViewModel() {
 
     }
 
-    public ProgramViewModel(UUID id, String name, Date startDate, Date endDate, List<DayViewModel> days) {
+    public ProgramViewModel(UUID id, String name, Date startDate, Date endDate, List<DayViewModel> days, UUID athleteId, UUID coachId, UUID teamId) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.days = days;
+        this.athleteId = athleteId;
+        this.coachId = coachId;
+        this.teamId = teamId;
     }
 
     public UUID getId() {
@@ -65,6 +71,30 @@ public class ProgramViewModel {
         this.days = days;
     }
 
+    public UUID getAthleteId() {
+        return athleteId;
+    }
+
+    public void setAthleteId(UUID athleteId) {
+        this.athleteId = athleteId;
+    }
+
+    public UUID getCoachId() {
+        return coachId;
+    }
+
+    public void setCoachId(UUID coachId) {
+        this.coachId = coachId;
+    }
+
+    public UUID getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(UUID teamId) {
+        this.teamId = teamId;
+    }
+
     public static ProgramViewModel convertProgram(Program program) {
         ProgramViewModel viewModel = new ProgramViewModel();
 
@@ -82,6 +112,15 @@ public class ProgramViewModel {
         viewModel.setStartDate(program.getStartDate());
         viewModel.setEndDate(program.getEndDate());
         viewModel.setName(program.getName());
+        if (program.getCoach() != null) {
+            viewModel.setCoachId(program.getCoach().getId());
+        }
+        if (program.getAthlete() != null) {
+            viewModel.setAthleteId(program.getAthlete().getId());
+        }
+        if (program.getTeam() != null) {
+            viewModel.setTeamId(program.getTeam().getId());
+        }
 
         return viewModel;
     }
