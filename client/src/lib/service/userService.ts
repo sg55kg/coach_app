@@ -20,7 +20,6 @@ export default class UserService {
                 clientId: config.clientId,
                 authorizationParams: {
                     audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-                    redirect_uri: import.meta.env.VITE_REDIRECT_URI
                 }
             })
 
