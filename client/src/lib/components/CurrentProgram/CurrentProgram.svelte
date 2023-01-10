@@ -93,10 +93,15 @@
             </div>
         </div>
 
-        {#if $currentDay && $currentDay.isRestDay === false && $currentDay.exercises.length > 0}
+        {#if $currentDay && !$currentDay.isRestDay && $currentDay.exercises.length > 0}
             {#each $incompleteExercises as exercise}
-                <IncompleteExercise exercise={exercise} />
+                <IncompleteExercise bind:exercise={exercise} />
             {/each}
+            <div class="mt-4 flex justify-center">
+<!--                <button class="bg-yellow text-black font-bold p-2 mx-2 rounded hover:bg-yellow-shade">-->
+<!--                    Mark Day Complete As Written-->
+<!--                </button>-->
+            </div>
         {:else if $currentDay.isRestDay}
             <div>
                 Rest Day
