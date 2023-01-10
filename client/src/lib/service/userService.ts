@@ -57,6 +57,18 @@ export default class UserService {
 
     }
 
+    static loginWithRedirect = async (client: Auth0Client) => {
+        try {
+            await client.loginWithRedirect()
+            const data = await client.getUser()
+            user.set(data)
+            isAuthenticated.set(await client.isAuthenticated())
+            await UserService.fetchUserData(client, data!.email as string)
+        } catch (e) {
+            throw new Error('Could not login')
+        }
+    }
+
     static logout = async (client: Auth0Client) => {
         if (!client) return
 
