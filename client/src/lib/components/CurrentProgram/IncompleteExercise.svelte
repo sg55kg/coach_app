@@ -9,6 +9,8 @@
         incompleteExercises,
         loadingAthleteProgram
     } from "$lib/stores/athleteProgramStore";
+    import FaPlusCircle from 'svelte-icons/fa/FaPlusCircle.svelte'
+    import FaMinusCircle from 'svelte-icons/fa/FaMinusCircle.svelte'
     import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
     import {AthleteData, AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user";
@@ -175,27 +177,23 @@
         loadingAthleteProgram.set(false)
     }
 
-    const handleEditRepsComplete = (repsStr: string) => {
-        let reps: number
-        if (repsStr === '') {
-            reps = 0
-        } else {
-            reps = parseInt(repsStr)
+    const handleEditRepsComplete = (incOrDec: 'plus' | 'minus') => {
+        if (incOrDec === 'plus') {
+            repsPerSetComplete = repsPerSetComplete + 1
+        } else if (repsPerSetComplete > 0) {
+            repsPerSetComplete = repsPerSetComplete - 1
         }
-        repsPerSetComplete = reps
     }
 
-    const handleEditSetsComplete = (setsStr: string) => {
-        let sets: number
-        if (setsStr === '') {
-            sets = 0
-        } else {
-            sets = parseInt(setsStr)
-        }
-        if (repsPerSetComplete === 0) {
-            setsComplete = 0
-        } else {
-            setsComplete = sets
+    const handleEditSetsComplete = (incOrDec: 'plus' | 'minus') => {
+
+        if (incOrDec === 'plus') {
+            setsComplete = setsComplete + 1
+            if (repsPerSetComplete < 1) {
+                repsPerSetComplete = exercise.repsPerSet
+            }
+        } else if (setsComplete > 0) {
+            setsComplete = setsComplete - 1
         }
     }
 
@@ -213,7 +211,7 @@
 
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
-        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? exercise.totalRepsCompleted / exercise.sets : 0
+        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? Math.round(exercise.totalRepsCompleted / exercise.sets) : 0
         setsComplete = exercise.totalRepsCompleted > 0 ? exercise.sets : 0
     })
 
@@ -222,23 +220,30 @@
 <div class="flex-col bg-gray-300 lg:p-4 my-2 rounded relative sm:p-2 md:p-2">
     <div class="flex flex-col lg:flex-row lg:justify-around">
         <p class="lg:w-fit sm:w-fit m-0 text-lg p-1 font-bold bg-gray-300 text-textblue self-center">{exercise.name}</p>
-        <div class="m-0 p-1 text-lg text-textblue flex justify-center items-center">
-            <input class="bg-gray-300 w-12" bind:value={exercise.weightCompleted}>
-            <p class="bg-gray-300 w-13">/&nbsp;&nbsp;&nbsp;{exercise.weight}</p>
+        <div class="m-0 p-1 text-lg font-semibold text-textblue flex justify-center items-center">
+            <p class="bg-gray-300 w-13">{exercise.weightCompleted} &nbsp;/&nbsp; {exercise.weight} &nbsp;</p>
             <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-300">
                 <option selected>kg</option>
                 <option>lb</option>
             </select>
         </div>
-        <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
-            <input class="bg-gray-300 w-12 text-center" bind:value={setsComplete} on:input={(e) => handleEditSetsComplete(e.target.value)}>
-            <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.sets}</p>
-            <p>Sets</p>
+        <div class="m-0 p-1 text-lg font-semibold bg-gray-300 text-textblue flex justify-center items-center">
+            <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
+                <FaMinusCircle />
+            </div>
+            <p class="bg-gray-300 w-18">{setsComplete} &nbsp;/&nbsp; {exercise.sets} &nbsp;Sets</p>
+            <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditSetsComplete('plus')}>
+                <FaPlusCircle />
+            </div>
         </div>
-        <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
-            <input class="bg-gray-300 w-12 text-center" bind:value={repsPerSetComplete} on:input={(e) => handleEditRepsComplete(e.target.value)}>
-            <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.repsPerSet}</p>
-            <p>Reps</p>
+        <div class="m-0 p-1 text-lg font-semibold bg-gray-300 text-textblue flex justify-center items-center">
+            <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+                <FaMinusCircle />
+            </div>
+            <p class="bg-gray-300 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise.repsPerSet} &nbsp;Reps</p>
+            <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                <FaPlusCircle />
+            </div>
         </div>
     </div>
     <div>
