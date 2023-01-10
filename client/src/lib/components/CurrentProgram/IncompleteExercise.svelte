@@ -211,7 +211,7 @@
 
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
-        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? exercise.totalRepsCompleted / exercise.sets : 0
+        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? Math.round(exercise.totalRepsCompleted / exercise.sets) : 0
         setsComplete = exercise.totalRepsCompleted > 0 ? exercise.sets : 0
     })
 
