@@ -60,7 +60,7 @@ export default class UserService {
 
     static loginWithRedirect = async (client: Auth0Client) => {
         try {
-            await client.loginWithRedirect({ authorizationParams: { redirect_uri: 'https://localhost:5173'}})
+            await client.loginWithRedirect({ authorizationParams: { redirect_uri: import.meta.env.VITE_REDIRECT_URI}})
         } catch (e) {
             console.log(e)
             //throw new Error('Could not login')
