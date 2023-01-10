@@ -5,10 +5,7 @@ import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -25,5 +22,10 @@ public class ExerciseController {
     @PutMapping("{id}")
     public ResponseEntity<Exercise> updateExercise(@PathVariable UUID id, @RequestBody ExerciseRequest exercise) {
         return exerciseService.updateExercise(exercise);
+    }
+
+    @DeleteMapping("{id}")
+    public  ResponseEntity<String> deleteExercise(@PathVariable UUID id) {
+        return exerciseService.deleteExercise(id);
     }
 }

@@ -2,6 +2,7 @@ import * as devalue from 'devalue'
 import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
 import {AthleteData, type AthleteDataDTO, AthleteRecord, User} from "$lib/classes/user";
+import {redirect} from "@sveltejs/kit";
 
 
 
@@ -55,6 +56,15 @@ export default class UserService {
             throw new Error('Could not log in')
         }
 
+    }
+
+    static loginWithRedirect = async (client: Auth0Client) => {
+        try {
+            await client.loginWithRedirect({ authorizationParams: { redirect_uri: 'https://localhost:5173'}})
+        } catch (e) {
+            console.log(e)
+            //throw new Error('Could not login')
+        }
     }
 
     static logout = async (client: Auth0Client) => {

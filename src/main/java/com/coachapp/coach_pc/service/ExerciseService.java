@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class ExerciseService {
 
@@ -27,5 +29,14 @@ public class ExerciseService {
 
         return new ResponseEntity<>(exercise, HttpStatus.OK);
 
+    }
+
+    public ResponseEntity<String> deleteExercise(UUID id) {
+        try {
+            exerciseRepo.deleteById(id);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+        }
     }
 }

@@ -10,27 +10,29 @@
     let nameInput: HTMLInputElement
     let showOptions: boolean = false
 
-    let handleAutoComplete = () => {
-        options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
-        console.log(options)
+    let handleAutoComplete = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            selectOption(athleteRecordFields[0])
+        } else if (e.key === '+') {
+            // have ability to make a complex here like pull + snatch
+        } else {
+            options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
+        }
     }
 
     const selectOption = (nameOption: string) => {
-        console.log(nameOption)
         exercise.name = nameOption
         exercise = exercise
-        console.log(exercise)
         showOptions = false
     }
 
     onMount(() => {
         options = [...athleteRecordFields]
-
-        nameInput.addEventListener('keyup', handleAutoComplete)
+        nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
     })
 
     onDestroy(() => {
-        nameInput.removeEventListener('keyup', handleAutoComplete)
+        nameInput.removeEventListener('keyup', (e) => handleAutoComplete(e))
     })
 </script>
 

@@ -5,17 +5,36 @@
 
 	let popupOpen: boolean = false
 
-	const login = async () => {
+	const login = async (e) => {
+		e.preventDefault()
 		if (!$auth0Client) return
 
-		popupOpen = true
-		try {
-			await UserService.loginWithPopUp($auth0Client)
-			await goto('/home')
-		} catch (e) {
-			console.log(e)
+		const mobileDevices  = [
+			/Android/i,
+			/webOS/i,
+			/iPhone/i,
+			/iPad/i,
+			/iPod/i,
+			/BlackBerry/i,
+			/Windows Phone/i
+		]
+
+		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
+			try {
+				await UserService.loginWithRedirect($auth0Client)
+			} catch (e) {
+				console.log(e)
+			}
+		} else {
+			popupOpen = true
+			try {
+				await UserService.loginWithPopUp($auth0Client)
+				await goto('/home')
+			} catch (e) {
+				console.log(e)
+			}
+			popupOpen = false
 		}
-		popupOpen = false
 	}
 
 	const logout = async () => {
