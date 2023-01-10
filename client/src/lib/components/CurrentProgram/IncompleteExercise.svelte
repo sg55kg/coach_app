@@ -223,7 +223,7 @@
     <div class="flex flex-col lg:flex-row lg:justify-around">
         <p class="lg:w-fit sm:w-fit m-0 text-lg p-1 font-bold bg-gray-300 text-textblue self-center">{exercise.name}</p>
         <div class="m-0 p-1 text-lg text-textblue flex justify-center items-center">
-            <input class="bg-gray-300 w-12" bind:value={exercise.weightCompleted}>
+            <p class="bg-gray-300 w-12" >{exercise.weightCompleted}</p>
             <p class="bg-gray-300 w-13">/&nbsp;&nbsp;&nbsp;{exercise.weight}</p>
             <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-300">
                 <option selected>kg</option>
@@ -231,12 +231,12 @@
             </select>
         </div>
         <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
-            <input class="bg-gray-300 w-12 text-center" bind:value={setsComplete} on:input={(e) => handleEditSetsComplete(e.target.value)}>
+            <p class="bg-gray-300 w-12 text-center">{setsComplete}</p>
             <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.sets}</p>
             <p>Sets</p>
         </div>
         <div class="m-0 p-1 text-lg bg-gray-300 text-textblue flex justify-center">
-            <input class="bg-gray-300 w-12 text-center" bind:value={repsPerSetComplete} on:input={(e) => handleEditRepsComplete(e.target.value)}>
+            <p class="bg-gray-300 w-12 text-center" on:input={(e) => handleEditRepsComplete(e.target.value)}>{repsPerSetComplete}</p>
             <p class="bg-gray-300 w-12">/&nbsp;&nbsp;&nbsp;{exercise.repsPerSet}</p>
             <p>Reps</p>
         </div>
