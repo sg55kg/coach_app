@@ -1,15 +1,28 @@
 <script lang="ts">
 	import '../app.css';
 	import {onMount} from "svelte";
-	import UserService from "../lib/service/userService";
-	import {auth0Client, user, loadingAuth} from "../lib/stores/authStore";
-	import AuthHeader from "../lib/components/AuthHeader.svelte";
+	import UserService from "$lib/service/userService";
+	import {auth0Client, user, loadingAuth, userDB} from "$lib/stores/authStore";
+	import AuthHeader from "$lib/components/AuthHeader.svelte";
+	import {goto} from "$app/navigation";
 
 
 	onMount(async () => {
+
 		if($auth0Client === null) {
-			console.log('fireeddd')
+			console.debug('Initializing auth client')
 			await UserService.initializeAuth0Client()
+		}
+
+		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
+			console.debug('Handling redirect callback and fetching user data')
+			const res = await $auth0Client!.handleRedirectCallback()
+			const data = await $auth0Client!.getUser()
+			user.set(data)
+			if (!$userDB && $user?.email !== undefined) {
+				await UserService.fetchUserData($auth0Client!, $user.email)
+			}
+			await goto('/home')
 		}
 	})
 
