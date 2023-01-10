@@ -5,7 +5,8 @@
 
 	let popupOpen: boolean = false
 
-	const login = async () => {
+	const login = async (e) => {
+		e.preventDefault()
 		if (!$auth0Client) return
 
 		const mobileDevices  = [
@@ -17,10 +18,10 @@
 			/BlackBerry/i,
 			/Windows Phone/i
 		]
+
 		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
 			try {
 				await UserService.loginWithRedirect($auth0Client)
-				await goto('/home')
 			} catch (e) {
 				console.log(e)
 			}
