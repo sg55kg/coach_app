@@ -5,11 +5,13 @@
     import dayjs from "dayjs";
     import FaAngleUp from 'svelte-icons/fa/FaAngleUp.svelte'
     import FaAngleDown from 'svelte-icons/fa/FaAngleDown.svelte'
+    import {Exercise} from "$lib/classes/program/exercise";
 
     export let selectedDayIndex: number
     export let dayId: string
     let selectedWeekIndex = -1
     let weeks: Day[][] = []
+    let showCopyWeekModal: boolean = false
 
     const incrementSelectedWeek = () => selectedWeekIndex === weeks.length - 1 ? null : selectedWeekIndex++
     const decrementSelectedWeek = () => selectedWeekIndex === 0 ? null : selectedWeekIndex--
@@ -42,6 +44,67 @@
         if (weeks.length > 0) {
             selectedWeekIndex = weeks.length - 1
         }
+    }
+
+    const copyWeek = async (startDate: string) => {
+        let date = dayjs(startDate)
+        let weekToCopy = JSON.parse(JSON.stringify(weeks[selectedWeekIndex]))
+
+        for (let i = 0; i < weekToCopy.length; i++) {
+            const existingDay = $program.days.findIndex(d => dayjs(d.date).isSame(date, 'day'))
+
+            if (existingDay === -1) {
+                let day = new Day()
+                day.date = date.toDate()
+                day.id = date.toString()
+                day.exercises = weekToCopy[i].exercises.map(e => {
+                    let newExercise = new Exercise()
+                    newExercise.weightCompleted = 0
+                    newExercise.repsPerSet = e.repsPerSet
+                    newExercise.sets = e.sets
+                    newExercise.order = e.order
+                    newExercise.name = e.name
+                    newExercise.isComplete = false
+                    newExercise.isMax = e.isMax
+                    newExercise.notes = e.notes
+                    newExercise.comments = []
+                    newExercise.totalRepsCompleted = 0
+                    newExercise.weight = e.weight
+                    newExercise.weightIntensity = e.weightIntensity
+                    newExercise.id = ''
+                    return newExercise
+                })
+                program.update(prev => {
+                    prev.days.push(day)
+                    return prev
+                })
+            } else {
+                program.update(prev => {
+                    prev.days[existingDay].isRestDay = weekToCopy[i].isRestDay
+                    prev.days[existingDay].exercises = weekToCopy[i].exercises.map(e => {
+                        let newExercise = new Exercise()
+                        newExercise.weightCompleted = 0
+                        newExercise.repsPerSet = e.repsPerSet
+                        newExercise.sets = e.sets
+                        newExercise.order = e.order
+                        newExercise.name = e.name
+                        newExercise.isComplete = false
+                        newExercise.isMax = e.isMax
+                        newExercise.notes = e.notes
+                        newExercise.comments = []
+                        newExercise.totalRepsCompleted = 0
+                        newExercise.weight = e.weight
+                        newExercise.weightIntensity = e.weightIntensity
+                        newExercise.id = ''
+                        return newExercise
+                    })
+                    return prev
+                })
+            }
+            date = date.add(1, 'day')
+        }
+        showCopyWeekModal = false
+        initializeWeeks()
     }
 
     onMount(() => {
@@ -78,7 +141,15 @@
                 <h3>{dayjs(day.date).format('dddd MMMM D')}</h3>
                 <hr>
                 {#each day.exercises.sort((a, b) => a.order - b.order) as exercise}
-                    <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>{`${exercise.name} - ${exercise.weight} - ${exercise.sets}x${exercise.repsPerSet}`}</p>
+                    {#if !exercise.isMax}
+                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
+                            {`${exercise.name}: ${exercise.weight} - ${exercise.sets}x${exercise.repsPerSet}`}
+                        </p>
+                    {:else}
+                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
+                            {`${exercise.name}: ${exercise.repsPerSet}RM ${exercise.weightCompleted && '- ' + exercise.weightCompleted + 'kg'}`}
+                        </p>
+                    {/if}
                 {/each}
                 {#if day.exercises.length < 1 && !day.isRestDay}
                     <p class="m-0 text-red-shade font-bold self-center">Incomplete</p>
@@ -88,8 +159,22 @@
                 {/if}
             </div>
         {/each}
+        <div class="flex justify-center">
+            <button on:click={() => showCopyWeekModal = !showCopyWeekModal} class="bg-yellow rounded p-2 text-black mt-2">
+                Copy Week
+            </button>
+        </div>
     {/if}
 </div>
+{#if showCopyWeekModal}
+    <div class="w-screen min-h-full bg-black bg-opacity-50 z-30 absolute bottom-0 right-0 left-0 top-0 flex justify-center items-center">
+        <div class="z-40 bg-gray-200 rounded m-auto w-7/12 p-4">
+            Copy Week
+            <p>Select the start date to copy to</p>
+            <input type="date" on:change={(e) => copyWeek(e.target.value)}>
+        </div>
+    </div>
+{/if}
 
 <style>
     /*div {*/

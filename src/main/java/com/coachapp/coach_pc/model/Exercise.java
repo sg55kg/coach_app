@@ -24,7 +24,7 @@ public class Exercise {
     private Integer sets;
     private Integer repsPerSet;
     private Integer weight;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="day_id", nullable = false)
     @JsonIgnore
     private Day day;

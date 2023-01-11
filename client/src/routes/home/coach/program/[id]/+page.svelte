@@ -5,6 +5,7 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import {auth0Client} from "$lib/stores/authStore";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
+    import dayjs from "dayjs";
 
     export let data
     console.log(data)
@@ -16,6 +17,12 @@
         event.preventDefault()
         programError.set('')
 
+        // check for new days with invalid ids
+        for (const day of programData.days) {
+            if (dayjs(day.id).isValid()) {
+                day.id = ''
+            }
+        }
         try {
             const updatedProgram = await ProgramService.updateProgram($auth0Client, programData)
             program.set(Program.build(updatedProgram))
