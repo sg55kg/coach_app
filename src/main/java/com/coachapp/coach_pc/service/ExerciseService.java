@@ -36,6 +36,7 @@ public class ExerciseService {
             exerciseRepo.deleteById(id);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            System.out.println(e.getStackTrace());
             return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
         }
     }

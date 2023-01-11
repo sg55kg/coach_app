@@ -1,7 +1,6 @@
 package com.coachapp.coach_pc.view;
 
-import com.coachapp.coach_pc.model.Day;
-import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.*;
 
 import java.util.*;
 
@@ -112,14 +111,17 @@ public class ProgramViewModel {
         viewModel.setStartDate(program.getStartDate());
         viewModel.setEndDate(program.getEndDate());
         viewModel.setName(program.getName());
-        if (program.getCoach() != null) {
-            viewModel.setCoachId(program.getCoach().getId());
+        CoachData coach = program.getCoach();
+        if (coach != null) {
+            viewModel.setCoachId(coach.getId());
         }
-        if (program.getAthlete() != null) {
-            viewModel.setAthleteId(program.getAthlete().getId());
+        AthleteData athlete = program.getAthlete();
+        if (athlete != null) {
+            viewModel.setAthleteId(athlete.getId());
         }
-        if (program.getTeam() != null) {
-            viewModel.setTeamId(program.getTeam().getId());
+        Team team = program.getTeam();
+        if (team != null) {
+            viewModel.setTeamId(team.getId());
         }
 
         return viewModel;

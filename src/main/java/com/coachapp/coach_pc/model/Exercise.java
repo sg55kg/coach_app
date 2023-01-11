@@ -1,7 +1,9 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
 import org.springframework.lang.Nullable;
 
@@ -29,6 +31,8 @@ public class Exercise {
     private String notes;
     @Nullable
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
+    @JsonProperty("isMax")
+    @JsonAlias("isMax")
     private Boolean isMax = false;
     private Integer weightCompleted = 0;
     @Column(name = "reps_completed")
@@ -131,7 +135,7 @@ public class Exercise {
         this.weightIntensity = weightIntensity;
     }
 
-    public Boolean isMax() {
+    public Boolean getIsMax() {
         return isMax != null ? isMax : false;
     }
 
@@ -139,9 +143,6 @@ public class Exercise {
         this.isMax = isMax;
     }
 
-    public void setMax(Boolean max) {
-        isMax = max;
-    }
 
     public Integer getWeight() {
         return weight;
@@ -149,10 +150,6 @@ public class Exercise {
 
     public void setWeight(Integer weight) {
         this.weight = weight;
-    }
-
-    public Boolean getMax() {
-        return isMax;
     }
 
     public Integer getWeightCompleted() {

@@ -2,9 +2,16 @@
     import {athleteRecordFields} from "$lib/classes/user";
     import {Exercise} from "$lib/classes/program/exercise";
     import {onDestroy, onMount} from "svelte";
+    import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
+    import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
+    import {program, programError} from "$lib/stores/writeProgramStore";
+    import {ProgramService} from "$lib/service/ProgramService";
+    import {auth0Client} from "$lib/stores/authStore";
 
 
     export let exercise: Exercise = new Exercise()
+    export let selectedDayIndex: number = 0
+    export let exerciseIndex: number = 0
 
     let options: string[] = []
     let nameInput: HTMLInputElement
@@ -26,6 +33,26 @@
         showOptions = false
     }
 
+    const handleRemoveExercise = async () => {
+        if (exercise.id) {
+            programError.set('')
+            try {
+                await ProgramService.deleteExercise($auth0Client!, exercise)
+            } catch (e) {
+                return programError.set(e.message)
+            }
+        }
+
+        for (let i = exerciseIndex + 1; i < $program.days[selectedDayIndex].exercises.length; i++) {
+            $program.days[selectedDayIndex].exercises[i].order = $program.days[selectedDayIndex].exercises[i].order - 1
+        }
+        program.update(prev => {
+            prev.days[selectedDayIndex].exercises.splice(exerciseIndex, 1)
+            return prev
+        })
+
+    }
+
     onMount(() => {
         options = [...athleteRecordFields]
         nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
@@ -36,7 +63,16 @@
     })
 </script>
 
-<div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2">
+<div class="flex flex-col-reverse justify-center lg:items-center lg:flex-row">
+<div class="lg:w-16 w-6/12 flex lg:flex-col lg:items-center w-full flex-row justify-around mb-4 lg:mb-0">
+    <div class="text-red hover:cursor-pointer hover:text-red-shade lg:p-4 h-8 lg:h-20" on:click={handleRemoveExercise}>
+        <FaTrashAlt />
+    </div>
+    <div class="lg:p-4 hover:cursor-pointer hover:text-textblue h-8 lg:h-20">
+        <FaRegCommentAlt />
+    </div>
+</div>
+<div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2 lg:flex-auto lg:w-11/12">
     <div class="flex flex-col md:flex-row p-2 justify-between">
         <div class="flex flex-col m-1">
             <label class="text-sm m-0">Name</label>
@@ -101,7 +137,7 @@
         <div class="flex justify-center items-center m-2">
             <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
             <label class="switch">
-                <input type="checkbox" bind:value={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>
+                <input type="checkbox" bind:checked={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>
                 <span class="slider round"></span>
             </label>
         </div>
@@ -112,6 +148,7 @@
         <textarea placeholder="Add notes for your athlete" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2"></textarea>
     </div>
 
+</div>
 </div>
 
 <style>
