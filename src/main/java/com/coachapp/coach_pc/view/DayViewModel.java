@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.view;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.Exercise;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,13 +11,13 @@ import java.util.UUID;
 public class DayViewModel {
 
     private UUID id;
-    private Date date;
+    private OffsetDateTime date;
     private List<Exercise> exercises;
     private boolean isRestDay;
 
     public DayViewModel() {}
 
-    public DayViewModel(UUID id, Date date, List<Exercise> exercises, boolean isRestDay) {
+    public DayViewModel(UUID id, OffsetDateTime date, List<Exercise> exercises, boolean isRestDay) {
         this.id = id;
         this.date = date;
         this.exercises = exercises;
@@ -31,11 +32,11 @@ public class DayViewModel {
         this.id = id;
     }
 
-    public Date getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 
@@ -52,6 +53,6 @@ public class DayViewModel {
     }
 
     public void setIsRestDay(boolean isRestDay) {
-        isRestDay = isRestDay;
+        this.isRestDay = isRestDay;
     }
 }
