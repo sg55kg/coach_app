@@ -99,14 +99,15 @@ public class ProgramViewModel {
 
         viewModel.setId(program.getId());
         List<DayViewModel> set = new ArrayList<>();
-        program.getDays().forEach(d ->
-                set.add(new DayViewModel(
-                        d.getId(),
-                        d.getDate(),
-                        d.getExercises(),
-                        d.getIsRestDay()
-                ))
-        );
+        program.getDays().forEach(d -> {
+            List<Exercise> ex = d.getExercises();
+            set.add(new DayViewModel(
+                    d.getId(),
+                    d.getDate(),
+                    ex,
+                    d.getIsRestDay()
+            ));
+        });
         viewModel.setDays(set);
         viewModel.setStartDate(program.getStartDate());
         viewModel.setEndDate(program.getEndDate());

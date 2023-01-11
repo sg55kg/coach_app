@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Exercise;
 import com.coachapp.coach_pc.model.Program;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class DayRequest {
 
     private UUID id;
-    private Date date;
+    private OffsetDateTime date;
     private List<Exercise> exercises;
     private boolean isRestDay;
 
@@ -26,11 +27,11 @@ public class DayRequest {
         this.id = id;
     }
 
-    public Date getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Entity
@@ -17,17 +18,17 @@ public class Day {
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
-    private Date date;
+    private OffsetDateTime date;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
     private boolean isRestDay;
 
     public Day() {}
 
-    public Day(Date date, List<Exercise> exercises, UUID id, Program program, boolean isRestDay) {
+    public Day(OffsetDateTime date, List<Exercise> exercises, UUID id, Program program, boolean isRestDay) {
         this.date = date;
         this.exercises = exercises;
         this.id = id;
@@ -35,7 +36,7 @@ public class Day {
         this.isRestDay = isRestDay;
     }
 
-    public Day(Date date, List<Exercise> exercises) {
+    public Day(OffsetDateTime date, List<Exercise> exercises) {
         this.date = date;
         this.exercises = exercises;
     }
@@ -48,11 +49,11 @@ public class Day {
         this.id = id;
     }
 
-    public Date getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

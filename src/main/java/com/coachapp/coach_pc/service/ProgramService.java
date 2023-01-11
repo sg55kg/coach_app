@@ -7,12 +7,14 @@ import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DayViewModel;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
+import org.hibernate.type.OffsetDateTimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.coachapp.coach_pc.repository.ProgramRepo;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -100,7 +102,7 @@ public class ProgramService {
                     program.getStartDate(),
                     program.getEndDate(),
                     program.getName());
-            Date d = getLastUpdatedDay(program);
+            OffsetDateTime d = getLastUpdatedDay(program);
             displayProgram.setLastEnteredDay(d);
             programs.add(displayProgram);
         });
@@ -108,8 +110,8 @@ public class ProgramService {
         return new ResponseEntity<>(programs, HttpStatus.OK);
     }
 
-    private Date getLastUpdatedDay(Program program) {
-        Date result = new Date();
+    private OffsetDateTime getLastUpdatedDay(Program program) {
+        OffsetDateTime result = OffsetDateTime.now();
         for (int i = 0; i <= program.getDays().size() - 1; i++) {
             Day day = program.getDays().get(i);
 
