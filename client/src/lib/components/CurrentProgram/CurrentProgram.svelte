@@ -23,6 +23,7 @@
             return programDay
         } else if ($currentProgram.days.length > 0) {
             programDay = $currentProgram.days[$currentProgram.days.length - 1]
+            incompleteExercises.set([...$currentProgram.days[$currentProgram.days.length - 1].exercises].sort((a, b) => a.order - b.order))
             return programDay
         } else {
             return null
@@ -57,7 +58,6 @@
     onMount(async () => {
         if (!$auth0Client) return
         const p = await ProgramService.getProgram($auth0Client, currentProgramId)
-        console.log(p)
         currentProgram.set(p)
         currentDay.set(setCurrentDay(today))
     })
@@ -94,7 +94,7 @@
         </div>
 
         {#if $currentDay && !$currentDay.isRestDay && $currentDay.exercises.length > 0}
-            {#each $incompleteExercises as exercise}
+            {#each $incompleteExercises.sort((a, b) => a.order - b.order) as exercise}
                 <IncompleteExercise bind:exercise={exercise} />
             {/each}
             <div class="mt-4 flex justify-center">

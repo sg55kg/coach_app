@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        {#if !exercise.max}
+        {#if !exercise.isMax}
             <div class="flex flex-col m-1">
                 <label class="text-sm m-0">Weight</label>
                 <input type="number"
@@ -135,9 +135,9 @@
             </div>
         {/if}
         <div class="flex justify-center items-center m-2">
-            <label>{exercise.max ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
+            <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
             <label class="switch">
-                <input type="checkbox" bind:checked={exercise.max} on:change={(e) => exercise.max = e.target.checked}>
+                <input type="checkbox" bind:checked={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>
                 <span class="slider round"></span>
             </label>
         </div>
