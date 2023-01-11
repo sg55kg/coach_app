@@ -88,5 +88,18 @@ export class ProgramService {
 
         return await res.json()
     }
+
+    static deleteExercise = async (client: Auth0Client, exercise: Exercise) => {
+        const accessToken = await client.getTokenSilently()
+
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/exercise/${exercise.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
+        })
+
+        if (res.status !== 204) {
+            throw new Error(`Could not delete exercise ${exercise.name}`)
+        }
+    }
 }
 

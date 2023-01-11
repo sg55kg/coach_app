@@ -179,28 +179,31 @@
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)
-        if ($userDB?.coachData?.athletes) {
+        if ($userDB?.coachData?.athletes && !$program.id) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
             athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
             program.update(prev => ({ ...prev, coachId: $userDB!.coachData!.id! }))
         }
         if (selectedIndex > -1) {
             selectedDayId = $program.days[selectedIndex].id
+            const athleteName = $userDB?.coachData?.athletes.find(a => a.id! === $program.athleteId!)
+            if (athleteName === undefined) {
+                athleteOptions = [{ name: $userDB.username, id: $userDB.athleteData.id}]
+            } else {
+                athleteOptions = [{ name: athleteName, id: $program.athleteId }]
+            }
         }
-           // athleteOptions.push({ name: $userDB.username, id: $userDB.id })
-        console.log(athleteOptions)
-        console.log('program on mount', $program)
     })
 
     afterUpdate(() => {
-        if ($userDB && athleteOptions.length < 1) {
+        if ($userDB && athleteOptions.length < 1 && selectedIndex > -1) {
             program.update(p => {
                 p.coachId = $userDB?.coachData?.id!
                 return p
             })
-            athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
-            console.log(athleteOptions)
-            $userDB?.coachData?.athletes?.forEach(a => athleteOptions.push({ name: a.name, id: a.id }))
+            //athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
+            //console.log(athleteOptions)
+            //$userDB?.coachData?.athletes?.forEach(a => athleteOptions.push({ name: a.name, id: a.id }))
         }
 
         if ($programError) {
@@ -255,10 +258,10 @@
             </div>
             <div class="flex flex-col self-start">
                 <label></label>
-                <select class="bg-gray-300 text-textgray p-1" on:change={(e) => handleChangeAthlete(e.target.value)}>
+                <select class="bg-gray-300 text-textgray p-1" disabled={$program.id} on:change={(e) => handleChangeAthlete(e.target.value)}>
                     <option disabled selected>No Athlete Selected</option>
                     {#each athleteOptions as athlete}
-                        <option value={athlete.id}>{athlete.name}</option>
+                        <option selected={$program.athleteId === athlete.id} value={athlete.id}>{athlete.name}</option>
                     {/each}
                 </select>
                 <div class="flex-row my-3">
@@ -303,7 +306,7 @@
     {#if selectedIndex > -1 && $program}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
             {#each $program?.days[selectedIndex]?.exercises.sort((a, b) => a.order - b.order) as exercise, idx (idx)}
-                <ExerciseForm bind:exercise={exercise} />
+                <ExerciseForm bind:exercise={exercise} bind:selectedDayIndex={selectedIndex} exerciseIndex={idx} />
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
             <div class="flex justify-center m-8 font-bold text-2xl">

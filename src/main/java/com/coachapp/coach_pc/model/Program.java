@@ -28,17 +28,17 @@ public class Program {
     @JsonIgnore
     private List<Day> days;
     private String name;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id")
     @JsonIgnore
     private CoachData coach;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "athlete_id")
     @JsonIgnore
     private AthleteData athlete;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;

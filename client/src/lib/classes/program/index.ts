@@ -20,8 +20,9 @@ export interface ProgramDTO {
     startDate: string,
     endDate: string,
     days: DayDTO[],
-    coach?: CoachDataDTO,
-    team?: TeamDTO,
+    coachId?: string,
+    teamId?: string,
+    athleteId?: string,
     lastEnteredDay?: string
 }
 
@@ -48,8 +49,9 @@ export class Program implements IProgram {
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
         program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
-        program.coachId = programDTO.coach ? programDTO.coach.id : ''
-        program.teamId = programDTO.team ? programDTO.team.id : ''
+        program.coachId = programDTO.coachId ? programDTO.coachId : ''
+        program.teamId = programDTO.teamId ? programDTO.teamId : ''
+        program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
 
         return { ...program }
     }
