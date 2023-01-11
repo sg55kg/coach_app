@@ -26,6 +26,7 @@
             })
             team = new Team()
             success = true
+            dispatch('closeModal')
         } catch (e) {
             console.log(e)
             success = false
