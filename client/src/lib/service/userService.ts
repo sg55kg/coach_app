@@ -29,7 +29,7 @@ export default class UserService {
             isAuthenticated.set(await client.isAuthenticated())
             const data = await client.getUser()
             user.set(data as Auth0User)
-            console.log(data)
+            auth0Client.set(client)
             if (data !== undefined) {
                 await UserService.initializeUserData(client, data)
             } else {

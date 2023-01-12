@@ -4,7 +4,7 @@
     import {DisplayTeam} from "$lib/classes/team";
     import {TeamService} from "$lib/service/TeamService";
     import {auth0Client, userDB} from "$lib/stores/authStore";
-    import DisplayTeamCard from "$lib/components/DisplayTeams/DisplayTeamCard.svelte";
+    import DisplayTeamCard from "$lib/components/DisplayTeam/DisplayTeamCard.svelte";
 
     $: displayTeams = []
     let loadingDisplayTeams: boolean = false
