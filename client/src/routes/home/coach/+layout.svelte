@@ -5,10 +5,14 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import {DisplayProgram} from "$lib/classes/program";
     import {programSuccess, programError} from "$lib/stores/writeProgramStore.js";
+    import UserService from "$lib/service/userService";
+    import {goto} from "$app/navigation";
 
 
     onMount(async () => {
-        if (!$auth0Client || !$userDB) return
+        if (!$auth0Client || !$userDB) {
+            await goto('/')
+        }
         programError.set('')
 
         try {

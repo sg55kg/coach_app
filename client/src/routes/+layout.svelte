@@ -8,9 +8,8 @@
 
 
 	onMount(async () => {
-
-		if($auth0Client === null) {
-			console.debug('Initializing auth client')
+		if(!$auth0Client) {
+			console.log('Initializing auth client')
 			await UserService.initializeAuth0Client()
 		}
 
