@@ -19,8 +19,9 @@ public class Day {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     private OffsetDateTime date;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "program_id", nullable = false)
+    @JsonIgnore
     private Program program;
     @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
