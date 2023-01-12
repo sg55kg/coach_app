@@ -11,7 +11,7 @@
 
     onMount(async () => {
         if (!$auth0Client || !$userDB) {
-            await goto('/')
+            return
         }
         programError.set('')
 
