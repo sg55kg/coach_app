@@ -15,6 +15,7 @@
         //     // auth0Client.set(client)
         //     return
         // }
+
         programError.set('')
         alert('layout on mount')
         try {
