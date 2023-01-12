@@ -102,9 +102,6 @@
                 if (selectedIndex > -1)
                     addExercise()
                 break;
-            case '-':
-                removeLastExercise()
-                break;
             case 'ArrowRight':
                 if (selectedIndex > -1)
                     incrementSelectedIndex()
