@@ -30,10 +30,8 @@ public class TeamRequest {
         return description;
     }
 
-    public static Team convertRequest(TeamRequest request) {
-        Team team = new Team();
+    public static Team convertRequest(Team team, TeamRequest request) {
 
-        team.setId(request.getId());
         team.setName(request.getName());
         team.setDescription(request.getDescription());
 

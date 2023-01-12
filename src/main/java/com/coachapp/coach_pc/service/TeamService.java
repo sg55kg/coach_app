@@ -7,6 +7,7 @@ import com.coachapp.coach_pc.repository.TeamRepo;
 import com.coachapp.coach_pc.request.NewTeamRequest;
 import com.coachapp.coach_pc.request.TeamRequest;
 import com.coachapp.coach_pc.view.DisplayTeam;
+import com.coachapp.coach_pc.view.TeamViewModel;
 import com.fasterxml.jackson.annotation.OptBoolean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,14 @@ public class TeamService {
     }
 
     public ResponseEntity<Team> updateTeam(UUID id, TeamRequest request) {
-        boolean exists = teamRepo.existsById(id);
+        Optional<Team> optional = teamRepo.findById(id);
 
-        if (!exists) {
+        if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Team team = TeamRequest.convertRequest(request);
+        Team team = optional.get();
+        team = TeamRequest.convertRequest(team, request);
 
         team = teamRepo.save(team);
 
@@ -70,5 +72,17 @@ public class TeamService {
         });
 
         return new ResponseEntity<>(teams, HttpStatus.OK);
+    }
+
+    public ResponseEntity<TeamViewModel> getTeam(UUID id) {
+        Optional<Team> optional = teamRepo.findById(id);
+
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        Team team = optional.get();
+        TeamViewModel vm = TeamViewModel.convertTeam(team);
+        return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 }
