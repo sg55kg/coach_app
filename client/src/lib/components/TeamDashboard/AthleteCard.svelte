@@ -19,6 +19,9 @@
         }
         const today = dayjs()
         const lastEntered = athlete.currentProgram.days.find(d => d.exercises.length < 1 && !d.isRestDay)
+        if (!lastEntered) {
+            return updateSeverity = 'low'
+        }
         const lastUpdatedDay = dayjs(lastEntered.date)
         const diff = lastUpdatedDay.diff(today, 'days')
 
