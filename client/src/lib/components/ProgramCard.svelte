@@ -11,12 +11,8 @@
     onMount(() => {
         const today = dayjs()
         const lastUpdatedDay = dayjs(program.lastEnteredDay)
-        console.log(program)
         const diff = lastUpdatedDay.diff(today, 'days')
-        console.log(diff.toString())
 
-        console.log(today.valueOf() )
-        console.log(lastUpdatedDay.valueOf())
         if (diff <= 2 || today.valueOf() > lastUpdatedDay.valueOf()) {
             updateSeverity = 'severe'
         } else if (diff <= 6) {
@@ -51,9 +47,6 @@
                 <FaRegChartBar></FaRegChartBar>
             </a>
         </div>
-
-
-
     </div>
 
 </div>
