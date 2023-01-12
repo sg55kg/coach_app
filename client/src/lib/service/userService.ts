@@ -11,23 +11,20 @@ export default class UserService {
 
     static initializeAuth0Client = async () => {
         loadingAuth.set(true)
-
+        let client
         try {
             let config = {
                 "domain": import.meta.env.VITE_AUTH0_DOMAIN,
                 "clientId": import.meta.env.VITE_AUTH0_CLIENT_ID,
             }
 
-            const client = await createAuth0Client({
+            client = await createAuth0Client({
                 domain: config.domain,
                 clientId: config.clientId,
                 authorizationParams: {
                     audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                 }
             })
-
-            auth0Client.set(client)
-            console.log(await client.isAuthenticated())
             isAuthenticated.set(await client.isAuthenticated())
             const data = await client.getUser()
             user.set(data as Auth0User)
@@ -40,8 +37,8 @@ export default class UserService {
         } catch (e) {
             console.log(e)
         }
-
         loadingAuth.set(false)
+        return client
     }
 
     static initializeUserData = async (client: Auth0Client, data: Auth0User) => {
