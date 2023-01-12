@@ -10,9 +10,9 @@
 
 
     onMount(async () => {
-        if (!$auth0Client || !$userDB) {
-            return
-        }
+        // if (!$auth0Client || !$userDB) {
+        //     return
+        // }
         programError.set('')
 
         try {
