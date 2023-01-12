@@ -21,7 +21,7 @@
 			if (!$userDB && $user?.email !== undefined) {
 				await UserService.initializeUserData($auth0Client, data)
 			}
-			await goto('/home')
+			await goto(window.sessionStorage.getItem('lastPath') ? window.sessionStorage.getItem('lastPath') : '/home')
 		}
 	})
 
