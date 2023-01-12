@@ -3,6 +3,7 @@ import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-sp
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
 import {AthleteData, type AthleteDataDTO, AthleteRecord, User} from "$lib/classes/user";
 import {redirect} from "@sveltejs/kit";
+import {goto} from "$app/navigation";
 
 
 
@@ -10,6 +11,7 @@ export default class UserService {
 
     static initializeAuth0Client = async () => {
         loadingAuth.set(true)
+
         try {
             let config = {
                 "domain": import.meta.env.VITE_AUTH0_DOMAIN,
@@ -24,20 +26,42 @@ export default class UserService {
                 }
             })
 
-            console.log(import.meta.env.VITE_AUTH0_AUDIENCE)
-
             auth0Client.set(client)
+            console.log(await client.isAuthenticated())
             isAuthenticated.set(await client.isAuthenticated())
             const data = await client.getUser()
             user.set(data as Auth0User)
+            console.log(data)
             if (data !== undefined) {
-                await UserService.fetchUserData(client, data.email as string)
+                await UserService.initializeUserData(client, data)
+            } else {
+                userDB.set(null)
             }
         } catch (e) {
             console.log(e)
         }
 
         loadingAuth.set(false)
+    }
+
+    static initializeUserData = async (client: Auth0Client, data: Auth0User) => {
+        const userData = await UserService.fetchUserData(client, data.email as string)
+        if (!userData) {
+            console.log('No user DB')
+            window.sessionStorage.setItem('lastPath', window.location.pathname)
+            if (window.location.pathname !== '/') {
+                window.location.replace('/')
+            }
+        } else {
+            console.log ('userDB Found', window.sessionStorage.getItem('lastPath'))
+            userDB.set(userData)
+            const path = window.sessionStorage.getItem('lastPath')
+            if (path) {
+                window.sessionStorage.removeItem('lastPath')
+                console.log('found path')
+                await goto(path)
+            }
+        }
     }
 
     static loginWithPopUp = async (client: Auth0Client) => {
@@ -51,7 +75,7 @@ export default class UserService {
             }
             user.set(data)
             isAuthenticated.set(await client.isAuthenticated())
-            await UserService.fetchUserData(client, data!.email as string)
+            await UserService.initializeUserData(client, data)
         } catch (e) {
             throw new Error('Could not log in')
         }
@@ -69,7 +93,9 @@ export default class UserService {
 
     static logout = async (client: Auth0Client) => {
         if (!client) return
-
+        window.sessionStorage.setItem('lastPath', window.location.pathname)
+        userDB.set(null)
+        user.set(undefined)
         await client.logout({
             logoutParams: {
                 returnTo: window.location.origin
@@ -79,62 +105,68 @@ export default class UserService {
 
     static fetchUserData = async (client: Auth0Client, email: string) => {
         const token = await client.getTokenSilently()
-        let res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${email}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-        if (res.status === 404) {
-            const fields = await client.getUser()
 
-            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users`, {
-                method: 'POST',
+        try {
+            let res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${email}`, {
+                method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: fields!.email, name: fields!.name })
-            })
-        }
-        let userData = await res.json()
-
-        console.log('user fetch', userData)
-
-        if (!userData.coachData && res.status !== 500) {
-            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: userData.id, email: userData.email, username: userData.username })
+                    'Authorization': 'Bearer ' + token
+                }
             })
 
-            if (res.status !== 405 && res.status !== 500) {
-                userData = await res.json()
+            if (res.status === 404) {
+                const fields = await client.getUser()
+
+                res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: fields!.email, name: fields!.name })
+                })
+            }
+            let userData = await res.json()
+
+            console.log('user fetch', userData)
+
+            if (!userData.coachData && res.status !== 500) {
+                res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userData.id, email: userData.email, username: userData.username })
+                })
+
+                if (res.status !== 405 && res.status !== 500) {
+                    userData = await res.json()
+                }
+
             }
 
-        }
+            if (!userData.athleteData && res.status !== 500) {
+                res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/athlete`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userData.id, name: userData.username })
+                })
 
-        if (!userData.athleteData && res.status !== 500) {
-            res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/athlete`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: userData.id, name: userData.username })
-            })
-
-            if (res.status !== 405 && res.status !== 500) {
-                userData = await res.json()
+                if (res.status !== 405 && res.status !== 500) {
+                    userData = await res.json()
+                }
             }
+            if (userData) {
+                return User.build(userData)
+            }
+        } catch (e) {
+            console.log(e)
+            return null
         }
-        if (userData) {
-            userDB.set(User.build(userData))
-        }
-
     }
 
     static updateAthleteRecords = async (client: Auth0Client, record: AthleteRecord, id: string) => {

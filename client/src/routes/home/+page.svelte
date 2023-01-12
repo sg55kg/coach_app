@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {auth0Client, user} from "../../lib/stores/authStore";
     import {onMount} from "svelte";
-    import UserService from "../../lib/service/userService";
+    import {userDB} from "$lib/stores/authStore";
+    import {goto} from "$app/navigation";
 
 
     onMount(async () => {

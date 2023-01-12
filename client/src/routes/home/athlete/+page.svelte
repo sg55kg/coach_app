@@ -10,9 +10,6 @@
 
 
     onMount(async () => {
-        if (!$auth0Client) {
-            window.location.replace('/')
-        }
         if (!$userDB?.athleteData?.currentProgram) {
             return
         }
