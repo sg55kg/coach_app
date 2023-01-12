@@ -11,6 +11,7 @@
 
     onMount(async () => {
         if (!$auth0Client || !$userDB) {
+            console.log('not found')
             // const client = await UserService.initializeAuth0Client()
             // auth0Client.set(client)
             return

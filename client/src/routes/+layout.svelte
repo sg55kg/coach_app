@@ -10,7 +10,7 @@
 	onMount(async () => {
 		if(!$auth0Client) {
 			console.log('Initializing auth client')
-			$auth0Client = await UserService.initializeAuth0Client()
+			await UserService.initializeAuth0Client()
 		}
 
 		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
