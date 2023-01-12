@@ -32,6 +32,7 @@
             const pathArr = window.location.pathname.split('/')
             const teamId = pathArr[pathArr.length-1]
             team = await TeamService.getTeam($auth0Client, teamId)
+            console.log(team)
         } catch (e) {
             console.log(e)
         }
