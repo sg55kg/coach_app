@@ -12,14 +12,14 @@
 			console.log('Initializing auth client')
 			$auth0Client = await UserService.initializeAuth0Client()
 		}
-		alert('base on mount')
+
 		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
 			console.debug('Handling redirect callback and fetching user data')
 			const res = await $auth0Client!.handleRedirectCallback()
 			const data = await $auth0Client!.getUser()
 			user.set(data)
 			if (!$userDB && $user?.email !== undefined) {
-				await UserService.fetchUserData($auth0Client!, $user.email)
+				await UserService.initializeUserData($auth0Client, data)
 			}
 			await goto('/home')
 		}

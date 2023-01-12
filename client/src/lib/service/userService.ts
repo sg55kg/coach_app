@@ -25,6 +25,7 @@ export default class UserService {
                     audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                 }
             })
+
             isAuthenticated.set(await client.isAuthenticated())
             const data = await client.getUser()
             user.set(data as Auth0User)
