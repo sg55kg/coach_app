@@ -6,9 +6,11 @@
     import {AthleteData, CoachData} from "$lib/classes/user";
 
     export let team: DisplayTeam
+    let displayTeamsError: string = ''
 
     const joinTeam = async () => {
         if (!$userDB?.athleteData || !$auth0Client) return
+        displayTeamsError = ''
 
         let updatedAthlete = $userDB.athleteData.team === null ?
             { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
@@ -28,8 +30,12 @@
             } else {
                 team.numAthletes--
             }
+            setTimeout(() => {
+                window.location.replace('/home/athlete')
+            }, 1000)
         } catch (e) {
             console.log(e)
+            displayTeamsError = 'Something went wrong attempting to join ' + team.name + '. Please try again.'
         }
     }
     
