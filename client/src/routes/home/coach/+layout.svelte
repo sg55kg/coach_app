@@ -10,13 +10,13 @@
 
 
     onMount(async () => {
-        if (!$auth0Client || !$userDB) {
-            // const client = await UserService.initializeAuth0Client()
-            // auth0Client.set(client)
-            return
-        }
+        // if (!$auth0Client || !$userDB) {
+        //     // const client = await UserService.initializeAuth0Client()
+        //     // auth0Client.set(client)
+        //     return
+        // }
         programError.set('')
-
+        alert('layout on mount')
         try {
             const programs = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData!.id!)
             displayPrograms.set(programs.map(p => DisplayProgram.build(p)))
