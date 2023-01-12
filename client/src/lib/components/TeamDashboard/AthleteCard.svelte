@@ -36,40 +36,44 @@
     <h2 class="font-semibold text-xl">
         {athlete.name}
     </h2>
-    <div class="flex justify-start text-lg">
-        {#if !editProgramName}
-            <h4>Current Program: {athlete.currentProgram.name}</h4>
-            <div class="h-6 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
-        {:else }
-            <input bind:value={athlete.currentProgram.name}>
-            <button>Save</button>
-        {/if}
-    </div>
-    <div>
-        {#if updateSeverity === 'severe'}
-            <p class="m-0 text-red text-base font-normal tracking-wide">{athlete.name}'s program needs an update in 2 days or less</p>
-        {:else if updateSeverity === 'moderate'}
-            <p class="m-0 text-yellow-shade text-base font-normal tracking-wide">{athlete.name}'s program needs an update in 1 week or less</p>
-        {:else if updateSeverity === 'low'}
-            <p class="m-0 text-green text-base font-normal tracking-wide">{athlete.name}'s program is up to date</p>
-        {:else}
-            <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
-        {/if}
-    </div>
-    <div class="mt-2 flex justify-around">
-        {#if athlete.currentProgram}
-            <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
-                    <FaRegEdit></FaRegEdit>
-                </a>
-            </div>
-            <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/program/${athlete.currentProgram.id}/stats`}>
-                    <FaRegChartBar></FaRegChartBar>
-                </a>
-            </div>
-        {/if}
-    </div>
+    {#if athlete.currentProgram}
+        <div class="flex justify-start text-lg">
+            {#if !editProgramName}
+                <h4>Current Program: {athlete.currentProgram.name}</h4>
+                <div class="h-6 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
+            {:else }
+                <input bind:value={athlete.currentProgram.name}>
+                <button>Save</button>
+            {/if}
+        </div>
+        <div>
+            {#if updateSeverity === 'severe'}
+                <p class="m-0 text-red text-base font-normal tracking-wide">{athlete.name}'s program needs an update in 2 days or less</p>
+            {:else if updateSeverity === 'moderate'}
+                <p class="m-0 text-yellow-shade text-base font-normal tracking-wide">{athlete.name}'s program needs an update in 1 week or less</p>
+            {:else if updateSeverity === 'low'}
+                <p class="m-0 text-green text-base font-normal tracking-wide">{athlete.name}'s program is up to date</p>
+            {:else}
+                <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
+            {/if}
+        </div>
+        <div class="mt-2 flex justify-around">
+            {#if athlete.currentProgram}
+                <div class="h-6 text-link hover:text-link-shade duration-300">
+                    <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
+                        <FaRegEdit></FaRegEdit>
+                    </a>
+                </div>
+                <div class="h-6 text-link hover:text-link-shade duration-300">
+                    <a href={`/home/coach/program/${athlete.currentProgram.id}/stats`}>
+                        <FaRegChartBar></FaRegChartBar>
+                    </a>
+                </div>
+            {/if}
+        </div>
+    {:else}
+        <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
+    {/if}
 </div>
 
 <style>
