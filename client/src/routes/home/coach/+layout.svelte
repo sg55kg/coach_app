@@ -11,8 +11,9 @@
 
     onMount(async () => {
         if (!$auth0Client || !$userDB) {
-            const client = await UserService.initializeAuth0Client()
-            auth0Client.set(client)
+            // const client = await UserService.initializeAuth0Client()
+            // auth0Client.set(client)
+            return
         }
         programError.set('')
 
