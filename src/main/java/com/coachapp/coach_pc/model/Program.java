@@ -25,7 +25,7 @@ public class Program {
     private Date startDate;
     private Date endDate;
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    //@JsonIgnore
     private List<Day> days;
     private String name;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)

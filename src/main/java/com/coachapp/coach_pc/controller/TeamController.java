@@ -7,6 +7,7 @@ import com.coachapp.coach_pc.service.TeamService;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.DisplayTeam;
 import com.coachapp.coach_pc.view.ProgramViewModel;
+import com.coachapp.coach_pc.view.TeamViewModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class TeamController {
     @GetMapping("/")
     public ResponseEntity<List<DisplayTeam>> getDisplayTeams() {
         return teamService.getDisplayTeams();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TeamViewModel> getTeam(@PathVariable UUID id) {
+        return teamService.getTeam(id);
     }
 
     @PutMapping("/{id}")
