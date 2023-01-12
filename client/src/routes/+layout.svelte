@@ -12,7 +12,7 @@
 			console.log('Initializing auth client')
 			$auth0Client = await UserService.initializeAuth0Client()
 		}
-		alert('base on mount')
+
 		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
 			console.debug('Handling redirect callback and fetching user data')
 			const res = await $auth0Client!.handleRedirectCallback()
