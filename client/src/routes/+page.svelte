@@ -29,7 +29,6 @@
 			popupOpen = true
 			try {
 				await UserService.loginWithPopUp($auth0Client)
-				await goto('/home')
 			} catch (e) {
 				console.log(e)
 			}
@@ -45,8 +44,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Coachable app" />
+	<title>Coachable</title>
+	<meta name="description" content="Track all of your athletes' progress and stay organized across multiple teams. Use athlete feedback and data from your programs to make better decisions. Write better programs with Coachable." />
 </svelte:head>
 
 <section class="flex flex-col w-screen mt-0 md:mt-8">

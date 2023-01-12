@@ -5,14 +5,12 @@
     import {TeamService} from "$lib/service/TeamService";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import DisplayTeamCard from "$lib/components/DisplayTeams/DisplayTeamCard.svelte";
-    import UserService from "$lib/service/userService";
 
-    let displayTeams: DisplayTeam[] = []
+    $: displayTeams = []
     let loadingDisplayTeams: boolean = false
 
     onMount(async () => {
-        if (!$auth0Client) {
-            //await UserService.initializeAuth0Client()
+        if (!$userDB) {
             return
         }
         loadingDisplayTeams = true
@@ -32,7 +30,7 @@
 </script>
 
 {#each displayTeams as team}
-    <DisplayTeamCard team={team} />
+    <DisplayTeamCard bind:team={team} />
 {/each}
 {#if displayTeams.length < 1 && !loadingDisplayTeams}
     <div class="flex flex-col items-center justify-center">
