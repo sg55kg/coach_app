@@ -2,9 +2,7 @@ package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
-import com.coachapp.coach_pc.model.Day;
-import com.coachapp.coach_pc.model.Exercise;
-import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,7 @@ public class ExerciseRequest {
     private int weight;
     private int weightCompleted;
     private int totalRepsCompleted;
+    private int setsCompleted;
     private boolean isMax;
     private WeightIntensity weightIntensity;
     private List<AthleteExerciseCommentRequest> comments;
@@ -38,6 +37,7 @@ public class ExerciseRequest {
             int weight,
             int weightCompleted,
             int totalRepsCompleted,
+            int setsCompleted,
             boolean isMax,
             WeightIntensity weightIntensity,
             List<AthleteExerciseCommentRequest> comments,
@@ -54,6 +54,7 @@ public class ExerciseRequest {
         this.weight = weight;
         this.weightCompleted = weightCompleted;
         this.totalRepsCompleted = totalRepsCompleted;
+        this.setsCompleted = setsCompleted;
         this.isMax = isMax;
         this.weightIntensity = weightIntensity;
         this.comments = comments;
@@ -128,8 +129,11 @@ public class ExerciseRequest {
         return order;
     }
 
-    public static Exercise convertRequest(ExerciseRequest request) {
-        Exercise exercise = new Exercise();
+    public int getSetsCompleted() {
+        return setsCompleted;
+    }
+
+    public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         List<AthleteExerciseComment> comments = new ArrayList<>();
 
 
@@ -139,19 +143,18 @@ public class ExerciseRequest {
             comments.add(comment);
         });
 
-        exercise.setId(request.getId());
         exercise.setWeight(request.getWeight());
         exercise.setName(request.getName());
         exercise.setSets(request.getSets());
         exercise.setRepsPerSet(request.getRepsPerSet());
         exercise.setWeightCompleted(request.getWeightCompleted());
         exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
-        exercise.setWeightIntensity(request.getWeightIntensity());
         exercise.setIsMax(request.isMax());
         exercise.setComments(comments);
         exercise.setNotes(request.getNotes());
         exercise.setIsComplete(request.getIsComplete());
         exercise.setOrder(request.getOrder());
+        exercise.setSetsCompleted(request.getSetsCompleted());
 
         return exercise;
     }

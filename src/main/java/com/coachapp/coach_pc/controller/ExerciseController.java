@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
-import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.service.ExerciseService;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,13 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.repository.ExerciseRepo;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,12 +20,13 @@ public class ExerciseService {
     }
 
     public ResponseEntity<Exercise> updateExercise(ExerciseRequest request) {
-        boolean exists = exerciseRepo.existsById(request.getId());
-        if (!exists) {
+        Optional<Exercise> optional = exerciseRepo.findById(request.getId());
+        if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Exercise exercise = ExerciseRequest.convertRequest(request);
+        Exercise exercise = optional.get();
+        exercise = ExerciseRequest.convertRequest(exercise, request);
         exercise = exerciseRepo.save(exercise);
 
         return new ResponseEntity<>(exercise, HttpStatus.OK);

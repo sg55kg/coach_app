@@ -1,8 +1,6 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
-import com.coachapp.coach_pc.model.Exercise;
 
 import java.util.UUID;
 
