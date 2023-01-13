@@ -17,6 +17,7 @@
     import UserService from "$lib/service/userService";
     import {onMount} from "svelte";
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
+    import ProgramStats from "$lib/components/Stats/ProgramStats.svelte";
 
     export let exercise: Exercise
 
@@ -165,6 +166,29 @@
         loadingAthleteProgram.set(false)
     }
 
+    const skipExercise = async (exercise: Exercise) => {
+        if (!$auth0Client) return
+
+        loadingAthleteProgram.set(true)
+        const updatedExercise = {
+            ...exercise,
+            isComplete: true,
+            weightCompleted: 0,
+            totalRepsCompleted: 0
+        }
+        try {
+            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client, updatedExercise, $currentProgram!.id)
+            const updatedDay = updatedProgram.days.find(d => d.id === $currentDay!.id)
+            currentProgram.set(updatedProgram)
+            currentDay.set(updatedDay)
+            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
+        } catch (e) {
+            console.log(e)
+        }
+
+        loadingAthleteProgram.set(false)
+    }
+
     const addComment = async (exercise: Exercise) => {
         loadingAthleteProgram.set(true)
         let comment: ExerciseComment = {
@@ -228,34 +252,33 @@
 
 </script>
 
-<div class="flex-col bg-gray-300 lg:p-4 my-2 rounded relative sm:p-2 md:p-2">
-    <div class="flex flex-col lg:flex-row lg:justify-around">
-
-
+<div class="bg-gray-200 lg:p-4 my-2 rounded relative m-4 lg:mx-1 p-2 md:p-2">
+    <p class="lg:w-fit w-fit m-0 text-lg p-1 font-bold text-textblue self-center lg:ml-4">{exercise.name}</p>
+    <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
-            <p class="lg:w-fit sm:w-fit m-0 text-lg p-1 font-bold bg-gray-300 text-textblue self-center">{exercise.name}</p>
-            <div class="m-0 p-1 text-lg font-semibold text-textblue flex justify-center items-center">
-                <p class="bg-gray-300 w-13">{exercise.weightCompleted} &nbsp;/&nbsp; {exercise.weight} &nbsp;</p>
-                <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-300">
+            <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
+                <input class={`bg-gray-200 w-8 ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
+                <p class="m-0 w-fit">&nbsp;/&nbsp;{exercise.weight} &nbsp;</p>
+                <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
                     <option>lb</option>
                 </select>
             </div>
-            <div class="m-0 p-1 text-lg font-semibold bg-gray-300 text-textblue flex justify-center items-center">
-                <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
+            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center  lg:mx-4">
+                <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
-                <p class="bg-gray-300 w-18">{setsComplete} &nbsp;/&nbsp; {exercise.sets} &nbsp;Sets</p>
-                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditSetsComplete('plus')}>
+                <p class="bg-gray-200 w-18">{setsComplete} &nbsp;/&nbsp; {exercise.sets} &nbsp;Sets</p>
+                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('plus')}>
                     <FaPlusCircle />
                 </div>
             </div>
-            <div class="m-0 p-1 text-lg font-semibold bg-gray-300 text-textblue flex justify-center items-center">
-                <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
-                <p class="bg-gray-300 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise.repsPerSet} &nbsp;Reps</p>
-                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-link hover:text-link-shade hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise.repsPerSet} &nbsp;Reps</p>
+                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
                     <FaPlusCircle />
                 </div>
             </div>
@@ -271,7 +294,6 @@
                 </div>
             </div>
         {/if}
-
     </div>
     {#if exercise.notes}
         <div class="p-2">
@@ -282,15 +304,21 @@
     {/if}
 
     <div>
+        <div class="flex justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
         {#if !exercise.isMax || exercise.weightCompleted > 0}
-            <div class="flex justify-center md:justify-center lg:justify-start m-2 p-2">
                 <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
                     {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
                 </button>
-            </div>
         {/if}
+            {#if !exercise.isComplete}
+                <button class="bg-gray-200 p-2 mx-2 rounded hover:bg-gray-400 text-red"
+                        on:click={() => skipExercise(exercise)}>
+                    Skip Exercise
+                </button>
+            {/if}
+        </div>
         {#if isPersonalBest}
             <div class="m-2 p-2 flex justify-center">
                 <p class="text-yellow">Current Record</p>

@@ -6,12 +6,34 @@
     import FaRegChartBar from 'svelte-icons/fa/FaRegChartBar.svelte'
     import {Team} from "$lib/classes/team";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
+    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {ProgramService} from "$lib/service/ProgramService";
+    import {Program} from "$lib/classes/program";
 
     export let athlete: AthleteData
     export let team: Team
 
     let updateSeverity: 'low' | 'moderate' | 'severe' | 'none'
     let editProgramName: boolean = false
+
+    const saveProgramName = async () => {
+        if (!$auth0Client) return
+
+        try {
+            const updatedProgram = {
+                ...athlete.currentProgram
+            } as Program
+            const program = await ProgramService.updateProgram($auth0Client, updatedProgram)
+            userDB.update(prev => {
+                prev!.coachData!.programs = prev!.coachData!.programs!.map(p => p.id === program.id ? program : p)
+                return prev
+            })
+            athlete.currentProgram = program
+            editProgramName = false
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     onMount(() => {
         if (!athlete.currentProgram) {
@@ -45,8 +67,8 @@
                 <h4>Current Program: {athlete.currentProgram.name}</h4>
                 <div class="h-6 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
             {:else }
-                <input bind:value={athlete.currentProgram.name}>
-                <button>Save</button>
+                <input class="text-textblue bg-gray-300" bind:value={athlete.currentProgram.name}>
+                <button class="mx-2 text-sm" on:click={saveProgramName}>Save</button>
             {/if}
         </div>
         <div>
