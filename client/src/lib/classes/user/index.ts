@@ -128,6 +128,10 @@ export class AthleteRecord {
 
     constructor(data: AthleteRecordDTO) {
         for (const [key, value] of Object.entries(data)) {
+            if (key.toLowerCase().includes('athlete')) {
+                // potential temporary fix until I find out why JsonIgnore doesn't work here
+                continue
+            }
             if (key === 'createdAt') {
                 this.createdAt = dayjs(value)
             } else if (key === 'lastUpdated') {
