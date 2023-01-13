@@ -183,11 +183,11 @@
         }
         if (selectedIndex > -1) {
             selectedDayId = $program.days[selectedIndex].id
-            const athleteName = $userDB?.coachData?.athletes.find(a => a.id! === $program.athleteId!)
+            const athleteName = $userDB!.coachData!.athletes.find(a => a.id === $program.athleteId!)
             if (athleteName === undefined) {
                 athleteOptions = [{ name: $userDB.username, id: $userDB.athleteData.id}]
             } else {
-                athleteOptions = [{ name: athleteName, id: $program.athleteId }]
+                athleteOptions = [{ name: athleteName.name, id: $program.athleteId }]
             }
         }
     })
@@ -215,7 +215,7 @@
             }, 5000)
         }
     })
-
+$: console.log(athleteOptions)
     onDestroy(() => {
         program.set(new Program())
     })
