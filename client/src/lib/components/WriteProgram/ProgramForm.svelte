@@ -285,20 +285,22 @@ $: console.log(athleteOptions)
                     <FaAngleRight />
                 </div>
             </div>
-            <div class="flex justify-between">
-            <div>
-                {#if $program?.days.length > 0}
-                    <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
-                        Add exercise (Shift +)
-                    </button>
-                {/if}
-            </div>
-            <div>
-                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
-                    {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
-                </button>
-            </div>
-            </div>
+            {#if window.screen.width > 800}
+                <div class="flex justify-between">
+                    <div>
+                        {#if $program?.days.length > 0}
+                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                                Add exercise (Shift +)
+                            </button>
+                        {/if}
+                    </div>
+                    <div>
+                        <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                            {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
+                        </button>
+                    </div>
+                </div>
+            {/if}
         {/if}
     {#if selectedIndex > -1 && $program}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
@@ -314,16 +316,38 @@ $: console.log(athleteOptions)
                 <i>You haven't added any exercises to this day yet</i>
             </div>
         {/if}
-        <footer class="fixed bottom-10 right-5 md:static flex mt-4 justify-end md:w-full ">
-            <button type="button"
-                    on:click={(e) => handleSubmit(e, $program)}
-                    class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
-                Save (Ctrl s)
-            </button>
-            <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
-                Download CSV
-            </button>
-        </footer>
+        {#if window.screen.width < 800}
+            <footer class="sticky bottom-0 left-0 right-0 flex justify-between bg-gray-200 p-2">
+                <div>
+                    {#if $program?.days.length > 0}
+                        <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                            Add exercise
+                        </button>
+                    {/if}
+                </div>
+                <div>
+                    <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                        {$program.days[selectedIndex].isRestDay ? 'Undo rest day' : 'Make rest day'}
+                    </button>
+                </div>
+                <button type="button"
+                        on:click={(e) => handleSubmit(e, $program)}
+                        class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 px-5 rounded-md">
+                    Save
+                </button>
+            </footer>
+        {:else}
+            <footer class="fixed bottom-10 right-5 md:static flex mt-4 justify-end md:w-full ">
+                <button type="button"
+                        on:click={(e) => handleSubmit(e, $program)}
+                        class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
+                    Save (Ctrl s)
+                </button>
+                <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
+                    Download CSV
+                </button>
+            </footer>
+        {/if}
     {/if}
     </div>
 </div>

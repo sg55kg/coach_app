@@ -72,7 +72,7 @@
         <FaRegCommentAlt />
     </div>
 </div>
-<div class="flex flex-col p-2 justify-items-center border-0 pt-5 bg-gray-200 my-2 lg:flex-auto lg:w-11/12">
+<div class="flex flex-col lg:p-2 justify-items-center border-0 lg:pt-5 bg-gray-200 my-2 lg:flex-auto lg:w-11/12">
     <div class="flex flex-col md:flex-row p-2 justify-between">
         <div class="flex flex-col m-1">
             <label class="text-sm m-0">Name</label>
