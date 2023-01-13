@@ -124,6 +124,9 @@ export default class UserService {
                     body: JSON.stringify({ email: fields!.email, name: fields!.name })
                 })
             }
+            if (res.status > 299) {
+                throw new Error('Could not fetch user data')
+            }
             let userData = await res.json()
 
             console.log('user fetch', userData)
@@ -163,7 +166,7 @@ export default class UserService {
             }
         } catch (e) {
             console.log(e)
-            return null
+            throw new Error('Could not fetch user data')
         }
     }
 
