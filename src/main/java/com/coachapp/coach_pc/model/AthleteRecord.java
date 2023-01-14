@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class AthleteRecord {
     private AthleteData athlete;
     @CreationTimestamp
     private Date createdAt;
-    private Date lastUpdated;
+    private OffsetDateTime lastUpdated;
     @JsonProperty("snatch")
     @JsonAlias("snatch")
     private int snatch;
@@ -141,11 +142,11 @@ public class AthleteRecord {
         return createdAt;
     }
 
-    public Date getLastUpdated() {
+    public OffsetDateTime getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(OffsetDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

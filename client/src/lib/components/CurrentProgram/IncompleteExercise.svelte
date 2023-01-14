@@ -38,6 +38,7 @@
         }
         const weight = records.records.get(formattedName)
         if (weight < exercise.weightCompleted && exercise.weightCompleted !== 0) {
+            console.log('found new record')
             return formattedName
         }
         return ''
@@ -112,24 +113,30 @@
             const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
 
             if (recordKey !== '') {
+                // set the records back to DTO format so the backend can read the contents
                 const updatedAthleteData = {
                     ...$userDB.athleteData,
                     records: $userDB.athleteData.records.map(r => {
                         return { ...r, records: Object.fromEntries(r.records)}
                     })
                 } as AthleteData
+
                 console.log('beforeRecords', updatedAthleteData)
+                // grab the most recent record
                 const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
 
-                updatedAthleteData.records.push({
-                    ...newRecord,
-                    id: null,
-                    lastUpdated: $currentDay!.date,
-                    ...newRecord.records,
-                    [recordKey]: updatedExercise.weightCompleted
+                // use existing record for this day if it already exists
+                if (!newRecord.lastUpdated.isSame(dayjs($currentDay?.date))) {
+                    updatedAthleteData.records.push({
+                        ...newRecord,
+                        id: null,
+                        lastUpdated: dayjs($currentDay!.date),
+                        ...newRecord.records,
+                        [recordKey]: updatedExercise.weightCompleted
 
-                } as AthleteRecord)
-                console.log('updatedRecords',updatedAthleteData.records)
+                    } as AthleteRecord)
+                    console.log('updatedRecords',updatedAthleteData.records)
+                }
 
                 try {
                     const res = await UserService.updateAthleteRecords(
@@ -151,15 +158,16 @@
         }
 
         try {
-            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client, updatedExercise, $currentProgram!.id)
+            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
             completedExercises.update(prev => {
                 prev.push(updatedExercise)
                 return prev
             })
-            const updatedDay = updatedProgram.days.find(d => d.id === $currentDay!.id)
-            currentProgram.set(updatedProgram)
-            currentDay.set(updatedDay)
-            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
+            currentDay.update(prev => {
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                return prev
+            })
+            incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
         } catch (e) {
             console.log(e)
         }
@@ -177,7 +185,7 @@
             totalRepsCompleted: 0
         }
         try {
-            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client, updatedExercise, $currentProgram!.id)
+            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client, updatedExercise)
             const updatedDay = updatedProgram.days.find(d => d.id === $currentDay!.id)
             currentProgram.set(updatedProgram)
             currentDay.set(updatedDay)
