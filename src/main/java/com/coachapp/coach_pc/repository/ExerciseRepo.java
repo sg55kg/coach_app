@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.repository;
 
-import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

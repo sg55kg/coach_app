@@ -1,11 +1,13 @@
-package com.coachapp.coach_pc.model;
+package com.coachapp.coach_pc.model.exercise;
 
-import com.coachapp.coach_pc.enums.WeightIntensity;
+import com.coachapp.coach_pc.enums.ExerciseType;
+import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.Day;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "exercise")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Exercise {
 
     @Id
@@ -29,14 +32,13 @@ public class Exercise {
     @JsonIgnore
     private Day day;
     private String notes;
-    @Nullable
-    private WeightIntensity weightIntensity = WeightIntensity.NONE;
     @JsonProperty("isMax")
     @JsonAlias("isMax")
     private Boolean isMax = false;
     private Integer weightCompleted = 0;
     @Column(name = "reps_completed")
     private Integer totalRepsCompleted = 0;
+    private Integer setsCompleted = 0;
     @ManyToOne
     @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
     private AthleteData athleteCommentId;
@@ -45,6 +47,8 @@ public class Exercise {
     private Boolean isComplete;
     @Column(name = "list_order")
     private int order;
+    @Transient
+    private final ExerciseType type = ExerciseType.EXERCISE;
 
 
     public Exercise() {}
@@ -56,11 +60,11 @@ public class Exercise {
             Integer repsPerSet,
             Day day,
             String notes,
-            WeightIntensity weightIntensity,
             boolean isMax,
             Integer weight,
             Integer weightCompleted,
             Integer totalRepsCompleted,
+            Integer setsCompleted,
             boolean isComplete,
             int order
     ) {
@@ -70,11 +74,11 @@ public class Exercise {
         this.repsPerSet = repsPerSet;
         this.day = day;
         this.notes = notes;
-        this.weightIntensity = weightIntensity;
         this.isMax = isMax;
         this.weight = weight;
         this.weightCompleted = weightCompleted;
         this.totalRepsCompleted = totalRepsCompleted;
+        this.setsCompleted = setsCompleted;
         this.isComplete = isComplete;
         this.order = order;
     }
@@ -127,14 +131,6 @@ public class Exercise {
         this.notes = notes;
     }
 
-    public WeightIntensity getWeightIntensity() {
-        return weightIntensity;
-    }
-
-    public void setWeightIntensity(WeightIntensity weightIntensity) {
-        this.weightIntensity = weightIntensity;
-    }
-
     public Boolean getIsMax() {
         return isMax != null ? isMax : false;
     }
@@ -142,7 +138,6 @@ public class Exercise {
     public void setIsMax(boolean isMax) {
         this.isMax = isMax;
     }
-
 
     public Integer getWeight() {
         return weight;
@@ -202,6 +197,22 @@ public class Exercise {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public Integer getSetsCompleted() {
+        return setsCompleted;
+    }
+
+    public void setSetsCompleted(Integer setsCompleted) {
+        this.setsCompleted = setsCompleted;
+    }
+
+    public ExerciseType getType() {
+        return type;
+    }
+
+    public void addComment(AthleteExerciseComment comment) {
+        this.comments.add(comment);
     }
 
     @Override
