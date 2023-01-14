@@ -73,21 +73,21 @@
 
 {#if $currentProgram}
     <div>
-        <h1>{$currentProgram.name}</h1>
-        <div class="flex flex-row">
-            <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
+        <h1 class="text-lg font-semibold tracking-wide text-center mx-2">{$currentProgram.name}</h1>
+        <div class="flex flex-row items-center place-content-center text-lg font-semibold tracking-wide">
+            <div class="w-6 mx-4 text-textgray hover:text-gray-300 hover:cursor-pointer"
                  on:click={decrementDay}>
                 <FaAngleLeft />
             </div>
             {#if $currentDay}
-                <h2 class={today.isSame(dayjs($currentDay.date), 'days') && 'text-green'}>
+                <h2 class={today.isSame(dayjs($currentDay.date), 'days') && 'text-lg font-semibold tracking-wide text-green'}>
                     {dayjs($currentDay.date).format('dddd MMMM D, YYYY')}
                 </h2>
             {:else}
-                <h2>{today.format('dddd MMMM D, YYYY')}</h2>
+                <h2 class="">{today.format('dddd MMMM D, YYYY')}</h2>
             {/if}
 
-            <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
+            <div class="w-6 mx-4 text-textgray hover:text-gray-300 hover:cursor-pointer"
                  on:click={incrementDay}>
                 <FaAngleRight />
             </div>
@@ -103,11 +103,11 @@
 <!--                </button>-->
             </div>
         {:else if $currentDay.isRestDay}
-            <div>
+            <div class="m-4">
                 Rest Day
             </div>
         {:else}
-            <div>
+            <div class="m-4">
                 Your coach has not entered any information for this day yet
             </div>
         {/if}
