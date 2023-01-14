@@ -34,7 +34,7 @@
 {/each}
 {#if displayTeams.length < 1 && !loadingDisplayTeams}
     <div class="flex flex-col items-center justify-center">
-        <h3 class="text-2xl font-bold my-12">We're sorry, we could not retrieve a list of teams to join at this time.</h3>
+        <h3 class="text-2xl m-6 font-bold my-12">We're sorry, we could not retrieve a list of teams to join at this time.</h3>
     </div>
 {/if}
 

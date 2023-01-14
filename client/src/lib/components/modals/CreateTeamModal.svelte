@@ -62,11 +62,11 @@
                 From: "opacity-100 translate-y-0 sm:scale-100"
                 To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             -->
-            <div class="relative transform overflow-hidden rounded-lg bg-gray-200 text-left shadow-2xl transition-all sm:my-4 w-6/12">
+            <div class="flex flex-col relative transform overflow-hidden rounded-lg bg-gray-200 sm:justify-items-center md:text-left shadow-2xl transition-all sm:my-4 w-10/12 md:w-6/12">
 
                 <div class="bg-gray-200 px-4 pt-5 pb-4 sm:p-6 sm:pb">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-9/12">
+                    <div class="sm:flex md:items-start">
+                        <div class="flex-rows mt-3 items-start sm:mt-0 sm:ml-4 md:text-left w-12/12 md:w-9/12">
                             <h2 class="text-xl font-bold leading-6 text-white" id="modal-title">
                                 Create New Team
                             </h2>
@@ -82,18 +82,18 @@
                                     </div>
                                 </div>
                             {/if}
-                            <div class="mt-2 flex flex-col">
+                            <div class="mt-2 flex flex-col text-left">
                                 <small>Name</small>
                                 <input bind:value={team.name}
                                        type="text"
                                        placeholder="Team Name"
-                                       class="text-md text-gray-shade p-2 font-medium rounded w-4/12">
+                                       class="text-md text-gray-shade p-2 font-medium rounded w-12/12 md:w-4/12">
                             </div>
-                            <div class="mt-2 flex flex-col">
+                            <div class="mt-2 flex flex-col text-left">
                                 <small>Description</small>
                                 <textarea placeholder="Enter a description for your team/Your experience as a coach"
                                           bind:value={team.description}
-                                          class="text-md text-gray-shade font-medium rounded p-2 w-11/12"
+                                          class="text-md text-gray-shade font-medium rounded p-2 w-12/12"
                                 />
                             </div>
                         </div>
