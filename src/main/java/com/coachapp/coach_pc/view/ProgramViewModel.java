@@ -106,7 +106,8 @@ public class ProgramViewModel {
                     d.getId(),
                     d.getDate(),
                     ex,
-                    d.getIsRestDay()
+                    d.getIsRestDay(),
+                    d.getWarmUp()
             ));
         });
         viewModel.setDays(set);

@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.model.WarmUp;
 import com.coachapp.coach_pc.model.exercise.CarryExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.model.Program;
@@ -16,6 +17,7 @@ public class DayRequest {
     private OffsetDateTime date;
     private List<Exercise> exercises;
     private boolean isRestDay;
+    private WarmUp warmUp;
 
     public DayRequest() {}
 
@@ -51,12 +53,26 @@ public class DayRequest {
         return isRestDay;
     }
 
+    public WarmUp getWarmUp() {
+        return warmUp;
+    }
+
+    public void setWarmUp(WarmUp warmUp) {
+        this.warmUp = warmUp;
+    }
+
     public static Day convertRequest(DayRequest dayRequest, Program program) {
         Day day = new Day();
         day.setDate(dayRequest.getDate());
         day.setProgram(program);
         day.setId(dayRequest.getId());
         day.setIsRestDay(dayRequest.getIsRestDay());
+        if (dayRequest.getWarmUp() != null) {
+            dayRequest.getWarmUp().setDay(day);
+            day.setWarmUp(dayRequest.getWarmUp());
+        }
+
+
         for (Exercise exercise : dayRequest.getExercises()) {
             exercise.setDay(day);
         }

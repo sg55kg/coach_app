@@ -12,6 +12,7 @@
     export let exercise: Exercise = new Exercise()
     export let selectedDayIndex: number = 0
     export let exerciseIndex: number = 0
+    export let inputFocused: boolean = false
 
     let options: string[] = []
     let nameInput: HTMLInputElement
@@ -19,7 +20,7 @@
 
     let handleAutoComplete = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
-            selectOption(athleteRecordFields[0])
+            selectOption(options[0])
         } else if (e.key === '+') {
             // have ability to make a complex here like pull + snatch
         } else {
@@ -31,6 +32,7 @@
         exercise.name = nameOption
         exercise = exercise
         showOptions = false
+        options = [...athleteRecordFields]
     }
 
     const handleRemoveExercise = async () => {
@@ -50,16 +52,21 @@
             prev.days[selectedDayIndex].exercises.splice(exerciseIndex, 1)
             return prev
         })
+    }
 
+    const handleNameFormFocus = () => {
+        showOptions = true
+        inputFocused = true
+        options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
     }
 
     onMount(() => {
         options = [...athleteRecordFields]
-        nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
+        //nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
     })
 
     onDestroy(() => {
-        nameInput.removeEventListener('keyup', (e) => handleAutoComplete(e))
+       // nameInput.removeEventListener('keyup', (e) => handleAutoComplete(e))
     })
 </script>
 
@@ -82,8 +89,9 @@
                        placeholder="Exercise name"
                        class="bg-gray-300 p-2"
                        autocomplete="off"
-                       on:focus={() => showOptions = true}
-                       on:blur={() => setTimeout(() => showOptions = false, 100)}
+                       on:focus={handleNameFormFocus}
+                       on:blur={() => { setTimeout(() => showOptions = false, 100); inputFocused = false }}
+                       on:keydown={(e) => handleAutoComplete(e)}
                        bind:this={nameInput}
                        bind:value={exercise.name}>
                 {#if showOptions}
@@ -101,6 +109,8 @@
                 <label class="text-sm m-0">Weight</label>
                 <input type="number"
                        name="weight"
+                       on:focus={() => inputFocused = true}
+                       on:blur={() => inputFocused = false}
                        placeholder="Weight"
                        class="bg-gray-300 p-2"
                        bind:value={exercise.weight}>
@@ -110,6 +120,8 @@
                 <label class="text-sm m-0">Sets</label>
                 <input type="number"
                        name="sets"
+                       on:focus={() => inputFocused = true}
+                       on:blur={() => inputFocused = false}
                        placeholder="Sets"
                        class="bg-gray-300 p-2"
                        bind:value={exercise.sets}>
@@ -119,6 +131,8 @@
                 <label class="text-sm m-0">Reps</label>
                 <input type="number"
                        name="repsPerSet"
+                       on:focus={() => inputFocused = true}
+                       on:blur={() => inputFocused = false}
                        placeholder="Reps"
                        class="bg-gray-300 p-2"
                        bind:value={exercise.repsPerSet}>
@@ -130,6 +144,8 @@
                 <input type="number"
                        name="repsPerSet"
                        placeholder="Sets"
+                       on:focus={() => inputFocused = true}
+                       on:blur={() => inputFocused = false}
                        class="bg-gray-300 p-2"
                        bind:value={exercise.repsPerSet}>
             </div>
@@ -145,7 +161,13 @@
     </div>
     <div class="flex flex-col m-2">
         <label class="text-sm m-0">Notes</label>
-        <textarea placeholder="Add notes for your athlete" name="notes" bind:value={exercise.notes} class="bg-gray-300 p-2"></textarea>
+        <textarea
+                on:focus={() => inputFocused = true}
+                on:blur={() => inputFocused = false}
+                placeholder="Add notes for your athlete"
+                name="notes"
+                bind:value={exercise.notes}
+                class="bg-gray-300 p-2"></textarea>
     </div>
 
 </div>

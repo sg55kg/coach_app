@@ -43,7 +43,9 @@ export class ProgramService {
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
         })
 
-        if (res.status > 205) return
+        if (res.status > 205) {
+            throw new Error('Could not create program')
+        }
 
         const dbProgram: ProgramDTO = await res.json()
 
@@ -74,7 +76,12 @@ export class ProgramService {
             body: JSON.stringify(program)
         })
 
-        return await res.json()
+        if (res.status > 299) {
+            throw new Error('Could not update program')
+        }
+
+        const dto: ProgramDTO = await res.json()
+        return Program.build(dto)
     }
 
     static updateExercise = async (client: Auth0Client, exercise: Exercise) => {
