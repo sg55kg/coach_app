@@ -50,7 +50,6 @@
         downloadLink.href = url;
         downloadLink.setAttribute('download', exportFilename);
         downloadLink.click()
-        document.removeChild(downloadLink)
     }
 
     const addDay = (currentDate: Dayjs, index: number) => {
