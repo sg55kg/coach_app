@@ -1,11 +1,14 @@
 package com.coachapp.coach_pc.model.exercise;
 
 import com.coachapp.coach_pc.enums.EffortIntensity;
-import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.coachapp.coach_pc.enums.ExerciseType;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
+@Table(name = "cardio_exercise")
 public class CardioExercise extends Exercise {
 
     private String equipment;
@@ -15,6 +18,8 @@ public class CardioExercise extends Exercise {
     private int distanceCompletedMeters;
     private int secondsPerSet;
     private int secondsPerSetCompleted;
+    @Transient
+    private final ExerciseType type = ExerciseType.CARDIO;
 
     public CardioExercise() {}
 

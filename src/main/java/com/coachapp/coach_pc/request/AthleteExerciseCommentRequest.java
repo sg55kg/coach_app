@@ -1,13 +1,19 @@
 package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
 public class AthleteExerciseCommentRequest {
 
     private UUID id;
+    @JsonAlias("athleteId")
+    @JsonProperty("athleteId")
     private UUID athleteId;
+    @JsonAlias("exerciseId")
+    @JsonProperty("exerciseId")
     private UUID exerciseId;
     private String content;
     private String commenterName;

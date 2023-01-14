@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model.exercise;
 
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.Day;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "exercise")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Exercise {
 
     @Id
@@ -45,6 +47,8 @@ public class Exercise {
     private Boolean isComplete;
     @Column(name = "list_order")
     private int order;
+    @Transient
+    private final ExerciseType type = ExerciseType.EXERCISE;
 
 
     public Exercise() {}
@@ -201,6 +205,14 @@ public class Exercise {
 
     public void setSetsCompleted(Integer setsCompleted) {
         this.setsCompleted = setsCompleted;
+    }
+
+    public ExerciseType getType() {
+        return type;
+    }
+
+    public void addComment(AthleteExerciseComment comment) {
+        this.comments.add(comment);
     }
 
     @Override

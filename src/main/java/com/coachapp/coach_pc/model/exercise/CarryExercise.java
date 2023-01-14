@@ -1,12 +1,15 @@
 package com.coachapp.coach_pc.model.exercise;
 
 import com.coachapp.coach_pc.enums.EffortIntensity;
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
-import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
+@Table(name = "carry_exercise")
 public class CarryExercise extends Exercise {
 
     private int distanceMeters;
@@ -14,6 +17,8 @@ public class CarryExercise extends Exercise {
     private int distanceCompletedMeters = 0;
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private EffortIntensity effortIntensity = EffortIntensity.EASY;
+    @Transient
+    private final ExerciseType type = ExerciseType.CARRY;
 
     public CarryExercise() {}
 
@@ -56,4 +61,5 @@ public class CarryExercise extends Exercise {
     public void setEffortIntensity(EffortIntensity effortIntensity) {
         this.effortIntensity = effortIntensity;
     }
+
 }

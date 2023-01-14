@@ -1,18 +1,21 @@
 package com.coachapp.coach_pc.model.exercise;
 
 import com.coachapp.coach_pc.enums.EffortIntensity;
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
-import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "accessory_exercise")
 public class AccessoryExercise extends Exercise {
 
     private String equipment;
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private EffortIntensity effortIntensity = EffortIntensity.EASY;
     private boolean unilateral = false;
+    @Transient
+    private final ExerciseType type = ExerciseType.ACCESSORY;
 
     public AccessoryExercise() {}
 

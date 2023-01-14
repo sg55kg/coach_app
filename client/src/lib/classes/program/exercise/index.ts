@@ -1,4 +1,4 @@
-import {WeightIntensity} from "$lib/classes/program";
+import {EffortIntensity, ExerciseType, WeightIntensity} from "$lib/classes/program/exercise/enums";
 
 export class Exercise {
     id: string = ''
@@ -14,6 +14,15 @@ export class Exercise {
     comments: ExerciseComment[] = []
     isComplete: boolean = false
     order: number = 0
+    effortIntensity: EffortIntensity = EffortIntensity.EASY
+    unilateral: boolean = false
+    equipment: string = ''
+    distanceMeters: number = 0
+    distanceCompletedMeters: number = 0
+    secondsPerSet: number = 0
+    secondsPerSetCompleted: number = 0
+    type: ExerciseType = ExerciseType.EXERCISE
+
 }
 
 
