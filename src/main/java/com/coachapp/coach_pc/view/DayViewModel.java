@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.view;
 
+import com.coachapp.coach_pc.model.WarmUp;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.time.OffsetDateTime;
@@ -12,14 +13,16 @@ public class DayViewModel {
     private OffsetDateTime date;
     private List<Exercise> exercises;
     private boolean isRestDay;
+    private WarmUp warmUp;
 
     public DayViewModel() {}
 
-    public DayViewModel(UUID id, OffsetDateTime date, List<Exercise> exercises, boolean isRestDay) {
+    public DayViewModel(UUID id, OffsetDateTime date, List<Exercise> exercises, boolean isRestDay, WarmUp warmUp) {
         this.id = id;
         this.date = date;
         this.exercises = exercises;
         this.isRestDay = isRestDay;
+        this.warmUp = warmUp;
     }
 
     public UUID getId() {
@@ -52,5 +55,13 @@ public class DayViewModel {
 
     public void setIsRestDay(boolean isRestDay) {
         this.isRestDay = isRestDay;
+    }
+
+    public WarmUp getWarmUp() {
+        return warmUp;
+    }
+
+    public void setWarmUp(WarmUp warmUp) {
+        this.warmUp = warmUp;
     }
 }
