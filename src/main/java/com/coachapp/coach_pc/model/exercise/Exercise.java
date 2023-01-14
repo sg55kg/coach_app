@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -32,9 +33,8 @@ public class Exercise {
     @JsonIgnore
     private Day day;
     private String notes;
-    @JsonProperty("isMax")
-    @JsonAlias("isMax")
-    private Boolean isMax = false;
+
+    private boolean isMax;
     private Integer weightCompleted = 0;
     @Column(name = "reps_completed")
     private Integer totalRepsCompleted = 0;
@@ -43,7 +43,7 @@ public class Exercise {
     @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
     private AthleteData athleteCommentId;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise", orphanRemoval = true)
-    private List<AthleteExerciseComment> comments;
+    private List<AthleteExerciseComment> comments = new ArrayList<>();
     private Boolean isComplete;
     @Column(name = "list_order")
     private int order;
@@ -131,10 +131,12 @@ public class Exercise {
         this.notes = notes;
     }
 
-    public Boolean getIsMax() {
-        return isMax != null ? isMax : false;
+    @JsonProperty(value="isMax")
+    public boolean getIsMax() {
+        return isMax;
     }
 
+    @JsonProperty(value="isMax")
     public void setIsMax(boolean isMax) {
         this.isMax = isMax;
     }
@@ -175,10 +177,6 @@ public class Exercise {
         return comments;
     }
 
-    public void setComments(List<AthleteExerciseComment> comments) {
-        this.comments = comments;
-    }
-
     public void setSets(Integer sets) {
         this.sets = sets;
     }
@@ -213,6 +211,10 @@ public class Exercise {
 
     public void addComment(AthleteExerciseComment comment) {
         this.comments.add(comment);
+    }
+
+    public void removeComment(AthleteExerciseComment comment) {
+        this.comments.remove(comment);
     }
 
     @Override
