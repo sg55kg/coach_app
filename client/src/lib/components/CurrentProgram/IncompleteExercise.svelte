@@ -198,13 +198,13 @@
             id: '',
             commenterName: $userDB!.username
         }
+        console.log(comment)
         let updatedExercise: Exercise = { ...exercise, comments: [...exercise.comments, comment]}
         try {
-            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client!, updatedExercise, $currentProgram!.id)
-            const updatedDay: Day = updatedProgram.days.find(d => d.id === $currentDay!.id)
-            currentDay.set(updatedDay)
-            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
-            currentProgram.set(updatedProgram)
+            const savedComment: ExerciseComment = await ProgramService.addExerciseComment($auth0Client!, comment)
+            console.log(savedComment)
+            exercise.comments.push(savedComment)
+            exercise = exercise
             newCommentContent = ''
         } catch (e) {
             console.log(e)
@@ -339,7 +339,7 @@
             <p class="m-0">No Comments</p>
         {/if}
         {#each exercise.comments as comment (comment.id)}
-            <div class="flex flex-col p-2 bg-textblue rounded-xl text-black my-2">
+            <div class="flex flex-col p-2 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
                 <div class="flex flex-row justify-between mb-2">
                     <h5>{comment.commenterName}</h5>
                     <h5>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</h5>

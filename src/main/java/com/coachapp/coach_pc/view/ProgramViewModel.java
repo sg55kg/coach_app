@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.view;
 
 import com.coachapp.coach_pc.model.*;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.util.*;
 

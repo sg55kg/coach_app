@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Table(name = "athlete_exercise_comment")
 public class AthleteExerciseComment {
 
     @Id

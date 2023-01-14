@@ -1,11 +1,11 @@
 package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.Day;
-import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.exercise.CarryExercise;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.model.Program;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -61,7 +61,6 @@ public class DayRequest {
             exercise.setDay(day);
         }
         day.setExercises(dayRequest.getExercises());
-
         return day;
     }
 

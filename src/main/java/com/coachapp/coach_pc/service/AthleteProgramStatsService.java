@@ -1,13 +1,13 @@
 package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.*;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.repository.AthleteProgramStatsRepo;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 

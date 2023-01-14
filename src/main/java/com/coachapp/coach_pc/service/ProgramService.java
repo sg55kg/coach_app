@@ -1,13 +1,11 @@
 package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.*;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.request.ExerciseRequest;
-import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
-import com.coachapp.coach_pc.view.DayViewModel;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
-import org.hibernate.type.OffsetDateTimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -148,7 +146,7 @@ public class ProgramService {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Exercise exercise = ExerciseRequest.convertRequest(request);
+        Exercise exercise = ExerciseRequest.convertRequest(new Exercise(), request);
         Program program = optional.get();
 
         boolean dayFound = false;

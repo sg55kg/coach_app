@@ -1,10 +1,8 @@
 package com.coachapp.coach_pc.view;
 
-import com.coachapp.coach_pc.enums.WeightIntensity;
-import com.coachapp.coach_pc.model.Exercise;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
