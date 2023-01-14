@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.request;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +93,8 @@ public class ExerciseRequest {
     public int getTotalRepsCompleted() {
         return totalRepsCompleted;
     }
-
-    public boolean isMax() {
+    @JsonProperty(value="isMax")
+    public boolean getIsMax() {
         return isMax;
     }
 
@@ -134,13 +135,11 @@ public class ExerciseRequest {
     }
 
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
-        List<AthleteExerciseComment> comments = new ArrayList<>();
-
 
         request.getComments().forEach(c -> {
             AthleteExerciseComment comment = AthleteExerciseCommentRequest.convertRequest(c);
             comment.setExercise(exercise);
-            comments.add(comment);
+            exercise.getComments().add(comment);
         });
 
         exercise.setWeight(request.getWeight());
@@ -149,8 +148,7 @@ public class ExerciseRequest {
         exercise.setRepsPerSet(request.getRepsPerSet());
         exercise.setWeightCompleted(request.getWeightCompleted());
         exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
-        exercise.setIsMax(request.isMax());
-        exercise.setComments(comments);
+        exercise.setIsMax(request.getIsMax());
         exercise.setNotes(request.getNotes());
         exercise.setIsComplete(request.getIsComplete());
         exercise.setOrder(request.getOrder());

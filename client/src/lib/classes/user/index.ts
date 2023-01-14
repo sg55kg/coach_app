@@ -48,7 +48,9 @@ export class AthleteData {
         athlete.currentProgram = data.currentProgram
         athlete.programs = data.programs
         athlete.coach = data.coach ? CoachData.createFrom(data.coach) : null
-        athlete.records = data.records.map(r => new AthleteRecord(r))
+        athlete.records = data.records
+            .map(r => new AthleteRecord(r))
+            .sort((a, b) => a.lastUpdated.toDate().valueOf() - b.lastUpdated.toDate().valueOf())
         athlete.team = data.team ? Team.createFrom(data.team) : null
 
         return athlete
@@ -124,7 +126,7 @@ export class AthleteRecord {
     public id: string = ''
     public records: Map<string,number> = new Map<string, number>()
     public createdAt: Dayjs = dayjs()
-    public lastUpdated: string = ''
+    public lastUpdated: Dayjs = dayjs()
 
     constructor(data: AthleteRecordDTO) {
         for (const [key, value] of Object.entries(data)) {
@@ -135,7 +137,7 @@ export class AthleteRecord {
             if (key === 'createdAt') {
                 this.createdAt = dayjs(value)
             } else if (key === 'lastUpdated') {
-                this.lastUpdated = value;
+                this.lastUpdated = dayjs(value);
             } else if (key === 'id') {
                 this.id = value;
             } else {
