@@ -1,9 +1,8 @@
 package com.coachapp.coach_pc.model;
 
-import com.coachapp.coach_pc.request.DayRequest;
+import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -26,6 +25,9 @@ public class Day {
     @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
     private boolean isRestDay;
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "warm_up_id")
+    private WarmUp warmUp;
 
     public Day() {}
 
@@ -81,6 +83,14 @@ public class Day {
 
     public void setIsRestDay(boolean isRestDay) {
         this.isRestDay = isRestDay;
+    }
+
+    public WarmUp getWarmUp() {
+        return warmUp;
+    }
+
+    public void setWarmUp(WarmUp warmUp) {
+        this.warmUp = warmUp;
     }
 
     @Override

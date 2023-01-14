@@ -3,6 +3,7 @@ import {DisplayProgram, Program} from "../classes/program";
 import type {ProgramDTO} from "../classes/program"
 import type {User} from "../classes/user";
 import type {Exercise} from "$lib/classes/program/exercise";
+import type {ExerciseComment} from "$lib/classes/program/exercise";
 
 
 export class ProgramService {
@@ -76,11 +77,11 @@ export class ProgramService {
         return await res.json()
     }
 
-    static updateExercise = async (client: Auth0Client, exercise: Exercise, programId: string) => {
+    static updateExercise = async (client: Auth0Client, exercise: Exercise) => {
         const accessToken = await client.getTokenSilently()
         console.debug(exercise)
 
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/${programId}/day`, {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/exercise/${exercise.id}`, {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
             body: JSON.stringify(exercise)
@@ -100,6 +101,22 @@ export class ProgramService {
         if (res.status !== 204) {
             throw new Error(`Could not delete exercise ${exercise.name}`)
         }
+    }
+
+    static addExerciseComment = async (client: Auth0Client, comment: ExerciseComment) => {
+        const accessToken = await client.getTokenSilently()
+
+        console.log(JSON.stringify(comment))
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/exercise/${comment.exerciseId}/comment`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify(comment)
+        })
+
+        if (res.status === 404) {
+            throw new Error('Could not find the exercise for this comment')
+        }
+        return await res.json()
     }
 }
 

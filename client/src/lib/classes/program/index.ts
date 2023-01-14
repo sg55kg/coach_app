@@ -28,16 +28,6 @@ export interface ProgramDTO {
 
 
 
-export enum WeightIntensity {
-    LIGHT = "LIGHT",
-    MODERATE = "MODERATE",
-    HEAVY = "HEAVY",
-    BODY_WEIGHT = "BODY_WEIGHT",
-    NONE = "NONE"
-}
-
-
-
 
 export class Program implements IProgram {
     static build = (programDTO: ProgramDTO) => {
