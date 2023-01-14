@@ -3,7 +3,7 @@
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
     import {Program} from "$lib/classes/program";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {Day} from "$lib/classes/program/day";
+    import {Day, WarmUp} from "$lib/classes/program/day";
     import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
     import {userDB} from "$lib/stores/authStore";
@@ -17,6 +17,7 @@
     let selectedIndex: number = initialIndex
     let selectedDayId: string = ''
     $: athleteOptions = []
+    let inputFocused: boolean = false
 
     const formatDateString = (date: Date) => {
         return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}`
@@ -28,27 +29,27 @@
 
     const generateCSV = () => {
         let str = "Day 1\nExercise,Weight,Sets,Reps,Notes\n";
-        // for(let i=0;i< $program.days.length; i++) {
-        //     if($program.days[i].exercises.length < 1) continue
-        //     if (i > 0) str += "Day " + (i+1) + "\n"
-        //     const d = $program.days[i]
-        //     for(let j = 0; j < d.exercises.length; j++) {
-        //         str += d.exercises[j].name + "," +
-        //             d.exercises[j].weight + "," +
-        //             d.exercises[j].repsPerSet + "," +
-        //             d.exercises[j].sets + "," +
-        //             d.exercises[j].notes + "\n"
-        //     }
-        // }
+        for(let i=0;i< $program.days.length; i++) {
+            if($program.days[i].exercises.length < 1) continue
+            if (i > 0) str += "Day " + (i+1) + "\n"
+            const d = $program.days[i]
+            for(let j = 0; j < d.exercises.length; j++) {
+                str += d.exercises[j].name + "," +
+                    d.exercises[j].weight + "," +
+                    d.exercises[j].repsPerSet + "," +
+                    d.exercises[j].sets + "," +
+                    d.exercises[j].notes + "\n"
+            }
+        }
 
-        //const downloadLink = document.getElementById('download-btn');
+        const downloadLink = document.createElement('a');
         const csv = str
         const blob = new Blob(["\ufeff", csv], {type: 'text/csv'});
         const url = URL.createObjectURL(blob);
-        // const exportFilename = programInput.value;
-        // downloadLink.href = url;
-        // downloadLink.setAttribute('download', exportFilename);
-        // downloadLink.hidden = false;
+        const exportFilename = $program.name;
+        downloadLink.href = url;
+        downloadLink.setAttribute('download', exportFilename);
+        downloadLink.click()
     }
 
     const addDay = (currentDate: Dayjs, index: number) => {
@@ -95,8 +96,9 @@
     }
 
     const handleHotKeys = (e: KeyboardEvent) => {
+        if (inputFocused) return
         e.stopPropagation()
-        console.log(e.key)
+
         switch (e.key) {
             case '+':
                 if (selectedIndex > -1)
@@ -172,7 +174,7 @@
 
         console.log($program.days[selectedIndex].exercises[exerciseIdx])
     }
-
+$: console.log($program?.days[selectedIndex]?.warmUp)
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)
@@ -191,6 +193,10 @@
             }
         }
     })
+
+    const addWarmup = () => {
+        $program.days[selectedIndex].warmUp = new WarmUp()
+    }
 
     afterUpdate(() => {
         if ($userDB && athleteOptions.length < 1 && selectedIndex > -1) {
@@ -215,14 +221,15 @@
             }, 5000)
         }
     })
-$: console.log(athleteOptions)
+
     onDestroy(() => {
         program.set(new Program())
     })
+
 </script>
 
 <div class="flex w-screen justify-center">
-    <WeekNav bind:selectedDayIndex={selectedIndex} dayId={selectedDayId} />
+    <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 
     <div class="flex flex-col self-start w-9/12">
     <div class="flex flex-row justify-between">
@@ -231,6 +238,8 @@ $: console.log(athleteOptions)
                 <input type="text"
                        placeholder="Program Name"
                        name="name"
+                       on:focus={() => inputFocused = true}
+                       on:blur={() => inputFocused = false}
                        bind:value={$program.name}
                        class="p-2 bg-gray-300 text-xl font-bold">
             </div>
@@ -288,6 +297,9 @@ $: console.log(athleteOptions)
             {#if window.screen.width > 800}
                 <div class="flex justify-between">
                     <div>
+                        <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addWarmup}>
+                            Add Warmup
+                        </button>
                         {#if $program?.days.length > 0}
                             <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
                                 Add exercise (Shift +)
@@ -303,9 +315,18 @@ $: console.log(athleteOptions)
             {/if}
         {/if}
     {#if selectedIndex > -1 && $program}
+        {#if $program?.days[selectedIndex]?.warmUp}
+            <div class="w-full p-2">
+                <textarea class="bg-gray-300 w-full" bind:value={$program.days[selectedIndex].warmUp.instructions}></textarea>
+            </div>
+        {/if}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
             {#each $program?.days[selectedIndex]?.exercises.sort((a, b) => a.order - b.order) as exercise, idx (idx)}
-                <ExerciseForm bind:exercise={exercise} bind:selectedDayIndex={selectedIndex} exerciseIndex={idx} />
+                <ExerciseForm
+                        bind:exercise={exercise}
+                        bind:selectedDayIndex={selectedIndex}
+                        bind:inputFocused={inputFocused}
+                        exerciseIndex={idx} />
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
             <div class="flex justify-center m-8 font-bold text-2xl">
@@ -343,7 +364,7 @@ $: console.log(athleteOptions)
                         class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
                     Save (Ctrl s)
                 </button>
-                <button type="button" class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
+                <button type="button" on:click={generateCSV} class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
                     Download CSV
                 </button>
             </footer>
