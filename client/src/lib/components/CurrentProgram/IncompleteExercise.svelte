@@ -34,9 +34,11 @@
         const formattedName = exercise.name.trim().toLowerCase().split(' ').join('_')
 
         if (records.records.get(formattedName) === undefined) {
+            console.log('could not find')
             return ''
         }
         const weight = records.records.get(formattedName)
+        console.log('weight', weight)
         if (weight < exercise.weightCompleted && exercise.weightCompleted !== 0) {
             console.log('found new record')
             return formattedName
@@ -73,9 +75,9 @@
         console.log(exercise)
         if (!exercise.isComplete) {
             if (exercise.isMax) {
-                sets = setsComplete > 0 ? setsComplete : exercise.sets
+                sets = setsComplete > 0 ? setsComplete : 1
             } else {
-                sets = 1
+                sets = setsComplete > 0 ? setsComplete : exercise.sets
             }
             reps = repsPerSetComplete > 0 ? repsPerSetComplete : exercise.repsPerSet
             weight = exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
@@ -88,7 +90,8 @@
             ...exercise,
             isComplete: !exercise.isComplete,
             weightCompleted: weight,
-            totalRepsCompleted: (sets * reps)
+            totalRepsCompleted: (sets * reps),
+            setsComplete: sets
         }
         repsPerSetComplete = reps
         setsComplete = sets
@@ -101,6 +104,7 @@
         console.log('currentProgram', $currentProgram)
         loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
+            let recordKey: string = ''
             if ($userDB.athleteData.records.length < 1) {
                 let map: Map<string, number> = new Map()
                 map.set(exercise.name.trim().toLowerCase().split(' ').join('_'), exercise.weightCompleted)
@@ -108,9 +112,10 @@
                     prev?.athleteData?.records.push({ id: '', athlete: $userDB?.athleteData, records: map } as AthleteRecord)
                     return prev
                 })
+                recordKey = exercise.name.trim().toLowerCase().split(' ').join('_')
+            } else {
+                recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
             }
-            console.log($userDB.athleteData.records)
-            const recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
 
             if (recordKey !== '') {
                 // set the records back to DTO format so the backend can read the contents
