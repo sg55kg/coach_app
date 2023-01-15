@@ -169,6 +169,12 @@
                 bind:value={exercise.notes}
                 class="bg-gray-300 p-2"></textarea>
     </div>
+    {#if exercise.isComplete && exercise.weightCompleted > 0 && exercise.totalRepsCompleted > 0}
+        <div class="bg-green w-full h-1">
+        </div>
+    {:else if exercise.isComplete}
+        <div class="bg-red w-full h-1"></div>
+    {/if}
 
 </div>
 </div>
