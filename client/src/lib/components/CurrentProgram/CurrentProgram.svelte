@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        {#if $currentDay && !$currentDay.isRestDay && $currentDay.exercises.length > 0}
+        {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
             {#each $incompleteExercises.sort((a, b) => a.order - b.order) as exercise}
                 <IncompleteExercise bind:exercise={exercise} />
             {/each}
@@ -102,7 +102,7 @@
 <!--                    Mark Day Complete As Written-->
 <!--                </button>-->
             </div>
-        {:else if $currentDay.isRestDay}
+        {:else if $currentDay?.isRestDay}
             <div class="m-4">
                 Rest Day
             </div>
