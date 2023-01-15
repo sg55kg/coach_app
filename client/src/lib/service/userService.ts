@@ -166,7 +166,7 @@ export default class UserService {
         })
 
         if (res.status > 204) {
-            throw new Error('Could not save athlete data')
+            throw new Error('Could not save athlete-stats data')
         } else {
             const athleteDTO = await res.json()
             return AthleteData.createFrom(athleteDTO)
@@ -186,7 +186,7 @@ export default class UserService {
         })
 
         if (res.status > 299) {
-            throw new Error('Could not update athlete records')
+            throw new Error('Could not update athlete-stats records')
         }
 
         const records: AthleteRecordDTO[] = await res.json()
@@ -212,7 +212,24 @@ export default class UserService {
             })
         })
         if (res.status > 299) {
-            throw new Error('Could not update athlete data')
+            throw new Error('Could not update athlete-stats data')
+        }
+        return AthleteData.createFrom(await res.json() as AthleteDataDTO)
+    }
+
+    static async fetchAthleteData(client: Auth0Client, athleteId: string) {
+        const accessToken = await client.getTokenSilently()
+
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        if (res.status > 200) {
+            throw new Error('Error fetching athlete-stats data')
         }
         return AthleteData.createFrom(await res.json() as AthleteDataDTO)
     }

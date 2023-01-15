@@ -149,7 +149,7 @@
             p.teamId = athlete.team.id
             return p
         })
-        console.log('program after athlete change', $program)
+        console.log('program after athlete-stats change', $program)
     }
 
     const toggleRestDay = () => {
