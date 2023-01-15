@@ -1,8 +1,6 @@
-import * as devalue from 'devalue'
 import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
 import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
-import {AthleteData, type AthleteDataDTO, AthleteRecord, User} from "$lib/classes/user";
-import {redirect} from "@sveltejs/kit";
+import {AthleteData, type AthleteDataDTO, AthleteRecord, type AthleteRecordDTO, User} from "$lib/classes/user";
 import {goto} from "$app/navigation";
 
 
@@ -146,27 +144,32 @@ export default class UserService {
                 }
 
             }
-
-            if (!userData.athleteData && res.status !== 500) {
-                res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/athlete`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ userId: userData.id, name: userData.username })
-                })
-
-                if (res.status !== 405 && res.status !== 500) {
-                    userData = await res.json()
-                }
-            }
             if (userData) {
                 return User.build(userData)
             }
         } catch (e) {
             console.log(e)
             throw new Error('Could not fetch user data')
+        }
+    }
+
+    static createAthleteData = async (client: Auth0Client, athlete: AthleteData) => {
+        const accessToken = await client.getTokenSilently()
+
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/athlete`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify( { ...athlete })
+        })
+
+        if (res.status > 204) {
+            throw new Error('Could not save athlete data')
+        } else {
+            const athleteDTO = await res.json()
+            return AthleteData.createFrom(athleteDTO)
         }
     }
 
@@ -186,7 +189,8 @@ export default class UserService {
             throw new Error('Could not update athlete records')
         }
 
-        return new AthleteRecord(await res.json())
+        const records: AthleteRecordDTO[] = await res.json()
+        return records.map(r => new AthleteRecord(r))
     }
 
     static updateAthleteData = async (client: Auth0Client, athlete: AthleteData) => {
