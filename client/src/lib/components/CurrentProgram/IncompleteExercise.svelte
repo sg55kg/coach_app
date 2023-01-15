@@ -179,11 +179,12 @@
             totalRepsCompleted: 0
         }
         try {
-            const updatedProgram: Program = await ProgramService.updateExercise($auth0Client, updatedExercise)
-            const updatedDay = updatedProgram.days.find(d => d.id === $currentDay!.id)
-            currentProgram.set(updatedProgram)
-            currentDay.set(updatedDay)
-            incompleteExercises.set(updatedDay.exercises.sort((a, b) => a.order - b.order))
+            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
+            currentDay.update(prev => {
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                return prev
+            })
+            incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
         } catch (e) {
             console.log(e)
         }
@@ -331,7 +332,13 @@
                 <p class="text-green">New Record!</p>
             </div>
         {/if}
-        <div class={(exercise.isComplete ? 'bg-green' : 'bg-red-shade') + ' h-1 absolute bottom-0 w-full left-0'}></div>
+        {#if exercise.isComplete && exercise.weightCompleted > 0 && exercise.totalRepsCompleted > 0}
+            <div class="h-1 absolute bottom-0 w-full left-0 bg-green"></div>
+        {:else if exercise.isComplete}
+            <div class="h-1 absolute bottom-0 w-full left-0 bg-red-shade"></div>
+        {:else}
+            <div class="h-1 absolute bottom-0 w-full left-0 bg-orange"></div>
+        {/if}
     </div>
 </div>
 <div>
