@@ -130,7 +130,7 @@ export class AthleteRecord {
 
     constructor(data: AthleteRecordDTO) {
         for (const [key, value] of Object.entries(data)) {
-            if (key.toLowerCase().includes('athlete')) {
+            if (key.toLowerCase().includes('athlete-stats')) {
                 // potential temporary fix until I find out why JsonIgnore doesn't work here
                 continue
             }
