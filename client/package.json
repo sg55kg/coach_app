@@ -40,6 +40,7 @@
 		"devalue": "^4.2.0",
 		"dotenv": "^16.0.3",
 		"js-cookie": "^3.0.1",
+		"jwt-decode": "^3.1.2",
 		"svelte-icons": "^2.1.0",
 		"zod": "^3.19.1"
 	}

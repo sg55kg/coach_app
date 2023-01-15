@@ -1,5 +1,5 @@
 import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
-import {auth0Client, isAuthenticated, user, loadingAuth, userDB} from "../stores/authStore";
+import {auth0Client, isAuthenticated, authUser, loadingAuth, userDB} from "../stores/authStore";
 import {AthleteData, type AthleteDataDTO, AthleteRecord, type AthleteRecordDTO, User} from "$lib/classes/user";
 import {goto} from "$app/navigation";
 

@@ -2,7 +2,8 @@ import type {LayoutServerLoad} from "./$types";
 import {redirect} from "@sveltejs/kit";
 
 export const load: LayoutServerLoad = async ({ cookies, params }) => {
-    // const token = cookies.get('Authority')
+     const token = cookies.get('accessToken')
+
     // console.log(token)
     // try {
     //     const res = await fetch(`http://localhost:8180/api/programs`, {

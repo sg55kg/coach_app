@@ -27,8 +27,8 @@ export class TeamService {
         return await res.json()
     }
 
-    static getTeam = async (client: Auth0Client, teamId: string) => {
-        const accessToken = await client.getTokenSilently()
+    static getTeam = async (teamId: string) => {
+
 
         const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${teamId}`, {
             method: 'GET',

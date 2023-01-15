@@ -1,12 +1,75 @@
 
 import type {Actions, PageServerLoad} from "../../.svelte-kit/types/src/routes/sverdle/$types";
+import jwtDecode from "jwt-decode";
+import {authUser, userDB} from "$lib/stores/authStore";
+import type {RequestHandler} from "@sveltejs/kit";
 
-export const load: PageServerLoad = ({ cookies }) => {
+
+const randomString = (length: number, chars: string) => {
+    let result = '';
+    for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+const state: string = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+
+export const load: PageServerLoad = async ({ cookies, params, url }) => {
+    const code = url.searchParams.get('code')
+    const encoded = state
+    if (!code && !cookies.get('accessToken')) {
+        return { state: encoded }
+    }
+    if (!cookies.get('accessToken')) {
+        const options = {
+            "grant_type": "authorization_code",
+            "client_id": import.meta.env.VITE_AUTH0_CLIENT_ID,
+            "client_secret": import.meta.env.VITE_AUTH0_CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": import.meta.env.VITE_REDIRECT_URI,
+            "audience": import.meta.env.VITE_AUTH0_AUDIENCE,
+        }
+        console.log(options)
+        try {
+            const res = await fetch(`https://dev-iubbkos4gue16ad5.us.auth0.com/oauth/token`, {
+                method: 'POST',
+                headers: {'content-type': 'application/json'},
+                body: JSON.stringify(options)
+            })
+            console.log(res.status)
+            //console.log()
+            const data = await res.json()
+            //console.log(data)
+            console.log(jwtDecode(data['access_token']))
+            cookies.set('accessToken', data['access_token'], { httpOnly: true })
+            const user = jwtDecode(data['id_token']) as any
+            const accessToken = data['access_token']
+
+            const userRes = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${user.email}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json',
+                }
+            })
+
+            // console.log(userRes.statusText)
+            const userData = await userRes.json()
+
+            return {
+                user,
+                userData
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     return {
 
     };
 };
+
+
 
 // export const actions: Actions = {
 //     /**
