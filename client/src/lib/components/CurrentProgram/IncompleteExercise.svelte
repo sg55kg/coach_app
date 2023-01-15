@@ -256,7 +256,7 @@
 </script>
 
 <div class="bg-gray-200 lg:p-4 my-2 rounded relative m-4 lg:mx-1 p-2 md:p-2">
-    <p class="lg:w-fit w-fit m-0 text-lg p-1 font-bold text-textblue self-center lg:ml-4">{exercise.name}</p>
+    <p class="lg:w-fit w-fit m-0 text-lg p-1 font-bold text-textblue self-center lg:ml-4">{exercise?.name}</p>
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
             <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
@@ -271,7 +271,7 @@
                 <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
-                <p class="bg-gray-200 w-18">{setsComplete} &nbsp;/&nbsp; {exercise.sets} &nbsp;Sets</p>
+                <p class="bg-gray-200 w-18">{setsComplete} &nbsp;/&nbsp; {exercise?.sets} &nbsp;Sets</p>
                 <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('plus')}>
                     <FaPlusCircle />
                 </div>
@@ -280,7 +280,7 @@
                 <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
-                <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise.repsPerSet} &nbsp;Reps</p>
+                <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise?.repsPerSet} &nbsp;Reps</p>
                 <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
                     <FaPlusCircle />
                 </div>
@@ -288,8 +288,8 @@
         {:else}
             <div class="flex flex-col items-center">
                 <div class="flex flex-row justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
-                    <p class="mx-2">{exercise.name}</p>
-                    <p class="mx-2">{exercise.repsPerSet} RM</p>
+                    <p class="mx-2">{exercise?.name}</p>
+                    <p class="mx-2">{exercise?.repsPerSet} RM</p>
                 </div>
                 <div class="flex flex-row justify-around text-lg font-semibold text-textblue">
                     <input type="number" class="flex-1 bg-gray-200 text-center w-14" bind:value={exercise.weightCompleted}>
@@ -298,17 +298,17 @@
             </div>
         {/if}
     </div>
-    {#if exercise.notes}
+    {#if exercise?.notes}
         <div class="p-2">
             <hr>
             <p class="font-semibold">Coach Notes:</p>
-            <p class="text-textblue"><i>{exercise.notes}</i></p>
+            <p class="text-textblue"><i>{exercise?.notes}</i></p>
         </div>
     {/if}
 
     <div>
         <div class="flex justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
-        {#if !exercise.isMax || exercise.weightCompleted > 0}
+        {#if !exercise?.isMax || exercise?.weightCompleted > 0}
                 <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
@@ -332,9 +332,9 @@
                 <p class="text-green">New Record!</p>
             </div>
         {/if}
-        {#if exercise.isComplete && exercise.weightCompleted > 0 && exercise.totalRepsCompleted > 0}
+        {#if exercise?.isComplete && exercise?.weightCompleted > 0 && exercise?.totalRepsCompleted > 0}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-green"></div>
-        {:else if exercise.isComplete}
+        {:else if exercise?.isComplete}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-red-shade"></div>
         {:else}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-orange"></div>
@@ -344,10 +344,10 @@
 <div>
     <h4 class="font-bold hover:cursor-pointer" on:click={toggleShowComments}>{!showComments ? `Comments (${exercise.comments.length})` : `Hide Comments`}</h4>
     {#if showComments}
-        {#if exercise.comments.length < 1}
+        {#if exercise?.comments.length < 1}
             <p class="m-0">No Comments</p>
         {/if}
-        {#each exercise.comments as comment (comment.id)}
+        {#each exercise?.comments as comment (comment.id)}
             <div class="flex flex-col p-2 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
                 <div class="flex flex-row justify-between mb-2">
                     <h5>{comment.commenterName}</h5>
