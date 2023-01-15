@@ -469,4 +469,47 @@ public class AthleteRecord {
     public void setSnatch_balance(int snatch_balance) {
         this.snatch_balance = snatch_balance;
     }
+
+    public void copyValues(AthleteRecord values) {
+        this.snatch = values.getSnatch();
+        this.clean_and_jerk = values.getClean_and_jerk();
+        this.jerk = values.getJerk();
+        this.clean = values.getClean();
+        this.back_squat = values.getBack_squat();
+        this.front_squat = values.getFront_squat();
+        this.bench_press = values.getBench_press();
+        this.bent_over_row = values.getBent_over_row();
+        this.block_clean = values.getBlock_clean();
+        this.deadlift = values.getDeadlift();
+        this.block_power_clean = values.getBlock_power_clean();
+        this.block_power_snatch = values.getBlock_power_snatch();
+        this.block_snatch = values.getBlock_snatch();
+        this.clean_pull = values.getClean_pull();
+        this.farmer_carry_meters = values.getFarmer_carry_meters();
+        this.farmer_carry_weight = values.getFarmer_carry_weight();
+        this.hang_power_clean = values.getHang_power_clean();
+        this.hang_power_snatch = values.getHang_power_snatch();
+        this.hang_snatch = values.getHang_snatch();
+        this.max_chin_ups = values.getMax_chin_ups();
+        this.max_pull_ups = values.getMax_pull_ups();
+        this.overhead_squat = values.getOverhead_squat();
+        this.push_press = values.getPush_press();
+        this.pause_clean = values.getPause_clean();
+        this.pause_snatch = values.getPause_snatch();
+        this.pendlay_row = values.getPendlay_row();
+        this.sandbag_carry_meters = values.getSandbag_carry_meters();
+        this.sandbag_carry_weight = values.getSandbag_carry_weight();
+        this.squat_jerk = values.getSquat_jerk();
+        this.snatch_balance = values.getSnatch_balance();
+        this.weighted_chin_up = values.getWeighted_chin_up();
+        this.weighted_pull_up = values.getWeighted_pull_up();
+        this.strict_press = values.getStrict_press();
+        this.snatch_pull = values.getSnatch_pull();
+        this.snatch_high_pull = values.getSnatch_high_pull();
+        this.snatch_push_press = values.getSnatch_push_press();
+        this.power_clean = values.getPower_clean();
+        this.power_jerk = values.getPower_jerk();
+        this.power_snatch = values.getPower_snatch();
+        this.snatch_deadlift = values.getSnatch_deadlift();
+    }
 }

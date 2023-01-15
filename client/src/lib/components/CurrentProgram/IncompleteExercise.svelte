@@ -104,18 +104,7 @@
         console.log('currentProgram', $currentProgram)
         loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
-            let recordKey: string = ''
-            if ($userDB.athleteData.records.length < 1) {
-                let map: Map<string, number> = new Map()
-                map.set(exercise.name.trim().toLowerCase().split(' ').join('_'), exercise.weightCompleted)
-                userDB.update(prev => {
-                    prev?.athleteData?.records.push({ id: '', athlete: $userDB?.athleteData, records: map } as AthleteRecord)
-                    return prev
-                })
-                recordKey = exercise.name.trim().toLowerCase().split(' ').join('_')
-            } else {
-                recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
-            }
+            let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
 
             if (recordKey !== '') {
                 // set the records back to DTO format so the backend can read the contents
@@ -150,7 +139,7 @@
                         $userDB.athleteData.id
                     )
                     userDB.update(prev => {
-                        prev!.athleteData!.records.push(res)
+                        prev!.athleteData!.records = res
                         return prev
                     })
                     isNewPersonalBest = true

@@ -1,18 +1,25 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.AthleteRecord;
+
+import java.util.List;
 import java.util.UUID;
 
 public class NewAthleteRequest {
 
     private UUID userId;
     private String name;
+    private List<AthleteRecord> records;
+
 
     public NewAthleteRequest() {
 
     }
 
-    public NewAthleteRequest(UUID userId, String name) {
+    public NewAthleteRequest(UUID userId, String name, List<AthleteRecord> records) {
         this.userId = userId;
+        this.name = name;
+        this.records = records;
     }
 
     public UUID getUserId() {
@@ -21,5 +28,9 @@ public class NewAthleteRequest {
 
     public String getName() {
         return name;
+    }
+
+    public List<AthleteRecord> getRecords() {
+        return records;
     }
 }
