@@ -90,7 +90,7 @@
                     </a>
                 </div>
                 <div class="h-6 text-link hover:text-link-shade duration-300">
-                    <a href={`/home/coach/program/${athlete.currentProgram.id}/stats`}>
+                    <a href={`/home/coach/athlete-stats/${athlete.id}`}>
                         <FaRegChartBar></FaRegChartBar>
                     </a>
                 </div>

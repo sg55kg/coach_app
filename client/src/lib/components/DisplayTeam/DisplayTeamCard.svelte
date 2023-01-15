@@ -15,10 +15,10 @@
         let updatedAthlete = $userDB.athleteData.team === null ?
             { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
             { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
-        console.log('before server athlete data', updatedAthlete)
+        console.log('before server athlete-stats data', updatedAthlete)
         try {
             const res: AthleteData = await UserService.updateAthleteData($auth0Client, updatedAthlete)
-            console.log('Updated team athlete response', res)
+            console.log('Updated team athlete-stats response', res)
             userDB.update(prev => {
                 prev!.athleteData = res
                 prev!.athleteData.coach = { id: team.coachId } as CoachData

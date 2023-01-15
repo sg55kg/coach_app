@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.request.AthleteRequest;
 import com.coachapp.coach_pc.service.AthleteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +36,14 @@ public class AthleteController {
     @PutMapping("/{athleteId}/record")
     public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(@PathVariable UUID athleteId, @RequestBody AthleteRecord record) {
         return athleteService.updateAthleteRecord(athleteId, record);
+    }
+
+    @GetMapping("{athleteId}")
+    public ResponseEntity<AthleteData> getAthlete(@PathVariable UUID athleteId) {
+        AthleteData athlete = athleteService.getAthleteData(athleteId);
+        if (athlete != null) {
+            return new ResponseEntity<>(athlete, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }

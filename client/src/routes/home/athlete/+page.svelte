@@ -24,8 +24,13 @@
             <h3 class="text-2xl font-bold tracking-wider">My Program</h3>
             <h5 class="my-3 text-xl">{dayjs().format('dddd, MMMM D')}</h5>
         </div>
-
-
+        {#if $userDB?.athleteData?.currentProgram}
+            <div class="text-center lg:text-start">
+                <a class="text-link hover:text-link-shade underline" href="/home/athlete/program">
+                    View Full Program
+                </a>
+            </div>
+        {/if}
         {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
             <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
                 {#each $currentDay.exercises as exercise, index (index)}
@@ -41,23 +46,25 @@
                 No programming available for today
             </div>
         {/if}
-        <div class="sm: text-center lg:text-start">
-            <a class="text-link underline" href="/home/athlete/program">View Full Program</a>
-        </div>
-
+        {#if $userDB?.athleteData?.records}
+            <div class="text-center lg:text-start mt-4">
+                <a class="text-link hover:text-link-shade underline" href={`/home/athlete/${$userDB.athleteData.id}`}>
+                    My Progress
+                </a>
+            </div>
+        {/if}
     </div>
     <hr class="hidden md:flex m-2 mx-24">
     <div class="m-4 flex flex-col">
         {#if $userDB?.athleteData?.team}
             <h4 class="text-2xl text-center">{$userDB?.athleteData?.team?.name}</h4>
-            <a class="text-lg underline text-link text-center" href="/home/athlete/team">View</a>
+<!--            <a class="text-lg underline text-link text-center" href="/home/athlete/team">View</a>-->
             <a class="text-lg underline text-link text-center" href="/home/athlete/teams">Browse Teams</a>
         {:else}
             <a class="text-lg text-center md:text-left underline text-link" href="/home/athlete/teams">Join a team</a>
         {/if}
     </div>
 </div>
-
 
 <style>
 
