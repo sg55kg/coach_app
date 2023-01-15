@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,8 +65,24 @@ public class AthleteService {
         }
 
         AthleteData athlete = optional.get();
-        athlete.addRecord(record);
-        record.setAthlete(athlete);
+        // Need logic if record has an id already that matches an existing record, it should update the existing record
+        boolean foundMatch = false;
+        for (int i = athlete.getRecords().size() - 1; i >= 0; i--) {
+            OffsetDateTime existingDate = athlete.getRecords().get(i).getLastUpdated();
+            if (existingDate.getDayOfMonth() == record.getLastUpdated().getDayOfMonth() &&
+                    existingDate.getYear() == record.getLastUpdated().getYear() &&
+                    existingDate.getMonth() == record.getLastUpdated().getMonth()
+            ) {
+                athlete.getRecords().get(i).copyValues(record);
+                foundMatch = true;
+                break;
+            }
+        }
+        if (!foundMatch) {
+            athlete.addRecord(record);
+            record.setAthlete(athlete);
+        }
+
         athlete = athleteRepo.save(athlete);
 
         return new ResponseEntity<>(athlete.getRecords(), HttpStatus.OK);

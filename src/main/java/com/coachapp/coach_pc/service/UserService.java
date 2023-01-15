@@ -70,9 +70,10 @@ public class UserService {
         }
         AthleteData athlete = new AthleteData();
         UserData user = o.get();
-        user.setAthleteData(athlete);
         athlete.setUser(user);
         athlete.setName(user.getUsername());
+        athlete.setRecords(athleteRequest.getRecords());
+        user.setAthleteData(athlete);
 
         user = userDataRepo.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);

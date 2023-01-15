@@ -1,41 +1,18 @@
 <script lang="ts">
-    import {onDestroy, onMount} from "svelte";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {onMount} from "svelte";
+    import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
-    import {ProgramService} from "$lib/service/ProgramService";
     import IncompleteExercise from "$lib/components/CurrentProgram/IncompleteExercise.svelte";
-    import {currentProgram, currentDay} from "$lib/stores/athleteProgramStore";
-    import {Program} from "$lib/classes/program";
-    import {Day} from "$lib/classes/program/day";
+    import {currentDay} from "$lib/stores/athleteProgramStore";
+    import {goto} from "$app/navigation";
 
 
     onMount(async () => {
-        if (!$userDB?.athleteData?.currentProgram) {
-            return
+        if (!$userDB?.athleteData || $userDB.athleteData.records.length < 1) {
+            await goto(`/home/athlete/get-started/${$userDB.id}`)
         }
-
-        try {
-            const program = await ProgramService.getProgram($auth0Client!, $userDB.athleteData.currentProgram.id)
-            console.log('program Response', program)
-            const today = dayjs()
-
-            let day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
-            if (day) {
-                currentDay.set(day)
-                console.log('currentDay',currentDay)
-            }
-            currentProgram.set(program)
-            console.log(currentProgram)
-        } catch (e) {
-            console.log(e)
-        }
-
     })
 
-    onDestroy(() => {
-        currentProgram.set(new Program())
-        currentDay.set(new Day())
-    })
 </script>
 
 <div class="flex flex-col">
