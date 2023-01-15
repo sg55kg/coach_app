@@ -7,12 +7,14 @@ import com.coachapp.coach_pc.repository.UserDataRepo;
 import com.coachapp.coach_pc.request.NewAthleteRequest;
 import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.NewUserRequest;
+import com.coachapp.coach_pc.request.UpdateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -74,6 +76,21 @@ public class UserService {
         athlete.setName(user.getUsername());
         athlete.setRecords(athleteRequest.getRecords());
         user.setAthleteData(athlete);
+
+        user = userDataRepo.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    public ResponseEntity<UserData> updateUserData(UUID id, UpdateUserRequest userRequest) {
+        Optional<UserData> optional = userDataRepo.findById(id);
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        UserData user = optional.get();
+        user.setUsername(userRequest.getUsername());
+        if (userRequest.getAthleteName() != null) {
+            user.getAthleteData().setName(userRequest.getAthleteName());
+        }
 
         user = userDataRepo.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
