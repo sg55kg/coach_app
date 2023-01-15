@@ -26,7 +26,7 @@
         </div>
 
 
-        {#if $currentDay && $currentDay?.isRestDay === false && $currentDay?.exercises?.length > 0}
+        {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
             <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
                 {#each $currentDay.exercises as exercise, index (index)}
                     <IncompleteExercise bind:exercise={exercise} />
