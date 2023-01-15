@@ -233,4 +233,23 @@ export default class UserService {
         }
         return AthleteData.createFrom(await res.json() as AthleteDataDTO)
     }
+
+    static async updateUserData(client: Auth0Client, user: User) {
+        const accessToken = await client.getTokenSilently()
+
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+
+        if (res.status > 200) {
+            throw new Error('Could not update user data')
+        }
+
+        return User.build(await res.json())
+    }
 }
