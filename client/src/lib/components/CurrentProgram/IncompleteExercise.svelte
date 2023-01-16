@@ -130,8 +130,18 @@
                     ...newRecord.records,
                     [recordKey]: updatedExercise.weightCompleted
                 } as AthleteRecord)
+
+                updatedAthleteData.records.sort((a, b) => a.lastUpdated.toDate().valueOf() - b.lastUpdated.toDate().valueOf())
+
+                // if we updated an earlier record, we want to make sure the following records reflect the change
+                const currentIndex = updatedAthleteData.records.findIndex(r => r.lastUpdated.isSame($currentDay!.date, 'days'))
+                for (let i = currentIndex + 1; i < updatedAthleteData.records.length; i++) {
+                    updatedAthleteData.records[i].records.set(recordKey, updatedExercise.weightCompleted)
+                }
+
                 console.log('updatedRecords',updatedAthleteData.records)
 
+                // TODO: this needs to pass a list of records
                 try {
                     const res = await UserService.updateAthleteRecords(
                         $auth0Client,
