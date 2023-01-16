@@ -66,7 +66,11 @@ public class AthleteRequest {
             athlete.setName(request.getName());
         }
 
+        // TODO: this needs attention
         if (request.getRecords().size() > 0 && request.getRecords().get(0).getId() != null) {
+            request.getRecords().forEach(r -> {
+                r.setAthlete(athlete);
+            });
             athlete.setRecords(request.getRecords());
         }
 

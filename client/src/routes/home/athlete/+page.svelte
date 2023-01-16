@@ -8,7 +8,7 @@
 
 
     onMount(async () => {
-        if (!$userDB?.athleteData || $userDB.athleteData.records.length < 1) {
+        if ($userDB && (!$userDB?.athleteData || $userDB.athleteData.records.length < 1)) {
             await goto(`/home/athlete/get-started/${$userDB.id}`)
         }
     })
