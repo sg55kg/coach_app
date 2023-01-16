@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {DisplayTeam} from "$lib/classes/team";
+    import {DisplayTeam, Team} from "$lib/classes/team";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import UserService from "$lib/service/userService";
     import {AthleteData, CoachData} from "$lib/classes/user";
@@ -12,9 +12,31 @@
         if (!$userDB?.athleteData || !$auth0Client) return
         displayTeamsError = ''
 
-        let updatedAthlete = $userDB.athleteData.team === null ?
-            { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
-            { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
+        let updatedAthlete: AthleteData = JSON.parse(JSON.stringify($userDB.athleteData)) as AthleteData
+
+        const recordsDTO = []
+        $userDB.athleteData.records.forEach(r => {
+            let recordFields = {
+                ...Object.fromEntries(r.records),
+                lastUpdated: r.lastUpdated,
+                createdAt: r.createdAt,
+                id: r.id
+            }
+            recordsDTO.push(recordFields)
+        })
+
+        if ($userDB.athleteData.team === null) {
+            updatedAthlete.records = recordsDTO
+            updatedAthlete.team = team as Team
+            updatedAthlete.coach = { id: team.coachId } as CoachData
+        } else {
+            updatedAthlete.records = recordsDTO
+            updatedAthlete.team = null
+            updatedAthlete.coach = null
+        }
+        // let updatedAthlete = $userDB.athleteData.team === null ?
+        //     { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
+        //     { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
         console.log('before server athlete-stats data', updatedAthlete)
         try {
             const res: AthleteData = await UserService.updateAthleteData($auth0Client, updatedAthlete)
