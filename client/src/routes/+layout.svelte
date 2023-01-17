@@ -6,7 +6,6 @@
 	import AuthHeader from "$lib/components/AuthHeader.svelte";
 	import {goto} from "$app/navigation";
 
-	export const srr = false
 
 	onMount(async () => {
 		if(!$auth0Client) {
