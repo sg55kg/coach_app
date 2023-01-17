@@ -7,8 +7,11 @@
     import {Team} from "$lib/classes/team";
     import AthleteCard from "$lib/components/TeamDashboard/AthleteCard.svelte";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
+    import type {PageServerData} from "../../../../../../.svelte-kit/types/src/routes/$types";
 
-    let team: Team
+    export let data: PageServerData
+
+    let team: Team = data.team ?? data.team
     let showNameInput: boolean = false
     $: athleteList = team ? team.athletes : []
 
@@ -24,23 +27,9 @@
         }
     }
 
-    onMount(async () => {
-        if (!$userDB) {
-            return
-        }
-        // try {
-        //     const pathArr = window.location.pathname.split('/')
-        //     const teamId = pathArr[pathArr.length-1]
-        //     team = await TeamService.getTeam(teamId)
-        //     console.log(team)
-        // } catch (e) {
-        //     console.log(e)
-        // }
-
-    })
 </script>
 
-<a href="/home/coach" class="font-bold mx-4">{'<-'} Back to teams</a>
+<a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold mx-4">{'<-'} Back to teams</a>
 {#if team}
     <div class="flex flex-col items-center">
         <div class="rounded bg-gray-400 w-11/12 flex justify-start items-center p-3">

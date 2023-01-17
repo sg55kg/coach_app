@@ -5,6 +5,14 @@
     export let ssr = false
     export let user
     const logout = async () => {
+        const res = await fetch('/api/auth', {
+            method: 'POST'
+        })
+        const body = await res.json()
+        console.log(res)
+        if (body.redirectUrl) {
+            window.location.replace(body.redirectUrl)
+        }
         //await UserService.logout($auth0Client!)
     }
 

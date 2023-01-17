@@ -7,25 +7,15 @@
     import {programSuccess, programError} from "$lib/stores/writeProgramStore.js";
     import UserService from "$lib/service/userService";
     import {goto} from "$app/navigation";
+    import type {LayoutServerData} from "../../../../../.svelte-kit/types/src/routes/$types";
 
+    export let data: LayoutServerData
 
-    onMount(async () => {
-        if (!$auth0Client || !$userDB) {
-            console.log('not found')
-            // const client = await UserService.initializeAuth0Client()
-            // auth0Client.set(client)
-            return
-        }
+    $: console.log(data)
+    if (data.programs && !displayPrograms) {
+        $displayPrograms = data.programs.map(p => DisplayProgram.build(p))
+    }
 
-        programError.set('')
-
-        try {
-            const programs = await ProgramService.getCoachPrograms($auth0Client, $userDB.coachData!.id!)
-            displayPrograms.set(programs.map(p => DisplayProgram.build(p)))
-        } catch (e) {
-            programError.set('We\'re sorry, but we could not fetch your programs at this time')
-        }
-    })
 </script>
 
 <slot />

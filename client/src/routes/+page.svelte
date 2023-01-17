@@ -3,6 +3,7 @@
 	import UserService from "../lib/service/userService";
 	import {goto} from '$app/navigation'
 	import type {PageServerData} from "../../.svelte-kit/types/src/routes/$types";
+	import {page} from '$app/stores'
 
 	export let data: PageServerData
 
@@ -76,22 +77,21 @@
 				</h1>
 			</div>
 			<div class="flex flex-col text-center justify-center items-center m-2 mt-8">
-				{#if !$isAuthenticated}
-<!--					<button on:click={login} class="justify-center text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">-->
-<!--						Get Started-->
-<!--					</button>-->
-<!--					<div class="flex flex-col items-start">-->
-<!--						<small>Already have an account?</small>-->
-<!--						<button class="tracking-wider font-semibold hover:text-yellow-lt self-center" on:click={login}>-->
-<!--							Login-->
-<!--						</button>-->
-<!--					</div>-->
-					<a href={loginUrl}>Get Started</a>
-					<button on:click={logout}>Logout</button>
+				{#if !$page.data.user}
+					<a href={loginUrl} class="justify-center text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
+						Get Started
+					</a>
+					<div class="flex flex-col items-start">
+						<small>Already have an account?</small>
+						<a href={loginUrl} class="tracking-wider font-semibold hover:text-yellow-lt self-center">
+							Login
+						</a>
+					</div>
 				{:else }
 					<a href="/home" class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
 						Go To Home
 					</a>
+					<button on:click={logout}>Logout</button>
 				{/if}
 			</div>
 		</div>

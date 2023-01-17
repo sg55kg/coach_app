@@ -1,43 +1,23 @@
 <script lang="ts">
 	import '../app.css';
-	import {onMount} from "svelte";
-	import UserService from "$lib/service/userService";
-	import {auth0Client, authUser, loadingAuth, userDB} from "$lib/stores/authStore";
+	import {authUser, loadingAuth, userDB} from "$lib/stores/authStore";
 	import AuthHeader from "$lib/components/AuthHeader.svelte";
-	import {goto} from "$app/navigation";
+	import {page} from '$app/stores'
 	import type {LayoutServerData} from "../../.svelte-kit/types/src/routes/$types";
 
 	export let data: LayoutServerData
 
-	const { user, userData } = data
-	console.log(user)
-	console.log(userData)
-
-	onMount(async () => {
-		if((user && userData) && (!$authUser && !$userDB)) {
-			userDB.set(userData)
-			authUser.set(user)
-		}
-
-		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
-			console.debug('Handling redirect callback and fetching user data')
-			const res = await $auth0Client!.handleRedirectCallback()
-			const data = await $auth0Client!.getUser()
-			//user.set(data)
-			if (!$userDB && user?.email !== undefined) {
-				//await UserService.initializeUserData($auth0Client, data)
-			}
-			await goto(window.sessionStorage.getItem('lastPath') ? window.sessionStorage.getItem('lastPath') : '/home')
-		}
-
-	})
-
+	if ($page.data.user && $page.data.userData) {
+		$userDB = $page.data.userData
+		$authUser = $page.data.user
+	}
+	$: console.log($page.data)
 </script>
 <div class="app bg-gray-100 text-textgray w-screen">
 {#if !$loadingAuth}
 
-	{#if user !== undefined}
-		<AuthHeader user={user} />
+	{#if $authUser !== undefined}
+		<AuthHeader user={$authUser} />
 	{:else }
 		<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle py-4">
 			<div class="flex items-center align-baseline">
