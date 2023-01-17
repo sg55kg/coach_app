@@ -1,12 +1,5 @@
 
-import type {Actions, PageServerLoad} from "../../.svelte-kit/types/src/routes/sverdle/$types";
-
-export const load: PageServerLoad = ({ cookies }) => {
-
-    return {
-
-    };
-};
+export const ssr = false
 
 // export const actions: Actions = {
 //     /**
