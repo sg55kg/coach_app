@@ -4,7 +4,7 @@ import type {Auth0Client} from "@auth0/auth0-spa-js";
 
 export class TeamService {
 
-    static createTeam = async (client: Auth0Client, team: Team) => {
+    static createTeam = async (team: Team) => {
 
         const res = await fetch(`/api/teams`, {
             method: 'POST',
@@ -15,7 +15,7 @@ export class TeamService {
         return await res.json()
     }
 
-    static getDisplayTeams = async (client: Auth0Client) => {
+    static getDisplayTeams = async () => {
 
         const res = await fetch(`/api/teams`, {
             method: 'GET',
@@ -35,7 +35,7 @@ export class TeamService {
         return Team.createFrom(await res.json())
     }
 
-    static updateTeam = async (client: Auth0Client, team: Team) => {
+    static updateTeam = async (team: Team) => {
 
         const res = await fetch(`/api/teams/${team.id}`, {
             method: 'PUT',

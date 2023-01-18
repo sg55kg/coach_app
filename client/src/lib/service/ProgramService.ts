@@ -8,8 +8,7 @@ import type {ExerciseComment} from "$lib/classes/program/exercise";
 
 export class ProgramService {
 
-    static getProgram = async (client: Auth0Client, id: string) => {
-        const accessToken = await client.getTokenSilently()
+    static getProgram = async (id: string) => {
 
         const res = await fetch(`/api/programs/${id}`, {
             method: 'GET',
@@ -18,7 +17,7 @@ export class ProgramService {
         return Program.build(program)
     }
 
-    static createProgram = async (client: Auth0Client, program: Program, user: User) => {
+    static createProgram = async (program: Program, user: User) => {
         const coachId = user?.coachData?.id as string
 
         let res = await fetch(`/api/programs/coach/${coachId}`, {
@@ -36,7 +35,7 @@ export class ProgramService {
         return Program.build(dbProgram)
     }
 
-    static updateProgram = async (client: Auth0Client, program: Program) => {
+    static updateProgram = async (program: Program) => {
         const id = program.id
 
         const res = await fetch(`/api/programs/${id}`, {
@@ -53,7 +52,7 @@ export class ProgramService {
         return Program.build(dto)
     }
 
-    static updateExercise = async (client: Auth0Client, exercise: Exercise) => {
+    static updateExercise = async (exercise: Exercise) => {
 
         const res = await fetch(`/api/exercise/${exercise.id}`, {
             method: 'PUT',
@@ -64,7 +63,7 @@ export class ProgramService {
         return await res.json()
     }
 
-    static deleteExercise = async (client: Auth0Client, exercise: Exercise) => {
+    static deleteExercise = async (exercise: Exercise) => {
 
         const res = await fetch(`/api/exercise/${exercise.id}`, {
             method: 'DELETE',
@@ -76,7 +75,7 @@ export class ProgramService {
         }
     }
 
-    static addExerciseComment = async (client: Auth0Client, comment: ExerciseComment) => {
+    static addExerciseComment = async (comment: ExerciseComment) => {
         const res = await fetch(`/api/exercise/${comment.exerciseId}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
