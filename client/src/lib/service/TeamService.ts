@@ -5,11 +5,10 @@ import type {Auth0Client} from "@auth0/auth0-spa-js";
 export class TeamService {
 
     static createTeam = async (client: Auth0Client, team: Team) => {
-        const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams`, {
+        const res = await fetch(`/api/teams`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(team)
         })
         
@@ -17,11 +16,10 @@ export class TeamService {
     }
 
     static getDisplayTeams = async (client: Auth0Client) => {
-        const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/`, {
+        const res = await fetch(`/api/teams`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }
+            headers: { 'Content-Type': 'application/json' }
         })
 
         return await res.json()
@@ -29,21 +27,19 @@ export class TeamService {
 
     static getTeam = async (teamId: string) => {
 
-
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${teamId}`, {
+        const res = await fetch(`/api/teams/${teamId}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }
+            headers: { 'Content-Type': 'application/json' }
         })
 
         return Team.createFrom(await res.json())
     }
 
     static updateTeam = async (client: Auth0Client, team: Team) => {
-        const accessToken = await client.getTokenSilently()
 
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${team.id}`, {
+        const res = await fetch(`/api/teams/${team.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
+            headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(team)
         })
 

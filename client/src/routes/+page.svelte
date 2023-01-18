@@ -2,7 +2,7 @@
 	import {auth0Client, isAuthenticated} from '$lib/stores/authStore'
 	import UserService from "../lib/service/userService";
 	import {goto} from '$app/navigation'
-	import type {PageServerData} from "../../.svelte-kit/types/src/routes/$types";
+	import type {PageServerData} from "./$types";
 	import {page} from '$app/stores'
 
 	export let data: PageServerData
@@ -91,8 +91,9 @@
 					<a href="/home" class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
 						Go To Home
 					</a>
-					<button on:click={logout}>Logout</button>
+
 				{/if}
+				<button on:click={logout}>Logout</button>
 			</div>
 		</div>
 </section>

@@ -1,38 +1,22 @@
 <script lang="ts">
-
-    import {onMount} from "svelte";
     import {DisplayTeam} from "$lib/classes/team";
-    import {TeamService} from "$lib/service/TeamService";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
     import DisplayTeamCard from "$lib/components/DisplayTeam/DisplayTeamCard.svelte";
+    import {userDB} from "$lib/stores/authStore";
 
-    $: displayTeams = []
-    let loadingDisplayTeams: boolean = false
+    export let data
+    const { teams }: { teams: DisplayTeam[] } = data
+    let displayTeams: DisplayTeam[] = []
 
-    onMount(async () => {
-        if (!$userDB) {
-            return
-        }
-        loadingDisplayTeams = true
-        try {
-            // need to limit this query eventually to 20 results or so
-            const displayTeamsRes: DisplayTeam[] = await TeamService.getDisplayTeams($auth0Client!)
-            if ($userDB?.coachData !== null) {
-                displayTeams = displayTeamsRes.filter(t => t.coachId !== $userDB!.coachData.id)
-            } else {
-                displayTeams = displayTeamsRes
-            }
-        } catch (e) {
-            console.log(e)
-        }
-        loadingDisplayTeams = false
-    })
+    if (teams) {
+        displayTeams = teams.filter(t => t.coachId !== $userDB?.coachData?.id)
+    }
+
 </script>
 
 {#each displayTeams as team}
     <DisplayTeamCard bind:team={team} />
 {/each}
-{#if displayTeams.length < 1 && !loadingDisplayTeams}
+{#if displayTeams.length < 1}
     <div class="flex flex-col items-center justify-center">
         <h3 class="text-2xl m-6 font-bold my-12">We're sorry, we could not retrieve a list of teams to join at this time.</h3>
     </div>

@@ -19,12 +19,23 @@ export const load: LayoutServerLoad = async ({ cookies, params, url, locals }) =
         return { state: encoded }
     } else if (code) {
         try {
-            const { accessToken, user } = await fetchToken(code)
+            const { accessToken, user, idToken } = await fetchToken(code)
             cookies.set('accessToken', accessToken, {httpOnly: true, path: '/'})
+            cookies.set('idToken', idToken, {httpOnly: true, path: '/'})
             const userData = await fetchUser(user.email, accessToken)
             return { user, userData }
         } catch (e) {
             console.log(e)
+            throw redirect(307, '/')
+        }
+    }
+    if (cookies.get('accessToken') && cookies.get('idToken')) {
+        console.log('\n\nFETCHING\n\n')
+        try {
+            const user = jwtDecode(cookies.get('idToken')!)
+            const userData = await fetchUser(user.email, cookies.get('accessToken')!)
+            return { user, userData }
+        } catch (e) {
             throw redirect(307, '/')
         }
     }
@@ -53,11 +64,11 @@ const fetchToken = async (code: string) => {
 
         const user = jwtDecode(data['id_token']) as any
         const accessToken = data['access_token']
+        const idToken = data['id_token']
 
-
-        return { accessToken, user }
+        return { accessToken, user, idToken }
     } catch (e) {
-        throw error(500)
+        throw error(500, 'Could not fetch tokens')
     }
 
 }
@@ -78,6 +89,6 @@ const fetchUser = async (email: string, token: string) => {
 
         return userData
     } catch (e) {
-        throw error(500)
+        throw error(500, 'Could not fetch user data')
     }
 }

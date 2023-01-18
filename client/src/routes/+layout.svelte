@@ -4,14 +4,25 @@
 	import AuthHeader from "$lib/components/AuthHeader.svelte";
 	import {page} from '$app/stores'
 	import type {LayoutServerData} from "../../.svelte-kit/types/src/routes/$types";
+	import {User} from "$lib/classes/user";
+	import {onMount} from "svelte";
+	import {goto} from "$app/navigation";
 
 	export let data: LayoutServerData
 
-	if ($page.data.user && $page.data.userData) {
-		$userDB = $page.data.userData
-		$authUser = $page.data.user
+	if (data.user && data.userData) {
+		$userDB = User.build(data.userData)
+		$authUser = data.user
+	} else {
+		$userDB = null
+		$authUser = undefined
 	}
-	$: console.log($page.data)
+
+	onMount(async () => {
+		if ($userDB && $authUser) {
+			await goto('/home')
+		}
+	})
 </script>
 <div class="app bg-gray-100 text-textgray w-screen">
 {#if !$loadingAuth}

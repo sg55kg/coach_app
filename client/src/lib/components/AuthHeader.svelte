@@ -1,11 +1,15 @@
 <script lang="ts">
     import {auth0Client, isAuthenticated, userDB} from "../stores/authStore";
     import UserService from "../service/userService";
+    import {onMount} from "svelte";
 
     export let ssr = false
     export let user
+
+    let isMobile: boolean = false
+
     const logout = async () => {
-        const res = await fetch('/api/auth', {
+        const res = await fetch('/api/auth/logout', {
             method: 'POST'
         })
         const body = await res.json()
@@ -13,16 +17,24 @@
         if (body.redirectUrl) {
             window.location.replace(body.redirectUrl)
         }
-        //await UserService.logout($auth0Client!)
     }
 
     let showDropdown: boolean = false
+
+    onMount(() => {
+        if (window.screen.width < 800) {
+            isMobile = true
+            console.log('On mobile')
+        } else {
+            console.log('On browser')
+        }
+    })
 
 </script>
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
     <div class="flex items-center align-baseline">
-        {#if isAuthenticated}
+        {#if $userDB}
             <a href="/home" class="font-semibold tracking-widest uppercase text-2xl ml-1 text-yellow-lt">
                 Coachable
             </a>
@@ -31,12 +43,12 @@
                 Coachable
             </a>
         {/if}
-
+        {#if isMobile === false}
             <p>&nbsp | &nbsp</p>
-            <a href="/home/coach">Coach</a>
+            <a href="/home/coach/{$userDB.coachData.id}">Coach</a>
             <p>&nbsp | &nbsp</p>
             <a href="/home/athlete">Athlete</a>
-
+        {/if}
 
     </div>
     <div class="relative">
@@ -48,7 +60,7 @@
                  id="header-dropdown"
                  class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-5 drop-shadow-2xl drop-shadow-black">
                 {#if window.screen.width < 800}
-                    <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach">Coach Dashboard</a>
+                    <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
                     <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/athlete">Athlete Dashboard</a>
                 {/if}
                 <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>

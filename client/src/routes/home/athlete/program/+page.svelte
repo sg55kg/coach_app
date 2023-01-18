@@ -2,6 +2,8 @@
 
 import {userDB} from "$lib/stores/authStore.js";
 import CurrentProgram from "$lib/components/CurrentProgram/CurrentProgram.svelte";
+
+console.log($userDB?.athleteData?.currentProgram)
 </script>
 
 {#if $userDB?.athleteData?.currentProgram}
