@@ -12,7 +12,7 @@
         if($auth0Client === null || $userDB === null) return
         programError.set('')
         try {
-            const savedProgram: Program = await ProgramService.createProgram($auth0Client, programData, $userDB)
+            const savedProgram: Program = await ProgramService.createProgram(programData, $userDB)
             userDB.update(prev => {
                 prev?.coachData?.programs.push(DisplayProgram.build(savedProgram as ProgramDTO))
                 return prev

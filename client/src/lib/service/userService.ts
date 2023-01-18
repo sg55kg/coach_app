@@ -204,4 +204,19 @@ export default class UserService {
         }
         return AthleteData.createFrom(await res.json() as AthleteDataDTO)
     }
+
+    static async updateUserData(user: User) {
+
+        const res = await fetch(`/api/user/${user.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+
+        if (res.status > 200) {
+            throw new Error('Could not update user data')
+        }
+
+        return User.build(await res.json())
+    }
 }

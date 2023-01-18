@@ -10,7 +10,7 @@ export class ProgramService {
 
     static getProgram = async (id: string) => {
 
-        const res = await fetch(`/api/programs/${id}`, {
+        const res = await fetch(`/api/program/${id}`, {
             method: 'GET',
         })
         const program: ProgramDTO = await res.json()
@@ -18,9 +18,8 @@ export class ProgramService {
     }
 
     static createProgram = async (program: Program, user: User) => {
-        const coachId = user?.coachData?.id as string
 
-        let res = await fetch(`/api/programs/coach/${coachId}`, {
+        let res = await fetch(`/api/program`, {
             method: 'POST',
             body: JSON.stringify(program),
             headers: { 'Content-Type': 'application/json' }
@@ -37,13 +36,13 @@ export class ProgramService {
 
     static updateProgram = async (program: Program) => {
         const id = program.id
-
-        const res = await fetch(`/api/programs/${id}`, {
+        console.log(program)
+        const res = await fetch(`/api/program/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(program)
         })
-
+        console.log(res.status)
         if (res.status > 299) {
             throw new Error('Could not update program')
         }

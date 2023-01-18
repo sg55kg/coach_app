@@ -64,7 +64,7 @@
     let isNewPersonalBest: boolean = false
 
     const completeExercise = async (exercise: Exercise) => {
-        if (!$auth0Client || !$userDB?.athleteData) return
+        if (!$userDB?.athleteData) return
 
         let sets = 0
         let reps = 0
@@ -134,7 +134,6 @@
 
                 try {
                     const res = await UserService.updateAthleteRecords(
-                        $auth0Client,
                         updatedAthleteData.records[updatedAthleteData.records.length-1],
                         $userDB.athleteData.id
                     )
@@ -152,7 +151,7 @@
         }
 
         try {
-            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
+            const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             completedExercises.update(prev => {
                 prev.push(updatedExercise)
                 return prev
@@ -169,7 +168,6 @@
     }
 
     const skipExercise = async (exercise: Exercise) => {
-        if (!$auth0Client) return
 
         loadingAthleteProgram.set(true)
         const updatedExercise = {
@@ -179,7 +177,7 @@
             totalRepsCompleted: 0
         }
         try {
-            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
+            const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             currentDay.update(prev => {
                 prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
                 return prev
@@ -204,7 +202,7 @@
         console.log(comment)
         let updatedExercise: Exercise = { ...exercise, comments: [...exercise.comments, comment]}
         try {
-            const savedComment: ExerciseComment = await ProgramService.addExerciseComment($auth0Client!, comment)
+            const savedComment: ExerciseComment = await ProgramService.addExerciseComment(comment)
             console.log(savedComment)
             exercise.comments.push(savedComment)
             exercise = exercise

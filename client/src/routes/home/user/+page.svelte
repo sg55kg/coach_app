@@ -4,8 +4,27 @@
     import {onMount} from "svelte";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
+    import UserService from "$lib/service/userService";
 
     let user: User
+
+    const handleSaveUsername = async () => {
+        try {
+            const userDto = {
+                id: user.id,
+                username: user.username,
+                athleteName: null
+            } as any
+            if (user.athleteData) {
+                userDto.athleteName = user.username
+            }
+            const updatedUser: User = await UserService.updateUserData(userDto)
+            userDB.set(updatedUser)
+            user = JSON.parse(JSON.stringify($userDB))
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     onMount(async() => {
         user = JSON.parse(JSON.stringify($userDB))
@@ -24,7 +43,12 @@
         </div>
         <div class="flex flex-col my-2">
             <label class="text-sm">Username</label>
-            <input class="w-fit bg-gray-300 p-2 text-lg" type="text" bind:value={user.username}>
+            <div>
+                <input class="w-fit bg-gray-300 p-2 text-lg" type="text" bind:value={user.username}>
+                {#if user.username !== $userDB.username}
+                    <button on:click={handleSaveUsername} class="p-2 px-6 mr-2 border-textblue border-2 rounded bg-gray-100 hover:bg-gray-300">Save</button>
+                {/if}
+            </div>
         </div>
         <div class="flex flex-col my-2">
             {#if user.athleteData?.team?.name}
