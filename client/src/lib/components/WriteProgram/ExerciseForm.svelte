@@ -6,7 +6,6 @@
     import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
     import {program, programError} from "$lib/stores/writeProgramStore";
     import {ProgramService} from "$lib/service/ProgramService";
-    import {auth0Client} from "$lib/stores/authStore";
 
 
     export let exercise: Exercise = new Exercise()
@@ -39,7 +38,7 @@
         if (exercise.id) {
             programError.set('')
             try {
-                await ProgramService.deleteExercise($auth0Client!, exercise)
+                await ProgramService.deleteExercise(exercise)
             } catch (e) {
                 return programError.set(e.message)
             }

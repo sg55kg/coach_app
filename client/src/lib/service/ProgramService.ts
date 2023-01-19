@@ -52,7 +52,7 @@ export class ProgramService {
     }
 
     static updateExercise = async (exercise: Exercise) => {
-
+        console.log('Updating exercise ' + exercise.id)
         const res = await fetch(`/api/exercise/${exercise.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

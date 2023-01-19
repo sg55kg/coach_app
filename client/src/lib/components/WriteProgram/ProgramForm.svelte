@@ -146,7 +146,7 @@
         const athlete = $userDB!.coachData!.athletes!.find(a => a.id === athleteId)
         program.update(p => {
             p.athleteId = athleteId
-            p.teamId = athlete.team.id
+            p.teamId = athlete?.team?.id ? athlete.team.id : null
             return p
         })
         console.log('program after athlete change', $program)
@@ -174,7 +174,7 @@
 
         console.log($program.days[selectedIndex].exercises[exerciseIdx])
     }
-$: console.log($program?.days[selectedIndex]?.warmUp)
+
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)

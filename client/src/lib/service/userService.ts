@@ -1,9 +1,4 @@
-import {Auth0Client, createAuth0Client, User as Auth0User} from "@auth0/auth0-spa-js";
-import {auth0Client, isAuthenticated, authUser, loadingAuth, userDB} from "../stores/authStore";
 import {AthleteData, type AthleteDataDTO, AthleteRecord, type AthleteRecordDTO, User} from "$lib/classes/user";
-import {goto} from "$app/navigation";
-
-
 
 export default class UserService {
 
@@ -155,7 +150,7 @@ export default class UserService {
 
     static createAthleteData = async (athlete: AthleteData) => {
 
-        const res = await fetch(`/api/users/athlete`, {
+        const res = await fetch(`/api/user/athlete`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(athlete)
@@ -171,7 +166,7 @@ export default class UserService {
 
     static updateAthleteRecords = async (record: AthleteRecord, id: string) => {
 
-        const res = await fetch(`/api/athletes/${id}/record`, {
+        const res = await fetch(`/api/athlete/${id}/record`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(record)
@@ -188,7 +183,7 @@ export default class UserService {
     static updateAthleteData = async (athlete: AthleteData) => {
         const id = athlete.id
 
-        const res = await fetch(`/api/athletes/${id}`, {
+        const res = await fetch(`/api/athlete/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

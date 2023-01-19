@@ -33,6 +33,11 @@
     })
 </script>
 
+<svelte:head>
+    <title>Settings</title>
+    <meta name="description" content="Update your profile and manage your teams" />
+</svelte:head>
+
 {#if user}
     <div class="flex flex-col m-4">
         <h1 class="font-bold text-4xl">Settings</h1>

@@ -100,8 +100,6 @@
     }
 
     const saveExerciseChanges = async (updatedExercise: Exercise) => {
-        if (!$auth0Client || !$userDB?.athleteData || !$currentProgram) return
-        console.log('currentProgram', $currentProgram)
         loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
             let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])

@@ -16,10 +16,8 @@
     $: athleteList = team ? team.athletes : []
 
     const saveTeam = async () => {
-        if (!$auth0Client) return
-
         try {
-            const teamRes = await TeamService.updateTeam($auth0Client, team)
+            const teamRes = await TeamService.updateTeam(team)
             athleteList = team.athletes
             showNameInput = false
         } catch (e) {
@@ -28,6 +26,11 @@
     }
 
 </script>
+
+<svelte:head>
+    <title>{team?.name}</title>
+    <meta name="description" content="Dashboard for {team?.name}. Manage your athletes and write new programs" />
+</svelte:head>
 
 <a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold mx-4">{'<-'} Back to teams</a>
 {#if team}

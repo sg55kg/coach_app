@@ -13,7 +13,6 @@
             method: 'POST'
         })
         const body = await res.json()
-        console.log(res)
         if (body.redirectUrl) {
             window.location.replace(body.redirectUrl)
         }
@@ -22,11 +21,18 @@
     let showDropdown: boolean = false
 
     onMount(() => {
-        if (window.screen.width < 800) {
+        const mobileDevices  = [
+            /Android/i,
+            /webOS/i,
+            /iPhone/i,
+            /iPad/i,
+            /iPod/i,
+            /BlackBerry/i,
+            /Windows Phone/i
+        ]
+
+        if (mobileDevices.some(d => navigator.userAgent.match(d))) {
             isMobile = true
-            console.log('On mobile')
-        } else {
-            console.log('On browser')
         }
     })
 

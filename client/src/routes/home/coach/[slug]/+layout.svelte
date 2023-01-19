@@ -11,12 +11,16 @@
 
     export let data: LayoutServerData
 
-    $: console.log(data)
     if (data.programs && !displayPrograms) {
         $displayPrograms = data.programs.map(p => DisplayProgram.build(p))
     }
 
 </script>
+
+<svelte:head>
+    <title>Coach Dashboard</title>
+    <meta name="description" content="View your teams and manage your athletes" />
+</svelte:head>
 
 <slot />
 {#if $programError}

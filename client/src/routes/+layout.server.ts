@@ -9,6 +9,7 @@ const randomString = (length: number, chars: string) => {
     for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }
+// we need to encode state with base64, and then check after redirect if the state matches when decoded
 const state: string = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
 
@@ -22,20 +23,23 @@ export const load: LayoutServerLoad = async ({ cookies, params, url, locals }) =
             const { accessToken, user, idToken } = await fetchToken(code)
             cookies.set('accessToken', accessToken, {httpOnly: true, path: '/'})
             cookies.set('idToken', idToken, {httpOnly: true, path: '/'})
-            const userData = await fetchUser(user.email, accessToken)
+            const userData = await fetchUser(user, accessToken)
             return { user, userData }
         } catch (e) {
             console.log(e)
+            cookies.delete('accessToken', { path: '/'})
+            cookies.delete('idToken', { path: '/'})
             throw redirect(307, '/')
         }
     }
     if (cookies.get('accessToken') && cookies.get('idToken')) {
-        console.log('\n\nFETCHING\n\n')
         try {
             const user = jwtDecode(cookies.get('idToken')!)
-            const userData = await fetchUser(user.email, cookies.get('accessToken')!)
+            const userData = await fetchUser(user, cookies.get('accessToken')!)
             return { user, userData }
         } catch (e) {
+            cookies.delete('accessToken', { path: '/'})
+            cookies.delete('idToken', { path: '/'})
             throw redirect(307, '/')
         }
     }
@@ -53,7 +57,7 @@ const fetchToken = async (code: string) => {
     }
 
     try {
-        const res = await fetch(`https://dev-iubbkos4gue16ad5.us.auth0.com/oauth/token`, {
+        let res = await fetch(import.meta.env.VITE_AUTH0_TOKEN_URL, {
             method: 'POST',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(options)
@@ -74,9 +78,13 @@ const fetchToken = async (code: string) => {
 }
 
 
-const fetchUser = async (email: string, token: string) => {
+const fetchUser = async (user: any, token: string) => {
+    console.log(user)
+    if (!user?.email || !user?.name) {
+        throw error(405, 'Invalid ID token')
+    }
     try {
-        const userRes = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${email}`, {
+        let userRes = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${user.email}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -84,11 +92,22 @@ const fetchUser = async (email: string, token: string) => {
             }
         })
 
-        console.log(userRes.status)
+        if (userRes.status === 404) {
+            userRes = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: user.email, name: user.name })
+            })
+
+        }
+
         const userData = await userRes.json()
 
         return userData
-    } catch (e) {
-        throw error(500, 'Could not fetch user data')
+    } catch (e: any) {
+        throw error(404, 'Could not fetch user data')
     }
 }

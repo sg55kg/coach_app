@@ -8,57 +8,8 @@
 	export let data: PageServerData
 
 	const { state } = data
-	console.log(state)
-	const loginUrl = "https://dev-iubbkos4gue16ad5.us.auth0.com/authorize?response_type=code&audience=http://localhost:8180&client_id=iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ&redirect_uri=https://localhost:5173/home&scope=openid%20profile%20email"
-	const logoutUrl = "https://dev-iubbkos4gue16ad5.us.auth0.com/v2/logout?client_id=iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ&returnTo=https://localhost:5173"
 
-	let popupOpen: boolean = false
-
-	const logout = async () => {
-		try {
-			await fetch('/', { method: 'POST' })
-			window.location.replace("https://dev-iubbkos4gue16ad5.us.auth0.com/v2/logout?client_id=iVM0PNhPw0acBMwrb5IUyedtMjg7ejlQ&returnTo=https://localhost:5173")
-
-		} catch (e) {
-			console.log(e)
-		}
-	}
-
-	const login = async (e) => {
-		e.preventDefault()
-		if (!$auth0Client) return
-
-		const mobileDevices  = [
-			/Android/i,
-			/webOS/i,
-			/iPhone/i,
-			/iPad/i,
-			/iPod/i,
-			/BlackBerry/i,
-			/Windows Phone/i
-		]
-
-		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
-			try {
-				await UserService.loginWithRedirect($auth0Client)
-			} catch (e) {
-				console.log(e)
-			}
-		} else {
-			popupOpen = true
-			try {
-				await UserService.loginWithPopUp($auth0Client)
-			} catch (e) {
-				console.log(e)
-			}
-			popupOpen = false
-		}
-	}
-
-	// const logout = async () => {
-	// 	if (!$auth0Client) return
-	// 	await UserService.logout($auth0Client)
-	// }
+	const loginUrl = import.meta.env.VITE_AUTH0_LOGIN_URL + state
 
 </script>
 
@@ -91,9 +42,7 @@
 					<a href="/home" class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
 						Go To Home
 					</a>
-
 				{/if}
-				<button on:click={logout}>Logout</button>
 			</div>
 		</div>
 </section>

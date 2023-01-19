@@ -8,7 +8,13 @@
     onMount(async () => {
     })
 </script>
-<!-- TODO: Either remove home page or redirect to here -->
+
+<svelte:head>
+    <title>Home</title>
+    <meta name="description" content="View athlete and coach dashboards" />
+</svelte:head>
+
+
 {#if $userDB}
 <section class="flex flex-col">
     <h1 class="text-3xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
@@ -24,6 +30,7 @@
     </div>
 </section>
 {/if}
+
 <style>
 
 </style>

@@ -27,6 +27,13 @@
         }
     }
 
+    onMount(async () => {
+        if ($userDB && (!$userDB?.athleteData || $userDB.athleteData.records.length < 1)) {
+            await goto(`/home/athlete/get-started/${$userDB.id}`)
+        }
+    })
+
+
 </script>
 
 <div class="flex flex-col">
