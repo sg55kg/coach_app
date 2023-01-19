@@ -3,7 +3,7 @@ import type {LayoutServerLoad} from './$types';
 import jwtDecode from "jwt-decode";
 import {error, redirect} from "@sveltejs/kit";
 
-
+export const prerender = false
 const randomString = (length: number, chars: string) => {
     let result = '';
     for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
