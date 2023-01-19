@@ -79,7 +79,6 @@ const fetchToken = async (code: string) => {
 
 
 const fetchUser = async (user: any, token: string) => {
-    console.log(user)
     if (!user?.email || !user?.name) {
         throw error(405, 'Invalid ID token')
     }
