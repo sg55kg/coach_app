@@ -1,30 +1,29 @@
 <script lang="ts">
-    import type {Program} from "$lib/classes/program";
+    import {displayPrograms} from "$lib/stores/programStore";
+    import ProgramCard from "$lib/components/ProgramCard.svelte";
+    import CreateTeamModal from "$lib/components/modals/CreateTeamModal.svelte";
+    import {userDB} from "$lib/stores/authStore";
+    import TeamCard from "$lib/components/TeamCard.svelte";
 
-    export let data
-    console.log('data', data)
-    const { programs }: { programs: Program} = data
+    let showModal: boolean = false
+
+    const toggleModal = () => showModal = !showModal
 </script>
 
-<h1>Coach Dashboard</h1>
-{#if programs}
-    {#each programs as program}
-        <div id="program-display-card">
-            <a href={`/coach/program/${program.id}`}>
-                <h4 class="font-bold">{program.name}</h4>
-            </a>
-            <hr>
-            <p>Athlete name here</p>
-        </div>
-    {/each}
-{/if}
-<button>
-    <a href="create-program">Create New Program</a>
-</button>
+<div class="flex flex-col justify-center items-center w-screen">
+    <h1>My Teams</h1>
+    <button on:click={toggleModal} class="mt-5 text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
+        Create New Team
+    </button>
+    <CreateTeamModal open={showModal} on:closeModal={toggleModal} />
+    {#if $userDB && $userDB?.coachData?.teams?.length > 0}
+        {#each $userDB.coachData.teams as team}
+            <TeamCard team={team} />
+        {/each}
+    {/if}
+
+</div>
 
 <style>
-    #program-display-card {
-        border: 1px solid black;
-        background: white;
-    }
+
 </style>

@@ -7,16 +7,17 @@
     import {Team} from "$lib/classes/team";
     import AthleteCard from "$lib/components/TeamDashboard/AthleteCard.svelte";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
+    import type {PageServerData} from "../../../../../../.svelte-kit/types/src/routes/$types";
 
-    let team: Team
+    export let data: PageServerData
+
+    let team: Team = data.team ?? data.team
     let showNameInput: boolean = false
     $: athleteList = team ? team.athletes : []
 
     const saveTeam = async () => {
-        if (!$auth0Client) return
-
         try {
-            const teamRes = await TeamService.updateTeam($auth0Client, team)
+            const teamRes = await TeamService.updateTeam(team)
             athleteList = team.athletes
             showNameInput = false
         } catch (e) {
@@ -24,23 +25,14 @@
         }
     }
 
-    onMount(async () => {
-        if (!$userDB || !$auth0Client) {
-            return
-        }
-        try {
-            const pathArr = window.location.pathname.split('/')
-            const teamId = pathArr[pathArr.length-1]
-            team = await TeamService.getTeam($auth0Client, teamId)
-            console.log(team)
-        } catch (e) {
-            console.log(e)
-        }
-
-    })
 </script>
 
-<a href="/home/coach" class="font-bold mx-4">{'<-'} Back to teams</a>
+<svelte:head>
+    <title>{team?.name}</title>
+    <meta name="description" content="Dashboard for {team?.name}. Manage your athletes and write new programs" />
+</svelte:head>
+
+<a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold mx-4">{'<-'} Back to teams</a>
 {#if team}
     <div class="flex flex-col items-center">
         <div class="rounded bg-gray-400 w-11/12 flex justify-start items-center p-3">

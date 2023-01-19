@@ -56,7 +56,7 @@
             // @ts-ignore
             newAthleteData.userId = $userDB!.id
             try {
-                const athlete: AthleteData = await UserService.createAthleteData($auth0Client!, newAthleteData)
+                const athlete: AthleteData = await UserService.createAthleteData(newAthleteData)
                 console.log(athlete)
                 userDB.update(prev => {
                     prev!.athleteData = athlete
@@ -69,7 +69,6 @@
         } else {
             try {
                 const dbRecords: AthleteRecord[] = await UserService.updateAthleteRecords(
-                    $auth0Client!,
                     { lastUpdated: dayjs(), createdAt: null, ...Object.fromEntries(records.records) } as AthleteRecord,
                     $userDB.athleteData.id
                 )

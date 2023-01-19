@@ -2,7 +2,7 @@
 
     import {User} from "$lib/classes/user";
     import {onMount} from "svelte";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
     import UserService from "$lib/service/userService";
 
@@ -18,7 +18,7 @@
             if (user.athleteData) {
                 userDto.athleteName = user.username
             }
-            const updatedUser: User = await UserService.updateUserData($auth0Client!, userDto)
+            const updatedUser: User = await UserService.updateUserData(userDto)
             userDB.set(updatedUser)
             user = JSON.parse(JSON.stringify($userDB))
         } catch (e) {
@@ -31,9 +31,12 @@
         console.log('user data', user)
 
     })
-
-    $: console.log(user)
 </script>
+
+<svelte:head>
+    <title>Settings</title>
+    <meta name="description" content="Update your profile and manage your teams" />
+</svelte:head>
 
 {#if user}
     <div class="flex flex-col m-4">
@@ -51,7 +54,6 @@
                     <button on:click={handleSaveUsername} class="p-2 px-6 mr-2 border-textblue border-2 rounded bg-gray-100 hover:bg-gray-300">Save</button>
                 {/if}
             </div>
-
         </div>
         <div class="flex flex-col my-2">
             {#if user.athleteData?.team?.name}

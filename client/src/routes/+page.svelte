@@ -2,44 +2,14 @@
 	import {auth0Client, isAuthenticated} from '$lib/stores/authStore'
 	import UserService from "../lib/service/userService";
 	import {goto} from '$app/navigation'
+	import type {PageServerData} from "./$types";
+	import {page} from '$app/stores'
 
-	let popupOpen: boolean = false
+	export let data: PageServerData
 
-	const login = async (e) => {
-		e.preventDefault()
-		if (!$auth0Client) return
+	const { state } = data
 
-		const mobileDevices  = [
-			/Android/i,
-			/webOS/i,
-			/iPhone/i,
-			/iPad/i,
-			/iPod/i,
-			/BlackBerry/i,
-			/Windows Phone/i
-		]
-
-		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
-			try {
-				await UserService.loginWithRedirect($auth0Client)
-			} catch (e) {
-				console.log(e)
-			}
-		} else {
-			popupOpen = true
-			try {
-				await UserService.loginWithPopUp($auth0Client)
-			} catch (e) {
-				console.log(e)
-			}
-			popupOpen = false
-		}
-	}
-
-	const logout = async () => {
-		if (!$auth0Client) return
-		await UserService.logout($auth0Client)
-	}
+	const loginUrl = import.meta.env.VITE_AUTH0_LOGIN_URL + state
 
 </script>
 
@@ -58,15 +28,15 @@
 				</h1>
 			</div>
 			<div class="flex flex-col text-center justify-center items-center m-2 mt-8">
-				{#if !$isAuthenticated}
-					<button on:click={login} class="justify-center text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
+				{#if !$page.data.user}
+					<a href={loginUrl} class="justify-center text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">
 						Get Started
-					</button>
+					</a>
 					<div class="flex flex-col items-start">
 						<small>Already have an account?</small>
-						<button class="tracking-wider font-semibold hover:text-yellow-lt self-center" on:click={login}>
+						<a href={loginUrl} class="tracking-wider font-semibold hover:text-yellow-lt self-center">
 							Login
-						</button>
+						</a>
 					</div>
 				{:else }
 					<a href="/home" class="text-gray-200 bg-yellow rounded p-4 px-6 font-bold text-center hover:bg-yellow-shade mx-2 mt-5 mb-2">

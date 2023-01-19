@@ -9,15 +9,14 @@
 
 
     const handleSubmit = async (event, programData: Program) => {
-        if($auth0Client === null || $userDB === null) return
         programError.set('')
         try {
-            const savedProgram: Program = await ProgramService.createProgram($auth0Client, programData, $userDB)
+            const savedProgram: Program = await ProgramService.createProgram(programData, $userDB!)
             userDB.update(prev => {
                 prev?.coachData?.programs.push(DisplayProgram.build(savedProgram as ProgramDTO))
                 return prev
             })
-            if (savedProgram.athleteId === $userDB.athleteData?.id) {
+            if (savedProgram.athleteId === $userDB?.athleteData?.id) {
                 userDB.update(prev => {
                     prev?.athleteData?.programs.push(savedProgram)
                     if (programData.isCurrent) {
@@ -27,7 +26,7 @@
                 })
             }
             programSuccess.set('Success!')
-            window.location.replace('/home/coach')
+            window.location.replace(`/home/coach/${$userDB?.coachData?.id}`)
         } catch (e) {
             console.log(e)
             programError.set(e.message)
@@ -35,6 +34,11 @@
     }
 
 </script>
+
+<svelte:head>
+    <title>New Program</title>
+    <meta name="description" content="Create a new program" />
+</svelte:head>
 
 <div>
     <ProgramForm handleSubmit={handleSubmit} />
