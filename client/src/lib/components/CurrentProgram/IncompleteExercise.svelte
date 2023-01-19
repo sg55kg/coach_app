@@ -71,7 +71,7 @@
         let weight = 0
 
         // determine if user manually entered reps/sets/weight, or if we should just use the coaches prescribed values
-        // ...provided that the athlete is marking the exercise completed
+        // ...provided that the athlete-stats is marking the exercise completed
         console.log(exercise)
         if (!exercise.isComplete) {
             if (exercise.isMax) {
@@ -105,7 +105,7 @@
             let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
 
             if (recordKey !== '') {
-                // set the records back to DTO format so the backend can read the contents
+                // set the records to a plain object to copy to DTO format later
                 const updatedAthleteData = {
                     ...$userDB.athleteData,
                     records: $userDB.athleteData.records.map(r => {
@@ -117,18 +117,14 @@
                 // grab the most recent record
                 const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
 
-                // use existing record for this day if it already exists
-                if (!newRecord.lastUpdated.isSame(dayjs($currentDay?.date))) {
-                    updatedAthleteData.records.push({
-                        ...newRecord,
-                        id: null,
-                        lastUpdated: dayjs($currentDay!.date),
-                        ...newRecord.records,
-                        [recordKey]: updatedExercise.weightCompleted
-
-                    } as AthleteRecord)
-                    console.log('updatedRecords',updatedAthleteData.records)
-                }
+                updatedAthleteData.records.push({
+                    ...newRecord,
+                    id: null,
+                    lastUpdated: dayjs($currentDay!.date),
+                    ...newRecord.records,
+                    [recordKey]: updatedExercise.weightCompleted
+                } as AthleteRecord)
+                console.log('updatedRecords',updatedAthleteData.records)
 
                 try {
                     const res = await UserService.updateAthleteRecords(

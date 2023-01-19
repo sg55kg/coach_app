@@ -2,7 +2,7 @@
 
     import {User} from "$lib/classes/user";
     import {onMount} from "svelte";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
     import UserService from "$lib/service/userService";
 
