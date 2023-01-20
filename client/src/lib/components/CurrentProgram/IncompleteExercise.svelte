@@ -27,6 +27,7 @@
     let repsPerSetComplete: number = 0
     let weightUnitsSelected: 'kg' | 'lb' = 'kg'
 
+
     const toggleShowComments = () => showComments = !showComments
 
     const weightIsNewPersonalBest = (exercise: Exercise, records: AthleteRecord) => {
@@ -241,8 +242,8 @@
 
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
-        repsPerSetComplete = exercise.totalRepsCompleted > 0 ? Math.round(exercise.totalRepsCompleted / exercise.sets) : 0
-        setsComplete = exercise.totalRepsCompleted > 0 ? exercise.sets : 0
+        repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsComplete > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsComplete) : 0
+        setsComplete = exercise.setsComplete > 0 ? exercise.setsComplete : 0
     })
 
 </script>
@@ -252,7 +253,7 @@
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
             <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
-                <input class={`bg-gray-200 w-8 ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
+                <input type="number" class={`bg-gray-200 w-12 lg:w-8 ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
                 <p class="m-0 w-fit">&nbsp;/&nbsp;{exercise.weight} &nbsp;</p>
                 <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
@@ -299,14 +300,14 @@
     {/if}
 
     <div>
-        <div class="flex justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
-        {#if !exercise?.isMax || exercise?.weightCompleted > 0}
+        <div class="flex flex-col lg:flex-row justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
+            {#if !exercise?.isMax || exercise?.weightCompleted > 0}
                 <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
                     {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
                 </button>
-        {/if}
+            {/if}
             {#if !exercise.isComplete}
                 <button class="bg-gray-200 p-2 mx-2 rounded hover:bg-gray-400 text-red"
                         on:click={() => skipExercise(exercise)}>

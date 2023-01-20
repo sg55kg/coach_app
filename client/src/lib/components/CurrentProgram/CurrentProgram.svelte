@@ -8,9 +8,15 @@
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
     import IncompleteExercise from "$lib/components/CurrentProgram/IncompleteExercise.svelte";
     import {currentDay, currentProgram, incompleteExercises, completedExercises} from "$lib/stores/athleteProgramStore";
+    import {program} from "$lib/stores/writeProgramStore";
+    import {Program} from "$lib/classes/program";
 
-    export let currentProgramId: string
+
     const today: Dayjs = dayjs()
+
+    $: totalExercises = $currentDay?.exercises ? $currentDay.exercises.length : 0
+    $: finishedExercises = $currentDay?.exercises ? $currentDay.exercises.filter(e => e.isComplete).length : 0
+    $: daySkipped = $currentDay?.exercises ? $currentDay.exercises.filter(e => !e.isComplete || e.weightCompleted > 0).length < 1 : false
 
     const setCurrentDay = (day: Dayjs) => {
         if (!$currentProgram) return
@@ -54,6 +60,48 @@
         }
     }
 
+    const skipDay = async () => {
+        try {
+            const currentDayIndex = $currentProgram!.days.findIndex(d => d.id === $currentDay!.id)
+            let programCopy: Program = JSON.parse(JSON.stringify($currentProgram))
+            let dayCopy: Day = JSON.parse(JSON.stringify($currentDay))
+            dayCopy.exercises = dayCopy.exercises.map(e => {
+                return {
+                    ...e, weightCompleted: 0, setsComplete: 0, totalRepsComplete: 0, isComplete: true
+                }
+            })
+            programCopy.days[currentDayIndex] = dayCopy
+            const updatedProgram: Program = await ProgramService.updateProgram(programCopy)
+            $currentProgram = updatedProgram
+            $currentDay = $currentProgram.days[currentDayIndex]
+            $incompleteExercises = [...$currentDay!.exercises]
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const completeDay = async () => {
+        try {
+            const currentDayIndex = $currentProgram!.days.findIndex(d => d.id === $currentDay!.id)
+            let programCopy: Program = JSON.parse(JSON.stringify($currentProgram))
+            let dayCopy: Day = JSON.parse(JSON.stringify($currentDay))
+            // NOTE: This is a big issue because if exercises are set to lbs/kg, this isn't taking that into account
+            // TODO: Move lb/kg control to this level
+            dayCopy.exercises = dayCopy.exercises.map(e => {
+                return {
+                    ...e, weightCompleted: e.weight, setsComplete: e.sets, totalRepsComplete: (e.repsPerSet * e.sets), isComplete: true
+                }
+            })
+            programCopy.days[currentDayIndex] = dayCopy
+            const updatedProgram: Program = await ProgramService.updateProgram(programCopy)
+            $currentProgram = updatedProgram
+            $currentDay = $currentProgram.days[currentDayIndex]
+            $incompleteExercises = [...$currentDay!.exercises]
+        } catch (e) {
+
+        }
+    }
+
 
     onMount(async () => {
         currentDay.set(setCurrentDay(today))
@@ -71,6 +119,27 @@
 {#if $currentProgram}
     <div>
         <h1 class="text-lg font-semibold tracking-wide text-center mx-2">{$currentProgram.name}</h1>
+        {#if $currentDay?.exercises?.length > 0}
+            <div class="text-md text-center font-semibold bg-gray-200 m-4 flex flex-col p-2">
+                {#if daySkipped}
+                    <p class="text-orange-shade">Skipped</p>
+                {:else}
+                    <p>
+                        {`${finishedExercises}/${totalExercises} Exercises Complete`}
+                    </p>
+                {/if}
+
+                {#if finishedExercises !== totalExercises}
+                    <button on:click={completeDay} class="bg-gray-200 hover:bg-gray-300 border-2 border-green text-green p-2 my-1 mx-2 lg:m-auto lg:my-2">
+                        Mark Day Finished
+                    </button>
+                    <button on:click={skipDay} class="bg-gray-200 hover:bg-gray-300 border-2 border-red text-red p-2 my-1 mx-2 lg:m-auto lg:my-2">
+                        Skip Day
+                    </button>
+                {/if}
+            </div>
+        {/if}
+
         <div class="flex flex-row items-center place-content-center text-lg font-semibold tracking-wide">
             <div class="w-6 mx-4 text-textgray hover:text-gray-300 hover:cursor-pointer"
                  on:click={decrementDay}>
