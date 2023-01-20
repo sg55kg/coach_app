@@ -4,13 +4,14 @@
     import {goto} from "$app/navigation";
     import {page} from '$app/stores'
     import type {LayoutData} from "./$types";
+    import {User} from "$lib/classes/user";
 
     export let data: LayoutData
 
     const { user, userData } = data
 
     if (user && userData) {
-        $userDB = userData
+        $userDB = User.build(userData)
         $authUser = user
     }
 
