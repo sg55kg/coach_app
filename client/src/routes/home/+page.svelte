@@ -1,9 +1,18 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {userDB} from "$lib/stores/authStore";
+    import {authUser, userDB} from "$lib/stores/authStore";
     import {goto} from "$app/navigation";
     import {page} from '$app/stores'
+    import type {LayoutData} from "./$types";
 
+    export let data: LayoutData
+
+    const { user, userData } = data
+
+    if (user && userData) {
+        $userDB = userData
+        $authUser = user
+    }
 
     onMount(async () => {
     })
