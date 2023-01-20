@@ -64,7 +64,7 @@
     let isNewPersonalBest: boolean = false
 
     const completeExercise = async (exercise: Exercise) => {
-        if (!$auth0Client || !$userDB?.athleteData) return
+        if (!$userDB?.athleteData) return
 
         let sets = 0
         let reps = 0
@@ -100,8 +100,6 @@
     }
 
     const saveExerciseChanges = async (updatedExercise: Exercise) => {
-        if (!$auth0Client || !$userDB?.athleteData || !$currentProgram) return
-
         loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
             let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
@@ -116,12 +114,8 @@
                 } as AthleteData
 
                 console.log('beforeRecords', updatedAthleteData)
-                // see if a record object already exists for this day
-                let newRecord = updatedAthleteData.records.find(r => r.lastUpdated.isSame($currentDay!.date, 'days'))
-                if (!newRecord) {
-                    // if not this is a new day and record, so grab the last one
-                    newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
-                }
+                // grab the most recent record
+                const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
 
                 updatedAthleteData.records.push({
                     ...newRecord,
@@ -134,7 +128,6 @@
 
                 try {
                     const res = await UserService.updateAthleteRecords(
-                        $auth0Client,
                         updatedAthleteData.records[updatedAthleteData.records.length-1],
                         $userDB.athleteData.id
                     )
@@ -152,7 +145,7 @@
         }
 
         try {
-            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
+            const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             completedExercises.update(prev => {
                 prev.push(updatedExercise)
                 return prev
@@ -169,7 +162,6 @@
     }
 
     const skipExercise = async (exercise: Exercise) => {
-        if (!$auth0Client) return
 
         loadingAthleteProgram.set(true)
         const updatedExercise = {
@@ -179,7 +171,7 @@
             totalRepsCompleted: 0
         }
         try {
-            const dbExercise: Exercise = await ProgramService.updateExercise($auth0Client, updatedExercise)
+            const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             currentDay.update(prev => {
                 prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
                 return prev
@@ -204,7 +196,7 @@
         console.log(comment)
         let updatedExercise: Exercise = { ...exercise, comments: [...exercise.comments, comment]}
         try {
-            const savedComment: ExerciseComment = await ProgramService.addExerciseComment($auth0Client!, comment)
+            const savedComment: ExerciseComment = await ProgramService.addExerciseComment(comment)
             console.log(savedComment)
             exercise.comments.push(savedComment)
             exercise = exercise

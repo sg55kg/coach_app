@@ -1,36 +1,34 @@
 <script lang="ts">
 	import '../app.css';
-	import {onMount} from "svelte";
-	import UserService from "$lib/service/userService";
-	import {auth0Client, user, loadingAuth, userDB} from "$lib/stores/authStore";
+	import {authUser, loadingAuth, userDB} from "$lib/stores/authStore";
 	import AuthHeader from "$lib/components/AuthHeader.svelte";
+	import {page} from '$app/stores'
+	import type {LayoutServerData} from "../../.svelte-kit/types/src/routes/$types";
+	import {User} from "$lib/classes/user";
+	import {onMount} from "svelte";
 	import {goto} from "$app/navigation";
 
+	export let data: LayoutServerData
+
+	if (data.user && data.userData) {
+		$userDB = User.build(data.userData)
+		$authUser = data.user
+	} else {
+		$userDB = null
+		$authUser = undefined
+	}
 
 	onMount(async () => {
-		if(!$auth0Client) {
-			console.log('Initializing auth client')
-			await UserService.initializeAuth0Client()
-		}
-
-		if (window.location.href.includes('state=') && window.location.href.includes('code='))  {
-			console.debug('Handling redirect callback and fetching user data')
-			const res = await $auth0Client!.handleRedirectCallback()
-			const data = await $auth0Client!.getUser()
-			user.set(data)
-			if (!$userDB && $user?.email !== undefined) {
-				await UserService.initializeUserData($auth0Client, data)
-			}
-			await goto(window.sessionStorage.getItem('lastPath') ? window.sessionStorage.getItem('lastPath') : '/home')
+		if ($userDB && $authUser) {
+			await goto('/home')
 		}
 	})
-
 </script>
 <div class="app bg-gray-100 text-textgray w-screen">
 {#if !$loadingAuth}
 
-	{#if $user !== undefined}
-		<AuthHeader />
+	{#if $authUser !== undefined}
+		<AuthHeader user={$authUser} />
 	{:else }
 		<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle py-4">
 			<div class="flex items-center align-baseline">
@@ -45,11 +43,6 @@
 		<slot />
 	</main>
 
-<!--	<footer>-->
-<!--		<p class="text-link underline">Contact Us</p>-->
-<!--		<p>&nbsp;|&nbsp;</p>-->
-<!--		<p class="text-link underline">About</p>-->
-<!--	</footer>-->
 	{:else}
 	<h1>Loading</h1>
 {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { confetti } from '@neoconfetti/svelte';
-    import {allowed, words, Game} from "./sverdle/words";
+    import {allowed, words, Game} from "./words";
 
 
     let game: Game = new Game()

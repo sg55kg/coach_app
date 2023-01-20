@@ -8,14 +8,17 @@
     import dayjs from "dayjs";
 
     export let data
-    console.log(data)
 
-    const { programId } = data
+    const { programDto } = data
+
+    if (programDto) {
+        $program = Program.build(programDto)
+    }
 
     const handleSubmit = async (event, programData: Program) => {
-        if (!$auth0Client) return
         event.preventDefault()
         programError.set('')
+
 
         // check for new days with invalid ids
         for (const day of programData.days) {
@@ -24,22 +27,14 @@
             }
         }
         try {
-            const updatedProgram = await ProgramService.updateProgram($auth0Client, programData)
-            program.set(Program.build(updatedProgram))
+            const updatedProgram = await ProgramService.updateProgram(programData)
+            program.set(updatedProgram)
             programSuccess.set('Updated')
         } catch (e) {
             console.log(e)
             programError.set('Could not update program at this time')
         }
     }
-
-    onMount(async () => {
-        console.log(programId)
-        if (!$auth0Client) return
-
-        const programRes: Program = await ProgramService.getProgram($auth0Client, programId)
-        program.set(programRes)
-    })
 
     onDestroy(() => {
         program.set(new Program())

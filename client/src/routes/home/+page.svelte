@@ -1,19 +1,35 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {userDB} from "$lib/stores/authStore";
+    import {authUser, userDB} from "$lib/stores/authStore";
     import {goto} from "$app/navigation";
+    import {page} from '$app/stores'
+    import type {LayoutData} from "./$types";
 
+    export let data: LayoutData
+
+    const { user, userData } = data
+
+    if (user && userData) {
+        $userDB = userData
+        $authUser = user
+    }
 
     onMount(async () => {
-
     })
 </script>
-<!-- TODO: Either remove home page or redirect to here -->
+
+<svelte:head>
+    <title>Home</title>
+    <meta name="description" content="View athlete and coach dashboards" />
+</svelte:head>
+
+
+{#if $userDB}
 <section class="flex flex-col">
     <h1 class="text-3xl text-center m-10 uppercase tracking-widest text-textgray font-semibold">Welcome</h1>
     <div class="flex flex-col lg:flex-row self-center lg:justify-around w-5/12">
         <a class="text-gray-200 my-2 lg:my-0 bg-yellow rounded p-2 font-bold text-center text-sm lg:w-5/12 hover:bg-yellow-shade"
-           href="/home/coach">
+           href="/home/coach/{$userDB.coachData.id}">
             Coach Dashboard
         </a>
         <a class="text-gray-200 my-2 lg:my-0 bg-yellow rounded p-2 font-bold text-center text-sm lg:w-5/12 hover:bg-yellow-shade"
@@ -22,6 +38,7 @@
         </a>
     </div>
 </section>
+{/if}
 
 <style>
 

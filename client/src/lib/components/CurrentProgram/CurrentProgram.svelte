@@ -56,9 +56,6 @@
 
 
     onMount(async () => {
-        if (!$auth0Client) return
-        const p = await ProgramService.getProgram($auth0Client, currentProgramId)
-        currentProgram.set(p)
         currentDay.set(setCurrentDay(today))
     })
 
