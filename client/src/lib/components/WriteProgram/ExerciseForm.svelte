@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {athleteRecordFields} from "$lib/classes/user";
     import {Exercise} from "$lib/classes/program/exercise";
     import {onDestroy, onMount} from "svelte";
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
     import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
     import {program, programError} from "$lib/stores/writeProgramStore";
     import {ProgramService} from "$lib/service/ProgramService";
+    import {athleteRecordFields} from "$lib/classes/user/athlete";
 
 
     export let exercise: Exercise = new Exercise()

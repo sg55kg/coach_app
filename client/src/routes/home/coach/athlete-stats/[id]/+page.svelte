@@ -1,10 +1,10 @@
 <script lang="ts">
 
     import {onMount} from "svelte";
-    import {AthleteData} from "$lib/classes/user";
     import UserService from "$lib/service/userService";
     import {auth0Client} from "$lib/stores/authStore";
     import ProgramStats from "$lib/components/Stats/ProgramStats.svelte";
+    import {AthleteData} from "$lib/classes/user/athlete";
 
     let athlete: AthleteData
     let loadingAthleteData: boolean = true

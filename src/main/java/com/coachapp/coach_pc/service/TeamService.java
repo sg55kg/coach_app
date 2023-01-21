@@ -57,7 +57,10 @@ public class TeamService {
     }
 
     public ResponseEntity<Team> addTeam(NewTeamRequest request) {
-        Team team = NewTeamRequest.convertRequest(request);
+        Team team = new Team();
+        team.setTeamLogo(request.getTeamLogo());
+        team.setName(request.getName());
+        team.setDescription(request.getDescription());
         team = teamRepo.save(team);
 
         return new ResponseEntity<>(team, HttpStatus.CREATED);

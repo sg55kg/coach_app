@@ -2,12 +2,10 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.repository.UserDataRepo;
-import com.coachapp.coach_pc.request.NewAthleteRequest;
-import com.coachapp.coach_pc.request.NewCoachRequest;
-import com.coachapp.coach_pc.request.NewUserRequest;
-import com.coachapp.coach_pc.request.UpdateUserRequest;
+import com.coachapp.coach_pc.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,16 +46,13 @@ public class UserService {
 
 
     public ResponseEntity<UserData> addCoachData(NewCoachRequest coachRequest) {
-        boolean exists = userDataRepo.existsById(coachRequest.getUserId());
-        if (!exists) {
+        Optional<UserData> optional = userDataRepo.findById(coachRequest.getUserId());
+        if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         CoachData coach = new CoachData();
-        UserData user = new UserData();
-
-        user.setEmail(coachRequest.getEmail());
-        user.setId(coachRequest.getUserId());
-        user.setUsername(coachRequest.getUsername());
+        UserData user = optional.get();
+        Team team = NewTeamRequest.convertRequest(coachRequest.getTeam(), coach);
         coach.setUser(user);
         user.setCoachData(coach);
 
@@ -75,6 +70,7 @@ public class UserService {
         athlete.setUser(user);
         athlete.setName(user.getUsername());
         athlete.setRecords(athleteRequest.getRecords());
+        athleteRequest.getRecords().get(0).setAthlete(athlete);
         user.setAthleteData(athlete);
 
         user = userDataRepo.save(user);

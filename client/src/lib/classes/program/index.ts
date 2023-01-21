@@ -1,7 +1,7 @@
 import {Day} from "./day";
 import type {DayDTO} from "./day";
-import type {CoachDataDTO} from "$lib/classes/user";
 import type {TeamDTO} from "$lib/classes/team";
+import type {CoachDataDTO} from "$lib/classes/user/coach";
 
 export interface IProgram {
     id?: string,

@@ -1,4 +1,5 @@
-import {AthleteData, type AthleteDataDTO, AthleteRecord, type AthleteRecordDTO, User} from "$lib/classes/user";
+import {User} from "$lib/classes/user";
+import {AthleteData, type AthleteDataDTO, AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user/athlete";
 
 export default class UserService {
 
@@ -150,8 +151,8 @@ export default class UserService {
 
     static createAthleteData = async (athlete: AthleteData) => {
 
-        const res = await fetch(`/api/user/athlete`, {
-            method: 'PUT',
+        const res = await fetch(`/api/athlete`, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(athlete)
         })
@@ -159,8 +160,8 @@ export default class UserService {
         if (res.status > 204) {
             throw new Error('Could not save athlete data')
         } else {
-            const athleteDTO = await res.json()
-            return AthleteData.createFrom(athleteDTO)
+            const userDTO = await res.json()
+            return User.build(userDTO)
         }
     }
 

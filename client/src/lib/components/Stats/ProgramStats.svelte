@@ -4,7 +4,7 @@
     import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
     import 'chartist/dist/index.css';
-    import {AthleteData, athleteRecordFields} from "$lib/classes/user";
+    import {AthleteData, athleteRecordFields} from "$lib/classes/user/athlete";
 
     export let athlete: AthleteData
 

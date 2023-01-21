@@ -1,11 +1,12 @@
 <script lang="ts">
 
     import {onMount} from "svelte";
-    import {AthleteData, AthleteRecord, athleteRecordFields} from "$lib/classes/user";
     import dayjs from "dayjs";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import UserService from "$lib/service/userService";
     import {goto} from "$app/navigation";
+    import {AthleteData, AthleteRecord, athleteRecordFields} from "$lib/classes/user/athlete";
+    import {User} from "$lib/classes/user";
 
     const initializeRecords = () => {
         let recordsMap: Map<string, number> = new Map<string, number>()
@@ -46,7 +47,7 @@
     let exerciseOptions: string[] = []
     let showOptions: boolean = false
 
-
+$: console.log($userDB)
     const saveAndRedirect = async () => {
         let newAthleteData: AthleteData
         if (!$userDB?.athleteData) {
@@ -56,12 +57,8 @@
             // @ts-ignore
             newAthleteData.userId = $userDB!.id
             try {
-                const athlete: AthleteData = await UserService.createAthleteData(newAthleteData)
-                console.log(athlete)
-                userDB.update(prev => {
-                    prev!.athleteData = athlete
-                    return prev
-                })
+                const updatedUser: User = await UserService.createAthleteData(newAthleteData)
+                $userDB = updatedUser
                 await goto('/home/athlete/teams')
             } catch (e) {
                 console.log(e)

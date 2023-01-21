@@ -37,19 +37,6 @@ public class CoachService {
         }
     }
 
-    public ResponseEntity<CoachData> createCoachData(NewCoachRequest coachRequest) {
-        CoachData coach = new CoachData();
-        UserData user = new UserData();
-
-        user.setEmail(coachRequest.getEmail());
-        user.setId(coachRequest.getUserId());
-        user.setUsername(coachRequest.getUsername());
-        coach.setUser(user);
-
-        coach = coachRepo.save(coach);
-        return new ResponseEntity<>(coach, HttpStatus.OK);
-    }
-
     public ResponseEntity<CoachData> updateCoachData(CoachRequest data) {
         CoachData coach = new CoachData();
         coach.setId(data.getId());
