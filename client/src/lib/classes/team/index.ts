@@ -1,4 +1,4 @@
-import type {AthleteData} from "$lib/classes/user";
+import {AthleteData} from "$lib/classes/user/athlete";
 
 
 export interface TeamDTO {

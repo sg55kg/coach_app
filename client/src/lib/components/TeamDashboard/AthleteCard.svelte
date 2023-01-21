@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {AthleteData} from "$lib/classes/user";
     import {onMount} from "svelte";
     import dayjs from "dayjs";
     import FaRegEdit from 'svelte-icons/fa/FaRegEdit.svelte';
@@ -9,6 +8,7 @@
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {Program} from "$lib/classes/program";
+    import {AthleteData} from "$lib/classes/user/athlete";
 
     export let athlete: AthleteData
     export let team: Team

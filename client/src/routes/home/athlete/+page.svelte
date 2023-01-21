@@ -70,7 +70,7 @@
                 </div>
             {/if}
             <div class="text-center lg:text-start mt-4">
-                <a class="text-link hover:text-link-shade underline" href={`/home/athlete/${$userDB.athleteData.id}`}>
+                <a class="text-link hover:text-link-shade underline" href={`/home/athlete/${$userDB?.athleteData?.id}`}>
                     My Progress
                 </a>
             </div>

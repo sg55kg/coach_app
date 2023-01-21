@@ -3,7 +3,8 @@
     import {DisplayTeam, Team} from "$lib/classes/team";
     import {auth0Client, userDB} from "$lib/stores/authStore";
     import UserService from "$lib/service/userService";
-    import {AthleteData, CoachData} from "$lib/classes/user";
+    import {CoachData} from "$lib/classes/user/coach";
+    import {AthleteData} from "$lib/classes/user/athlete";
 
     export let team: DisplayTeam
     let displayTeamsError: string = ''

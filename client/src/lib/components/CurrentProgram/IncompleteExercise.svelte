@@ -1,23 +1,19 @@
 <script lang="ts">
-    import {Program} from "$lib/classes/program";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {
         completedExercises,
         currentDay,
-        currentProgram,
         incompleteExercises,
         loadingAthleteProgram
     } from "$lib/stores/athleteProgramStore";
     import FaPlusCircle from 'svelte-icons/fa/FaPlusCircle.svelte'
     import FaMinusCircle from 'svelte-icons/fa/FaMinusCircle.svelte'
-    import {Day} from "$lib/classes/program/day";
     import dayjs from "dayjs";
-    import {AthleteData, AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user";
     import UserService from "$lib/service/userService";
     import {onMount} from "svelte";
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
-    import ProgramStats from "$lib/components/Stats/ProgramStats.svelte";
+    import {AthleteData, AthleteRecord} from "$lib/classes/user/athlete";
 
     export let exercise: Exercise
 

@@ -28,11 +28,6 @@ public class CoachController {
         return coachService.getCoachData(id);
     }
 
-    @PostMapping
-    public ResponseEntity<CoachData> createCoachData(@RequestBody NewCoachRequest coachRequest) {
-        return coachService.createCoachData(coachRequest);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<CoachData> updateCoachData(@RequestBody CoachRequest data) {
         return coachService.updateCoachData(data);

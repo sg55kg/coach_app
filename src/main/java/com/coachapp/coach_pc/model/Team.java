@@ -30,6 +30,7 @@ public class Team {
     private Date createdAt;
     @UpdateTimestamp
     private Date updatedAt;
+    private String teamLogo;
 
     public Team() {}
 
@@ -87,5 +88,13 @@ public class Team {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getTeamLogo() {
+        return teamLogo;
+    }
+
+    public void setTeamLogo(String teamLogo) {
+        this.teamLogo = teamLogo;
     }
 }

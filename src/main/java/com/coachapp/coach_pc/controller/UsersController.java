@@ -35,7 +35,7 @@ public class UsersController {
     }
 
     @PutMapping("/coach")
-    public ResponseEntity<UserData>  addCoachData(@RequestBody NewCoachRequest coachRequest) {
+    public ResponseEntity<UserData> addCoachData(@RequestBody NewCoachRequest coachRequest) {
         return userService.addCoachData(coachRequest);
     }
 
