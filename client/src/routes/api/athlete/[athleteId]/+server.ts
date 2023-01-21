@@ -14,13 +14,7 @@ export const PUT: RequestHandler = async (event) => {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                id,
-                teamId: athlete?.team ? athlete.team.id : null,
-                coachId: athlete?.coach ? athlete.coach.id : null,
-                name: athlete.name,
-                records: athlete.records
-            })
+            body: JSON.stringify(athlete)
         })
         const athleteData = await res.json()
         return new Response(JSON.stringify(athleteData))

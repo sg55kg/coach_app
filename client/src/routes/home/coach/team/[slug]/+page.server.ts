@@ -1,4 +1,4 @@
-import type {PageServerLoad} from "../../../../../../.svelte-kit/types/src/routes/sverdle/$types";
+import type {PageServerLoad} from "./$types";
 
 
 export const load: PageServerLoad = async ({ cookies, params}) => {

@@ -23,7 +23,7 @@
             const updatedProgram = {
                 ...athlete.currentProgram
             } as Program
-            const program = await ProgramService.updateProgram($auth0Client, updatedProgram)
+            const program = await ProgramService.updateProgram(updatedProgram)
             userDB.update(prev => {
                 prev!.coachData!.programs = prev!.coachData!.programs!.map(p => p.id === program.id ? program : p)
                 return prev
