@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,11 +19,25 @@ public class AthleteRequest {
 
     public AthleteRequest() {}
 
-    public AthleteRequest(UUID id, UUID teamId, UUID coachId, String name, List<AthleteRecord> records) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    @JsonProperty("teamId")
+    public void setTeamId(UUID teamId) {
         this.teamId = teamId;
+    }
+
+    @JsonProperty("coachId")
+    public void setCoachId(UUID coachId) {
         this.coachId = coachId;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setRecords(List<AthleteRecord> records) {
         this.records = records;
     }
 

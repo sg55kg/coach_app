@@ -5,12 +5,13 @@
     import UserService from "$lib/service/userService";
     import {CoachData} from "$lib/classes/user/coach";
     import {AthleteData} from "$lib/classes/user/athlete";
+    import {goto} from "$app/navigation";
 
     export let team: DisplayTeam
     let displayTeamsError: string = ''
-
+$: console.log($userDB)
     const joinTeam = async () => {
-        if (!$userDB?.athleteData || !$auth0Client) return
+        if (!$userDB?.athleteData) return
         displayTeamsError = ''
 
         let updatedAthlete: AthleteData = JSON.parse(JSON.stringify($userDB.athleteData)) as AthleteData
@@ -40,7 +41,7 @@
         //     { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
         console.log('before server athlete-stats data', updatedAthlete)
         try {
-            const res: AthleteData = await UserService.updateAthleteData($auth0Client, updatedAthlete)
+            const res: AthleteData = await UserService.updateAthleteData(updatedAthlete)
             console.log('Updated team athlete-stats response', res)
             userDB.update(prev => {
                 prev!.athleteData = res
@@ -53,8 +54,8 @@
             } else {
                 team.numAthletes--
             }
-            setTimeout(() => {
-                window.location.replace('/home/athlete')
+            setTimeout(async () => {
+                await goto('/home/athlete')
             }, 1000)
         } catch (e) {
             console.log(e)

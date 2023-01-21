@@ -78,10 +78,12 @@
             <p>Error: could not retrieve your program</p>
         {/await}
     </div>
-    <hr class="hidden md:flex m-2 mx-24">
     <div class="m-4 flex flex-col">
         {#if $userDB?.athleteData?.team}
-            <h4 class="text-2xl text-center">{$userDB?.athleteData?.team?.name}</h4>
+            <h4 class="text-2xl text-center">{$userDB?.athleteData?.team?.name ? $userDB.athleteData.team.name : 'Your Team'}</h4>
+            <p class="text-center m-2">
+                As we continue to add features to the site, more information about your team will become available here like team-wide messages from your coach
+            </p>
 <!--            <a class="text-lg underline text-link text-center" href="/home/athlete/team">View</a>-->
             <a class="text-lg underline text-link text-center" href="/home/athlete/teams">Browse Teams</a>
         {:else}

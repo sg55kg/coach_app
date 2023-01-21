@@ -40,7 +40,7 @@
                 <h1 class="font-bold text-3xl text-white">
                     {team.name}
                 </h1>
-                <div class="h-5 mx-2 text-textblue" on:click={() => showNameInput = !showNameInput}>
+                <div title="Edit team name and description" class="h-5 mx-2 text-textblue" on:click={() => showNameInput = !showNameInput}>
                     <FaPen />
                 </div>
             {:else}
