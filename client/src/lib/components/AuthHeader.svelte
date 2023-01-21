@@ -51,7 +51,11 @@
         {/if}
         {#if isMobile === false}
             <p>&nbsp | &nbsp</p>
-            <a href="/home/coach/{$userDB.coachData.id}">Coach</a>
+            {#if $userDB.coachData}
+                <a href="/home/coach/{$userDB?.coachData?.id}">Coach</a>
+            {:else}
+                <a href="home/coach/get-started">Coach</a>
+            {/if}
             <p>&nbsp | &nbsp</p>
             <a href="/home/athlete">Athlete</a>
         {/if}
@@ -65,8 +69,12 @@
             <div on:blur={() => showDropdown = false}
                  id="header-dropdown"
                  class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-5 drop-shadow-2xl drop-shadow-black">
-                {#if window.screen.width < 800}
-                    <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
+                {#if isMobile}
+                    {#if $userDB.coachData}
+                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
+                    {:else}
+                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/get-started">Coach Dashboard</a>
+                    {/if}
                     <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/athlete">Athlete Dashboard</a>
                 {/if}
                 <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>

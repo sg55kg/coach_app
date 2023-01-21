@@ -9,13 +9,15 @@ public class TeamRequest {
     private UUID id;
     private String name;
     private String description;
+    private String teamLogo;
 
     public TeamRequest() {}
 
-    public TeamRequest(UUID id, String name, String description) {
+    public TeamRequest(UUID id, String name, String description, String teamLogo) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.teamLogo = teamLogo;
     }
 
     public UUID getId() {
@@ -29,11 +31,15 @@ public class TeamRequest {
     public String getDescription() {
         return description;
     }
+    public String getTeamLogo() {
+        return teamLogo;
+    }
 
     public static Team convertRequest(Team team, TeamRequest request) {
 
         team.setName(request.getName());
         team.setDescription(request.getDescription());
+        team.setTeamLogo(request.getTeamLogo());
 
         return team;
     }

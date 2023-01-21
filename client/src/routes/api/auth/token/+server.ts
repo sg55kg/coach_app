@@ -79,7 +79,7 @@ export const fetchUser = async (user: any, token: string) => {
         }
 
         const userData = await userRes.json()
-
+        console.log(userData)
         return userData
     } catch (e: any) {
         throw error(404, 'Could not fetch user data')

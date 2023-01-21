@@ -119,6 +119,25 @@ public class AthleteRecord {
     private int farmer_carry_weight;
     @JsonProperty("snatch_balance")
     private int snatch_balance;
+    private int hang_muscle_snatch;
+    private int deficit_snatch;
+    private int deficit_clean;
+    private int romanian_deadlift;
+    private int snatch_romanian_deadlift;
+    private int deficit_deadlift;
+    private int block_deadlift;
+    private int pause_back_squat;
+    private int pause_front_squat;
+    private int pause_jerk_dip;
+    private int pause_jerk_catch;
+    private int muscle_snatch;
+    private int low_hang_snatch;
+    private int low_hang_clean;
+    private int high_hang_snatch;
+    private int high_hang_clean;
+    private int sumo_deadlift;
+    private int pause_deadlift;
+
 
     public AthleteRecord() {}
 
@@ -470,6 +489,154 @@ public class AthleteRecord {
         this.snatch_balance = snatch_balance;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getHang_muscle_snatch() {
+        return hang_muscle_snatch;
+    }
+
+    public void setHang_muscle_snatch(int hang_muscle_snatch) {
+        this.hang_muscle_snatch = hang_muscle_snatch;
+    }
+
+    public int getDeficit_snatch() {
+        return deficit_snatch;
+    }
+
+    public void setDeficit_snatch(int deficit_snatch) {
+        this.deficit_snatch = deficit_snatch;
+    }
+
+    public int getDeficit_clean() {
+        return deficit_clean;
+    }
+
+    public void setDeficit_clean(int deficit_clean) {
+        this.deficit_clean = deficit_clean;
+    }
+
+    public int getRomanian_deadlift() {
+        return romanian_deadlift;
+    }
+
+    public void setRomanian_deadlift(int romanian_deadlift) {
+        this.romanian_deadlift = romanian_deadlift;
+    }
+
+    public int getSnatch_romanian_deadlift() {
+        return snatch_romanian_deadlift;
+    }
+
+    public void setSnatch_romanian_deadlift(int snatch_romanian_deadlift) {
+        this.snatch_romanian_deadlift = snatch_romanian_deadlift;
+    }
+
+    public int getDeficit_deadlift() {
+        return deficit_deadlift;
+    }
+
+    public void setDeficit_deadlift(int deficit_deadlift) {
+        this.deficit_deadlift = deficit_deadlift;
+    }
+
+    public int getBlock_deadlift() {
+        return block_deadlift;
+    }
+
+    public void setBlock_deadlift(int block_deadlift) {
+        this.block_deadlift = block_deadlift;
+    }
+
+    public int getPause_back_squat() {
+        return pause_back_squat;
+    }
+
+    public void setPause_back_squat(int pause_back_squat) {
+        this.pause_back_squat = pause_back_squat;
+    }
+
+    public int getPause_front_squat() {
+        return pause_front_squat;
+    }
+
+    public void setPause_front_squat(int pause_front_squat) {
+        this.pause_front_squat = pause_front_squat;
+    }
+
+    public int getPause_jerk_dip() {
+        return pause_jerk_dip;
+    }
+
+    public void setPause_jerk_dip(int pause_jerk_dip) {
+        this.pause_jerk_dip = pause_jerk_dip;
+    }
+
+    public int getPause_jerk_catch() {
+        return pause_jerk_catch;
+    }
+
+    public void setPause_jerk_catch(int pause_jerk_catch) {
+        this.pause_jerk_catch = pause_jerk_catch;
+    }
+
+    public int getMuscle_snatch() {
+        return muscle_snatch;
+    }
+
+    public void setMuscle_snatch(int muscle_snatch) {
+        this.muscle_snatch = muscle_snatch;
+    }
+
+    public int getLow_hang_snatch() {
+        return low_hang_snatch;
+    }
+
+    public void setLow_hang_snatch(int low_hang_snatch) {
+        this.low_hang_snatch = low_hang_snatch;
+    }
+
+    public int getLow_hang_clean() {
+        return low_hang_clean;
+    }
+
+    public void setLow_hang_clean(int low_hang_clean) {
+        this.low_hang_clean = low_hang_clean;
+    }
+
+    public int getHigh_hang_snatch() {
+        return high_hang_snatch;
+    }
+
+    public void setHigh_hang_snatch(int high_hang_snatch) {
+        this.high_hang_snatch = high_hang_snatch;
+    }
+
+    public int getHigh_hang_clean() {
+        return high_hang_clean;
+    }
+
+    public void setHigh_hang_clean(int high_hang_clean) {
+        this.high_hang_clean = high_hang_clean;
+    }
+
+    public int getSumo_deadlift() {
+        return sumo_deadlift;
+    }
+
+    public void setSumo_deadlift(int sumo_deadlift) {
+        this.sumo_deadlift = sumo_deadlift;
+    }
+
+    public int getPause_deadlift() {
+        return pause_deadlift;
+    }
+
+    public void setPause_deadlift(int pause_deadlift) {
+        this.pause_deadlift = pause_deadlift;
+    }
+
     public void copyValues(AthleteRecord values) {
         this.snatch = values.getSnatch();
         this.clean_and_jerk = values.getClean_and_jerk();
@@ -511,5 +678,22 @@ public class AthleteRecord {
         this.power_jerk = values.getPower_jerk();
         this.power_snatch = values.getPower_snatch();
         this.snatch_deadlift = values.getSnatch_deadlift();
+        this.block_deadlift = values.getBlock_deadlift();
+        this.deficit_clean = values.getDeficit_clean();
+        this.deficit_snatch = values.getDeficit_snatch();
+        this.deficit_deadlift = values.getDeficit_deadlift();
+        this.romanian_deadlift = values.getRomanian_deadlift();
+        this.snatch_romanian_deadlift = values.getSnatch_romanian_deadlift();
+        this.hang_muscle_snatch = values.getHang_muscle_snatch();
+        this.muscle_snatch = values.getMuscle_snatch();
+        this.pause_jerk_dip = values.getPause_jerk_dip();
+        this.pause_jerk_catch = values.getPause_jerk_catch();
+        this.pause_deadlift = values.getPause_deadlift();
+        this.sumo_deadlift = values.getSumo_deadlift();
+        this.low_hang_snatch = values.getLow_hang_snatch();
+        this.high_hang_snatch = values.getHigh_hang_snatch();
+        this.low_hang_clean = values.getLow_hang_clean();
+        this.high_hang_clean = values.getHigh_hang_clean();
+
     }
 }

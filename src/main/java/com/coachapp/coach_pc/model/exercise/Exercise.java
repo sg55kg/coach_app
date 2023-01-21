@@ -44,7 +44,7 @@ public class Exercise {
     private AthleteData athleteCommentId;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise", orphanRemoval = true)
     private List<AthleteExerciseComment> comments = new ArrayList<>();
-    private Boolean isComplete;
+    private boolean isComplete;
     @Column(name = "list_order")
     private int order;
     @Transient
@@ -52,36 +52,6 @@ public class Exercise {
 
 
     public Exercise() {}
-
-    public Exercise(
-            UUID id,
-            String name,
-            Integer sets,
-            Integer repsPerSet,
-            Day day,
-            String notes,
-            boolean isMax,
-            Integer weight,
-            Integer weightCompleted,
-            Integer totalRepsCompleted,
-            Integer setsCompleted,
-            boolean isComplete,
-            int order
-    ) {
-        this.id = id;
-        this.name = name;
-        this.sets = sets;
-        this.repsPerSet = repsPerSet;
-        this.day = day;
-        this.notes = notes;
-        this.isMax = isMax;
-        this.weight = weight;
-        this.weightCompleted = weightCompleted;
-        this.totalRepsCompleted = totalRepsCompleted;
-        this.setsCompleted = setsCompleted;
-        this.isComplete = isComplete;
-        this.order = order;
-    }
 
     public UUID getId() {
         return id;
@@ -181,10 +151,12 @@ public class Exercise {
         this.sets = sets;
     }
 
+    @JsonProperty(value="isComplete")
     public boolean getIsComplete() {
-        return isComplete != null ? isComplete : false;
+        return isComplete;
     }
 
+    @JsonProperty(value="isComplete")
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
