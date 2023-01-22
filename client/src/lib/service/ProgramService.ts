@@ -86,5 +86,9 @@ export class ProgramService {
         }
         return await res.json()
     }
+
+    static getCoachPrograms = async (id: string) => {
+        const res = await fetch(`/api/`)
+    }
 }
 

@@ -12,6 +12,7 @@ public class DisplayTeam {
     private String coachName;
     private UUID coachId;
     private int numAthletes;
+    private String teamLogo;
 
     public DisplayTeam() {}
 
@@ -63,6 +64,14 @@ public class DisplayTeam {
         this.coachId = coachId;
     }
 
+    public String getTeamLogo() {
+        return teamLogo;
+    }
+
+    public void setTeamLogo(String teamLogo) {
+        this.teamLogo = teamLogo;
+    }
+
     public static DisplayTeam convertTeam(Team team) {
         DisplayTeam displayTeam = new DisplayTeam();
 
@@ -75,6 +84,7 @@ public class DisplayTeam {
         displayTeam.setId(team.getId());
         displayTeam.setName(team.getName());
         displayTeam.setNumAthletes(team.getAthletes().size());
+        displayTeam.setTeamLogo(team.getTeamLogo());
 
         return displayTeam;
     }
