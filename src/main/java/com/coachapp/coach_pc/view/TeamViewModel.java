@@ -14,6 +14,8 @@ public class TeamViewModel {
     private String name;
     private String description;
     private Date createdAt;
+    private String teamLogo;
+    private int numAthletes;
 
     public TeamViewModel() {}
 
@@ -65,12 +67,30 @@ public class TeamViewModel {
         this.createdAt = createdAt;
     }
 
+    public String getTeamLogo() {
+        return teamLogo;
+    }
+
+    public void setTeamLogo(String teamLogo) {
+        this.teamLogo = teamLogo;
+    }
+
+    public int getNumAthletes() {
+        return numAthletes;
+    }
+
+    public void setNumAthletes(int numAthletes) {
+        this.numAthletes = numAthletes;
+    }
+
     public static TeamViewModel convertTeam(Team team) {
         TeamViewModel viewModel = new TeamViewModel();
 
         viewModel.setId(team.getId());
         viewModel.setName(team.getName());
         viewModel.setDescription(team.getDescription());
+        viewModel.setTeamLogo(team.getTeamLogo());
+        viewModel.setNumAthletes(team.getAthletes().size());
 
         // prevent infinite loops in nested coach/athlete data
         List<AthleteData> viewModelAthletes = new ArrayList<>();
