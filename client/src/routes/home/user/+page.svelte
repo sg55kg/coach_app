@@ -71,7 +71,7 @@
                 {#each user.coachData.teams as team}
                     <div class="p-2 bg-gray-200">
                         <p class="my-1">{team.name}</p>
-                        <p class="my-1">{team.athletes.length} athlete{team.athletes.length === 1 ? '' : 's'}</p>
+                        <p class="my-1">{team.numAthletes} athlete{team.numAthletes === 1 ? '' : 's'}</p>
                         <div class="flex mt-2">
                             <button class="p-2 px-6 mr-2 border-textblue border-2 rounded bg-gray-100 hover:bg-gray-300">
                                 Edit

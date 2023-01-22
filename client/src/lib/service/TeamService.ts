@@ -6,7 +6,7 @@ export class TeamService {
 
     static createTeam = async (team: Team) => {
 
-        const res = await fetch(`/api/teams`, {
+        const res = await fetch(`/api/team`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(team)
@@ -17,7 +17,7 @@ export class TeamService {
 
     static getDisplayTeams = async () => {
 
-        const res = await fetch(`/api/teams`, {
+        const res = await fetch(`/api/team`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         })
@@ -27,7 +27,7 @@ export class TeamService {
 
     static getTeam = async (teamId: string) => {
 
-        const res = await fetch(`/api/teams/${teamId}`, {
+        const res = await fetch(`/api/team/${teamId}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         })
@@ -37,9 +37,9 @@ export class TeamService {
 
     static updateTeam = async (team: Team) => {
 
-        const res = await fetch(`/api/teams/${team.id}`, {
+        const res = await fetch(`/api/team/${team.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(team)
         })
 

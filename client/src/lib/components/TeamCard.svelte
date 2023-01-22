@@ -3,6 +3,7 @@
     import type {Team} from "$lib/classes/team";
     import {onMount} from "svelte";
     import dayjs from "dayjs";
+    import {userDB} from "$lib/stores/authStore";
 
     export let team: Team
     let numLowUpdateSeverity: number = 0
@@ -11,8 +12,11 @@
     let numNoneUpdateSeverity: number = 0
 
     onMount(() => {
-        if (!team) return
-        team.athletes.forEach(athlete => {
+        if (!$userDB?.coachData?.athletes) return
+
+        const teamAthletes = $userDB.coachData.athletes.filter(a => a.team?.id === team.id)
+
+        teamAthletes.forEach(athlete => {
             if (!athlete.currentProgram) {
                 return numNoneUpdateSeverity = numNoneUpdateSeverity + 1
             }
