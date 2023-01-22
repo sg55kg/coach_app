@@ -9,6 +9,7 @@ export interface TeamDTO {
     coachId?: string,
     athletes?: AthleteData[],
     teamLogo: string
+    numAthletes?: number
 }
 
 export class Team {
@@ -23,6 +24,7 @@ export class Team {
         team.coachName = teamDto.coachName ? teamDto.coachName : ''
         team.athletes = teamDto.athletes ? [...teamDto.athletes] : []
         team.teamLogo = teamDto.teamLogo
+        team.numAthletes = teamDto.numAthletes ? teamDto.numAthletes : 0
 
         return team
     }
@@ -34,6 +36,7 @@ export class Team {
     coachName: string = ''
     athletes: AthleteData[] = []
     teamLogo: string = ''
+    numAthletes: number = 0
 }
 
 export class DisplayTeam {

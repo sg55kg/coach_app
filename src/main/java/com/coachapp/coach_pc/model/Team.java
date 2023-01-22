@@ -23,7 +23,11 @@ public class Team {
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     @JsonIgnore
     private CoachData coach;
-    @OneToMany(mappedBy = "team", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    @OneToMany(
+            mappedBy = "team",
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH},
+            fetch = FetchType.EAGER
+    )
     @JsonIgnore
     private List<AthleteData> athletes;
     @CreationTimestamp

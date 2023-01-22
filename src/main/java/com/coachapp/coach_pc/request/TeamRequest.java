@@ -13,10 +13,19 @@ public class TeamRequest {
 
     public TeamRequest() {}
 
-    public TeamRequest(UUID id, String name, String description, String teamLogo) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setTeamLogo(String teamLogo) {
         this.teamLogo = teamLogo;
     }
 
@@ -31,6 +40,7 @@ public class TeamRequest {
     public String getDescription() {
         return description;
     }
+
     public String getTeamLogo() {
         return teamLogo;
     }
