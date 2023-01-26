@@ -90,11 +90,12 @@ public class TeamViewModel {
         viewModel.setName(team.getName());
         viewModel.setDescription(team.getDescription());
         viewModel.setTeamLogo(team.getTeamLogo());
-        viewModel.setNumAthletes(team.getAthletes().size());
+        List<AthleteData> athletes = team.getAthletes();
+        viewModel.setNumAthletes(athletes.size());
 
         // prevent infinite loops in nested coach/athlete data
         List<AthleteData> viewModelAthletes = new ArrayList<>();
-        team.getAthletes().forEach(a -> {
+        athletes.forEach(a -> {
             a.setCoach(null);
             a.setTeam(null);
             viewModelAthletes.add(a);

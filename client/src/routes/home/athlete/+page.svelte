@@ -56,7 +56,7 @@
             </div>
             {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
-                    {#each $currentDay.exercises as exercise, index (index)}
+                    {#each $currentDay.exercises as exercise, index (exercise.id)}
                         <IncompleteExercise bind:exercise={exercise} />
                     {/each}
                 </div>

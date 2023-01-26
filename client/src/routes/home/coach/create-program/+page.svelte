@@ -5,8 +5,15 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import {DisplayProgram} from "$lib/classes/program";
+    import type {PageData} from './$types';
 
+    export let data: PageData
+    let athleteId: string = ''
 
+    if (data.athleteId) {
+        console.log(data.athleteId)
+        athleteId = data.athleteId
+    }
 
     const handleSubmit = async (event, programData: Program) => {
         programError.set('')
@@ -41,7 +48,7 @@
 </svelte:head>
 
 <div>
-    <ProgramForm handleSubmit={handleSubmit} />
+    <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} />
 </div>
 
 <style>

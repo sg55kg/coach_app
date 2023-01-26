@@ -42,6 +42,12 @@
         const today = dayjs()
         const lastEntered = athlete.currentProgram.days.find(d => d.exercises.length < 1 && !d.isRestDay)
         if (!lastEntered) {
+            if (athlete.currentProgram.days.length > 0) {
+                let isLastDayOfProgram = false
+                for (const exercise in athlete.currentProgram.days[athlete.currentProgram.days.length - 1]) {
+
+                }
+            }
             return updateSeverity = 'low'
         }
         const lastUpdatedDay = dayjs(lastEntered.date)
@@ -65,7 +71,7 @@
         <div class="flex justify-start text-lg">
             {#if !editProgramName}
                 <h4>Current Program: {athlete.currentProgram.name}</h4>
-                <div class="h-6 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
+                <div class="h-5 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
             {:else }
                 <input class="text-textblue bg-gray-300" bind:value={athlete.currentProgram.name}>
                 <button class="mx-2 text-sm" on:click={saveProgramName}>Save</button>
@@ -83,21 +89,31 @@
             {/if}
         </div>
         <div class="mt-2 flex justify-around">
-            {#if athlete.currentProgram}
-                <div class="h-6 text-link hover:text-link-shade duration-300">
-                    <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
-                        <FaRegEdit></FaRegEdit>
-                    </a>
-                </div>
-                <div class="h-6 text-link hover:text-link-shade duration-300">
-                    <a href={`/home/coach/athlete-stats/${athlete.id}`}>
-                        <FaRegChartBar></FaRegChartBar>
-                    </a>
-                </div>
-            {/if}
+            <div class="h-6 text-link hover:text-link-shade duration-300">
+                <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
+                    <FaRegEdit></FaRegEdit>
+                </a>
+            </div>
+            <div class="h-6 text-link hover:text-link-shade duration-300">
+                <a href={`/home/coach/athlete-stats/${athlete.id}`}>
+                    <FaRegChartBar></FaRegChartBar>
+                </a>
+            </div>
         </div>
     {:else}
         <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
+        <div class="mt-2 flex justify-around">
+            <div class="h-6 text-link hover:text-link-shade duration-300">
+                <a href={`/home/coach/create-program?athlete=${athlete.id}`}>
+                    <FaRegEdit></FaRegEdit>
+                </a>
+            </div>
+            <div class="h-6 text-link hover:text-link-shade duration-300">
+                <a href={`/home/coach/athlete-stats/${athlete.id}`}>
+                    <FaRegChartBar></FaRegChartBar>
+                </a>
+            </div>
+        </div>
     {/if}
 </div>
 

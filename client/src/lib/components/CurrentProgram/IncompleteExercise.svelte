@@ -148,7 +148,7 @@
                 return prev
             })
             currentDay.update(prev => {
-                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e).sort((a, b) => a.order - b.order)
                 return prev
             })
             incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
@@ -170,7 +170,7 @@
         try {
             const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             currentDay.update(prev => {
-                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e).sort((a, b) => a.order - b.order)
                 return prev
             })
             incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
@@ -181,22 +181,22 @@
         loadingAthleteProgram.set(false)
     }
 
-    const addComment = async (exercise: Exercise) => {
+    const addComment = async (ex: Exercise) => {
         loadingAthleteProgram.set(true)
         let comment: ExerciseComment = {
             content: newCommentContent,
             athleteId: $userDB!.athleteData.id,
-            exerciseId: exercise.id,
+            exerciseId: ex.id,
             id: '',
             commenterName: $userDB!.username
         }
         console.log(comment)
-        let updatedExercise: Exercise = { ...exercise, comments: [...exercise.comments, comment]}
+        let updatedExercise: Exercise = { ...ex, comments: [...ex.comments, comment]}
         try {
             const savedComment: ExerciseComment = await ProgramService.addExerciseComment(comment)
             console.log(savedComment)
-            exercise.comments.push(savedComment)
-            exercise = exercise
+            ex.comments.push(savedComment)
+            exercise = ex
             newCommentContent = ''
         } catch (e) {
             console.log(e)
