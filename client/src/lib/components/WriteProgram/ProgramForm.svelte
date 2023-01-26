@@ -14,10 +14,15 @@
 
     export let handleSubmit
     export let initialIndex: number = -1
+    export let athleteId: string = ''
+
     let selectedIndex: number = initialIndex
     let selectedDayId: string = ''
-    $: athleteOptions = []
+    let showDateDropdown: boolean = false
     let inputFocused: boolean = false
+
+    $: athleteOptions = []
+
 
     const formatDateString = (date: Date) => {
         return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}`
@@ -178,15 +183,21 @@
     onMount(() => {
         if (document)
             document.addEventListener('keyup', handleHotKeys)
-        if ($userDB?.coachData?.athletes && !$program.id) {
+        if ($userDB?.coachData?.athletes && !athleteId && !$program.id) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
             athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
             program.update(prev => ({ ...prev, coachId: $userDB!.coachData!.id! }))
-        }
-        if (selectedIndex > -1) {
+        } else if (athleteId && $userDB?.coachData?.athletes) {
+            $program.athleteId = athleteId
+            const athlete = $userDB.coachData.athletes.find(a => a.id === athleteId)
+            if (athlete) {
+                athleteOptions = [{ name: athlete.name, id: athleteId }]
+                $program.name = `New Program for ${athlete.name}`
+            }
+        } else if (selectedIndex > -1 && $userDB?.coachData?.athletes && $userDB?.athleteData) {
             selectedDayId = $program.days[selectedIndex].id
-            const athleteName = $userDB!.coachData!.athletes.find(a => a.id === $program.athleteId!)
-            if (athleteName === undefined) {
+            const athleteName = $userDB.coachData.athletes.find(a => a.id === $program.athleteId)
+            if (!athleteName) {
                 athleteOptions = [{ name: $userDB.username, id: $userDB.athleteData.id}]
             } else {
                 athleteOptions = [{ name: athleteName.name, id: $program.athleteId }]
@@ -288,7 +299,20 @@
                      on:click={decrementSelectedIndex}>
                     <FaAngleLeft />
                 </div>
-                <h4 class="m-0 mx-2 self-center text-xl">{$program.days[selectedIndex].date.toDateString()}</h4>
+                <div class="m-0 mx-2 self-center text-xl relative z-30" on:click={() => showDateDropdown = !showDateDropdown}>
+                    <h4>{$program.days[selectedIndex].date.toDateString()}</h4>
+                    {#if showDateDropdown}
+                        <div class="absolute bg-gray-400 h-56 max-h-56 overflow-scroll">
+                            {#each $program.days as day}
+                                <p class="z-20 text-base hover:bg-gray-200 hover:cursor-pointer p-2"
+                                   on:click={() => { selectedIndex = $program.days.findIndex(d => d.id === day.id); setTimeout(() => showDateDropdown = false, 100) }}
+                                >
+                                    {day.date.toDateString()}
+                                </p>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
                 <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
                      on:click={incrementSelectedIndex}>
                     <FaAngleRight />
@@ -326,7 +350,8 @@
                         bind:exercise={exercise}
                         bind:selectedDayIndex={selectedIndex}
                         bind:inputFocused={inputFocused}
-                        exerciseIndex={idx} />
+                        exerciseIndex={idx}
+                />
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
             <div class="flex justify-center m-8 font-bold text-2xl">
