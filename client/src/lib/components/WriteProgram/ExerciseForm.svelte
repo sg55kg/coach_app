@@ -82,7 +82,7 @@
     <div class="flex flex-col md:flex-row p-2 justify-between">
         <div class="flex flex-col m-1">
             <label class="text-sm m-0">Name</label>
-            <div class="relative">
+            <div class="relative z-0">
                 <input type="text"
                        name="name"
                        placeholder="Exercise name"
@@ -94,7 +94,7 @@
                        bind:this={nameInput}
                        bind:value={exercise.name}>
                 {#if showOptions}
-                    <div class="absolute right-0 left-0 z-40 max-h-44 bg-gray-300 overflow-scroll min-h-fit">
+                    <div class="absolute right-0 left-0 z-10 max-h-44 bg-gray-300 overflow-scroll min-h-fit">
                         {#each options as option}
                             <div on:click={() => selectOption(option)} class="p-2 hover:bg-gray-200 cursor-pointer">{option}</div>
                         {/each}

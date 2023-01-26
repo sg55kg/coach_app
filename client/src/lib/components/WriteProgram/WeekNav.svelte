@@ -135,7 +135,7 @@
             </div>
         </div>
         {#each weeks[selectedWeekIndex] as day}
-            <div class={`flex flex-col bg-white rounded text-black my-2 p-2 ${day.id === dayId ? 'border-link border-4' : 'border-black'} hover:bg-textgray hover:cursor-pointer`}
+            <div class={`flex flex-col bg-gray-400 rounded text-textgray my-2 p-2 ${day.id === dayId ? ' shadow-md shadow-yellow-shade' : 'border-black'} hover:bg-gray-200 hover:cursor-pointer`}
                  on:click={() => selectDay(day.id)}
             >
                 <h3>{dayjs(day.date).format('dddd MMMM D')}</h3>
@@ -143,7 +143,7 @@
                 {#each day.exercises.sort((a, b) => a.order - b.order) as exercise}
                     {#if !exercise.isMax}
                         <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
-                            {`${exercise.name}: ${exercise.weight} - ${exercise.sets}x${exercise.repsPerSet}`}
+                            {`${exercise.name}: ${exercise.weight}kg - ${exercise.sets}x${exercise.repsPerSet}`}
                         </p>
                     {:else}
                         <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
