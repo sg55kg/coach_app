@@ -11,7 +11,6 @@ export const load: PageServerLoad = async ({ cookies, params}) => {
     })
 
     const data = await res.json()
-    console.log(data)
 
     return {
         team: data

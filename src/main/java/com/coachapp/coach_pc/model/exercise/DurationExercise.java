@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "cardio_exercise")
-public class CardioExercise extends Exercise {
+@Table(name = "duration_exercise")
+public class DurationExercise extends Exercise {
 
     private String equipment;
     private EffortIntensity effortIntensity = EffortIntensity.EASY;
@@ -19,9 +19,9 @@ public class CardioExercise extends Exercise {
     private int secondsPerSet;
     private int secondsPerSetCompleted;
     @Transient
-    private final ExerciseType type = ExerciseType.CARDIO;
+    private final ExerciseType type = ExerciseType.DURATION;
 
-    public CardioExercise() {}
+    public DurationExercise() {}
 
     public String getEquipment() {
         return equipment;

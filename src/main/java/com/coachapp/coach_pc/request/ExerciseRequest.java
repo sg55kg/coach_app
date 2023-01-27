@@ -27,44 +27,10 @@ public class ExerciseRequest {
     private UUID programId;
     private String notes;
     private int order;
+    private List<ExerciseRequest> dropSets;
 
     public ExerciseRequest() {}
 
-    public ExerciseRequest(
-            UUID id,
-            String name,
-            int sets,
-            int repsPerSet,
-            int weight,
-            int weightCompleted,
-            int totalRepsCompleted,
-            int setsCompleted,
-            boolean isMax,
-            WeightIntensity weightIntensity,
-            List<AthleteExerciseCommentRequest> comments,
-            UUID dayId,
-            UUID programId,
-            boolean isComplete,
-            String notes,
-            int order
-    ) {
-        this.id = id;
-        this.name = name;
-        this.sets = sets;
-        this.repsPerSet = repsPerSet;
-        this.weight = weight;
-        this.weightCompleted = weightCompleted;
-        this.totalRepsCompleted = totalRepsCompleted;
-        this.setsCompleted = setsCompleted;
-        this.isMax = isMax;
-        this.weightIntensity = weightIntensity;
-        this.comments = comments;
-        this.isComplete = isComplete;
-        this.dayId = dayId;
-        this.programId = programId;
-        this.notes = notes;
-        this.order = order;
-    }
 
     public UUID getId() {
         return id;
@@ -134,13 +100,96 @@ public class ExerciseRequest {
         return setsCompleted;
     }
 
-    public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-        request.getComments().forEach(c -> {
-            AthleteExerciseComment comment = AthleteExerciseCommentRequest.convertRequest(c);
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSets(int sets) {
+        this.sets = sets;
+    }
+
+    public void setRepsPerSet(int repsPerSet) {
+        this.repsPerSet = repsPerSet;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setWeightCompleted(int weightCompleted) {
+        this.weightCompleted = weightCompleted;
+    }
+
+    public void setTotalRepsCompleted(int totalRepsCompleted) {
+        this.totalRepsCompleted = totalRepsCompleted;
+    }
+
+    public void setSetsCompleted(int setsCompleted) {
+        this.setsCompleted = setsCompleted;
+    }
+
+    public boolean isMax() {
+        return isMax;
+    }
+
+    public void setMax(boolean max) {
+        isMax = max;
+    }
+
+    public void setWeightIntensity(WeightIntensity weightIntensity) {
+        this.weightIntensity = weightIntensity;
+    }
+
+    public void setComments(List<AthleteExerciseCommentRequest> comments) {
+        this.comments = comments;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
+
+    public void setDayId(UUID dayId) {
+        this.dayId = dayId;
+    }
+
+    public void setProgramId(UUID programId) {
+        this.programId = programId;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public List<ExerciseRequest> getDropSets() {
+        return dropSets;
+    }
+
+    public void setDropSets(List<ExerciseRequest> dropSets) {
+        this.dropSets = dropSets;
+    }
+
+    public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
+        if (exercise == null) {
+            exercise = new Exercise();
+        }
+
+        for (AthleteExerciseCommentRequest commentRequest : request.getComments()) {
+            AthleteExerciseComment comment = AthleteExerciseCommentRequest.convertRequest(commentRequest);
             comment.setExercise(exercise);
             exercise.getComments().add(comment);
-        });
+        }
 
         exercise.setWeight(request.getWeight());
         exercise.setName(request.getName());
@@ -153,6 +202,16 @@ public class ExerciseRequest {
         exercise.setIsComplete(request.getIsComplete());
         exercise.setOrder(request.getOrder());
         exercise.setSetsCompleted(request.getSetsCompleted());
+
+        if (request.getDropSets() != null && request.getDropSets().size() > 0) {
+            for (ExerciseRequest r : request.getDropSets()) {
+                Exercise dropSet = ExerciseRequest.convertRequest(null, r);
+                if (r.getId() == null) {
+                    exercise.addDropSet(dropSet);
+                }
+                dropSet.setTopSet(exercise);
+            }
+        }
 
         return exercise;
     }
