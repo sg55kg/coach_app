@@ -53,6 +53,19 @@
         })
     }
 
+    const handleRemoveDropSet = async (dropSet, idx) => {
+        if (dropSet.id) {
+            programError.set('')
+            try {
+                await ProgramService.deleteExercise(dropSet)
+            } catch (e) {
+                return programError.set(e.message)
+            }
+        }
+
+        exercise.dropSets = exercise.dropSets.filter((e, i) => i !== idx)
+    }
+
     const handleNameFormFocus = () => {
         showOptions = true
         inputFocused = true
@@ -156,8 +169,37 @@
                 <span class="slider round"></span>
             </label>
         </div>
-
     </div>
+    {#if exercise.isMax}
+        {#each exercise.dropSets as dropSet, idx (idx)}
+            <div class="flex flex-col lg:flex-row lg:justify-around lg:ml-48 text-sm">
+                <div class="flex flex-col m-1">
+                    <label class="text-sm m-0">Weight</label>
+                    <input class="p-2 bg-gray-300" bind:value={dropSet.weight} type="number">
+                </div>
+                <div class="flex flex-col m-1">
+                    <label class="text-sm m-0">Sets</label>
+                    <input class="p-2 bg-gray-300" bind:value={dropSet.sets} type="number">
+                </div>
+                <div class="flex flex-col m-1">
+                    <label class="text-sm m-0">Reps</label>
+                    <input class="p-2 bg-gray-300" bind:value={dropSet.repsPerSet} type="number">
+                </div>
+                <div class="my-1">
+                    <div class="text-red hover:cursor-pointer hover:text-red-shade lg:p-4 h-6 lg:h-16"
+                         on:click={() => handleRemoveDropSet(dropSet, idx)}
+                    >
+                        <FaTrashAlt />
+                    </div>
+                </div>
+            </div>
+        {/each}
+        <div class="m-1 mt-2 lg:mt-4 flex justify-center">
+            <button class="p-2 bg-link text-white font-medium" on:click={() => exercise.dropSets = [...exercise.dropSets, new Exercise()]}>
+                Add Drop Set
+            </button>
+        </div>
+    {/if}
     <div class="flex flex-col m-2">
         <label class="text-sm m-0">Notes</label>
         <textarea

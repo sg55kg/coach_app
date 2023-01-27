@@ -19,7 +19,7 @@
 	}
 
 	onMount(async () => {
-		if ($userDB && $authUser) {
+		if ($userDB && $authUser && window.location.pathname === '/') {
 			await goto('/home')
 		}
 	})
