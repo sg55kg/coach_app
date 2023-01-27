@@ -75,6 +75,11 @@ public class DayRequest {
 
         for (Exercise exercise : dayRequest.getExercises()) {
             exercise.setDay(day);
+            if (exercise.getDropSets() != null && exercise.getDropSets().size() > 0) {
+                exercise.getDropSets().forEach(ds -> {
+                    ds.setTopSet(exercise);
+                });
+            }
         }
         day.setExercises(dayRequest.getExercises());
         return day;

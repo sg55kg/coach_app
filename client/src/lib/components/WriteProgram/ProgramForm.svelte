@@ -20,6 +20,7 @@
     let selectedDayId: string = ''
     let showDateDropdown: boolean = false
     let inputFocused: boolean = false
+    let isMobile: boolean = false
 
     $: athleteOptions = []
 
@@ -181,6 +182,19 @@
     }
 
     onMount(() => {
+        const mobileDevices  = [
+            /Android/i,
+            /webOS/i,
+            /iPhone/i,
+            /iPad/i,
+            /iPod/i,
+            /BlackBerry/i,
+            /Windows Phone/i
+        ]
+
+        if (mobileDevices.some(d => navigator.userAgent.match(d))) {
+            isMobile = true
+        }
         if (document)
             document.addEventListener('keyup', handleHotKeys)
         if ($userDB?.coachData?.athletes && !athleteId && !$program.id) {
@@ -318,7 +332,7 @@
                     <FaAngleRight />
                 </div>
             </div>
-            {#if window.screen.width > 800}
+            {#if !isMobile}
                 <div class="flex justify-between">
                     <div>
                         <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addWarmup}>
@@ -362,7 +376,7 @@
                 <i>You haven't added any exercises to this day yet</i>
             </div>
         {/if}
-        {#if window.screen.width < 800}
+        {#if isMobile}
             <footer class="sticky bottom-0 left-0 right-0 flex justify-between bg-gray-200 p-2">
                 <div>
                     {#if $program?.days.length > 0}

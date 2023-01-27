@@ -6,8 +6,10 @@ import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.Day;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,11 +31,10 @@ public class Exercise {
     private Integer repsPerSet;
     private Integer weight;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="day_id", nullable = false)
+    @JoinColumn(name="day_id", nullable = true)
     @JsonIgnore
     private Day day;
     private String notes;
-
     private boolean isMax;
     private Integer weightCompleted = 0;
     @Column(name = "reps_completed")
@@ -49,6 +50,12 @@ public class Exercise {
     private int order;
     @Transient
     private final ExerciseType type = ExerciseType.EXERCISE;
+    @OneToMany(mappedBy = "topSet", cascade = CascadeType.MERGE)
+    private List<Exercise> dropSets = new ArrayList<>();
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "top_set")
+    @JsonIgnore
+    private Exercise topSet;
 
 
     public Exercise() {}
@@ -187,6 +194,32 @@ public class Exercise {
 
     public void removeComment(AthleteExerciseComment comment) {
         this.comments.remove(comment);
+    }
+
+
+    public List<Exercise> getDropSets() {
+        return dropSets;
+    }
+
+    public void setDropSets(List<Exercise> dropSets) {
+        this.dropSets = dropSets;
+    }
+
+
+    public Exercise getTopSet() {
+        return topSet;
+    }
+
+    public void setTopSet(Exercise topSet) {
+        this.topSet = topSet;
+    }
+
+    public void addDropSet(Exercise set) {
+        this.dropSets.add(set);
+    }
+
+    public void removeDropSet(Exercise set) {
+        this.dropSets.remove(set);
     }
 
     @Override

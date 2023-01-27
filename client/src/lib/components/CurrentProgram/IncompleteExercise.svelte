@@ -69,7 +69,6 @@
 
         // determine if user manually entered reps/sets/weight, or if we should just use the coaches prescribed values
         // ...provided that the athlete-stats is marking the exercise completed
-        console.log(exercise)
         if (!exercise.isComplete) {
             if (exercise.isMax) {
                 sets = setsComplete > 0 ? setsComplete : 1
@@ -79,9 +78,6 @@
             reps = repsPerSetComplete > 0 ? repsPerSetComplete : exercise.repsPerSet
             weight = exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
         }
-        console.log('sets', sets)
-        console.log('reps', reps)
-        console.log('weight', weight)
 
         let updatedExercise: Exercise = {
             ...exercise,
@@ -89,6 +85,9 @@
             weightCompleted: weight,
             totalRepsCompleted: (sets * reps),
             setsComplete: sets
+        }
+        if (exercise.dropSets.length > 0 && updatedExercise.weightCompleted > 0) {
+            updatedExercise.dropSets = exercise.dropSets.map(d => ({ ...d, weightCompleted: d.weight, setsComplete: d.sets, totalRepsCompleted: (d.repsPerSet*d.sets)}))
         }
         repsPerSetComplete = reps
         setsComplete = sets
@@ -284,6 +283,15 @@
                     <input type="number" class="flex-1 bg-gray-200 text-center w-14" bind:value={exercise.weightCompleted}>
                     <p class="w-6/12">&nbsp;kg</p>
                 </div>
+                <div class="flex flex-row justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
+                    {exercise.dropSets.length < 1 ? 'No Drop Sets' : ''}
+                </div>
+                {#each exercise.dropSets as dropSet, idx (dropSet.id)}
+                    <div class="flex flex-col justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
+                        <p>Drop Set {idx+1}:</p>
+                        <p>{dropSet.weight} kg {dropSet.repsPerSet}x{dropSet.sets}</p>
+                    </div>
+                {/each}
             </div>
         {/if}
     </div>

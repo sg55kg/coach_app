@@ -23,7 +23,7 @@ export class Exercise {
     secondsPerSet: number = 0
     secondsPerSetCompleted: number = 0
     type: ExerciseType = ExerciseType.EXERCISE
-
+    dropSets: Exercise[] = []
 }
 
 
