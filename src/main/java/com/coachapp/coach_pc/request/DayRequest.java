@@ -7,6 +7,7 @@ import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.model.Program;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class DayRequest {
 
     private UUID id;
     private OffsetDateTime date;
-    private List<Exercise> exercises;
+    private List<ExerciseRequest> exercises;
     private boolean isRestDay;
     private WarmUp warmUp;
 
@@ -37,11 +38,11 @@ public class DayRequest {
         this.date = date;
     }
 
-    public List<Exercise> getExercises() {
+    public List<ExerciseRequest> getExercises() {
         return exercises;
     }
 
-    public void setExercises(List<Exercise> exercises) {
+    public void setExercises(List<ExerciseRequest> exercises) {
         this.exercises = exercises;
     }
 
@@ -72,8 +73,9 @@ public class DayRequest {
             day.setWarmUp(dayRequest.getWarmUp());
         }
 
-
-        for (Exercise exercise : dayRequest.getExercises()) {
+        List<Exercise> exercises = new ArrayList<>();
+        for (ExerciseRequest r : dayRequest.getExercises()) {
+            Exercise exercise = ExerciseRequest.convertRequest(null, r);
             exercise.setDay(day);
             if (exercise.getDropSets() != null && exercise.getDropSets().size() > 0) {
                 exercise.getDropSets().forEach(ds -> {
@@ -81,7 +83,7 @@ public class DayRequest {
                 });
             }
         }
-        day.setExercises(dayRequest.getExercises());
+        day.setExercises(exercises);
         return day;
     }
 
