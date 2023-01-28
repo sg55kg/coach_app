@@ -203,6 +203,7 @@
             program.update(prev => ({ ...prev, coachId: $userDB!.coachData!.id! }))
         } else if (athleteId && $userDB?.coachData?.athletes) {
             $program.athleteId = athleteId
+            $program.coachId = $userDB.coachData.id
             const athlete = $userDB.coachData.athletes.find(a => a.id === athleteId)
             if (athlete) {
                 athleteOptions = [{ name: athlete.name, id: athleteId }]
