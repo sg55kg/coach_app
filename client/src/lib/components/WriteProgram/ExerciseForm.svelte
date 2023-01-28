@@ -6,6 +6,7 @@
     import {program, programError} from "$lib/stores/writeProgramStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {athleteRecordFields} from "$lib/classes/user/athlete";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums";
 
 
     export let exercise: Exercise = new Exercise()
@@ -15,23 +16,59 @@
 
     let options: string[] = []
     let nameInput: HTMLInputElement
+    let nameArrInput: HTMLInputElement[] = []
     let showOptions: boolean = false
+    let showComplexNameOptions: number = -1
 
     let handleAutoComplete = (e: KeyboardEvent) => {
+        inputFocused = true
         if (e.key === 'Enter') {
             selectOption(options[0])
         } else if (e.key === '+') {
-            // have ability to make a complex here like pull + snatch
+            if (exercise.type !== ExerciseType.COMPLEX) {
+                exercise.nameArr = exercise.name.split('+')
+                exercise.nameArr[0] = exercise.nameArr[0].trim()
+                exercise.nameArr.push('')
+                exercise.repArr.push(0,0)
+                exercise.name = ''
+                // nested timeouts so the inputs have time to render and fill nameArrInput
+                setTimeout(() => {
+                    exercise.type = ExerciseType.COMPLEX
+                    setTimeout(() => {
+                        nameArrInput[exercise.nameArr.length-1].focus()
+                    }, 25)
+                }, 25)
+            } else {
+                e.preventDefault()
+                const split = exercise.nameArr[exercise.nameArr.length-1].split('+')
+                exercise.nameArr[exercise.nameArr.length-1] = split[0]
+                exercise.nameArr.push('')
+                exercise.repArr.push(0)
+                setTimeout(() => {
+                    nameArrInput[exercise.nameArr.length-1].focus()
+                }, 25)
+            }
         } else {
-            options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
+            if (exercise.type === ExerciseType.COMPLEX) {
+                options = athleteRecordFields.filter((x) => x.includes(exercise.nameArr[exercise.nameArr.length-1].toLowerCase()))
+            } else {
+                options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
+            }
         }
     }
 
     const selectOption = (nameOption: string) => {
-        exercise.name = nameOption
-        exercise = exercise
-        showOptions = false
-        options = [...athleteRecordFields]
+        if (exercise.type === ExerciseType.COMPLEX) {
+            exercise.nameArr[exercise.nameArr.length-1] = nameOption
+            showOptions = false
+            options = [...athleteRecordFields]
+        } else {
+            exercise.name = nameOption
+            exercise = exercise
+            showOptions = false
+            options = [...athleteRecordFields]
+        }
+
     }
 
     const handleRemoveExercise = async () => {
@@ -72,6 +109,12 @@
         options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
     }
 
+    const handleComplexNameFocus = (idx: number) => {
+        showComplexNameOptions = idx
+        inputFocused = true
+        options = athleteRecordFields.filter((x) => x.includes(exercise.nameArr[idx].toLowerCase()))
+    }
+
     onMount(() => {
         options = [...athleteRecordFields]
         //nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
@@ -92,28 +135,57 @@
     </div>
 </div>
 <div class="flex flex-col lg:p-2 justify-items-center border-0 lg:pt-5 bg-gray-200 my-2 lg:flex-auto lg:w-11/12">
-    <div class="flex flex-col md:flex-row p-2 justify-between">
+    <div class="flex flex-col {exercise.type !== ExerciseType.COMPLEX ? 'md:flex-row' : ''} p-2 justify-between">
         <div class="flex flex-col m-1">
-            <label class="text-sm m-0">Name</label>
-            <div class="relative z-0">
-                <input type="text"
-                       name="name"
-                       placeholder="Exercise name"
-                       class="bg-gray-300 p-2"
-                       autocomplete="off"
-                       on:focus={handleNameFormFocus}
-                       on:blur={() => { setTimeout(() => showOptions = false, 100); inputFocused = false }}
-                       on:keydown={(e) => handleAutoComplete(e)}
-                       bind:this={nameInput}
-                       bind:value={exercise.name}>
-                {#if showOptions}
-                    <div class="absolute right-0 left-0 z-10 max-h-44 bg-gray-300 overflow-scroll min-h-fit">
-                        {#each options as option}
-                            <div on:click={() => selectOption(option)} class="p-2 hover:bg-gray-200 cursor-pointer">{option}</div>
-                        {/each}
-                    </div>
-                {/if}
-            </div>
+            <label class="text-sm m-0">{exercise.type === ExerciseType.COMPLEX ? 'Complex Name' : 'Name'}</label>
+            {#if exercise.type !== ExerciseType.COMPLEX}
+                <div class="relative z-0">
+                    <input type="text"
+                           name="name"
+                           placeholder="Exercise name"
+                           class="bg-gray-300 p-2"
+                           autocomplete="off"
+                           on:focus={handleNameFormFocus}
+                           on:blur={() => { setTimeout(() => showOptions = false, 100); inputFocused = false }}
+                           on:keydown={(e) => handleAutoComplete(e)}
+                           bind:this={nameInput}
+                           bind:value={exercise.name}>
+                    {#if showOptions}
+                        <div class="absolute right-0 left-0 z-10 max-h-44 bg-gray-300 overflow-scroll min-h-fit">
+                            {#each options as option}
+                                <div on:click={() => selectOption(option)} class="p-2 hover:bg-gray-200 cursor-pointer">{option}</div>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            {:else}
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-1 w-11/12 lg:w-6/12">
+                    {#each exercise.nameArr as complexName, idx}
+                        <div class="w-30 lg:w-36 flex items-center">
+                            <div class="relative z-0 mx-1">
+                                <input type="text"
+                                       class="bg-gray-300 p-2 w-11/12"
+                                       autocomplete="off"
+                                       on:focus={() => handleComplexNameFocus(idx)}
+                                       on:blur={() => { setTimeout(() => showComplexNameOptions = -1, 100); inputFocused = false}}
+                                       on:keydown={(e) => handleAutoComplete(e)}
+                                       bind:this={nameArrInput[idx]}
+                                       bind:value={complexName}>
+                                {#if showComplexNameOptions === idx}
+                                    <div class="absolute right-0 left-0 z-10 max-h-44 bg-gray-300 overflow-scroll min-h-fit">
+                                        {#each options as option}
+                                            <div on:click={() => selectOption(option)} class="p-2 hover:bg-gray-200 cursor-pointer">{option}</div>
+                                        {/each}
+                                    </div>
+                                {/if}
+                            </div>
+                            {#if idx < exercise.nameArr.length - 1}
+                                <p class="m-0 w-1/12">+</p>
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            {/if}
         </div>
 
         {#if !exercise.isMax}
@@ -139,27 +211,66 @@
                        bind:value={exercise.sets}>
             </div>
 
-            <div class="flex flex-col m-1">
-                <label class="text-sm m-0">Reps</label>
-                <input type="number"
-                       name="repsPerSet"
-                       on:focus={() => inputFocused = true}
-                       on:blur={() => inputFocused = false}
-                       placeholder="Reps"
-                       class="bg-gray-300 p-2"
-                       bind:value={exercise.repsPerSet}>
-            </div>
+            {#if exercise.type !== ExerciseType.COMPLEX}
+                <div class="flex flex-col m-1">
+                    <label class="text-sm m-0">Reps</label>
+                    <input type="number"
+                           name="repsPerSet"
+                           on:focus={() => inputFocused = true}
+                           on:blur={() => inputFocused = false}
+                           placeholder="Reps"
+                           class="bg-gray-300 p-2"
+                           bind:value={exercise.repsPerSet}>
+                </div>
+            {:else }
+                <div class="flex flex-col m-1">
+                    <label class="text-sm m-0">Reps</label>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-1 w-11/12 lg:w-6/12">
+                        {#each exercise.repArr as complexRep, idx}
+                            <div class="w-30 lg:w-36 flex items-center text-center">
+                                <input type="number"
+                                       on:focus={() => inputFocused = true}
+                                       on:blur={() => inputFocused = false}
+                                       class="bg-gray-300 p-2 w-8/12"
+                                       bind:value={exercise.repArr[idx]}>
+                                {#if idx < exercise.repArr.length - 1}
+                                    <p class="m-0 w-4/12 text-center">+</p>
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
+
 
         {:else}
             <div class="flex flex-col m-1">
                 <label class="text-sm m-0">RM</label>
-                <input type="number"
-                       name="repsPerSet"
-                       placeholder="Sets"
-                       on:focus={() => inputFocused = true}
-                       on:blur={() => inputFocused = false}
-                       class="bg-gray-300 p-2"
-                       bind:value={exercise.repsPerSet}>
+                {#if exercise.type !== ExerciseType.COMPLEX}
+                    <input type="number"
+                           name="repsPerSet"
+                           placeholder="Sets"
+                           on:focus={() => inputFocused = true}
+                           on:blur={() => inputFocused = false}
+                           class="bg-gray-300 p-2"
+                           bind:value={exercise.repsPerSet}>
+                {:else}
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-1 w-11/12 lg:w-6/12">
+                        {#each exercise.repArr as complexRep, idx}
+                            <div class="w-30 lg:w-36 flex items-center text-center">
+                                <input type="number"
+                                       on:focus={() => inputFocused = true}
+                                       on:blur={() => inputFocused = false}
+                                       class="bg-gray-300 p-2 w-8/12"
+                                       bind:value={exercise.repArr[idx]}>
+                                {#if idx < exercise.repArr.length - 1}
+                                    <p class="m-0 w-4/12 text-center">+</p>
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
+
             </div>
         {/if}
         <div class="flex justify-center items-center m-2">
@@ -194,11 +305,13 @@
                 </div>
             </div>
         {/each}
-        <div class="m-1 mt-2 lg:mt-4 flex justify-center">
-            <button class="p-2 bg-link text-white font-medium" on:click={() => exercise.dropSets = [...exercise.dropSets, new Exercise()]}>
-                Add Drop Set
-            </button>
-        </div>
+        {#if exercise.type !== ExerciseType.COMPLEX}
+            <div class="m-1 mt-2 lg:mt-4 flex justify-center">
+                <button class="p-2 bg-link text-white font-medium" on:click={() => exercise.dropSets = [...exercise.dropSets, new Exercise()]}>
+                    Add Drop Set
+                </button>
+            </div>
+        {/if}
     {/if}
     <div class="flex flex-col m-2">
         <label class="text-sm m-0">Notes</label>

@@ -24,6 +24,8 @@ export class Exercise {
     secondsPerSetCompleted: number = 0
     type: ExerciseType = ExerciseType.EXERCISE
     dropSets: Exercise[] = []
+    repArr: number[] = []
+    nameArr: string[] = []
 }
 
 

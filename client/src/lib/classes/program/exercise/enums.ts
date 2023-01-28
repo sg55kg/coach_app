@@ -17,6 +17,7 @@ export enum ExerciseType {
     EXERCISE,
     CARRY,
     DURATION,
-    ACCESSORY
+    ACCESSORY,
+    COMPLEX
 }
 

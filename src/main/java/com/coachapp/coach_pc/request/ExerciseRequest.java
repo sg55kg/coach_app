@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.Exercise;
@@ -28,6 +29,7 @@ public class ExerciseRequest {
     private String notes;
     private int order;
     private List<ExerciseRequest> dropSets;
+    private ExerciseType type;
 
     public ExerciseRequest() {}
 
@@ -178,6 +180,14 @@ public class ExerciseRequest {
 
     public void setDropSets(List<ExerciseRequest> dropSets) {
         this.dropSets = dropSets;
+    }
+
+    public ExerciseType getType() {
+        return type;
+    }
+
+    public void setType(ExerciseType type) {
+        this.type = type;
     }
 
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {

@@ -196,7 +196,7 @@
             isMobile = true
         }
         if (document)
-            document.addEventListener('keyup', handleHotKeys)
+            document.addEventListener('keydown', handleHotKeys)
         if ($userDB?.coachData?.athletes && !athleteId && !$program.id) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
             athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
@@ -216,6 +216,9 @@
             } else {
                 athleteOptions = [{ name: athleteName.name, id: $program.athleteId }]
             }
+        }
+        if (selectedIndex > -1 && $program.days[selectedIndex].exercises.length > 0) {
+            $program.days[selectedIndex].exercises = $program.days[selectedIndex].exercises.sort((a, b) => a.order - b.order)
         }
     })
 
@@ -359,7 +362,7 @@
             </div>
         {/if}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
-            {#each $program?.days[selectedIndex]?.exercises.sort((a, b) => a.order - b.order) as exercise, idx (idx)}
+            {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
                 <ExerciseForm
                         bind:exercise={exercise}
                         bind:selectedDayIndex={selectedIndex}
