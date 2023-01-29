@@ -34,6 +34,7 @@ public class ExerciseRequest {
     private List<String> nameArr;
     private List<Integer>  repArr;
     private List<Integer> repCompletedArr;
+    private int dropSetPercent;
 
     public ExerciseRequest() {}
 
@@ -218,6 +219,14 @@ public class ExerciseRequest {
         this.repCompletedArr = repCompletedArr;
     }
 
+    public int getDropSetPercent() {
+        return dropSetPercent;
+    }
+
+    public void setDropSetPercent(int dropSetPercent) {
+        this.dropSetPercent = dropSetPercent;
+    }
+
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         if (exercise == null) {
             if(request.getType() == ExerciseType.EXERCISE) {
@@ -264,9 +273,15 @@ public class ExerciseRequest {
         if (request.getDropSets() != null && request.getDropSets().size() > 0) {
             for (ExerciseRequest r : request.getDropSets()) {
                 Exercise dropSet = ExerciseRequest.convertRequest(null, r);
-                if (r.getId() == null) {
-                    exercise.addDropSet(dropSet);
+                dropSet.setDropSetPercent(r.getDropSetPercent());
+                if (exercise.getWeightCompleted() > 0 && dropSet.getWeightCompleted() < 1) {
+                    int percentOfTopSetWeight =
+                            (int)Math.round((dropSet.getDropSetPercent() / 100.0) * exercise.getWeightCompleted());
+                    dropSet.setWeightCompleted(percentOfTopSetWeight);
                 }
+                //if (r.getId() == null) {
+                    exercise.addDropSet(dropSet);
+                //}
                 dropSet.setTopSet(exercise);
             }
         }
