@@ -233,18 +233,20 @@
 </script>
 
 <div class="bg-gray-200 lg:p-4 my-2 rounded relative m-4 lg:mx-1 p-2 md:p-2">
-    <p class="lg:w-fit w-fit m-0 text-lg p-1 font-bold text-textblue self-center lg:ml-4">{exercise?.name}</p>
+    <p class="lg:w-fit w-fit m-auto font-bold text-2xl text-textblue self-center lg:self-start lg:m-0 lg:p-2">
+        {exercise?.name}
+    </p>
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
-                <input type="number" class={`bg-gray-200 w-12 lg:w-8 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
+            <div class="m-0 p-1 text-base lg:text-lg font-medium text-textblue flex lg:mx-4">
+                <input type="number" class={`bg-gray-200 w-12 lg:w-8 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`} bind:value={exercise.weightCompleted}>
                 <p class="m-0 w-fit">&nbsp;/&nbsp;&nbsp;{exercise.weight} &nbsp;</p>
                 <select on:change={(e) => handleChangeWeightUnits(e.target.value, exercise)} class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
                     <option>lb</option>
                 </select>
             </div>
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center  lg:mx-4">
+            <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center  lg:mx-4">
                 <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
@@ -253,7 +255,7 @@
                     <FaPlusCircle />
                 </div>
             </div>
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+            <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
                 <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
@@ -263,22 +265,23 @@
                 </div>
             </div>
         {:else}
-            <div class="flex flex-col items-center">
-                <div class="flex flex-row justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
-                    <p class="mx-2">{exercise?.name}</p>
-                    <p class="mx-2">{exercise?.repsPerSet} RM</p>
+            <div class="flex flex-col items-center lg:items-start">
+                <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                    <p>{exercise?.repsPerSet} RM</p>
                 </div>
-                <div class="flex flex-row justify-around text-lg font-semibold text-textblue">
-                    <input type="number" class="flex-1 bg-gray-200 text-center w-14" bind:value={exercise.weightCompleted}>
+                <div class="flex flex-row justify-around text-base lg:text-lg font-medium text-textblue lg:pl-2">
+                    <input type="number" class={`bg-gray-200 w-12 lg:w-12 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`} bind:value={exercise.weightCompleted}>
                     <p class="w-6/12">&nbsp;kg</p>
                 </div>
-                <div class="flex flex-row justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
-                    {exercise.dropSets.length < 1 ? 'No Drop Sets' : ''}
+                <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                    {exercise.dropSets.length < 1 ? 'No Drop Sets' : 'Drop sets:'}
                 </div>
                 {#each exercise.dropSets as dropSet, idx (dropSet.id)}
-                    <div class="flex flex-col justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
-                        <p>Drop Set {idx+1}:</p>
-                        <p>{dropSet.weight} kg {dropSet.repsPerSet}x{dropSet.sets}</p>
+                    <div class="flex flex-col justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                        <p>{dropSet.dropSetPercent}% of top set for {dropSet.sets}x{dropSet.repsPerSet}</p>
+                        {#if dropSet.weightCompleted > 0 && dropSet.isComplete}
+                            <p>{dropSet.weightCompleted}kg</p>
+                        {/if}
                     </div>
                 {/each}
             </div>

@@ -1,0 +1,1 @@
+ALTER TABLE exercise ADD COLUMN drop_set_percent int DEFAULT 0;

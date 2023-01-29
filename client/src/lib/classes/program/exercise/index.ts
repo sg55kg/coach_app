@@ -27,6 +27,7 @@ export interface ExerciseDTO {
     repArr: string
     nameArr: string
     repCompletedArr: string
+    dropSetPercent: number
 }
 export class Exercise {
     id: string = ''
@@ -55,6 +56,7 @@ export class Exercise {
     repArr: number[] = []
     nameArr: string[] = []
     repCompletedArr: number[] = []
+    dropSetPercent: number = 0
 }
 
 

@@ -13,6 +13,10 @@
 
     if (programDto) {
         $program = Program.build(programDto)
+        program.update(prev => {
+            prev.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
+            return prev
+        })
     }
 
     const handleSubmit = async (event, programData: Program) => {

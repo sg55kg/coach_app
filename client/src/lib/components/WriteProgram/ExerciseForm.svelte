@@ -109,19 +109,24 @@
         options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
     }
 
-    const handleComplexNameFocus = (idx: number) => {
-        showComplexNameOptions = idx
-        inputFocused = true
-        options = athleteRecordFields.filter((x) => x.includes(exercise.nameArr[idx].toLowerCase()))
+    const validateDropSetPercent = (e: InputEvent, dropSet: Exercise) => {
+        if (dropSet.dropSetPercent === null || dropSet.dropSetPercent === undefined) {
+            dropSet.dropSetPercent = 0
+        } else if (dropSet.dropSetPercent > 100) {
+            dropSet.dropSetPercent = 100
+            e.currentTarget.value = dropSet.dropSetPercent
+        } else if (dropSet.dropSetPercent < 0) {
+            dropSet.dropSetPercent = 0
+            e.currentTarget.value = dropSet.dropSetPercent
+        }
     }
 
     onMount(() => {
         options = [...athleteRecordFields]
-        //nameInput.addEventListener('keyup', (e) => handleAutoComplete(e))
     })
 
     onDestroy(() => {
-       // nameInput.removeEventListener('keyup', (e) => handleAutoComplete(e))
+
     })
 </script>
 
@@ -222,16 +227,32 @@
             {#each exercise.dropSets as dropSet, idx (idx)}
                 <div class="flex flex-col lg:flex-row lg:justify-around lg:ml-48 text-sm">
                     <div class="flex flex-col m-1">
-                        <label class="text-sm m-0">Weight</label>
-                        <input class="p-2 bg-gray-300" bind:value={dropSet.weight} type="number">
+                        <label class="text-sm m-0">% of top set</label>
+                        <input class="p-2 bg-gray-300"
+                               bind:value={dropSet.dropSetPercent}
+                               on:focus={() => inputFocused = true}
+                               on:blur={() => inputFocused = false}
+                               on:input={(e) => validateDropSetPercent(e, dropSet)}
+                               type="number"
+                        >
                     </div>
                     <div class="flex flex-col m-1">
                         <label class="text-sm m-0">Sets</label>
-                        <input class="p-2 bg-gray-300" bind:value={dropSet.sets} type="number">
+                        <input class="p-2 bg-gray-300"
+                               bind:value={dropSet.sets}
+                               on:focus={() => inputFocused = true}
+                               on:blur={() => inputFocused = false}
+                               type="number"
+                        >
                     </div>
                     <div class="flex flex-col m-1">
                         <label class="text-sm m-0">Reps</label>
-                        <input class="p-2 bg-gray-300" bind:value={dropSet.repsPerSet} type="number">
+                        <input class="p-2 bg-gray-300"
+                               bind:value={dropSet.repsPerSet}
+                               on:focus={() => inputFocused = true}
+                               on:blur={() => inputFocused = false}
+                               type="number"
+                        >
                     </div>
                     <div class="my-1">
                         <div class="text-red hover:cursor-pointer hover:text-red-shade lg:p-4 h-6 lg:h-16"
