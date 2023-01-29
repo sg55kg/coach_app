@@ -279,6 +279,9 @@
                 {#each exercise.dropSets as dropSet, idx (dropSet.id)}
                     <div class="flex flex-col justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
                         <p>{dropSet.dropSetPercent}% of top set for {dropSet.sets}x{dropSet.repsPerSet}</p>
+                        {#if dropSet.weightCompleted > 0 && dropSet.isComplete}
+                            <p>{dropSet.weightCompleted}kg</p>
+                        {/if}
                     </div>
                 {/each}
             </div>

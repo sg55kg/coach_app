@@ -278,6 +278,7 @@ public class ExerciseRequest {
                     int percentOfTopSetWeight =
                             (int)Math.round((dropSet.getDropSetPercent() / 100.0) * exercise.getWeightCompleted());
                     dropSet.setWeightCompleted(percentOfTopSetWeight);
+                    dropSet.setIsComplete(true);
                 }
                 //if (r.getId() == null) {
                     exercise.addDropSet(dropSet);
