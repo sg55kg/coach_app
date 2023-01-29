@@ -78,4 +78,9 @@ public class DurationExercise extends Exercise {
     public void setSecondsPerSetCompleted(int secondsPerSetCompleted) {
         this.secondsPerSetCompleted = secondsPerSetCompleted;
     }
+
+    @Override
+    public ExerciseType getType() {
+        return type;
+    }
 }

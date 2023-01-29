@@ -11,6 +11,8 @@
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import WeekNav from "$lib/components/WriteProgram/WeekNav.svelte";
     import ExerciseForm from "$lib/components/WriteProgram/ExerciseForm.svelte";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import ComplexExerciseForm from "$lib/components/WriteProgram/ComplexExerciseForm.svelte";
 
     export let handleSubmit
     export let initialIndex: number = -1
@@ -196,7 +198,7 @@
             isMobile = true
         }
         if (document)
-            document.addEventListener('keyup', handleHotKeys)
+            document.addEventListener('keydown', handleHotKeys)
         if ($userDB?.coachData?.athletes && !athleteId && !$program.id) {
             athleteOptions = $userDB.coachData.athletes.map(a => ({ name: a.name, id: a.id }))
             athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
@@ -217,6 +219,9 @@
             } else {
                 athleteOptions = [{ name: athleteName.name, id: $program.athleteId }]
             }
+        }
+        if (selectedIndex > -1 && $program?.days[selectedIndex]?.exercises.length > 0) {
+            $program.days[selectedIndex].exercises = $program.days[selectedIndex].exercises.sort((a, b) => a.order - b.order)
         }
     })
 
@@ -271,7 +276,7 @@
             </div>
 
             <div class="py-4 flex justify-start w-9/12">
-                <div class="flex flex-col mr-4 w-1/2">
+                <div class="flex flex-col mr-4 w-7/12">
                     <label>Start Date</label>
                     <input type="date"
                            class="p-1 bg-gray-300 text-textgray decoration-color-textgray"
@@ -279,7 +284,7 @@
                            bind:value={startDateString}
                            on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
                 </div>
-                <div class="flex flex-col w-1/2">
+                <div class="flex flex-col w-7/12">
                     <label>End Date</label>
                     <input type="date"
                            name="endDate"
@@ -360,13 +365,23 @@
             </div>
         {/if}
         {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
-            {#each $program?.days[selectedIndex]?.exercises.sort((a, b) => a.order - b.order) as exercise, idx (idx)}
-                <ExerciseForm
-                        bind:exercise={exercise}
-                        bind:selectedDayIndex={selectedIndex}
-                        bind:inputFocused={inputFocused}
-                        exerciseIndex={idx}
-                />
+            {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
+                {#if exercise.type === ExerciseType.EXERCISE}
+                    <ExerciseForm
+                            bind:exercise={exercise}
+                            bind:selectedDayIndex={selectedIndex}
+                            bind:inputFocused={inputFocused}
+                            exerciseIndex={idx}
+                    />
+                {:else}
+                    <ComplexExerciseForm
+                            bind:exercise={exercise}
+                            bind:selectedDayIndex={selectedIndex}
+                            bind:inputFocused={inputFocused}
+                            exerciseIndex={idx}
+                    />
+                {/if}
+
             {/each}
         {:else if $program?.days[selectedIndex]?.isRestDay === true}
             <div class="flex justify-center m-8 font-bold text-2xl">

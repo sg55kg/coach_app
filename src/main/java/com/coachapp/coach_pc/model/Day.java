@@ -22,7 +22,7 @@ public class Day {
     @JoinColumn(name = "program_id", nullable = false)
     @JsonIgnore
     private Program program;
-    @OneToMany(mappedBy = "day", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
     private boolean isRestDay;
     @OneToOne(orphanRemoval = true, cascade = CascadeType.MERGE)

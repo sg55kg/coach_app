@@ -6,6 +6,8 @@
     import {currentDay, currentProgram} from "$lib/stores/athleteProgramStore";
     import {goto} from "$app/navigation";
     import {Program, type ProgramDTO} from "$lib/classes/program";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
 
 
     const fetchCurrentProgram = async () => {
@@ -19,6 +21,7 @@
             const today = dayjs()
             const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
             if (day) {
+                day.exercises.sort((a, b) => a.order - b.order)
                 $currentDay = day
             }
             $currentProgram = program
@@ -57,7 +60,11 @@
             {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
                     {#each $currentDay.exercises as exercise, index (exercise.id)}
-                        <IncompleteExercise bind:exercise={exercise} />
+                        {#if exercise.type === ExerciseType.EXERCISE}
+                            <IncompleteExercise bind:exercise={exercise} />
+                        {:else}
+                            <AthleteComplexExercise bind:exercise={exercise} />
+                        {/if}
                     {/each}
                 </div>
             {:else if $currentDay && $currentDay?.isRestDay}

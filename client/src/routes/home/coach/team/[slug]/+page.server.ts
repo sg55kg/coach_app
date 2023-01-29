@@ -10,9 +10,7 @@ export const load: PageServerLoad = async ({ cookies, params}) => {
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }
     })
 
-    const data = await res.json()
-
     return {
-        team: data
+        teamRes: await res.json()
     }
 }

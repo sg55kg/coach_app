@@ -1,5 +1,33 @@
 import {EffortIntensity, ExerciseType, WeightIntensity} from "$lib/classes/program/exercise/enums";
 
+export interface ExerciseDTO {
+    id: string
+    name: string
+    weight: number
+    sets: number
+    repsPerSet: number
+    notes: string
+    weightIntensity: WeightIntensity
+    isMax: boolean
+    weightCompleted: number
+    totalRepsCompleted: number
+    comments: ExerciseComment[]
+    isComplete: boolean
+    setsComplete: number
+    order: number
+    effortIntensity: EffortIntensity
+    unilateral: boolean
+    equipment: string
+    distanceMeters: number
+    distanceCompletedMeters: number
+    secondsPerSet: number
+    secondsPerSetCompleted: number
+    type: ExerciseType
+    dropSets: Exercise[]
+    repArr: string
+    nameArr: string
+    repCompletedArr: string
+}
 export class Exercise {
     id: string = ''
     name: string = ''
@@ -24,6 +52,9 @@ export class Exercise {
     secondsPerSetCompleted: number = 0
     type: ExerciseType = ExerciseType.EXERCISE
     dropSets: Exercise[] = []
+    repArr: number[] = []
+    nameArr: string[] = []
+    repCompletedArr: number[] = []
 }
 
 

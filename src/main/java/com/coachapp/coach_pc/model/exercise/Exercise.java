@@ -19,12 +19,13 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "exercise")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Exercise {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
+    @Column(unique = true, updatable = false, nullable = false)
     private UUID id;
     private String name;
     private Integer sets;
@@ -77,7 +78,7 @@ public class Exercise {
     }
 
     public Integer getSets() {
-        return sets;
+        return sets != null ? sets : 0;
     }
 
     public void setSets(int sets) {
@@ -85,7 +86,7 @@ public class Exercise {
     }
 
     public Integer getRepsPerSet() {
-        return repsPerSet;
+        return repsPerSet != null ? repsPerSet : 0;
     }
 
     public void setRepsPerSet(Integer repsPerSet) {
@@ -119,7 +120,7 @@ public class Exercise {
     }
 
     public Integer getWeight() {
-        return weight;
+        return weight != null ? weight : 0;
     }
 
     public void setWeight(Integer weight) {
@@ -127,7 +128,7 @@ public class Exercise {
     }
 
     public Integer getWeightCompleted() {
-        return weightCompleted;
+        return weightCompleted != null ? weightCompleted : 0;
     }
 
     public void setWeightCompleted(Integer weightCompleted) {
@@ -135,7 +136,7 @@ public class Exercise {
     }
 
     public Integer getTotalRepsCompleted() {
-        return totalRepsCompleted;
+        return totalRepsCompleted != null ? totalRepsCompleted : 0;
     }
 
     public void setTotalRepsCompleted(Integer totalRepsCompleted) {
@@ -177,7 +178,7 @@ public class Exercise {
     }
 
     public Integer getSetsCompleted() {
-        return setsCompleted;
+        return setsCompleted != null ? setsCompleted : 0;
     }
 
     public void setSetsCompleted(Integer setsCompleted) {
@@ -224,7 +225,6 @@ public class Exercise {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Exercise exercise = (Exercise) o;
         return id.equals(exercise.id);

@@ -1,7 +1,9 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.exercise.ComplexExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,6 +30,10 @@ public class ExerciseRequest {
     private String notes;
     private int order;
     private List<ExerciseRequest> dropSets;
+    private ExerciseType type;
+    private List<String> nameArr;
+    private List<Integer>  repArr;
+    private List<Integer> repCompletedArr;
 
     public ExerciseRequest() {}
 
@@ -180,9 +186,46 @@ public class ExerciseRequest {
         this.dropSets = dropSets;
     }
 
+    public ExerciseType getType() {
+        return type;
+    }
+
+    public void setType(ExerciseType type) {
+        this.type = type;
+    }
+
+    public List<String> getNameArr() {
+        return nameArr;
+    }
+
+    public void setNameArr(List<String> nameArr) {
+        this.nameArr = nameArr;
+    }
+
+    public List<Integer> getRepArr() {
+        return repArr;
+    }
+
+    public void setRepArr(List<Integer> repArr) {
+        this.repArr = repArr;
+    }
+
+    public List<Integer> getRepCompletedArr() {
+        return repCompletedArr;
+    }
+
+    public void setRepCompletedArr(List<Integer> repCompletedArr) {
+        this.repCompletedArr = repCompletedArr;
+    }
+
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         if (exercise == null) {
-            exercise = new Exercise();
+            if(request.getType() == ExerciseType.EXERCISE) {
+                exercise = new Exercise();
+            } else if (request.getType() == ExerciseType.COMPLEX) {
+                exercise = new ComplexExercise();
+            }
+
         }
 
         for (AthleteExerciseCommentRequest commentRequest : request.getComments()) {
@@ -191,17 +234,32 @@ public class ExerciseRequest {
             exercise.getComments().add(comment);
         }
 
+        exercise.setId(request.getId());
         exercise.setWeight(request.getWeight());
-        exercise.setName(request.getName());
         exercise.setSets(request.getSets());
-        exercise.setRepsPerSet(request.getRepsPerSet());
         exercise.setWeightCompleted(request.getWeightCompleted());
-        exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
         exercise.setIsMax(request.getIsMax());
         exercise.setNotes(request.getNotes());
         exercise.setIsComplete(request.getIsComplete());
         exercise.setOrder(request.getOrder());
         exercise.setSetsCompleted(request.getSetsCompleted());
+
+        if (request.getType() == ExerciseType.EXERCISE) {
+            exercise.setName(request.getName());
+            exercise.setRepsPerSet(request.getRepsPerSet());
+            exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
+        } else if (request.getType() == ExerciseType.COMPLEX) {
+            ((ComplexExercise) exercise).setRepArr(
+                    ComplexExercise.convertRepArrListToString(request.getRepArr())
+            );
+            ((ComplexExercise) exercise).setNameArr(
+                    ComplexExercise.convertNameArrListToString(request.getNameArr())
+            );
+            ((ComplexExercise) exercise).setRepCompletedArr(
+                    ComplexExercise.convertRepCompletedArrListToString(request.getRepCompletedArr())
+            );
+        }
+
 
         if (request.getDropSets() != null && request.getDropSets().size() > 0) {
             for (ExerciseRequest r : request.getDropSets()) {
