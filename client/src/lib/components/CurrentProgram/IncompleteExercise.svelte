@@ -14,6 +14,7 @@
     import {onMount} from "svelte";
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
     import {AthleteData, AthleteRecord} from "$lib/classes/user/athlete";
+    import {handleChangeWeightUnits} from "$lib/components/CurrentProgram/util/index.js";
 
     export let exercise: Exercise
 
@@ -223,18 +224,6 @@
         }
     }
 
-    const handleChangeWeightUnits = (units: 'kg' | 'lb') => {
-        if (units === 'kg' && weightUnitsSelected === 'lb') {
-            weightUnitsSelected = 'kg'
-            exercise.weight = Math.round(exercise.weight / 2.2042)
-            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted / 2.2042) : 0
-        } else if (units === 'lb' && weightUnitsSelected === 'kg') {
-            weightUnitsSelected = 'lb'
-            exercise.weight = Math.round(exercise.weight * 2.2042)
-            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted * 2.2042) : 0
-        }
-    }
-
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
         repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsComplete > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsComplete) : 0
@@ -248,9 +237,9 @@
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
             <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
-                <input type="number" class={`bg-gray-200 w-12 lg:w-8 ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
-                <p class="m-0 w-fit">&nbsp;/&nbsp;{exercise.weight} &nbsp;</p>
-                <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-200 w-fit mx-0">
+                <input type="number" class={`bg-gray-200 w-12 lg:w-8 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
+                <p class="m-0 w-fit">&nbsp;/&nbsp;&nbsp;{exercise.weight} &nbsp;</p>
+                <select on:change={(e) => handleChangeWeightUnits(e.target.value, exercise)} class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
                     <option>lb</option>
                 </select>
@@ -306,7 +295,7 @@
     <div>
         <div class="flex flex-col lg:flex-row justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
             {#if !exercise?.isMax || exercise?.weightCompleted > 0}
-                <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
+                <button class="{exercise.isComplete ? 'bg-gray-200 text-red border-red' : 'bg-gray-200 text-yellow-shade border-yellow'} border-2 p-2 mx-2 rounded hover:bg-gray-400"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
                     {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
@@ -345,17 +334,16 @@
             <p class="m-0">No Comments</p>
         {/if}
         {#each exercise?.comments as comment (comment.id)}
-            <div class="flex flex-col p-2 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
+            <div class="flex flex-col p-4 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
                 <div class="flex flex-row justify-between mb-2">
-                    <h5>{comment.commenterName}</h5>
-                    <h5>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</h5>
+                    <h5 class="text-lg font-bold">{comment.commenterName}</h5>
+                    <h5><i>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</i></h5>
                 </div>
-                <hr>
                 <p>{comment.content}</p>
             </div>
         {/each}
         <div>
-            <textarea class="w-full break-words text-left h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
+            <textarea class="w-full break-words text-left lg:w-6/12 h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
         </div>
         <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
                 disabled={$loadingAthleteProgram}

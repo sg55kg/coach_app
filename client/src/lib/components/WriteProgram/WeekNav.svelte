@@ -6,6 +6,7 @@
     import FaAngleUp from 'svelte-icons/fa/FaAngleUp.svelte'
     import FaAngleDown from 'svelte-icons/fa/FaAngleDown.svelte'
     import {Exercise} from "$lib/classes/program/exercise";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
 
     export let selectedDayIndex: number
     export let dayId: string
@@ -113,6 +114,7 @@
 
     afterUpdate(() => {
         if ($programSuccess) {
+            console.log('Initializing weeks')
             initializeWeeks()
         }
     })
@@ -135,21 +137,46 @@
             </div>
         </div>
         {#each weeks[selectedWeekIndex] as day}
-            <div class={`flex flex-col bg-gray-400 rounded text-textgray my-2 p-2 ${day.id === dayId ? ' shadow-md shadow-yellow-shade' : 'border-black'} hover:bg-gray-200 hover:cursor-pointer`}
+            <div class={`flex flex-col bg-gray-200 rounded text-textgray my-2 p-2 ${day.id === dayId ? 'border-2 border-textblue' : 'border-black'} hover:bg-gray-200 hover:cursor-pointer`}
                  on:click={() => selectDay(day.id)}
             >
-                <h3>{dayjs(day.date).format('dddd MMMM D')}</h3>
+                <h3 class="font-medium">{dayjs(day.date).format('dddd MMMM D')}</h3>
                 <hr>
-                {#each day.exercises.sort((a, b) => a.order - b.order) as exercise}
-                    {#if !exercise.isMax}
-                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
-                            {`${exercise.name}: ${exercise.weight}kg - ${exercise.sets}x${exercise.repsPerSet}`}
-                        </p>
+                {#each day.exercises as exercise}
+                    {#if exercise.type === ExerciseType.EXERCISE}
+                        {#if !exercise.isMax}
+                            <p class={` ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.name}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.weight}kg - {exercise.sets}x{exercise.repsPerSet}
+                            </p>
+                        {:else}
+                            <p class={`${exercise.isComplete && 'text-green'}`}>
+                                {`${exercise.name}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.repsPerSet}RM {exercise.weightCompleted && '- ' + exercise.weightCompleted + 'kg'}
+                            </p>
+                        {/if}
                     {:else}
-                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
-                            {`${exercise.name}: ${exercise.repsPerSet}RM ${exercise.weightCompleted && '- ' + exercise.weightCompleted + 'kg'}`}
-                        </p>
+                        {#if !exercise.isMax}
+                            <p class={` ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.nameArr.join(' + ')}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.weight}kg - {exercise.sets}x{exercise.repArr.join(' + ')}
+                            </p>
+                        {:else}
+                            <p class={`m-0 ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.nameArr.join(' + ')}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.repArr.join(' + ')} RM {exercise.weightCompleted ? '- ' + exercise.weightCompleted + 'kg' : ''}
+                            </p>
+                        {/if}
                     {/if}
+
                 {/each}
                 {#if day.exercises.length < 1 && !day.isRestDay}
                     <p class="m-0 text-red-shade font-bold self-center">Incomplete</p>

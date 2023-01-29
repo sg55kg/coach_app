@@ -150,18 +150,18 @@ public class ProgramService {
         Program program = optional.get();
 
         boolean dayFound = false;
-        for (Day day : program.getDays()) {
-            if (dayFound) break;
-
-            for (int i = 0; i < day.getExercises().size(); i++) {
-                if (day.getExercises().get(i).getId().equals(exercise.getId())) {
-                    exercise.setDay(day.getExercises().get(i).getDay());
-                    day.getExercises().set(i, exercise);
-                    dayFound = true;
-                    break;
-                }
-            }
-        }
+//        for (Day day : program.getDays()) {
+//            if (dayFound) break;
+//
+//            for (int i = 0; i < day.getExercises().size(); i++) {
+//                if (day.getExercises().get(i).getId().equals(exercise.getId())) {
+//                    exercise.setDay(day.getExercises().get(i).getDay());
+//                    day.getExercises().set(i, exercise);
+//                    dayFound = true;
+//                    break;
+//                }
+//            }
+//        }
 
         program = _programRepo.save(program);
         ProgramViewModel viewModel = ProgramViewModel.convertProgram(program);

@@ -14,13 +14,25 @@
 
     export let data: PageServerData
 
-    let team: Team = data.team ?? data.team
+    let team: Team
+    let loadingTeam: boolean = true
+    let newLogoSrc: string = ''
+    let newTeamName: string = ''
+    let newTeamDescription: string = ''
+
+    if (data.teamRes) {
+        team = data.teamRes
+        loadingTeam = false
+        newLogoSrc = team.teamLogo
+        newTeamName = team.name
+        newTeamDescription = team.description
+    }
+
+
     let showNameInput: boolean = false
     let showDescriptionInput: boolean = false
     let activeTab: 'athletes' | 'programs' | 'settings' = 'athletes'
-    let newLogoSrc: string = team.teamLogo
-    let newTeamName: string = team.name
-    let newTeamDescription: string = team.description
+
 
     $: athleteList = team ? team.athletes : []
 
@@ -49,8 +61,7 @@
 
         }
     }
-$: console.log(team)
-    $:console.log(team.teamLogo)
+
 </script>
 
 <svelte:head>
@@ -59,7 +70,10 @@ $: console.log(team)
 </svelte:head>
 
 <a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold mx-4">{'<-'} Back to teams</a>
-{#if team}
+{#if loadingTeam}
+    <div>Loading</div>
+{/if}
+{#if team && !loadingTeam}
     <div class="flex flex-col items-center">
         <div class="rounded bg-gray-400 w-11/12 flex justify-between items-center p-3">
             <div class="flex items-center">
