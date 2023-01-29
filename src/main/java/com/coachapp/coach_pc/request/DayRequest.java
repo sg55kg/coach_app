@@ -7,10 +7,7 @@ import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.model.Program;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class DayRequest {
 
@@ -77,6 +74,7 @@ public class DayRequest {
         for (ExerciseRequest r : dayRequest.getExercises()) {
             Exercise exercise = ExerciseRequest.convertRequest(null, r);
             exercise.setDay(day);
+            exercises.add(exercise);
             if (exercise.getDropSets() != null && exercise.getDropSets().size() > 0) {
                 exercise.getDropSets().forEach(ds -> {
                     ds.setTopSet(exercise);

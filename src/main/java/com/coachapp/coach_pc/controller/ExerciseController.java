@@ -5,6 +5,7 @@ import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.service.ExerciseService;
+import com.coachapp.coach_pc.view.ExerciseViewModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Exercise> updateExercise(@PathVariable UUID id, @RequestBody ExerciseRequest exercise) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ExerciseViewModel> updateExercise(@PathVariable UUID id, @RequestBody ExerciseRequest exercise) {
         return exerciseService.updateExercise(exercise);
     }
 

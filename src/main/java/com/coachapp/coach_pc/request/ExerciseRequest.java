@@ -31,6 +31,9 @@ public class ExerciseRequest {
     private int order;
     private List<ExerciseRequest> dropSets;
     private ExerciseType type;
+    private List<String> nameArr;
+    private List<Integer>  repArr;
+    private List<Integer> repCompletedArr;
 
     public ExerciseRequest() {}
 
@@ -191,6 +194,30 @@ public class ExerciseRequest {
         this.type = type;
     }
 
+    public List<String> getNameArr() {
+        return nameArr;
+    }
+
+    public void setNameArr(List<String> nameArr) {
+        this.nameArr = nameArr;
+    }
+
+    public List<Integer> getRepArr() {
+        return repArr;
+    }
+
+    public void setRepArr(List<Integer> repArr) {
+        this.repArr = repArr;
+    }
+
+    public List<Integer> getRepCompletedArr() {
+        return repCompletedArr;
+    }
+
+    public void setRepCompletedArr(List<Integer> repCompletedArr) {
+        this.repCompletedArr = repCompletedArr;
+    }
+
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         if (exercise == null) {
             if(request.getType() == ExerciseType.EXERCISE) {
@@ -207,20 +234,30 @@ public class ExerciseRequest {
             exercise.getComments().add(comment);
         }
 
+        exercise.setId(request.getId());
+        exercise.setWeight(request.getWeight());
+        exercise.setSets(request.getSets());
+        exercise.setWeightCompleted(request.getWeightCompleted());
+        exercise.setIsMax(request.getIsMax());
+        exercise.setNotes(request.getNotes());
+        exercise.setIsComplete(request.getIsComplete());
+        exercise.setOrder(request.getOrder());
+        exercise.setSetsCompleted(request.getSetsCompleted());
+
         if (request.getType() == ExerciseType.EXERCISE) {
-            exercise.setWeight(request.getWeight());
             exercise.setName(request.getName());
-            exercise.setSets(request.getSets());
             exercise.setRepsPerSet(request.getRepsPerSet());
-            exercise.setWeightCompleted(request.getWeightCompleted());
             exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
-            exercise.setIsMax(request.getIsMax());
-            exercise.setNotes(request.getNotes());
-            exercise.setIsComplete(request.getIsComplete());
-            exercise.setOrder(request.getOrder());
-            exercise.setSetsCompleted(request.getSetsCompleted());
         } else if (request.getType() == ExerciseType.COMPLEX) {
-            // TODO
+            ((ComplexExercise) exercise).setRepArr(
+                    ComplexExercise.convertRepArrListToString(request.getRepArr())
+            );
+            ((ComplexExercise) exercise).setNameArr(
+                    ComplexExercise.convertNameArrListToString(request.getNameArr())
+            );
+            ((ComplexExercise) exercise).setRepCompletedArr(
+                    ComplexExercise.convertRepCompletedArrListToString(request.getRepCompletedArr())
+            );
         }
 
 

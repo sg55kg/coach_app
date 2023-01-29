@@ -50,4 +50,9 @@ public class AccessoryExercise extends Exercise {
     public void setUnilateral(boolean unilateral) {
         this.unilateral = unilateral;
     }
+
+    @Override
+    public ExerciseType getType() {
+        return type;
+    }
 }

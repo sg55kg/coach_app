@@ -11,13 +11,13 @@ public class DayViewModel {
 
     private UUID id;
     private OffsetDateTime date;
-    private List<Exercise> exercises;
+    private List<ExerciseViewModel> exercises;
     private boolean isRestDay;
     private WarmUp warmUp;
 
     public DayViewModel() {}
 
-    public DayViewModel(UUID id, OffsetDateTime date, List<Exercise> exercises, boolean isRestDay, WarmUp warmUp) {
+    public DayViewModel(UUID id, OffsetDateTime date, List<ExerciseViewModel> exercises, boolean isRestDay, WarmUp warmUp) {
         this.id = id;
         this.date = date;
         this.exercises = exercises;
@@ -41,11 +41,11 @@ public class DayViewModel {
         this.date = date;
     }
 
-    public List<Exercise> getExercises() {
+    public List<ExerciseViewModel> getExercises() {
         return exercises;
     }
 
-    public void setExercises(List<Exercise> exercises) {
+    public void setExercises(List<ExerciseViewModel> exercises) {
         this.exercises = exercises;
     }
 
