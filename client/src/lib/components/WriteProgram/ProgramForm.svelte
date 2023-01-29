@@ -235,9 +235,6 @@
                 p.coachId = $userDB?.coachData?.id!
                 return p
             })
-            //athleteOptions = [...athleteOptions, { name: $userDB.username, id: $userDB.athleteData!.id }]
-            //console.log(athleteOptions)
-            //$userDB?.coachData?.athletes?.forEach(a => athleteOptions.push({ name: a.name, id: a.id }))
         }
 
         if ($programError) {

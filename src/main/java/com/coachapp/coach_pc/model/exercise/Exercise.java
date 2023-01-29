@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class Exercise {
     @JoinColumn(name = "top_set")
     @JsonIgnore
     private Exercise topSet;
+    private int dropSetPercent;
 
 
     public Exercise() {}
@@ -221,6 +223,14 @@ public class Exercise {
 
     public void removeDropSet(Exercise set) {
         this.dropSets.remove(set);
+    }
+
+    public int getDropSetPercent() {
+        return dropSetPercent;
+    }
+
+    public void setDropSetPercent(int dropSetPercent) {
+        this.dropSetPercent = dropSetPercent;
     }
 
     @Override
