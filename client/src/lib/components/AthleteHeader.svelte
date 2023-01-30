@@ -39,9 +39,7 @@
 </script>
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle w-screen">
-    {#if isMobile}
-        <AthleteNav />
-    {/if}
+    <AthleteNav />
     <div class="flex items-center {isMobile && 'justify-center'} align-baseline">
         {#if $userDB}
             <a href="/home" class="font-semibold tracking-widest uppercase text-2xl ml-1 text-yellow-lt">
