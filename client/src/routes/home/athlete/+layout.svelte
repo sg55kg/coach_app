@@ -4,6 +4,8 @@
     import {Program} from "$lib/classes/program";
     import {Day} from "$lib/classes/program/day";
     import {userDB} from "$lib/stores/authStore";
+    import {authUser} from "$lib/stores/authStore.js";
+    import AthleteHeader from "$lib/components/AthleteHeader.svelte";
 
     onDestroy(() => {
         currentProgram.set(new Program())
@@ -16,6 +18,9 @@
     <meta name="description" content="Track all of your athletes' progress and stay organized across multiple teams. Use athlete feedback and data from your programs to make better decisions. Write better programs with Coachable." />
 </svelte:head>
 
+{#if $authUser}
+    <AthleteHeader />
+{/if}
 <slot />
 
 <style>
