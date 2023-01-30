@@ -42,9 +42,12 @@
         </div>
     </div>
 </div>
-<div class="w-2/12 lg:w-9/12 absolute right-0 top-0 h-screen hover:cursor-pointer z-50" on:click={() => showNav = false}>
+{#if showNav}
+    <div class="w-2/12 lg:w-9/12 absolute right-0 top-0 h-screen hover:cursor-pointer z-50" on:click={() => showNav = false}>
 
-</div>
+    </div>
+{/if}
+
 
 <style>
     .overlay {
