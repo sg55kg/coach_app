@@ -27,9 +27,7 @@
 <div class="app bg-gray-100 text-textgray w-screen">
 {#if !$loadingAuth}
 
-	{#if $authUser !== undefined}
-		<AuthHeader user={$authUser} />
-	{:else }
+	{#if !$authUser}
 		<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle py-4">
 			<div class="flex items-center align-baseline">
 				<a href="/" class="font-semibold tracking-widest uppercase text-2xl ml-3 text-yellow-lt">

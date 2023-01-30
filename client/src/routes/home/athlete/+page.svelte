@@ -53,11 +53,6 @@
         {#await fetchCurrentProgram()}
             <p>Loading your program...</p>
         {:then e}
-            <div class="text-center lg:text-start">
-                <a class="text-link hover:text-link-shade underline" href="/home/athlete/program">
-                    View Full Program
-                </a>
-            </div>
             {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
                     {#each $currentDay.exercises as exercise, index (exercise.id)}
@@ -77,11 +72,6 @@
                     No programming available for today
                 </div>
             {/if}
-            <div class="text-center lg:text-start mt-4">
-                <a class="text-link hover:text-link-shade underline" href={`/home/athlete/${$userDB?.athleteData?.id}`}>
-                    My Progress
-                </a>
-            </div>
         {:catch e}
             <p>Error: could not retrieve your program</p>
         {/await}
@@ -92,8 +82,6 @@
             <p class="text-center m-2">
                 As we continue to add features to the site, more information about your team will become available here like team-wide messages from your coach
             </p>
-<!--            <a class="text-lg underline text-link text-center" href="/home/athlete/team">View</a>-->
-            <a class="text-lg underline text-link text-center" href="/home/athlete/teams">Browse Teams</a>
         {:else}
             <a class="text-lg text-center md:text-left underline text-link" href="/home/athlete/teams">Join a team</a>
         {/if}
