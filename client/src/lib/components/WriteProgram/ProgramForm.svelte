@@ -63,7 +63,7 @@
     const addDay = (currentDate: Dayjs, index: number) => {
         if (index > $program.days.length - 1) {
             let day = new Day()
-            day.date = currentDate.toDate()
+            day.date = currentDate
 
             program.update(p => {
                 p.days.push(day)
@@ -71,7 +71,7 @@
             })
         } else {
             program.update(p => {
-                p.days[index].date = currentDate.toDate()
+                p.days[index].date = currentDate
                 return p
             })
         }
@@ -138,7 +138,6 @@
         })
 
         const daysDiff = endDate.diff(startDate, 'days')
-        console.log(daysDiff)
 
         let currentDate = startDate
         for (let i = 0; i <= daysDiff; i++) {
@@ -147,7 +146,7 @@
         }
         selectedIndex = selectedIndex === -1 ? 0 : selectedIndex
         selectedDayId = $program.days[selectedIndex].id
-        console.log(selectedDayId)
+        $programSuccess = 'Success'
     }
 
     const handleChangeAthlete = (athleteId: string) => {
