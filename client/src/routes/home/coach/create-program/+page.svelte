@@ -47,7 +47,7 @@
     <meta name="description" content="Create a new program" />
 </svelte:head>
 
-<div>
+<div class="relative h-full overflow-hidden">
     <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} />
 </div>
 
