@@ -1,8 +1,10 @@
 import type {Exercise} from "$lib/classes/program/exercise";
+import type {Dayjs} from "dayjs";
+import dayjs from "dayjs";
 
 export interface IDay {
     id?: string,
-    date: Date,
+    date: Dayjs,
     exercises: Exercise[],
     isRestDay: boolean,
     warmUp: WarmUp | null
@@ -21,7 +23,7 @@ export class Day implements IDay {
         let day = new Day()
 
         day.id = dayDTO.id
-        day.date = new Date(dayDTO.date)
+        day.date = dayjs(dayDTO.date)
         day.exercises = dayDTO.exercises
         day.isRestDay = dayDTO.isRestDay
         day.warmUp = dayDTO.warmUp
@@ -30,7 +32,7 @@ export class Day implements IDay {
     }
 
     id: string = ''
-    date: Date = new Date()
+    date: Dayjs = dayjs()
     exercises: Exercise[] = []
     isRestDay: boolean = false
     warmUp: WarmUp | null = null

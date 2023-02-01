@@ -46,7 +46,9 @@
 </script>
 
 {#if $program?.id}
-    <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
+    <div class="relative h-full overflow-hidden">
+        <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
+    </div>
 {/if}
 
 <style>

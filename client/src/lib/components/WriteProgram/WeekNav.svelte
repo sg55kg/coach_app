@@ -56,7 +56,7 @@
 
             if (existingDay === -1) {
                 let day = new Day()
-                day.date = date.toDate()
+                day.date = date
                 day.id = date.toString()
                 day.exercises = weekToCopy[i].exercises.map(e => {
                     let newExercise = new Exercise()
@@ -77,6 +77,7 @@
                 })
                 program.update(prev => {
                     prev.days.push(day)
+                    prev.endDate = date.toDate()
                     return prev
                 })
             } else {
@@ -108,6 +109,17 @@
         initializeWeeks()
     }
 
+    const toggleCopyWeekModal = () => {
+        if (showCopyWeekModal) {
+            showCopyWeekModal = false
+            document.body.style.overflowY = 'auto'
+        } else {
+            showCopyWeekModal = true
+            window.scroll(0,0)
+            document.body.style.overflowY = 'hidden'
+        }
+    }
+
     onMount(() => {
         initializeWeeks()
     })
@@ -121,7 +133,7 @@
 
 </script>
 
-<div class="hidden md:flex flex-col mx-2">
+<div class="hidden md:flex flex-col mx-2 h-screen overflow-scroll mb-8">
     {#if selectedWeekIndex > -1 && weeks.length > 0}
         <div class="flex flex-row w-full justify-center items-center">
             <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
@@ -186,19 +198,22 @@
                 {/if}
             </div>
         {/each}
-        <div class="flex justify-center">
-            <button on:click={() => showCopyWeekModal = !showCopyWeekModal} class="bg-yellow rounded p-2 text-black mt-2">
+        <div class="flex justify-center mb-4">
+            <button on:click={toggleCopyWeekModal} class="bg-yellow rounded p-2 text-black mt-2">
                 Copy Week
             </button>
         </div>
     {/if}
 </div>
 {#if showCopyWeekModal}
-    <div class="w-screen min-h-full bg-black bg-opacity-50 z-30 absolute bottom-0 right-0 left-0 top-0 flex justify-center items-center">
+    <div class="w-screen h-screen bg-black bg-opacity-50 z-30 absolute overflow-hidden bottom-0 right-0 left-0 top-0 flex justify-center items-center">
         <div class="z-40 bg-gray-200 rounded m-auto w-7/12 p-4">
             Copy Week
             <p>Select the start date to copy to</p>
             <input type="date" on:change={(e) => copyWeek(e.target.value)}>
+            <button on:click={toggleCopyWeekModal}>
+                Cancel
+            </button>
         </div>
     </div>
 {/if}
