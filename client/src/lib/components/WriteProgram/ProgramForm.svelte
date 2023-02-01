@@ -259,57 +259,80 @@
 <div class="flex w-screen justify-center">
     <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 
-    <div class="flex flex-col self-start w-9/12">
-    <div class="flex flex-row justify-between">
-        <div class="flex flex-col justify-start">
-            <div class="flex justify-start">
-                <input type="text"
-                       placeholder="Program Name"
-                       name="name"
-                       on:focus={() => inputFocused = true}
-                       on:blur={() => inputFocused = false}
-                       bind:value={$program.name}
-                       class="p-2 bg-gray-300 text-xl font-bold">
-            </div>
+    <div class="flex flex-col self-start w-9/12 h-screen overflow-scroll">
+        <div class="flex flex-col sticky lg:sticky bg-gray-200 top-0 mb-10 p-2 z-50 shadow-md shadow-black lg:mb-4">
+            <div class="flex flex-col lg:flex-row justify-start">
+                <div class="flex items-center p-1 lg:p-2">
+                    <input type="text"
+                           placeholder="Program Name"
+                           name="name"
+                           on:focus={() => inputFocused = true}
+                           on:blur={() => inputFocused = false}
+                           bind:value={$program.name}
+                           class="p-2 bg-gray-300 text-md lg:text-xl font-bold">
+                </div>
 
-            <div class="py-4 flex justify-start w-9/12">
-                <div class="flex flex-col mr-4 w-7/12">
-                    <label>Start Date</label>
-                    <input type="date"
-                           class="p-1 bg-gray-300 text-textgray decoration-color-textgray"
-                           name="startDate"
-                           bind:value={startDateString}
-                           on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
-                </div>
-                <div class="flex flex-col w-7/12">
-                    <label>End Date</label>
-                    <input type="date"
-                           name="endDate"
-                           class= "bg-gray-300 p-1"
-                           bind:value={endDateString}
-                           on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
+                <div class="p-0 lg:p-2 flex justify-start w-9/12 items-center">
+                    <div class="flex flex-col mr-4 w-7/12">
+                        <label class="text-sm">Start Date</label>
+                        <input type="date"
+                               class="p-1 bg-gray-300 text-md text-textgray decoration-color-textgray"
+                               name="startDate"
+                               bind:value={startDateString}
+                               on:change={(e) => handleDateChange(dayjs(e.target.value), dayjs($program.endDate))}>
+                    </div>
+                    <div class="flex flex-col w-7/12">
+                        <label class="text-sm">End Date</label>
+                        <input type="date"
+                               name="endDate"
+                               class= "bg-gray-300 text-md p-1"
+                               bind:value={endDateString}
+                               on:change={(e) => handleDateChange(dayjs($program.startDate), dayjs(e.target.value))}>
+                    </div>
                 </div>
             </div>
-            <div class="flex flex-col self-start">
-                <label></label>
-                <select class="bg-gray-300 text-textgray p-1" disabled={$program.id} on:change={(e) => handleChangeAthlete(e.target.value)}>
-                    <option disabled selected>No Athlete Selected</option>
-                    {#each athleteOptions as athlete}
-                        <option selected={$program.athleteId === athlete.id} value={athlete.id}>{athlete.name}</option>
-                    {/each}
-                </select>
-                <div class="flex-row my-3">
-                    <input checked={$program.isCurrent}
-                           type="checkbox"
-                           id="current_program"
-                           on:change={(e) => $program.isCurrent = e.target.checked}>
-                    <label for="current_program">Current Program</label>
+            <div>
+                <div class="flex self-start">
+                    <div class="flex flex-col w-6/12">
+                        <label>Athlete</label>
+                        <select class="bg-gray-300 text-textgray p-1" disabled={$program.id} on:change={(e) => handleChangeAthlete(e.target.value)}>
+                            <option disabled selected>No Athlete Selected</option>
+                            {#each athleteOptions as athlete}
+                                <option selected={$program.athleteId === athlete.id} value={athlete.id}>{athlete.name}</option>
+                            {/each}
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col-reverse lg:flex-row items-center justify-center">
+                        <input checked={$program.isCurrent}
+                               type="checkbox"
+                               id="current_program"
+                               on:change={(e) => $program.isCurrent = e.target.checked}>
+                        <label for="current_program">Current Program</label>
+                    </div>
                 </div>
+                {#if !isMobile}
+                    <div class="flex justify-between">
+                        <div>
+                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addWarmup}>
+                                Add Warmup
+                            </button>
+                            {#if $program?.days.length > 0}
+                                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                                    Add exercise (Shift +)
+                                </button>
+                            {/if}
+                        </div>
+                        <div>
+                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                                {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
+                            </button>
+                        </div>
+                    </div>
+                {/if}
             </div>
         </div>
-    </div>
 
-    <hr>
         {#if $program && $program?.days?.length > 0 && selectedIndex > -1}
             <div class="flex justify-center align-middle">
                 <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
@@ -317,7 +340,7 @@
                     <FaAngleLeft />
                 </div>
                 <div class="m-0 mx-2 self-center text-xl relative z-30" on:click={() => showDateDropdown = !showDateDropdown}>
-                    <h4>{$program.days[selectedIndex].date.toDateString()}</h4>
+                    <h4>{$program.days[selectedIndex].date.format('ddd MMM DD \'YY')}</h4>
                     {#if showDateDropdown}
                         <div class="absolute bg-gray-400 h-56 max-h-56 overflow-scroll">
                             {#each $program.days as day}
@@ -335,95 +358,67 @@
                     <FaAngleRight />
                 </div>
             </div>
-            {#if !isMobile}
-                <div class="flex justify-between">
-                    <div>
-                        <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addWarmup}>
-                            Add Warmup
-                        </button>
-                        {#if $program?.days.length > 0}
-                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
-                                Add exercise (Shift +)
-                            </button>
-                        {/if}
-                    </div>
-                    <div>
-                        <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
-                            {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
-                        </button>
-                    </div>
+        {/if}
+        {#if selectedIndex > -1 && $program}
+            <div class="mb-24">
+            {#if $program?.days[selectedIndex]?.warmUp}
+                <div class="w-full p-2">
+                    <textarea class="bg-gray-300 w-full" bind:value={$program.days[selectedIndex].warmUp.instructions}></textarea>
                 </div>
             {/if}
-        {/if}
-    {#if selectedIndex > -1 && $program}
-        {#if $program?.days[selectedIndex]?.warmUp}
-            <div class="w-full p-2">
-                <textarea class="bg-gray-300 w-full" bind:value={$program.days[selectedIndex].warmUp.instructions}></textarea>
-            </div>
-        {/if}
-        {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
-            {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
-                {#if exercise.type === ExerciseType.EXERCISE}
-                    <ExerciseForm
-                            bind:exercise={exercise}
-                            bind:selectedDayIndex={selectedIndex}
-                            bind:inputFocused={inputFocused}
-                            exerciseIndex={idx}
-                    />
-                {:else}
-                    <ComplexExerciseForm
-                            bind:exercise={exercise}
-                            bind:selectedDayIndex={selectedIndex}
-                            bind:inputFocused={inputFocused}
-                            exerciseIndex={idx}
-                    />
-                {/if}
-
-            {/each}
-        {:else if $program?.days[selectedIndex]?.isRestDay === true}
-            <div class="flex justify-center m-8 font-bold text-2xl">
-                Rest Day
-            </div>
-        {:else}
-            <div class="flex justify-center m-8 font-bold text-xl">
-                <i>You haven't added any exercises to this day yet</i>
-            </div>
-        {/if}
-        {#if isMobile}
-            <footer class="sticky bottom-0 left-0 right-0 flex justify-between bg-gray-200 p-2">
-                <div>
-                    {#if $program?.days.length > 0}
-                        <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2" on:click={addExercise}>
-                            Add exercise
-                        </button>
+            {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
+                {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
+                    {#if exercise.type === ExerciseType.EXERCISE}
+                        <ExerciseForm
+                                bind:exercise={exercise}
+                                bind:selectedDayIndex={selectedIndex}
+                                bind:inputFocused={inputFocused}
+                                exerciseIndex={idx}
+                        />
+                    {:else}
+                        <ComplexExerciseForm
+                                bind:exercise={exercise}
+                                bind:selectedDayIndex={selectedIndex}
+                                bind:inputFocused={inputFocused}
+                                exerciseIndex={idx}
+                        />
                     {/if}
+                {/each}
+            {:else if $program?.days[selectedIndex]?.isRestDay === true}
+                <div class="flex justify-center m-8 font-bold text-2xl">
+                    Rest Day
                 </div>
-                <div>
-                    <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
-                        {$program.days[selectedIndex].isRestDay ? 'Undo rest day' : 'Make rest day'}
-                    </button>
+            {:else}
+                <div class="flex justify-center m-8 font-bold text-xl">
+                    <i>You haven't added any exercises to this day yet</i>
                 </div>
-                <button type="button"
-                        on:click={(e) => handleSubmit(e, $program)}
-                        class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 px-5 rounded-md">
-                    Save
-                </button>
-            </footer>
-        {:else}
-            <footer class="fixed bottom-10 right-5 md:static flex mt-4 justify-end md:w-full ">
-                <button type="button"
-                        on:click={(e) => handleSubmit(e, $program)}
-                        class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 p-2 rounded-md">
-                    Save (Ctrl s)
-                </button>
-                <button type="button" on:click={generateCSV} class="bg-blue-500 hover:text-yellow-lt mx-2 p-2 rounded-md hidden md:flex">
-                    Download CSV
-                </button>
-            </footer>
+            {/if}
+            </div>
         {/if}
-    {/if}
     </div>
+    {#if isMobile}
+        <footer class="fixed bottom-0 left-0 right-0 flex justify-between bg-gray-200 p-2">
+            <div>
+                {#if $program?.days.length > 0}
+                    <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                        Add exercise
+                    </button>
+                {/if}
+            </div>
+            <div>
+                <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                    {$program.days[selectedIndex].isRestDay ? 'Undo rest day' : 'Make rest day'}
+                </button>
+            </div>
+            <button type="button"
+                    on:click={(e) => handleSubmit(e, $program)}
+                    class="text-gray-300 bg-yellow hover:bg-yellow-shade mx-2 px-5 rounded-md">
+                Save
+            </button>
+        </footer>
+    {/if}
 </div>
+
 
 <style>
     .exercise-input {
