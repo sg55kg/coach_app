@@ -46,7 +46,7 @@
 </script>
 
 {#if $program?.id}
-    <div class="relative h-full overflow-hidden">
+    <div class="relative">
         <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
     </div>
 {/if}
