@@ -85,10 +85,10 @@
             isComplete: !exercise.isComplete,
             weightCompleted: weight,
             totalRepsCompleted: (sets * reps),
-            setsComplete: sets
+            setsCompleted: sets
         }
         if (exercise.dropSets.length > 0 && updatedExercise.weightCompleted > 0) {
-            updatedExercise.dropSets = exercise.dropSets.map(d => ({ ...d, weightCompleted: d.weight, setsComplete: d.sets, totalRepsCompleted: (d.repsPerSet*d.sets)}))
+            updatedExercise.dropSets = exercise.dropSets.map(d => ({ ...d, weightCompleted: d.weight, setsCompleted: d.sets, totalRepsCompleted: (d.repsPerSet*d.sets)}))
         }
         repsPerSetComplete = reps
         setsComplete = sets
@@ -190,8 +190,7 @@
             id: '',
             commenterName: $userDB!.username
         }
-        console.log(comment)
-        let updatedExercise: Exercise = { ...ex, comments: [...ex.comments, comment]}
+
         try {
             const savedComment: ExerciseComment = await ProgramService.addExerciseComment(comment)
             console.log(savedComment)
@@ -226,8 +225,8 @@
 
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
-        repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsComplete > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsComplete) : 0
-        setsComplete = exercise.setsComplete > 0 ? exercise.setsComplete : 0
+        repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsCompleted > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
+        setsComplete = exercise.setsCompleted > 0 ? exercise.setsCompleted : 0
     })
 
 </script>
@@ -239,9 +238,12 @@
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
             <div class="m-0 p-1 text-base lg:text-lg font-medium text-textblue flex lg:mx-4">
-                <input type="number" class={`bg-gray-200 w-12 lg:w-8 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`} bind:value={exercise.weightCompleted}>
+                <input type="number"
+                       class={`bg-gray-200 w-12 lg:w-16 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
+                       bind:value={exercise.weightCompleted}>
                 <p class="m-0 w-fit">&nbsp;/&nbsp;&nbsp;{exercise.weight} &nbsp;</p>
-                <select on:change={(e) => handleChangeWeightUnits(e.target.value, exercise)} class="bg-gray-200 w-fit mx-0">
+                <select on:change={(e) => handleChangeWeightUnits(e.target.value, exercise)}
+                        class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
                     <option>lb</option>
                 </select>
@@ -270,7 +272,10 @@
                     <p>{exercise?.repsPerSet} RM</p>
                 </div>
                 <div class="flex flex-row justify-around text-base lg:text-lg font-medium text-textblue lg:pl-2">
-                    <input type="number" class={`bg-gray-200 w-12 lg:w-12 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`} bind:value={exercise.weightCompleted}>
+                    <input type="number"
+                           class={`bg-gray-200 w-12 lg:w-14 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'}
+                           border-b-2 border-yellow-lt`}
+                           bind:value={exercise.weightCompleted}>
                     <p class="w-6/12">&nbsp;kg</p>
                 </div>
                 <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">

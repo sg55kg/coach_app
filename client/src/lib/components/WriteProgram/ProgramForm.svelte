@@ -4,8 +4,8 @@
     import {Program} from "$lib/classes/program";
     import {afterUpdate, onDestroy, onMount} from "svelte";
     import {Day, WarmUp} from "$lib/classes/program/day";
-    import dayjs from "dayjs";
     import type {Dayjs} from "dayjs";
+    import dayjs from "dayjs";
     import {userDB} from "$lib/stores/authStore";
     import {Exercise} from "$lib/classes/program/exercise";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
@@ -13,6 +13,7 @@
     import ExerciseForm from "$lib/components/WriteProgram/ExerciseForm.svelte";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import ComplexExerciseForm from "$lib/components/WriteProgram/ComplexExerciseForm.svelte";
+    import FaFileDownload from 'svelte-icons/fa/FaFileDownload.svelte'
 
     export let handleSubmit
     export let initialIndex: number = -1
@@ -36,17 +37,42 @@
 
 
     const generateCSV = () => {
-        let str = "Day 1\nExercise,Weight,Sets,Reps,Notes\n";
+        let str = "Day 1\nExercise,Weight,Sets,Reps,Complete,Weight Completed,RPS Completed,Sets Completed,Total Reps Completed,Notes\n";
         for(let i=0;i< $program.days.length; i++) {
             if($program.days[i].exercises.length < 1) continue
-            if (i > 0) str += "Day " + (i+1) + "\n"
+            if (i > 0) {
+                str += "Day " + (i+1) + ": " + $program.days[i].date.format('ddd MMM DD') + "\n"
+            }
             const d = $program.days[i]
+            if (d.isRestDay) {
+                str += "Rest Day\n"
+                continue
+            }
             for(let j = 0; j < d.exercises.length; j++) {
-                str += d.exercises[j].name + "," +
-                    d.exercises[j].weight + "," +
-                    d.exercises[j].repsPerSet + "," +
-                    d.exercises[j].sets + "," +
-                    d.exercises[j].notes + "\n"
+                const e = d.exercises[j]
+                if (e.type === ExerciseType.EXERCISE) {
+                    str += e.name + "," +
+                        e.weight + "," +
+                        e.sets + "," +
+                        e.repsPerSet + "," +
+                        e.isComplete + "," +
+                        (e.isComplete ? e.weightCompleted : "0") + "," +
+                        (e.isComplete && e.setsCompleted > 0 ? (e.totalRepsCompleted / e.setsCompleted) : "0") + "," +
+                        (e.isComplete ? e.setsCompleted : "0") + "," +
+                        (e.isComplete ? e.totalRepsCompleted : "0") + "," +
+                        e.notes + "\n"
+                } else if (e.type === ExerciseType.COMPLEX) {
+                    str += e.nameArr.join('+') + "," +
+                        e.weight + "," +
+                        e.sets + "," +
+                        e.repArr.join('+') + "," +
+                        e.isComplete + "," +
+                        (e.isComplete ? e.weightCompleted : "0") + "," +
+                        (e.isComplete ? e.repCompletedArr.join('+') : e.repArr.map(_ => 0).join('+')) + "," +
+                        (e.isComplete ? e.setsCompleted : "0") + "," +
+                        (e.isComplete ? e.repArr.reduce((a, b) => a+b) : "0") + "," +
+                        e.notes + "\n"
+                }
             }
         }
 
@@ -294,15 +320,20 @@
                 <div class="flex self-start">
                     <div class="flex flex-col w-6/12">
                         <label>Athlete</label>
-                        <select class="bg-gray-300 text-textgray p-1" disabled={$program.id} on:change={(e) => handleChangeAthlete(e.target.value)}>
+                        <select class="bg-gray-300 text-textgray p-1"
+                                disabled={$program.id}
+                                on:change={(e) => handleChangeAthlete(e.target.value)}
+                        >
                             <option disabled selected>No Athlete Selected</option>
                             {#each athleteOptions as athlete}
-                                <option selected={$program.athleteId === athlete.id} value={athlete.id}>{athlete.name}</option>
+                                <option selected={$program.athleteId === athlete.id} value={athlete.id}>
+                                    {athlete.name}
+                                </option>
                             {/each}
                         </select>
                     </div>
 
-                    <div class="flex flex-col-reverse lg:flex-row items-center justify-center">
+                    <div class="flex flex-col-reverse lg:flex-row lg:p-4 items-center justify-center">
                         <input checked={$program.isCurrent}
                                type="checkbox"
                                id="current_program"
@@ -313,18 +344,26 @@
                 {#if !isMobile}
                     <div class="flex justify-between">
                         <div>
-                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addWarmup}>
+                            <button type="button" class="bg-gray-200 text-yellow hover:bg-gray-300 p-2" on:click={addWarmup}>
                                 Add Warmup
                             </button>
                             {#if $program?.days.length > 0}
-                                <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2" on:click={addExercise}>
+                                <button type="button" class="bg-gray-200 text-yellow hover:bg-gray-300 p-2" on:click={addExercise}>
                                     Add exercise (Shift +)
+                                </button>
+                                <button type="button" class="bg-gray-200 text-yellow hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
+                                    {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
                                 </button>
                             {/if}
                         </div>
-                        <div>
-                            <button type="button" class="bg-gray-200 text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
-                                {$program.days[selectedIndex].isRestDay ? 'Undo rest day (Shift *)' : 'Make rest day (Shift *)'}
+                        <div class="flex items-center">
+                            <button class=" h-6 mx-4 text-yellow-lt" title="Download CSV" on:click={generateCSV}>
+                                <FaFileDownload />
+                            </button>
+                            <button type="button"
+                                    on:click={(e) => handleSubmit(e, $program)}
+                                    class="text-gray-300 bg-yellow hover:bg-yellow-shade p-2 px-4 rounded-md">
+                                Save
                             </button>
                         </div>
                     </div>
@@ -346,7 +385,7 @@
                                 <p class="z-20 text-base hover:bg-gray-200 hover:cursor-pointer p-2"
                                    on:click={() => { selectedIndex = $program.days.findIndex(d => d.id === day.id); setTimeout(() => showDateDropdown = false, 100) }}
                                 >
-                                    {day.date.toDateString()}
+                                    {day.date.format('ddd MMM DD')}
                                 </p>
                             {/each}
                         </div>

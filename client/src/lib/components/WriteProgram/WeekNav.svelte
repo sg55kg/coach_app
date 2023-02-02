@@ -161,7 +161,8 @@
                                 {`${exercise.name}:`}
                             </p>
                             <p class="mb-1">
-                                {exercise.weight}kg - {exercise.sets}x{exercise.repsPerSet}
+                                {exercise.isComplete ? `${exercise.weightCompleted}kg - ${exercise.setsCompleted}x${exercise.setsCompleted > 0 ? (exercise.totalRepsCompleted/exercise.setsCompleted) : 0}` :
+                                    `${exercise.weight}kg - ${exercise.sets}x${exercise.repsPerSet}`}
                             </p>
                         {:else}
                             <p class={`${exercise.isComplete && 'text-green'}`}>

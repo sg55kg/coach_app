@@ -42,7 +42,7 @@ export class Exercise {
     totalRepsCompleted: number = 0
     comments: ExerciseComment[] = []
     isComplete: boolean = false
-    setsComplete: number = 0
+    setsCompleted: number = 0
     order: number = 0
     effortIntensity: EffortIntensity = EffortIntensity.EASY
     unilateral: boolean = false
