@@ -14,7 +14,7 @@
 
     let newCommentContent: string = ''
     let showComments: boolean = false
-    let setsComplete: number = exercise.setsComplete ? exercise.setsComplete : 0
+    let setsComplete: number = exercise.setsCompleted ? exercise.setsCompleted : 0
     let repsComplete: number[] = exercise.repArr.map(_ => 0)
 
     const toggleShowComments = () => showComments = !showComments
@@ -46,7 +46,7 @@
         if (incOrDec === 'plus') {
             setsComplete = setsComplete + 1
             if (repsComplete[0] === 0) {
-                repsComplete.forEach((r, i) => r = exercise.repArr[i])
+                repsComplete.forEach((r, i) => exercise.repArr[i])
             }
         } else if (setsComplete > 0) {
             setsComplete = setsComplete - 1
@@ -56,17 +56,17 @@
     const completeExercise = async () => {
         let repsCompleteAreZero = false
         for (const r of repsComplete)  {
-            if (r !== 0) {
+            if (r === 0) {
                 repsCompleteAreZero = true
                 break
             }
         }
         const updatedExercise: Exercise = {
             ...exercise,
-            setsComplete: setsComplete > 0 ? setsComplete : exercise.sets,
+            setsCompleted: setsComplete > 0 ? setsComplete : exercise.sets,
             repCompletedArr: repsCompleteAreZero ? exercise.repArr : repsComplete,
             isComplete: true,
-            weightCompleted: exercise.weight
+            weightCompleted: exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
         }
         try {
             const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
@@ -83,7 +83,7 @@
     const skipExercise = async () => {
         const updatedExercise: Exercise = {
             ...exercise,
-            setsComplete: 0,
+            setsCompleted: 0,
             repCompletedArr: exercise.repArr.map(_ => 0),
             isComplete: true,
             weightCompleted: 0
@@ -107,7 +107,7 @@
             <div class="m-0 p-1 text-base lg:text-lg lg:font-semibold text-textblue flex flex-col lg:flex-row items-center lg:mx-4">
                 <div class="flex mb-2">
                     <input type="number"
-                           class={`bg-gray-200 w-12 lg:w-12 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
+                           class={`bg-gray-200 w-12 lg:w-18 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
                            bind:value={exercise.weightCompleted}
                     >
                     <p class="m-0 w-fit">&nbsp;/&nbsp;&nbsp;&nbsp;{exercise.weight} &nbsp;</p>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="flex items-center mb-2">
                     {#each exercise.repArr as rep, idx}
-                        <input type="number" class="bg-gray-200 text-center w-6 border-b-2 border-yellow-lt" bind:value={rep}>
+                        <input type="number" class="bg-gray-200 text-center w-10 border-b-2 border-yellow-lt" bind:value={rep}>
                         {#if idx < exercise.repArr.length-1}
                             +&nbsp;&nbsp;&nbsp;
                         {/if}
@@ -142,7 +142,7 @@
                 </div>
                 <div class="flex flex-row text-base lg:text-lg font-medium text-textblue">
                     <input type="number"
-                           class={`bg-gray-200 w-12 lg:w-12 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
+                           class={`bg-gray-200 w-12 lg:w-18 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
                            bind:value={exercise.weightCompleted}
                     >
                     <p class="w-6/12">&nbsp;kg</p>
