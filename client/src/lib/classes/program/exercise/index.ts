@@ -57,6 +57,7 @@ export class Exercise {
     nameArr: string[] = []
     repCompletedArr: number[] = []
     dropSetPercent: number = 0
+    actualIntesity: EffortIntensity = EffortIntensity.EASY
 }
 
 
