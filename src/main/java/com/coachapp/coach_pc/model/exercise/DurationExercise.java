@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "duration_exercise")
 public class DurationExercise extends Exercise {
 
     private String equipment;

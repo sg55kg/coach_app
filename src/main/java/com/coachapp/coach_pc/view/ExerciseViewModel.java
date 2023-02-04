@@ -5,6 +5,7 @@ import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.ComplexExercise;
+import com.coachapp.coach_pc.model.exercise.DurationExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 
@@ -39,6 +40,7 @@ public class ExerciseViewModel {
     public List<Integer> repArr = new ArrayList<>();
     public List<String> nameArr = new ArrayList<>();
     public List<Integer> repCompletedArr = new ArrayList<>();
+    public EffortIntensity actualIntensity = EffortIntensity.EASY;
 
     public ExerciseViewModel() {
 
@@ -74,6 +76,14 @@ public class ExerciseViewModel {
             viewModel.repCompletedArr = ComplexExercise.convertRepCompletedArrToList(
                     ((ComplexExercise) exercise).getRepCompletedArr()
             );
+        } else if (exercise.getType() == ExerciseType.DURATION) {
+            viewModel.effortIntensity = ((DurationExercise) exercise).getEffortIntensity();
+            viewModel.actualIntensity = ((DurationExercise) exercise).getActualIntensity();
+            viewModel.equipment = ((DurationExercise) exercise).getEquipment();
+            viewModel.distanceMeters = ((DurationExercise) exercise).getDistanceMeters();
+            viewModel.distanceCompletedMeters = ((DurationExercise) exercise).getDistanceCompletedMeters();
+            viewModel.secondsPerSet = ((DurationExercise) exercise).getSecondsPerSet();
+            viewModel.secondsPerSetCompleted = ((DurationExercise) exercise).getSecondsPerSetCompleted();
         }
 
         return viewModel;

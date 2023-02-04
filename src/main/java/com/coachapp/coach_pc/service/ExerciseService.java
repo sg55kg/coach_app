@@ -28,11 +28,7 @@ public class ExerciseService {
 
     public ResponseEntity<ExerciseViewModel> updateExercise(ExerciseRequest request) {
         Optional<? extends Exercise> optional;
-//        if (request.getType() == ExerciseType.EXERCISE) {
-//            optional = exerciseRepo.findById(request.getId());
-//        } else {
-//            optional = complexExerciseRepo.findById(request.getId());
-//        }
+
         optional = exerciseRepo.findById(request.getId());
 
         if (optional.isEmpty()) {
