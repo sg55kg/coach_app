@@ -48,7 +48,9 @@
                     updateSeverity = 'over'
                     return lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
                 }
+                return updateSeverity = 'low'
             }
+
             return updateSeverity = 'none'
         }
         const lastUpdatedDay = dayjs(lastEntered.date)
