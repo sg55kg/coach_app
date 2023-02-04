@@ -45,8 +45,9 @@
         if (!lastEntered) {
             if (athlete.currentProgram.days.length > 0) {
                 if (athlete.currentProgram.days[athlete.currentProgram.days.length-1].date.valueOf() <= today.valueOf()) {
-                    updateSeverity = 'over'
-                    return lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
+                    lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
+                    console.log('fired')
+                    return updateSeverity = 'over'
                 }
                 return updateSeverity = 'low'
             }
@@ -54,9 +55,13 @@
             return updateSeverity = 'none'
         }
         const lastUpdatedDay = dayjs(lastEntered.date)
-        const diff = lastUpdatedDay.diff(today, 'days')
+        lastDay = dayjs(athlete.currentProgram.days[athlete.currentProgram.days.length-1].date)
+        if (today.valueOf() >= lastUpdatedDay.valueOf()) {
+            return updateSeverity = 'over'
+        }
+        const diff = dayjs(lastUpdatedDay).diff(today, 'days')
 
-        if (today.valueOf() >= lastUpdatedDay.valueOf() || diff <= 2) {
+        if ( diff <= 2) {
             updateSeverity = 'severe'
         } else if (diff <= 6) {
             updateSeverity = 'moderate'
