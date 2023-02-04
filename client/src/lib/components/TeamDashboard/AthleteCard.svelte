@@ -13,7 +13,8 @@
     export let athlete: AthleteData
     export let team: Team
 
-    let updateSeverity: 'low' | 'moderate' | 'severe' | 'none'
+    let updateSeverity: 'low' | 'moderate' | 'severe' | 'none' | 'over'
+    let lastDay: dayjs = dayjs()
     let editProgramName: boolean = false
 
     const saveProgramName = async () => {
@@ -43,17 +44,17 @@
         const lastEntered = athlete.currentProgram.days.find(d => d.exercises.length < 1 && !d.isRestDay)
         if (!lastEntered) {
             if (athlete.currentProgram.days.length > 0) {
-                let isLastDayOfProgram = false
-                for (const exercise in athlete.currentProgram.days[athlete.currentProgram.days.length - 1]) {
-
+                if (athlete.currentProgram.days[athlete.currentProgram.days.length-1].date.valueOf() <= today.valueOf()) {
+                    updateSeverity = 'over'
+                    return lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
                 }
             }
-            return updateSeverity = 'low'
+            return updateSeverity = 'severe'
         }
         const lastUpdatedDay = dayjs(lastEntered.date)
         const diff = lastUpdatedDay.diff(today, 'days')
 
-        if (diff <= 2 || today.valueOf() > lastUpdatedDay.valueOf()) {
+        if (today.valueOf() >= lastUpdatedDay.valueOf() || diff <= 2) {
             updateSeverity = 'severe'
         } else if (diff <= 6) {
             updateSeverity = 'moderate'
@@ -84,8 +85,10 @@
                 <p class="m-0 text-yellow-shade text-base font-normal tracking-wide">{athlete.name}'s program needs an update in 1 week or less</p>
             {:else if updateSeverity === 'low'}
                 <p class="m-0 text-green text-base font-normal tracking-wide">{athlete.name}'s program is up to date</p>
-            {:else}
+            {:else if updateSeverity === 'none'}
                 <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
+            {:else}
+                <p class="m-0 text-base text-orange-shade tracking-wide">{athlete.name}'s program's last day was {lastDay.format('ddd MMM DD YYYY')}</p>
             {/if}
         </div>
         <div class="mt-2 flex justify-around">
