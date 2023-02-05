@@ -9,6 +9,7 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import {Program} from "$lib/classes/program";
     import {AthleteData} from "$lib/classes/user/athlete";
+    import FaRegPlusSquare from 'svelte-icons/fa/FaRegPlusSquare.svelte'
 
     export let athlete: AthleteData
     export let team: Team
@@ -18,7 +19,6 @@
     let editProgramName: boolean = false
 
     const saveProgramName = async () => {
-        if (!$auth0Client) return
 
         try {
             const updatedProgram = {
@@ -44,7 +44,7 @@
         const lastEntered = athlete.currentProgram.days.find(d => d.exercises.length < 1 && !d.isRestDay)
         if (!lastEntered) {
             if (athlete.currentProgram.days.length > 0) {
-                if (athlete.currentProgram.days[athlete.currentProgram.days.length-1].date.valueOf() <= today.valueOf()) {
+                if (dayjs(athlete.currentProgram.days[athlete.currentProgram.days.length-1].date).valueOf() <= today.valueOf()) {
                     lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
                     console.log('fired')
                     return updateSeverity = 'over'
@@ -71,18 +71,28 @@
     })
 </script>
 
-<div class="rounded border-2 border-gray-400 p-2">
-    <h2 class="font-semibold text-xl">
-        {athlete.name}
-    </h2>
+<div class="rounded border-2 border-gray-400 p-2 my-2">
+    <div class="flex justify-between">
+        <h2 class="font-semibold text-xl">
+            {athlete.name}
+        </h2>
+        {#if athlete.currentProgram}
+            {dayjs(athlete.currentProgram.startDate).format('MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('MMM DD')}
+        {/if}
+    </div>
+
     {#if athlete.currentProgram}
         <div class="flex justify-start text-lg">
             {#if !editProgramName}
                 <h4>Current Program: {athlete.currentProgram.name}</h4>
-                <div class="h-5 mx-2" on:click={() => editProgramName = !editProgramName}><FaPen /></div>
+                <div class="h-5 mx-2 flex items-end hover:cursor-pointer hover:text-yellow-lt"
+                     on:click={() => editProgramName = !editProgramName}>
+                    <p class="h-4 self-end"><FaPen /></p>
+                </div>
             {:else }
                 <input class="text-textblue bg-gray-300" bind:value={athlete.currentProgram.name}>
-                <button class="mx-2 text-sm" on:click={saveProgramName}>Save</button>
+                <button class="mx-2 text-sm hover:bg-textblue hover:text-black px-2" on:click={saveProgramName}>Save</button>
+                <button class="mx-2 text-sm text-red hover:text-red-shade hover:bg-gray-100 px-2" on:click={() => editProgramName = false}>Cancel</button>
             {/if}
         </div>
         <div>
@@ -98,15 +108,22 @@
                 <p class="m-0 text-base text-orange-shade tracking-wide">{athlete.name}'s program's last day was {lastDay.format('ddd MMM DD YYYY')}</p>
             {/if}
         </div>
+        <div>
+            {#if athlete?.currentProgram}
+                <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
+                    <button class="text-link hover:text-link-shade p-2 hover:bg-gray-100">Edit Current Program</button>
+                </a>
+            {/if}
+        </div>
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
-                    <FaRegEdit></FaRegEdit>
+                <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>
+                    <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
                 </a>
             </div>
             <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/athlete-stats/${athlete.id}`}>
-                    <FaRegChartBar></FaRegChartBar>
+                <a class="flex h-6" href={`/home/coach/athlete-stats/${athlete.id}`}>
+                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>
                 </a>
             </div>
         </div>
@@ -114,13 +131,13 @@
         <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/create-program?athlete=${athlete.id}`}>
-                    <FaRegEdit></FaRegEdit>
+                <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>
+                    <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
                 </a>
             </div>
             <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a href={`/home/coach/athlete-stats/${athlete.id}`}>
-                    <FaRegChartBar></FaRegChartBar>
+                <a class="flex" href={`/home/coach/athlete-stats/${athlete.id}`}>
+                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>
                 </a>
             </div>
         </div>
