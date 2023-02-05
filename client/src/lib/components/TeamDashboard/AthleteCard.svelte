@@ -45,8 +45,8 @@
         if (!lastEntered) {
             if (athlete.currentProgram.days.length > 0) {
                 if (dayjs(athlete.currentProgram.days[athlete.currentProgram.days.length-1].date).valueOf() <= today.valueOf()) {
-                    lastDay = athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date
-                    console.log('fired')
+                    lastDay = dayjs(athlete.currentProgram.days[athlete.currentProgram.days.length - 1].date)
+
                     return updateSeverity = 'over'
                 }
                 return updateSeverity = 'low'
@@ -105,7 +105,7 @@
             {:else if updateSeverity === 'none'}
                 <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
             {:else}
-                <p class="m-0 text-base text-orange-shade tracking-wide">{athlete.name}'s program's last day was {lastDay.format('ddd MMM DD YYYY')}</p>
+                <p class="m-0 text-base text-orange-shade tracking-wide">{athlete.name}'s program's last day was {lastDay?.format('ddd MMM DD YYYY')}</p>
             {/if}
         </div>
         <div>
