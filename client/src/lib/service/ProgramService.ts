@@ -34,6 +34,14 @@ export class ProgramService {
         return Program.build(dbProgram)
     }
 
+    static deleteProgram = async (programId: string) => {
+        const res = await fetch(`/api/program/${programId}`, {
+            method: 'DELETE'
+        })
+        if (res.status > 204) {
+            throw new Error('Could not delete program')
+        }
+    }
     static updateProgram = async (program: Program) => {
         const id = program.id
         console.log(program)
