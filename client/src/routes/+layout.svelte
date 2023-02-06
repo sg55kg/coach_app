@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import {authUser, loadingAuth, userDB} from "$lib/stores/authStore";
-	import AuthHeader from "$lib/components/AuthHeader.svelte";
-	import {page} from '$app/stores'
+	import {authUser, isMobile, loadingAuth, userDB} from "$lib/stores/authStore";
 	import type {LayoutServerData} from "../../.svelte-kit/types/src/routes/$types";
 	import {User} from "$lib/classes/user";
 	import {onMount} from "svelte";
@@ -19,9 +17,26 @@
 	}
 
 	onMount(async () => {
+		const mobileDevices  = [
+			/Android/i,
+			/webOS/i,
+			/iPhone/i,
+			/iPad/i,
+			/iPod/i,
+			/BlackBerry/i,
+			/Windows Phone/i
+		]
+
+		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
+			$isMobile = true
+			console.log($isMobile)
+		}
 		if ($userDB && $authUser && window.location.pathname === '/') {
 			await goto('/home')
+		} else if (!$userDB && window.location.pathname !== '/') {
+			await goto('/')
 		}
+
 	})
 </script>
 <div class="app bg-gray-100 text-textgray w-screen">

@@ -3,10 +3,9 @@
     import {onMount} from "svelte";
     import {authUser} from "$lib/stores/authStore";
     import AthleteNav from "$lib/components/AthleteNav.svelte";
+    import {isMobile} from "$lib/stores/authStore.js";
 
     export let ssr = false
-
-    let isMobile: boolean = false
 
     const logout = async () => {
         const res = await fetch('/api/auth/logout', {
@@ -21,26 +20,14 @@
     let showDropdown: boolean = false
 
     onMount(() => {
-        const mobileDevices  = [
-            /Android/i,
-            /webOS/i,
-            /iPhone/i,
-            /iPad/i,
-            /iPod/i,
-            /BlackBerry/i,
-            /Windows Phone/i
-        ]
 
-        if (mobileDevices.some(d => navigator.userAgent.match(d))) {
-            isMobile = true
-        }
     })
 
 </script>
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle w-screen">
     <AthleteNav />
-    <div class="flex items-center {isMobile && 'justify-center'} align-baseline">
+    <div class="flex items-center {$isMobile && 'justify-center'} align-baseline">
         {#if $userDB}
             <a href="/home" class="font-semibold tracking-widest uppercase text-2xl ml-1 text-yellow-lt">
                 Coachable
