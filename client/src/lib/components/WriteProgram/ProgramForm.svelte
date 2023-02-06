@@ -14,6 +14,7 @@
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import ComplexExerciseForm from "$lib/components/WriteProgram/ComplexExerciseForm.svelte";
     import FaFileDownload from 'svelte-icons/fa/FaFileDownload.svelte'
+    import {isMobile} from "$lib/stores/authStore.js";
 
     export let handleSubmit
     export let initialIndex: number = -1
@@ -23,7 +24,6 @@
     let selectedDayId: string = ''
     let showDateDropdown: boolean = false
     let inputFocused: boolean = false
-    let isMobile: boolean = false
 
     $: athleteOptions = []
 
@@ -209,19 +209,6 @@
     }
 
     onMount(() => {
-        const mobileDevices  = [
-            /Android/i,
-            /webOS/i,
-            /iPhone/i,
-            /iPad/i,
-            /iPod/i,
-            /BlackBerry/i,
-            /Windows Phone/i
-        ]
-
-        if (mobileDevices.some(d => navigator.userAgent.match(d))) {
-            isMobile = true
-        }
         if (document)
             document.addEventListener('keydown', handleHotKeys)
         if ($userDB?.coachData?.athletes && !athleteId && !$program.id) {
@@ -341,7 +328,7 @@
                         <label for="current_program">Current Program</label>
                     </div>
                 </div>
-                {#if !isMobile}
+                {#if !$isMobile}
                     <div class="flex justify-between">
                         <div>
                             <button type="button" class="bg-gray-200 text-yellow hover:bg-gray-300 p-2" on:click={addWarmup}>
@@ -406,7 +393,7 @@
             {/if}
             {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
                 {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
-                    {#if exercise.type === ExerciseType.EXERCISE}
+                    {#if exercise.type === ExerciseType.EXERCISE || exercise.type === ExerciseType.DURATION}
                         <ExerciseForm
                                 bind:exercise={exercise}
                                 bind:selectedDayIndex={selectedIndex}
@@ -434,7 +421,7 @@
             </div>
         {/if}
     </div>
-    {#if isMobile}
+    {#if $isMobile}
         <footer class="fixed bottom-0 left-0 right-0 flex justify-between bg-gray-200 p-2">
             <div>
                 {#if $program?.days.length > 0}
@@ -445,7 +432,7 @@
             </div>
             <div>
                 <button type="button" class="bg-gray-400 rounded-md text-white hover:bg-gray-300 p-2 mx-2" on:click={toggleRestDay}>
-                    {$program.days[selectedIndex].isRestDay ? 'Undo rest day' : 'Make rest day'}
+                    {$program.days[selectedIndex]?.isRestDay ? 'Undo rest day' : 'Make rest day'}
                 </button>
             </div>
             <button type="button"

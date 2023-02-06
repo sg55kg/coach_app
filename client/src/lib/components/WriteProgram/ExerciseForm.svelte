@@ -21,6 +21,8 @@
     let showOptions: boolean = false
     let showComplexNameOptions: number = -1
     let showComments: boolean = false
+    let minutesPerSet: number
+    let secondsPerSet: number
 
     let handleAutoComplete = (e: KeyboardEvent) => {
         inputFocused = true
@@ -52,6 +54,7 @@
             if (exercise.type === ExerciseType.COMPLEX) {
                 options = athleteRecordFields.filter((x) => x.includes(exercise.nameArr[exercise.nameArr.length-1].toLowerCase()))
             } else {
+                if (!exercise.name) return
                 options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
             }
         }
@@ -104,6 +107,7 @@
     }
 
     const handleNameFormFocus = () => {
+        if (!exercise.name) return
         showOptions = true
         inputFocused = true
         options = athleteRecordFields.filter((x) => x.includes(exercise.name.toLowerCase()))
@@ -123,11 +127,36 @@
 
     onMount(() => {
         options = [...athleteRecordFields]
+        if (exercise.type === ExerciseType.DURATION && exercise.secondsPerSet > 0) {
+            minutesPerSet = Math.floor(exercise.secondsPerSet / 60)
+            secondsPerSet = exercise.secondsPerSet - (minutesPerSet * 60)
+        }
     })
 
     onDestroy(() => {
 
     })
+
+    const handleChangeDuration = (value: string) => {
+        console.log(value)
+        if (value === 'Reps') {
+            exercise.type = ExerciseType.EXERCISE
+        } else if (value === 'Time') {
+            exercise.type = ExerciseType.DURATION
+        }
+        console.log(exercise.type)
+    }
+
+    const handleSetDurationTime = () => {
+        if (secondsPerSet === undefined) {
+            secondsPerSet = 0
+        } if (minutesPerSet === undefined) {
+            minutesPerSet = 0
+        }
+        exercise.secondsPerSet = secondsPerSet + (minutesPerSet * 60)
+        console.log(exercise.secondsPerSet)
+    }
+
 </script>
 
 <div class="flex flex-col-reverse justify-center lg:items-center lg:flex-row">
@@ -140,7 +169,7 @@
         </div>
     </div>
     <div class="flex flex-col lg:p-2 justify-items-center border-0 lg:pt-5 bg-gray-200 my-2 lg:flex-auto lg:w-11/12">
-        <div class="flex flex-col p-2 justify-between lg:flex-row lg:justify-around">
+        <div class="flex flex-col p-2 justify-between lg:grid lg:grid-cols-6">
             <div class="flex flex-col m-1">
                 <label class="text-sm m-0">Name</label>
                     <div class="relative z-0">
@@ -166,7 +195,7 @@
 
             {#if !exercise.isMax}
                 <div class="flex flex-col m-1">
-                    <label class="text-sm m-0">Weight</label>
+                    <label class="text-sm m-0">Weight (kg)</label>
                     <input type="number"
                            name="weight"
                            on:focus={() => inputFocused = true}
@@ -191,17 +220,53 @@
 
 
                 <div class="flex flex-col m-1">
-                    <label class="text-sm m-0">Reps</label>
-                    <input type="number"
-                           name="repsPerSet"
-                           on:focus={() => inputFocused = true}
-                           on:blur={() => inputFocused = false}
-                           placeholder="Reps"
-                           class="bg-gray-300 p-2"
-                           bind:value={exercise.repsPerSet}
-                    >
+                    <select class="text-sm bg-gray-200 mb-[.1em]" on:change={(e) => handleChangeDuration(e.target.value)}>
+                        <option selected={exercise.type === ExerciseType.EXERCISE}>Reps</option>
+                        <option selected={exercise.type === ExerciseType.DURATION}>Time</option>
+                    </select>
+<!--                    <label class="text-sm m-0">Reps</label>-->
+                    {#if exercise.type === ExerciseType.EXERCISE}
+                        <input type="number"
+                               name="repsperset"
+                               on:focus={() => inputFocused = true}
+                               on:blur={() => inputFocused = false}
+                               placeholder="reps"
+                               class="bg-gray-300 p-2"
+                               bind:value={exercise.repsPerSet}
+                        >
+                    {:else if exercise.type === ExerciseType.DURATION}
+                        <div class="flex">
+                            <input type="number"
+                                   name="minutes"
+                                   on:focus={() => inputFocused = true}
+                                   on:blur={() => inputFocused = false}
+                                   bind:value={minutesPerSet}
+                                   on:input={handleSetDurationTime}
+                                   placeholder="min"
+                                   class="bg-gray-300 p-2 w-16">
+                            <p class="mx-2 font-semibold pt-1">:</p>
+                            <input type="number"
+                                   name="seconds"
+                                   bind:value={secondsPerSet}
+                                   on:focus={() => inputFocused = true}
+                                   on:blur={() => inputFocused = false}
+                                   on:input={handleSetDurationTime}
+                                   placeholder="sec"
+                                   class="bg-gray-300 p-2 w-16">
+                        </div>
+                    {/if}
                 </div>
-
+                {#if exercise.type === ExerciseType.DURATION}
+                    <div class="flex flex-col m-1">
+                        <label class="text-sm m-0">Distance (meters)</label>
+                        <input type="number"
+                               name="distance"
+                               bind:value={exercise.distanceMeters}
+                               on:focus={() => inputFocused = true}
+                               on:blur={() => inputFocused = false}
+                               class="bg-gray-300 p-2">
+                    </div>
+                {/if}
             {:else}
                 <div class="flex flex-col m-1">
                     <label class="text-sm m-0">RM</label>
@@ -215,7 +280,7 @@
                         >
                 </div>
             {/if}
-            <div class="flex justify-center items-center m-2">
+            <div class="flex justify-end items-center m-2 {exercise.type === ExerciseType.EXERCISE ? 'col-span-2' : ''}">
                 <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
                 <label class="switch">
                     <input type="checkbox" bind:checked={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>

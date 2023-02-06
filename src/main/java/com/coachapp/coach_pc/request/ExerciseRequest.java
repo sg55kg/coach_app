@@ -335,6 +335,7 @@ public class ExerciseRequest {
                     ComplexExercise.convertRepCompletedArrListToString(request.getRepCompletedArr())
             );
         } else if (request.getType() == ExerciseType.DURATION) {
+            ((DurationExercise) exercise).setName(request.getName());
             ((DurationExercise) exercise).setEffortIntensity(request.getEffortIntensity());
             ((DurationExercise) exercise).setActualIntensity(request.getActualIntensity());
             ((DurationExercise) exercise).setEquipment(request.getEquipment());

@@ -5,11 +5,12 @@
     import FaRegChartBar from 'svelte-icons/fa/FaRegChartBar.svelte'
     import {Team} from "$lib/classes/team";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {Program} from "$lib/classes/program";
     import {AthleteData} from "$lib/classes/user/athlete";
     import FaRegPlusSquare from 'svelte-icons/fa/FaRegPlusSquare.svelte'
+    import {isMobile} from "$lib/stores/authStore.js";
 
     export let athlete: AthleteData
     export let team: Team
@@ -72,23 +73,31 @@
 </script>
 
 <div class="rounded border-2 border-gray-400 p-2 my-2">
-    <div class="flex justify-between">
+    <div class="flex flex-col items-center lg:flex-row lg:justify-between">
         <h2 class="font-semibold text-xl">
             {athlete.name}
         </h2>
-        {#if athlete.currentProgram}
-            {dayjs(athlete.currentProgram.startDate).format('MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('MMM DD')}
+        {#if !$isMobile && athlete?.currentProgram}
+            {dayjs(athlete.currentProgram.startDate).format('ddd MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('ddd MMM DD')}
         {/if}
     </div>
 
     {#if athlete.currentProgram}
-        <div class="flex justify-start text-lg">
+        <div class="flex flex-col items-center lg:items-start justify-start text-lg">
             {#if !editProgramName}
-                <h4>Current Program: {athlete.currentProgram.name}</h4>
-                <div class="h-5 mx-2 flex items-end hover:cursor-pointer hover:text-yellow-lt"
-                     on:click={() => editProgramName = !editProgramName}>
-                    <p class="h-4 self-end"><FaPen /></p>
-                </div>
+                    <h4>
+                        Current Program:
+                    </h4>
+                {#if athlete.currentProgram && $isMobile}
+                    {dayjs(athlete.currentProgram.startDate).format('ddd MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('ddd MMM DD')}
+                {/if}
+                    <div class="flex justify-center">
+                        <h5 class="text-sm text-center">{athlete.currentProgram.name}</h5>
+<!--                        <div class="h-5 flex ml-2 hover:cursor-pointer hover:text-yellow-lt"-->
+<!--                             on:click={() => editProgramName = !editProgramName}>-->
+<!--                            <p class="h-4 self-end"><FaPen /></p>-->
+<!--                        </div>-->
+                    </div>
             {:else }
                 <input class="text-textblue bg-gray-300" bind:value={athlete.currentProgram.name}>
                 <button class="mx-2 text-sm hover:bg-textblue hover:text-black px-2" on:click={saveProgramName}>Save</button>
@@ -108,7 +117,7 @@
                 <p class="m-0 text-base text-orange-shade tracking-wide">{athlete.name}'s program's last day was {lastDay?.format('ddd MMM DD YYYY')}</p>
             {/if}
         </div>
-        <div>
+        <div class="flex justify-center lg:justify-start">
             {#if athlete?.currentProgram}
                 <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
                     <button class="text-link hover:text-link-shade p-2 hover:bg-gray-100">Edit Current Program</button>

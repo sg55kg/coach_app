@@ -84,6 +84,7 @@ public class ExerciseViewModel {
             viewModel.distanceCompletedMeters = ((DurationExercise) exercise).getDistanceCompletedMeters();
             viewModel.secondsPerSet = ((DurationExercise) exercise).getSecondsPerSet();
             viewModel.secondsPerSetCompleted = ((DurationExercise) exercise).getSecondsPerSetCompleted();
+            viewModel.name = ((DurationExercise) exercise).getName();
         }
 
         return viewModel;

@@ -163,7 +163,7 @@
 
         {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
             {#each $incompleteExercises.sort((a, b) => a.order - b.order) as exercise}
-                {#if exercise.type === ExerciseType.EXERCISE}
+                {#if exercise.type === ExerciseType.EXERCISE || exercise.type === ExerciseType.DURATION}
                     <IncompleteExercise bind:exercise={exercise} />
                 {:else}
                     <AthleteComplexExercise bind:exercise={exercise} />
