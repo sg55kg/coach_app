@@ -15,6 +15,7 @@
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
     import {AthleteData, AthleteRecord} from "$lib/classes/user/athlete";
     import {handleChangeWeightUnits} from "$lib/components/CurrentProgram/util/index.js";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums";
 
     export let exercise: Exercise
 
@@ -23,6 +24,8 @@
     let setsComplete: number = 0
     let repsPerSetComplete: number = 0
     let weightUnitsSelected: 'kg' | 'lb' = 'kg'
+    let secondsPerSet: number = 0
+    let minutesPerSet: number = 0
 
 
     const toggleShowComments = () => showComments = !showComments
@@ -165,7 +168,8 @@
             ...exercise,
             isComplete: true,
             weightCompleted: 0,
-            totalRepsCompleted: 0
+            totalRepsCompleted: 0,
+            distanceCompletedMeters: 0,
         }
         try {
             const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
@@ -227,6 +231,11 @@
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
         repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsCompleted > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
         setsComplete = exercise.setsCompleted > 0 ? exercise.setsCompleted : 0
+
+        if (exercise.type === ExerciseType.DURATION && exercise.secondsPerSet > 0) {
+            minutesPerSet = Math.floor(exercise.secondsPerSet / 60)
+            secondsPerSet = exercise.secondsPerSet - (minutesPerSet * 60)
+        }
     })
 
 </script>
@@ -257,15 +266,27 @@
                     <FaPlusCircle />
                 </div>
             </div>
-            <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
-                <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
-                    <FaMinusCircle />
+            {#if exercise.type === ExerciseType.EXERCISE}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+                        <FaMinusCircle />
+                    </div>
+                    <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise?.repsPerSet} &nbsp;Reps</p>
+                    <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                        <FaPlusCircle />
+                    </div>
                 </div>
-                <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise?.repsPerSet} &nbsp;Reps</p>
-                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
-                    <FaPlusCircle />
+            {:else}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <p class="bg-gray-200 w-18">{minutesPerSet}:{secondsPerSet} sec</p>
                 </div>
-            </div>
+                {#if exercise.distanceMeters > 0}
+                    <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                        <p class="bg-gray-200 w-18">{exercise.distanceMeters} meters</p>
+                    </div>
+                {/if}
+            {/if}
+
         {:else}
             <div class="flex flex-col items-center lg:items-start">
                 <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
