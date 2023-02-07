@@ -75,12 +75,16 @@
         // ...provided that the athlete-stats is marking the exercise completed
         if (!exercise.isComplete) {
             if (exercise.isMax) {
-                sets = setsComplete > 0 ? setsComplete : 1
+                sets = 1
             } else {
                 sets = setsComplete > 0 ? setsComplete : exercise.sets
             }
             reps = repsPerSetComplete > 0 ? repsPerSetComplete : exercise.repsPerSet
             weight = exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
+        } else {
+            sets = 0
+            reps = 0
+            weight = 0
         }
 
         let updatedExercise: Exercise = {
@@ -162,8 +166,8 @@
     }
 
     const skipExercise = async (exercise: Exercise) => {
-
         loadingAthleteProgram.set(true)
+
         const updatedExercise = {
             ...exercise,
             isComplete: true,
@@ -187,6 +191,7 @@
 
     const addComment = async (ex: Exercise) => {
         loadingAthleteProgram.set(true)
+
         let comment: ExerciseComment = {
             content: newCommentContent,
             athleteId: $userDB!.athleteData.id,
@@ -237,6 +242,7 @@
             secondsPerSet = exercise.secondsPerSet - (minutesPerSet * 60)
         }
     })
+    $: console.log(exercise)
 
 </script>
 
@@ -266,7 +272,7 @@
                     <FaPlusCircle />
                 </div>
             </div>
-            {#if exercise.type === ExerciseType.EXERCISE}
+            {#if exercise.type === ExerciseType.EXERCISE && !exercise.isMaxReps}
                 <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
                     <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
                         <FaMinusCircle />
@@ -276,7 +282,17 @@
                         <FaPlusCircle />
                     </div>
                 </div>
-            {:else}
+            {:else if exercise.type === ExerciseType.EXERCISE && exercise.isMaxReps}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+                        <FaMinusCircle />
+                    </div>
+                    <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp;Max Reps</p>
+                    <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                        <FaPlusCircle />
+                    </div>
+                </div>
+            {:else if exercise.type === ExerciseType.DURATION}
                 <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
                     <p class="bg-gray-200 w-18">{minutesPerSet}:{secondsPerSet} sec</p>
                 </div>
@@ -323,11 +339,17 @@
 
     <div>
         <div class="flex flex-col lg:flex-row justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
-            {#if !exercise?.isMax || exercise?.weightCompleted > 0}
+            {#if (!exercise?.isMax || exercise?.weightCompleted > 0) && (!exercise.isMaxReps && !exercise.isComplete)}
                 <button class="{exercise.isComplete ? 'bg-gray-200 text-red border-red' : 'bg-gray-200 text-yellow-shade border-yellow'} border-2 p-2 mx-2 rounded hover:bg-gray-400"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
-                    {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
+                    {exercise.isComplete ? 'Mark Incomplete' : (!exercise.isComplete && repsPerSetComplete < 1 ? 'Mark Complete As Written' : 'Mark Complete')}
+                </button>
+            {/if}
+            {#if exercise.isMaxReps && repsPerSetComplete > 0 && exercise.weightCompleted > 0 && setsComplete > 0 && !exercise.isComplete}
+                <button class="{exercise.isComplete ? 'bg-gray-200 text-red border-red' : 'bg-gray-200 text-yellow-shade border-yellow'} border-2 p-2 mx-2 rounded hover:bg-gray-400"
+                        on:click={() => completeExercise(exercise)}>
+                    Mark Complete
                 </button>
             {/if}
             {#if !exercise.isComplete}
@@ -347,7 +369,7 @@
                 <p class="text-green">New Record!</p>
             </div>
         {/if}
-        {#if exercise?.isComplete && exercise?.weightCompleted > 0 && exercise?.totalRepsCompleted > 0}
+        {#if exercise?.isComplete && exercise?.weightCompleted > 0}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-green"></div>
         {:else if exercise?.isComplete}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-red-shade"></div>

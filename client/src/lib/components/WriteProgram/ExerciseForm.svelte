@@ -220,12 +220,12 @@
 
 
                 <div class="flex flex-col m-1">
-                    <select class="text-sm bg-gray-200 mb-[.1em]" on:change={(e) => handleChangeDuration(e.target.value)}>
+                    <select class="text-sm bg-gray-200 mb-[.1em]" disabled={exercise.isMaxReps} on:change={(e) => handleChangeDuration(e.target.value)}>
                         <option selected={exercise.type === ExerciseType.EXERCISE}>Reps</option>
                         <option selected={exercise.type === ExerciseType.DURATION}>Time</option>
                     </select>
 <!--                    <label class="text-sm m-0">Reps</label>-->
-                    {#if exercise.type === ExerciseType.EXERCISE}
+                    {#if exercise.type === ExerciseType.EXERCISE && !exercise.isMaxReps}
                         <input type="number"
                                name="repsperset"
                                on:focus={() => inputFocused = true}
@@ -234,6 +234,8 @@
                                class="bg-gray-300 p-2"
                                bind:value={exercise.repsPerSet}
                         >
+                    {:else if exercise.type === ExerciseType.EXERCISE}
+                        <p class="text-center p-2 font-medium">AMRAP</p>
                     {:else if exercise.type === ExerciseType.DURATION}
                         <div class="flex">
                             <input type="number"
@@ -280,10 +282,15 @@
                         >
                 </div>
             {/if}
-            <div class="flex justify-end items-center m-2 {exercise.type === ExerciseType.EXERCISE ? 'col-span-2' : ''}">
+            <div class="flex flex-col justify-center items-end  m-2 {exercise.isMax ? 'col-span-4' : ''} {exercise.type === ExerciseType.EXERCISE && !exercise.isMax ? 'col-span-2' : ''}">
                 <label>{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}&nbsp;</label>
                 <label class="switch">
-                    <input type="checkbox" bind:checked={exercise.isMax} on:change={(e) => exercise.isMax = e.target.checked}>
+                    <input type="checkbox" bind:checked={exercise.isMax} on:change={(e) => { exercise.isMax = e.target.checked; exercise.isMaxReps = exercise.isMaxReps ? !e.target.checked : exercise.isMaxReps }}>
+                    <span class="slider round"></span>
+                </label>
+                <label>{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
+                <label class="switch">
+                    <input type="checkbox" bind:checked={exercise.isMaxReps} on:change={(e) => { exercise.isMaxReps = e.target.checked; exercise.isMax = exercise.isMax ? !e.target.checked : exercise.isMax }}>
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -329,7 +336,7 @@
                 </div>
             {/each}
             <div class="m-1 mt-2 lg:mt-4 flex justify-center">
-                <button class="p-2 bg-link text-white font-medium" on:click={() => exercise.dropSets = [...exercise.dropSets, new Exercise()]}>
+                <button class="p-2 text-link hover:text-link-shade font-medium" on:click={() => exercise.dropSets = [...exercise.dropSets, new Exercise()]}>
                     Add Drop Set
                 </button>
             </div>
@@ -375,8 +382,8 @@
     .switch {
         position: relative;
         display: inline-block;
-        width: 60px;
-        height: 34px;
+        width: 55px;
+        height: 28px;
     }
 
     /* Hide default HTML checkbox */
@@ -402,8 +409,8 @@
     .slider:before {
         position: absolute;
         content: "";
-        height: 26px;
-        width: 26px;
+        height: 20px;
+        width: 20px;
         left: 4px;
         bottom: 4px;
         background-color: white;
@@ -412,11 +419,11 @@
     }
 
     input:checked + .slider {
-        background-color: #2196F3;
+        background-color: #fde577
     }
 
     input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
+        box-shadow: 0 0 1px #fde577
     }
 
     input:checked + .slider:before {

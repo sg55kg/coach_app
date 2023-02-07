@@ -59,6 +59,7 @@ public class Exercise {
     @JsonIgnore
     private Exercise topSet;
     private int dropSetPercent;
+    private boolean isMaxReps;
 
 
     public Exercise() {}
@@ -199,7 +200,6 @@ public class Exercise {
         this.comments.remove(comment);
     }
 
-
     public List<Exercise> getDropSets() {
         return dropSets;
     }
@@ -207,7 +207,6 @@ public class Exercise {
     public void setDropSets(List<Exercise> dropSets) {
         this.dropSets = dropSets;
     }
-
 
     public Exercise getTopSet() {
         return topSet;
@@ -231,6 +230,13 @@ public class Exercise {
 
     public void setDropSetPercent(int dropSetPercent) {
         this.dropSetPercent = dropSetPercent;
+    }
+    public boolean getIsMaxReps() {
+        return isMaxReps;
+    }
+
+    public void setIsMaxReps(boolean isMaxReps) {
+        this.isMaxReps = isMaxReps;
     }
 
     @Override
