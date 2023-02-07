@@ -44,6 +44,7 @@ public class ExerciseRequest {
     private int distanceCompletedMeters;
     private int secondsPerSet;
     private int secondsPerSetCompleted;
+    private boolean isMaxReps;
 
     public ExerciseRequest() {}
 
@@ -292,6 +293,14 @@ public class ExerciseRequest {
         this.secondsPerSetCompleted = secondsPerSetCompleted;
     }
 
+    public boolean getIsMaxReps() {
+        return isMaxReps;
+    }
+
+    public void setIsMaxReps(boolean isMaxReps) {
+        this.isMaxReps = isMaxReps;
+    }
+
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         if (exercise == null) {
             if(request.getType() == ExerciseType.EXERCISE) {
@@ -324,6 +333,7 @@ public class ExerciseRequest {
             exercise.setName(request.getName());
             exercise.setRepsPerSet(request.getRepsPerSet());
             exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
+            exercise.setIsMaxReps(request.getIsMaxReps());
         } else if (request.getType() == ExerciseType.COMPLEX) {
             ((ComplexExercise) exercise).setRepArr(
                     ComplexExercise.convertRepArrListToString(request.getRepArr())

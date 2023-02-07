@@ -58,6 +58,7 @@ export class Exercise {
     repCompletedArr: number[] = []
     dropSetPercent: number = 0
     actualIntesity: EffortIntensity = EffortIntensity.EASY
+    isMaxReps: boolean = false
 }
 
 

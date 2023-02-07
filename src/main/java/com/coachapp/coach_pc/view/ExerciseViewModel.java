@@ -41,6 +41,7 @@ public class ExerciseViewModel {
     public List<String> nameArr = new ArrayList<>();
     public List<Integer> repCompletedArr = new ArrayList<>();
     public EffortIntensity actualIntensity = EffortIntensity.EASY;
+    public boolean isMaxReps;
 
     public ExerciseViewModel() {
 
@@ -66,6 +67,7 @@ public class ExerciseViewModel {
             viewModel.repsPerSet = exercise.getRepsPerSet();
             viewModel.totalRepsCompleted = exercise.getTotalRepsCompleted();
             viewModel.name = exercise.getName();
+            viewModel.isMaxReps = exercise.getIsMaxReps();
         } else if (exercise.getType() == ExerciseType.COMPLEX) {
             viewModel.nameArr = ComplexExercise.convertNameArrToList(
                     ((ComplexExercise) exercise).getNameArr()
