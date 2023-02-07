@@ -26,12 +26,7 @@ export class TeamService {
     }
 
     static getTeam = async (teamId: string) => {
-
-        const res = await fetch(`/api/team/${teamId}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        })
-
+        const res = await fetch(`/api/team/${teamId}`)
         return Team.createFrom(await res.json())
     }
 

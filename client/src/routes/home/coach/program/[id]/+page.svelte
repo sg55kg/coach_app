@@ -13,6 +13,10 @@
 
     if (programDto) {
         $program = Program.build(programDto)
+        program.update(prev => {
+            prev.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
+            return prev
+        })
     }
 
     const handleSubmit = async (event, programData: Program) => {
@@ -42,7 +46,9 @@
 </script>
 
 {#if $program?.id}
-    <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
+    <div class="relative">
+        <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
+    </div>
 {/if}
 
 <style>

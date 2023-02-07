@@ -16,7 +16,8 @@ export enum EffortIntensity {
 export enum ExerciseType {
     EXERCISE,
     CARRY,
-    CARDIO,
-    ACCESSORY
+    DURATION,
+    ACCESSORY,
+    COMPLEX
 }
 

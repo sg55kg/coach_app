@@ -23,13 +23,14 @@ public class AthleteProgramStatsService {
     }
 
     public ResponseEntity<AthleteProgramStats> getExistingProgramStats(UUID id) {
-        Optional<AthleteProgramStats> optional = statsRepo.findById(id);
-
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(optional.get(), HttpStatus.OK);
+//        Optional<AthleteProgramStats> optional = statsRepo.findById(id);
+//
+//        if (optional.isEmpty()) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//
+//        return new ResponseEntity<>(optional.get(), HttpStatus.OK);
+        return null;
     }
 
     public ResponseEntity<AthleteProgramStats> generateAthleteStats(UUID athleteId) {

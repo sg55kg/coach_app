@@ -1,10 +1,13 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.coachapp.coach_pc.repository.ComplexExerciseRepo;
 import com.coachapp.coach_pc.repository.ExerciseRepo;
 import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 import com.coachapp.coach_pc.request.ExerciseRequest;
+import com.coachapp.coach_pc.view.ExerciseViewModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,22 +19,27 @@ import java.util.UUID;
 public class ExerciseService {
 
     private ExerciseRepo exerciseRepo;
+    private ComplexExerciseRepo complexExerciseRepo;
 
-    public ExerciseService(ExerciseRepo exerciseRepo) {
+    public ExerciseService(ExerciseRepo exerciseRepo, ComplexExerciseRepo complexExerciseRepo) {
         this.exerciseRepo = exerciseRepo;
+        this.complexExerciseRepo = complexExerciseRepo;
     }
 
-    public ResponseEntity<Exercise> updateExercise(ExerciseRequest request) {
-        Optional<Exercise> optional = exerciseRepo.findById(request.getId());
+    public ResponseEntity<ExerciseViewModel> updateExercise(ExerciseRequest request) {
+        Optional<? extends Exercise> optional;
+
+        optional = exerciseRepo.findById(request.getId());
+
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Exercise exercise = optional.get();
+        var exercise = optional.get();
         exercise = ExerciseRequest.convertRequest(exercise, request);
         exercise = exerciseRepo.save(exercise);
-
-        return new ResponseEntity<>(exercise, HttpStatus.OK);
+        ExerciseViewModel vm = ExerciseViewModel.convertExercise(exercise);
+        return new ResponseEntity<>(vm, HttpStatus.OK);
 
     }
 

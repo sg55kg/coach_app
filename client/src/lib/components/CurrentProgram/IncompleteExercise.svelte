@@ -14,6 +14,8 @@
     import {onMount} from "svelte";
     import {Exercise, ExerciseComment} from "$lib/classes/program/exercise";
     import {AthleteData, AthleteRecord} from "$lib/classes/user/athlete";
+    import {handleChangeWeightUnits} from "$lib/components/CurrentProgram/util/index.js";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums";
 
     export let exercise: Exercise
 
@@ -22,6 +24,8 @@
     let setsComplete: number = 0
     let repsPerSetComplete: number = 0
     let weightUnitsSelected: 'kg' | 'lb' = 'kg'
+    let secondsPerSet: number = 0
+    let minutesPerSet: number = 0
 
 
     const toggleShowComments = () => showComments = !showComments
@@ -69,26 +73,29 @@
 
         // determine if user manually entered reps/sets/weight, or if we should just use the coaches prescribed values
         // ...provided that the athlete-stats is marking the exercise completed
-        console.log(exercise)
         if (!exercise.isComplete) {
             if (exercise.isMax) {
-                sets = setsComplete > 0 ? setsComplete : 1
+                sets = 1
             } else {
                 sets = setsComplete > 0 ? setsComplete : exercise.sets
             }
             reps = repsPerSetComplete > 0 ? repsPerSetComplete : exercise.repsPerSet
             weight = exercise.weightCompleted > 0 ? exercise.weightCompleted : exercise.weight
+        } else {
+            sets = 0
+            reps = 0
+            weight = 0
         }
-        console.log('sets', sets)
-        console.log('reps', reps)
-        console.log('weight', weight)
 
         let updatedExercise: Exercise = {
             ...exercise,
             isComplete: !exercise.isComplete,
             weightCompleted: weight,
             totalRepsCompleted: (sets * reps),
-            setsComplete: sets
+            setsCompleted: sets
+        }
+        if (exercise.dropSets.length > 0 && updatedExercise.weightCompleted > 0) {
+            updatedExercise.dropSets = exercise.dropSets.map(d => ({ ...d, weightCompleted: d.weight, setsCompleted: d.sets, totalRepsCompleted: (d.repsPerSet*d.sets)}))
         }
         repsPerSetComplete = reps
         setsComplete = sets
@@ -148,7 +155,7 @@
                 return prev
             })
             currentDay.update(prev => {
-                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e).sort((a, b) => a.order - b.order)
                 return prev
             })
             incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
@@ -159,18 +166,19 @@
     }
 
     const skipExercise = async (exercise: Exercise) => {
-
         loadingAthleteProgram.set(true)
+
         const updatedExercise = {
             ...exercise,
             isComplete: true,
             weightCompleted: 0,
-            totalRepsCompleted: 0
+            totalRepsCompleted: 0,
+            distanceCompletedMeters: 0,
         }
         try {
             const dbExercise: Exercise = await ProgramService.updateExercise(updatedExercise)
             currentDay.update(prev => {
-                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e)
+                prev!.exercises = prev!.exercises.map(e => e.id === dbExercise.id ? dbExercise : e).sort((a, b) => a.order - b.order)
                 return prev
             })
             incompleteExercises.set($currentDay!.exercises.sort((a, b) => a.order - b.order))
@@ -181,22 +189,22 @@
         loadingAthleteProgram.set(false)
     }
 
-    const addComment = async (exercise: Exercise) => {
+    const addComment = async (ex: Exercise) => {
         loadingAthleteProgram.set(true)
+
         let comment: ExerciseComment = {
             content: newCommentContent,
             athleteId: $userDB!.athleteData.id,
-            exerciseId: exercise.id,
+            exerciseId: ex.id,
             id: '',
             commenterName: $userDB!.username
         }
-        console.log(comment)
-        let updatedExercise: Exercise = { ...exercise, comments: [...exercise.comments, comment]}
+
         try {
             const savedComment: ExerciseComment = await ProgramService.addExerciseComment(comment)
             console.log(savedComment)
-            exercise.comments.push(savedComment)
-            exercise = exercise
+            ex.comments.push(savedComment)
+            exercise = ex
             newCommentContent = ''
         } catch (e) {
             console.log(e)
@@ -224,39 +232,38 @@
         }
     }
 
-    const handleChangeWeightUnits = (units: 'kg' | 'lb') => {
-        if (units === 'kg' && weightUnitsSelected === 'lb') {
-            weightUnitsSelected = 'kg'
-            exercise.weight = Math.round(exercise.weight / 2.2042)
-            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted / 2.2042) : 0
-        } else if (units === 'lb' && weightUnitsSelected === 'kg') {
-            weightUnitsSelected = 'lb'
-            exercise.weight = Math.round(exercise.weight * 2.2042)
-            exercise.weightCompleted = exercise.weightCompleted > 0 ? Math.round(exercise.weightCompleted * 2.2042) : 0
-        }
-    }
-
     onMount(() => {
         isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
-        repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsComplete > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsComplete) : 0
-        setsComplete = exercise.setsComplete > 0 ? exercise.setsComplete : 0
+        repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsCompleted > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
+        setsComplete = exercise.setsCompleted > 0 ? exercise.setsCompleted : 0
+
+        if (exercise.type === ExerciseType.DURATION && exercise.secondsPerSet > 0) {
+            minutesPerSet = Math.floor(exercise.secondsPerSet / 60)
+            secondsPerSet = exercise.secondsPerSet - (minutesPerSet * 60)
+        }
     })
+    $: console.log(exercise)
 
 </script>
 
 <div class="bg-gray-200 lg:p-4 my-2 rounded relative m-4 lg:mx-1 p-2 md:p-2">
-    <p class="lg:w-fit w-fit m-0 text-lg p-1 font-bold text-textblue self-center lg:ml-4">{exercise?.name}</p>
+    <p class="lg:w-fit w-fit m-auto font-bold text-2xl text-textblue self-center lg:self-start lg:m-0 lg:p-2">
+        {exercise?.name}
+    </p>
     <div class="lg:flex lg:flex-row">
         {#if !exercise.isMax}
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold text-textblue flex lg:mx-4">
-                <input type="number" class={`bg-gray-200 w-12 lg:w-8 ${exercise.isComplete ? 'text-green' : 'opacity-60'}`} bind:value={exercise.weightCompleted}>
-                <p class="m-0 w-fit">&nbsp;/&nbsp;{exercise.weight} &nbsp;</p>
-                <select on:change={(e) => handleChangeWeightUnits(e.target.value)} class="bg-gray-200 w-fit mx-0">
+            <div class="m-0 p-1 text-base lg:text-lg font-medium text-textblue flex lg:mx-4">
+                <input type="number"
+                       class={`bg-gray-200 w-12 lg:w-16 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'} border-b-2 border-yellow-lt`}
+                       bind:value={exercise.weightCompleted}>
+                <p class="m-0 w-fit">&nbsp;/&nbsp;&nbsp;{exercise.weight} &nbsp;</p>
+                <select on:change={(e) => handleChangeWeightUnits(e.target.value, exercise)}
+                        class="bg-gray-200 w-fit mx-0">
                     <option selected>kg</option>
                     <option>lb</option>
                 </select>
             </div>
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center  lg:mx-4">
+            <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center  lg:mx-4">
                 <div class="w-7 mr-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditSetsComplete('minus')}>
                     <FaMinusCircle />
                 </div>
@@ -265,25 +272,60 @@
                     <FaPlusCircle />
                 </div>
             </div>
-            <div class="m-0 p-1 text-base lg:text-lg font-semibold bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
-                <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
-                    <FaMinusCircle />
+            {#if exercise.type === ExerciseType.EXERCISE && !exercise.isMaxReps}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+                        <FaMinusCircle />
+                    </div>
+                    <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise?.repsPerSet} &nbsp;Reps</p>
+                    <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                        <FaPlusCircle />
+                    </div>
                 </div>
-                <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp; {exercise?.repsPerSet} &nbsp;Reps</p>
-                <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
-                    <FaPlusCircle />
+            {:else if exercise.type === ExerciseType.EXERCISE && exercise.isMaxReps}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <div class="w-7 mr-3 lg:w-5 lg:mr-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('minus')}>
+                        <FaMinusCircle />
+                    </div>
+                    <p class="bg-gray-200 w-18">{repsPerSetComplete} &nbsp;/&nbsp;Max Reps</p>
+                    <div class="w-7 ml-3 lg:w-5 lg:ml-2 text-gray-400 hover:text-textblue hover:cursor-pointer" on:click={() => handleEditRepsComplete('plus')}>
+                        <FaPlusCircle />
+                    </div>
                 </div>
-            </div>
+            {:else if exercise.type === ExerciseType.DURATION}
+                <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                    <p class="bg-gray-200 w-18">{minutesPerSet}:{secondsPerSet} sec</p>
+                </div>
+                {#if exercise.distanceMeters > 0}
+                    <div class="m-0 p-1 text-base lg:text-lg font-medium bg-gray-200 text-textblue flex lg:justify-center items-center lg:mx-4">
+                        <p class="bg-gray-200 w-18">{exercise.distanceMeters} meters</p>
+                    </div>
+                {/if}
+            {/if}
+
         {:else}
-            <div class="flex flex-col items-center">
-                <div class="flex flex-row justify-center lg:justify-start text-lg font-semibold text-textblue p-2">
-                    <p class="mx-2">{exercise?.name}</p>
-                    <p class="mx-2">{exercise?.repsPerSet} RM</p>
+            <div class="flex flex-col items-center lg:items-start">
+                <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                    <p>{exercise?.repsPerSet} RM</p>
                 </div>
-                <div class="flex flex-row justify-around text-lg font-semibold text-textblue">
-                    <input type="number" class="flex-1 bg-gray-200 text-center w-14" bind:value={exercise.weightCompleted}>
+                <div class="flex flex-row justify-around text-base lg:text-lg font-medium text-textblue lg:pl-2">
+                    <input type="number"
+                           class={`bg-gray-200 w-12 lg:w-14 text-center ${exercise.isComplete ? 'text-green' : 'opacity-60'}
+                           border-b-2 border-yellow-lt`}
+                           bind:value={exercise.weightCompleted}>
                     <p class="w-6/12">&nbsp;kg</p>
                 </div>
+                <div class="flex flex-row justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                    {exercise.dropSets.length < 1 ? 'No Drop Sets' : 'Drop sets:'}
+                </div>
+                {#each exercise.dropSets as dropSet, idx (dropSet.id)}
+                    <div class="flex flex-col justify-center lg:justify-start text-base lg:text-lg font-medium text-textblue p-2">
+                        <p>{dropSet.dropSetPercent}% of top set for {dropSet.sets}x{dropSet.repsPerSet}</p>
+                        {#if dropSet.weightCompleted > 0 && dropSet.isComplete}
+                            <p>{dropSet.weightCompleted}kg</p>
+                        {/if}
+                    </div>
+                {/each}
             </div>
         {/if}
     </div>
@@ -297,11 +339,17 @@
 
     <div>
         <div class="flex flex-col lg:flex-row justify-center md:justify-center lg:justify-start mt-1 lg:m-2 p-2">
-            {#if !exercise?.isMax || exercise?.weightCompleted > 0}
-                <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
+            {#if (!exercise?.isMax || exercise?.weightCompleted > 0) && (!exercise.isMaxReps && !exercise.isComplete)}
+                <button class="{exercise.isComplete ? 'bg-gray-200 text-red border-red' : 'bg-gray-200 text-yellow-shade border-yellow'} border-2 p-2 mx-2 rounded hover:bg-gray-400"
                         disabled={$loadingAthleteProgram}
                         on:click={() => completeExercise(exercise)}>
-                    {exercise.isComplete ? 'Mark Incomplete' : 'Mark Complete'}
+                    {exercise.isComplete ? 'Mark Incomplete' : (!exercise.isComplete && repsPerSetComplete < 1 ? 'Mark Complete As Written' : 'Mark Complete')}
+                </button>
+            {/if}
+            {#if exercise.isMaxReps && repsPerSetComplete > 0 && exercise.weightCompleted > 0 && setsComplete > 0 && !exercise.isComplete}
+                <button class="{exercise.isComplete ? 'bg-gray-200 text-red border-red' : 'bg-gray-200 text-yellow-shade border-yellow'} border-2 p-2 mx-2 rounded hover:bg-gray-400"
+                        on:click={() => completeExercise(exercise)}>
+                    Mark Complete
                 </button>
             {/if}
             {#if !exercise.isComplete}
@@ -321,7 +369,7 @@
                 <p class="text-green">New Record!</p>
             </div>
         {/if}
-        {#if exercise?.isComplete && exercise?.weightCompleted > 0 && exercise?.totalRepsCompleted > 0}
+        {#if exercise?.isComplete && exercise?.weightCompleted > 0}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-green"></div>
         {:else if exercise?.isComplete}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-red-shade"></div>
@@ -337,17 +385,16 @@
             <p class="m-0">No Comments</p>
         {/if}
         {#each exercise?.comments as comment (comment.id)}
-            <div class="flex flex-col p-2 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
+            <div class="flex flex-col p-4 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2">
                 <div class="flex flex-row justify-between mb-2">
-                    <h5>{comment.commenterName}</h5>
-                    <h5>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</h5>
+                    <h5 class="text-lg font-bold">{comment.commenterName}</h5>
+                    <h5><i>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</i></h5>
                 </div>
-                <hr>
                 <p>{comment.content}</p>
             </div>
         {/each}
         <div>
-            <textarea class="w-full break-words text-left h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
+            <textarea class="w-full break-words text-left lg:w-6/12 h-16 text-black caret-black px-1 bg-textblue" bind:value={newCommentContent} type="text"></textarea>
         </div>
         <button class="bg-yellow text-black p-2 mx-2 rounded hover:bg-yellow-shade"
                 disabled={$loadingAthleteProgram}

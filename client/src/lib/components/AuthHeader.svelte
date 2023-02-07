@@ -2,9 +2,9 @@
     import {auth0Client, isAuthenticated, userDB} from "../stores/authStore";
     import UserService from "../service/userService";
     import {onMount} from "svelte";
+    import {authUser} from "$lib/stores/authStore";
 
     export let ssr = false
-    export let user
 
     let isMobile: boolean = false
 
@@ -63,7 +63,7 @@
     </div>
     <div class="relative">
         <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
-            <img src={user.picture} alt="profile" class="ml-2 mr-1">
+            <img src={$authUser.picture} alt="profile" class="ml-2 mr-1">
         </button>
         {#if showDropdown}
             <div on:blur={() => showDropdown = false}

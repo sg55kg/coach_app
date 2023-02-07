@@ -6,6 +6,8 @@
     import {currentDay, currentProgram} from "$lib/stores/athleteProgramStore";
     import {goto} from "$app/navigation";
     import {Program, type ProgramDTO} from "$lib/classes/program";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
 
 
     const fetchCurrentProgram = async () => {
@@ -16,9 +18,11 @@
             const res = await fetch(`/api/athlete/program/${$userDB.athleteData.currentProgram.id}`)
             const programData: ProgramDTO = await res.json()
             const program = Program.build(programData)
+            program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             const today = dayjs()
             const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
             if (day) {
+                day.exercises.sort((a, b) => a.order - b.order)
                 $currentDay = day
             }
             $currentProgram = program
@@ -49,15 +53,14 @@
         {#await fetchCurrentProgram()}
             <p>Loading your program...</p>
         {:then e}
-            <div class="text-center lg:text-start">
-                <a class="text-link hover:text-link-shade underline" href="/home/athlete/program">
-                    View Full Program
-                </a>
-            </div>
             {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
-                    {#each $currentDay.exercises as exercise, index (index)}
-                        <IncompleteExercise bind:exercise={exercise} />
+                    {#each $currentDay.exercises as exercise, index (exercise.id)}
+                        {#if exercise.type === ExerciseType.EXERCISE}
+                            <IncompleteExercise bind:exercise={exercise} />
+                        {:else}
+                            <AthleteComplexExercise bind:exercise={exercise} />
+                        {/if}
                     {/each}
                 </div>
             {:else if $currentDay && $currentDay?.isRestDay}
@@ -69,11 +72,6 @@
                     No programming available for today
                 </div>
             {/if}
-            <div class="text-center lg:text-start mt-4">
-                <a class="text-link hover:text-link-shade underline" href={`/home/athlete/${$userDB?.athleteData?.id}`}>
-                    My Progress
-                </a>
-            </div>
         {:catch e}
             <p>Error: could not retrieve your program</p>
         {/await}
@@ -84,8 +82,6 @@
             <p class="text-center m-2">
                 As we continue to add features to the site, more information about your team will become available here like team-wide messages from your coach
             </p>
-<!--            <a class="text-lg underline text-link text-center" href="/home/athlete/team">View</a>-->
-            <a class="text-lg underline text-link text-center" href="/home/athlete/teams">Browse Teams</a>
         {:else}
             <a class="text-lg text-center md:text-left underline text-link" href="/home/athlete/teams">Join a team</a>
         {/if}

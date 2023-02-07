@@ -10,6 +10,8 @@
     import {currentDay, currentProgram, incompleteExercises, completedExercises} from "$lib/stores/athleteProgramStore";
     import {program} from "$lib/stores/writeProgramStore";
     import {Program} from "$lib/classes/program";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
 
 
     const today: Dayjs = dayjs()
@@ -161,7 +163,11 @@
 
         {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
             {#each $incompleteExercises.sort((a, b) => a.order - b.order) as exercise}
-                <IncompleteExercise bind:exercise={exercise} />
+                {#if exercise.type === ExerciseType.EXERCISE || exercise.type === ExerciseType.DURATION}
+                    <IncompleteExercise bind:exercise={exercise} />
+                {:else}
+                    <AthleteComplexExercise bind:exercise={exercise} />
+                {/if}
             {/each}
             <div class="mt-4 flex justify-center">
 <!--                <button class="bg-yellow text-black font-bold p-2 mx-2 rounded hover:bg-yellow-shade">-->

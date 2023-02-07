@@ -15,7 +15,6 @@ export const load: LayoutServerLoad = async ({ cookies, params, url }) => {
         })
 
         const programsResponse = await res.json()
-        console.log('prog res', programsResponse)
         return {
             programs: programsResponse
         }

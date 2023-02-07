@@ -62,4 +62,8 @@ public class CarryExercise extends Exercise {
         this.effortIntensity = effortIntensity;
     }
 
+    @Override
+    public ExerciseType getType() {
+        return type;
+    }
 }

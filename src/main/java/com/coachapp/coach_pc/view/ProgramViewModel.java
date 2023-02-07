@@ -101,11 +101,16 @@ public class ProgramViewModel {
         viewModel.setId(program.getId());
         List<DayViewModel> set = new ArrayList<>();
         program.getDays().forEach(d -> {
-            List<Exercise> ex = d.getExercises();
+            List<Exercise> exercises = d.getExercises();
+            List<ExerciseViewModel> models = new ArrayList<>();
+            exercises.forEach(e -> {
+                ExerciseViewModel m = ExerciseViewModel.convertExercise(e);
+                models.add(m);
+            });
             set.add(new DayViewModel(
                     d.getId(),
                     d.getDate(),
-                    ex,
+                    models,
                     d.getIsRestDay(),
                     d.getWarmUp()
             ));

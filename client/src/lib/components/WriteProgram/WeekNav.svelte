@@ -6,6 +6,7 @@
     import FaAngleUp from 'svelte-icons/fa/FaAngleUp.svelte'
     import FaAngleDown from 'svelte-icons/fa/FaAngleDown.svelte'
     import {Exercise} from "$lib/classes/program/exercise";
+    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
 
     export let selectedDayIndex: number
     export let dayId: string
@@ -55,7 +56,7 @@
 
             if (existingDay === -1) {
                 let day = new Day()
-                day.date = date.toDate()
+                day.date = date
                 day.id = date.toString()
                 day.exercises = weekToCopy[i].exercises.map(e => {
                     let newExercise = new Exercise()
@@ -76,6 +77,7 @@
                 })
                 program.update(prev => {
                     prev.days.push(day)
+                    prev.endDate = date.toDate()
                     return prev
                 })
             } else {
@@ -107,19 +109,31 @@
         initializeWeeks()
     }
 
+    const toggleCopyWeekModal = () => {
+        if (showCopyWeekModal) {
+            showCopyWeekModal = false
+            document.body.style.overflowY = 'auto'
+        } else {
+            showCopyWeekModal = true
+            window.scroll(0,0)
+            document.body.style.overflowY = 'hidden'
+        }
+    }
+
     onMount(() => {
         initializeWeeks()
     })
 
     afterUpdate(() => {
         if ($programSuccess) {
+            console.log('Initializing weeks')
             initializeWeeks()
         }
     })
 
 </script>
 
-<div class="hidden md:flex flex-col mx-2">
+<div class="hidden md:flex flex-col mx-2 h-screen overflow-scroll mb-8">
     {#if selectedWeekIndex > -1 && weeks.length > 0}
         <div class="flex flex-row w-full justify-center items-center">
             <div class="w-6 text-textgray hover:text-gray-300 hover:cursor-pointer"
@@ -135,21 +149,47 @@
             </div>
         </div>
         {#each weeks[selectedWeekIndex] as day}
-            <div class={`flex flex-col bg-white rounded text-black my-2 p-2 ${day.id === dayId ? 'border-link border-4' : 'border-black'} hover:bg-textgray hover:cursor-pointer`}
+            <div class={`flex flex-col bg-gray-200 rounded text-textgray my-2 p-2 ${day.id === dayId ? 'border-2 border-textblue' : 'border-black'} hover:bg-gray-200 hover:cursor-pointer`}
                  on:click={() => selectDay(day.id)}
             >
-                <h3>{dayjs(day.date).format('dddd MMMM D')}</h3>
+                <h3 class="font-medium">{dayjs(day.date).format('dddd MMMM D')}</h3>
                 <hr>
-                {#each day.exercises.sort((a, b) => a.order - b.order) as exercise}
-                    {#if !exercise.isMax}
-                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
-                            {`${exercise.name}: ${exercise.weight} - ${exercise.sets}x${exercise.repsPerSet}`}
-                        </p>
+                {#each day.exercises as exercise}
+                    {#if exercise.type === ExerciseType.EXERCISE}
+                        {#if !exercise.isMax}
+                            <p class={` ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.name}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.isComplete ? `${exercise.weightCompleted}kg - ${exercise.setsCompleted}x${exercise.setsCompleted > 0 ? (exercise.totalRepsCompleted/exercise.setsCompleted) : 0}` :
+                                    `${exercise.weight}kg - ${exercise.sets}x${exercise.repsPerSet}`}
+                            </p>
+                        {:else}
+                            <p class={`${exercise.isComplete && 'text-green'}`}>
+                                {`${exercise.name}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.repsPerSet}RM {exercise.weightCompleted && '- ' + exercise.weightCompleted + 'kg'}
+                            </p>
+                        {/if}
                     {:else}
-                        <p class={`m-0 ${exercise.isComplete && 'underline decoration-green'}`}>
-                            {`${exercise.name}: ${exercise.repsPerSet}RM ${exercise.weightCompleted && '- ' + exercise.weightCompleted + 'kg'}`}
-                        </p>
+                        {#if !exercise.isMax}
+                            <p class={` ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.nameArr.join(' + ')}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.weight}kg - {exercise.sets}x{exercise.repArr.join(' + ')}
+                            </p>
+                        {:else}
+                            <p class={`m-0 ${(exercise.isComplete && exercise.weightCompleted > 0) && 'text-green'} ${exercise.isComplete && exercise.weightCompleted < 1 && 'text-red'}`}>
+                                {`${exercise.nameArr.join(' + ')}:`}
+                            </p>
+                            <p class="mb-1">
+                                {exercise.repArr.join(' + ')} RM {exercise.weightCompleted ? '- ' + exercise.weightCompleted + 'kg' : ''}
+                            </p>
+                        {/if}
                     {/if}
+
                 {/each}
                 {#if day.exercises.length < 1 && !day.isRestDay}
                     <p class="m-0 text-red-shade font-bold self-center">Incomplete</p>
@@ -159,19 +199,22 @@
                 {/if}
             </div>
         {/each}
-        <div class="flex justify-center">
-            <button on:click={() => showCopyWeekModal = !showCopyWeekModal} class="bg-yellow rounded p-2 text-black mt-2">
+        <div class="flex justify-center mb-4">
+            <button on:click={toggleCopyWeekModal} class="bg-yellow rounded p-2 text-black mt-2">
                 Copy Week
             </button>
         </div>
     {/if}
 </div>
 {#if showCopyWeekModal}
-    <div class="w-screen min-h-full bg-black bg-opacity-50 z-30 absolute bottom-0 right-0 left-0 top-0 flex justify-center items-center">
+    <div class="w-screen h-screen bg-black bg-opacity-50 z-30 absolute overflow-hidden bottom-0 right-0 left-0 top-0 flex justify-center items-center">
         <div class="z-40 bg-gray-200 rounded m-auto w-7/12 p-4">
             Copy Week
             <p>Select the start date to copy to</p>
             <input type="date" on:change={(e) => copyWeek(e.target.value)}>
+            <button on:click={toggleCopyWeekModal}>
+                Cancel
+            </button>
         </div>
     </div>
 {/if}

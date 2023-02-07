@@ -25,8 +25,7 @@ public class Team {
     private CoachData coach;
     @OneToMany(
             mappedBy = "team",
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH},
-            fetch = FetchType.EAGER
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH}
     )
     @JsonIgnore
     private List<AthleteData> athletes;
