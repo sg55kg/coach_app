@@ -34,3 +34,6 @@ build/
 
 *.env*
 .DS_Store
+
+*.secret.exs
+socket/config/*.secret.exs

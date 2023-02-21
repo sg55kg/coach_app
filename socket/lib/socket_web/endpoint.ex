@@ -46,12 +46,12 @@ defmodule SocketWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug SocketWeb.Router
+
+  socket "/socket", SocketWeb.TeamSocket, websocket: true, longpoll: false
 end
 
 defmodule Team.Endpoint do
   use Phoenix.Endpoint, otp_app: :socket
 
-  socket "/socket", SocketWeb.TeamSocket,
-    websocket: true,
-    longpoll: false
+
 end

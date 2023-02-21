@@ -3,6 +3,7 @@
     import UserService from "../service/userService";
     import {onMount} from "svelte";
     import {authUser} from "$lib/stores/authStore";
+    import FaInbox from 'svelte-icons/fa/FaInbox.svelte'
 
     export let ssr = false
 
@@ -61,26 +62,34 @@
         {/if}
 
     </div>
-    <div class="relative">
-        <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
-            <img src={$authUser.picture} alt="profile" class="ml-2 mr-1">
-        </button>
-        {#if showDropdown}
-            <div on:blur={() => showDropdown = false}
-                 id="header-dropdown"
-                 class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-5 drop-shadow-2xl drop-shadow-black">
-                {#if isMobile}
-                    {#if $userDB.coachData}
-                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
-                    {:else}
-                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/get-started">Coach Dashboard</a>
+
+    <div class="flex items-center">
+        <div class="h-6 mx-2 hover:cursor-pointer hover:text-yellow-lt">
+            <a href="/home/chat">
+                <FaInbox />
+            </a>
+        </div>
+        <div class="relative">
+            <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
+                <img src={$authUser.picture} alt="profile" class="ml-2 mr-1">
+            </button>
+            {#if showDropdown}
+                <div on:blur={() => showDropdown = false}
+                     id="header-dropdown"
+                     class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-5 drop-shadow-2xl drop-shadow-black">
+                    {#if isMobile}
+                        {#if $userDB.coachData}
+                            <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
+                        {:else}
+                            <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/get-started">Coach Dashboard</a>
+                        {/if}
+                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/athlete">Athlete Dashboard</a>
                     {/if}
-                    <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/athlete">Athlete Dashboard</a>
-                {/if}
-                <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>
-                <button on:click={logout} class="w-full py-2 hover:bg-gray-200">Sign Out</button>
-            </div>
-        {/if}
+                    <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>
+                    <button on:click={logout} class="w-full py-2 hover:bg-gray-200">Sign Out</button>
+                </div>
+            {/if}
+        </div>
     </div>
 </header>
 

@@ -10,7 +10,7 @@ defmodule SocketWeb.TeamSocket do
   # Uncomment the following line to define a "room:*" topic
   # pointing to the `SocketWeb.RoomChannel`:
   #
-  # channel "room:*", SocketWeb.RoomChannel
+  channel "room:chat_room", SocketWeb.ChatRoomChannel
   #
   # To create a channel file, use the mix task:
   #
@@ -32,7 +32,8 @@ defmodule SocketWeb.TeamSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
+  def connect(params, socket, _connect_info) do
+    IO.inspect socket
     {:ok, socket}
   end
 
