@@ -26,12 +26,14 @@
             </div>
         </div>
         <div class="flex flex-col items-center mt-4">
-            <a class="self-start pl-4 font-medium text-lg" href="/home/coach">
+            <a class="self-start pl-4 font-medium text-lg"
+               href="/home/coach"
+            >
                 <h3>My Teams</h3>
             </a>
             <hr class="w-full h-1 my-2 text-gray-400">
             {#each $userDB.coachData.teams as team}
-                <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer">
+                <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer" href="/home/coach/team/{team.id}">
                     {team.name}
                 </a>
             {/each}

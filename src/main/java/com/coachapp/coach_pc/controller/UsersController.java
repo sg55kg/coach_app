@@ -6,6 +6,7 @@ import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.NewUserRequest;
 import com.coachapp.coach_pc.request.UpdateUserRequest;
 import com.coachapp.coach_pc.service.UserService;
+import com.coachapp.coach_pc.view.UserViewModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,7 +26,7 @@ public class UsersController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<UserData> getUserData(@PathVariable String email) {
+    public ResponseEntity<UserViewModel> getUserData(@PathVariable String email) {
         return userService.getUserData(email);
     }
 

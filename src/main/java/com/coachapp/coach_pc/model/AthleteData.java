@@ -21,6 +21,7 @@ public class AthleteData {
     @JoinColumn(name = "current_program_id")
     private Program currentProgram;
     @OneToMany(mappedBy = "athlete")
+    @JsonIgnore
     private List<Program> programs;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
