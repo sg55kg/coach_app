@@ -1,6 +1,12 @@
 <script lang="ts">
-import {dayClipboard, exerciseClipboard, program} from "$lib/stores/writeProgramStore.js";
-import {onMount} from "svelte";
+    import {
+        dayClipboard,
+        exerciseClipboard,
+        program,
+        programError,
+        programSuccess
+    } from "$lib/stores/writeProgramStore.js";
+import {afterUpdate, onMount} from "svelte";
 import dayjs from "dayjs";
 import {Day} from "$lib/classes/program/day";
 
@@ -96,6 +102,20 @@ onMount(() => {
             closeContextMenu()
         }
     })
+})
+
+afterUpdate(() => {
+    if ($programError) {
+        setTimeout(() => {
+            programError.set('')
+        }, 5000)
+    }
+
+    if ($programSuccess) {
+        setTimeout(() => {
+            programSuccess.set('')
+        }, 5000)
+    }
 })
 
 </script>

@@ -7,6 +7,7 @@
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import dayjs from "dayjs";
     import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
+    import MdClose from 'svelte-icons/md/MdClose.svelte'
 
     export let data
 
@@ -58,9 +59,19 @@
             <ProgramOverview bind:showOverview={showOverview} bind:initialIndex={initialIndex} />
         {/if}
         {#if $programSuccess}
-            <div class="absolute bottom-10 z-10 text-green-dark border-l-2 border-l-green-dark bg-gray-400 shadow-2xl">{$programSuccess}</div>
+            <div class="sticky bottom-5 left-10 z-10 text-green border-l-4 border-l-green bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+                {$programSuccess}
+                <button class="h-8 w-8 hover:bg-gray-400 text-green-dark rounded-full hover:text-green p-1" on:click={() => $programSuccess = ''}>
+                    <MdClose />
+                </button>
+            </div>
         {:else if $programError}
-            <div class="absolute bottom-10 z-10 text-red border-l-2 border-l-red-shade bg-gray-400 shadow-2xl">{$programError}</div>
+            <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+                {$programError}
+                <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $programError = ''}>
+                    <MdClose />
+                </button>
+            </div>
         {/if}
     </div>
 {/if}
