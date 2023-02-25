@@ -21,6 +21,7 @@
     export let handleSubmit
     export let initialIndex: number = -1
     export let athleteId: string = ''
+    export let showOverview: boolean
 
     let selectedIndex: number = initialIndex
     let selectedDayId: string = ''
@@ -268,12 +269,11 @@
         }
     })
 
-    onDestroy(() => {
-        program.set(new Program())
-    })
-
 </script>
 
+<button on:click={() => showOverview = true} class="text-lg font-semibold text-textblue p-2 lg:ml-24">
+    Back to overview
+</button>
 <div class="flex w-screen justify-center">
     <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 

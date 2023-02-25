@@ -6,10 +6,14 @@
     import {auth0Client} from "$lib/stores/authStore";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import dayjs from "dayjs";
+    import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
 
     export let data
 
     const { programDto } = data
+
+    let showOverview: boolean = true
+    let initialIndex: number = 0
 
     if (programDto) {
         $program = Program.build(programDto)
@@ -17,6 +21,7 @@
             prev.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             return prev
         })
+        initialIndex = $program.days.length - 1
     }
 
     const handleSubmit = async (event, programData: Program) => {
@@ -47,7 +52,16 @@
 
 {#if $program?.id}
     <div class="relative">
-        <ProgramForm handleSubmit={handleSubmit} initialIndex={$program.days.length-1} />
+        {#if !showOverview}
+            <ProgramForm handleSubmit={handleSubmit} initialIndex={initialIndex} bind:showOverview={showOverview} />
+        {:else}
+            <ProgramOverview bind:showOverview={showOverview} bind:initialIndex={initialIndex} />
+        {/if}
+        {#if $programSuccess}
+            <div class="absolute bottom-10 z-10 text-green-dark border-l-2 border-l-green-dark bg-gray-400 shadow-2xl">{$programSuccess}</div>
+        {:else if $programError}
+            <div class="absolute bottom-10 z-10 text-red border-l-2 border-l-red-shade bg-gray-400 shadow-2xl">{$programError}</div>
+        {/if}
     </div>
 {/if}
 
