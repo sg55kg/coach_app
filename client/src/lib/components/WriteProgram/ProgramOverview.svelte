@@ -43,7 +43,15 @@ const closeContextMenu = () => {
 const copyDay = () => {
     const day = weeksOfProgram[contextMenuIndexes.week][contextMenuIndexes.day]
     // Only doing 1 day at a time for now
-    day.exercises = day.exercises.map(e => ({ ...e, id: '' }))
+    day.exercises = day.exercises.map(e => ({
+        ...e,
+        id: '',
+        isComplete: false,
+        weightCompleted: 0,
+        totalRepsCompleted: 0,
+        secondsPerSetCompleted: 0,
+        repCompletedArr: []
+    }))
     $dayClipboard = [day]
 }
 
@@ -146,13 +154,23 @@ afterUpdate(() => {
                     </div>
 
                     {#if day !== undefined}
-                        <div class="p-1">
+                        <div class="p-1 overflow-y-auto">
                         {#if !day.isRestDay && day.exercises.length > 0}
                             {#each day.exercises as exercise}
-                                <div>{exercise.name}</div>
+                                <div class="flex">
+                                    <input class="mx-2" type="checkbox" checked={exercise.isComplete}>
+                                    <div class="{exercise.isComplete && (exercise.totalRepsCompleted > 0 || exercise.repCompletedArr.length > 0 || exercise.secondsPerSetCompleted > 0) ?
+                                        'text-green' :
+                                        (exercise.isComplete ? 'text-red' : '')}"
+                                    >
+                                        {exercise.nameArr.length > 0 ? exercise.nameArr.join(' + ') : exercise.name}: {exercise.weight}kg
+                                    </div>
+                                </div>
                             {/each}
                         {:else if day.isRestDay}
-                            <div>Rest Day</div>
+                            <div class="text-center font-medium text-lg">
+                                Rest Day
+                            </div>
                         {:else}
                             <div>No Entry</div>
                         {/if}
@@ -180,7 +198,7 @@ afterUpdate(() => {
 
 <style>
     .calendar-row {
-        grid-template-columns: repeat(7, calc(16% - 40px));
+        grid-template-columns: repeat(7, calc(18% - 40px));
         gap: 10px
     }
     
