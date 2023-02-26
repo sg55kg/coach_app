@@ -6,7 +6,7 @@
 
     export let exercise: Exercise
     export let athlete: AthleteData
-    console.log(exercise.name, exercise.setsCompleted)
+
 </script>
 
 <div class="bg-gray-200 my-4 p-2 relative">

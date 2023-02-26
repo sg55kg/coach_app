@@ -2,7 +2,9 @@
 
 import {userDB} from "$lib/stores/authStore.js";
 import CurrentProgram from "$lib/components/CurrentProgram/CurrentProgram.svelte";
+import CurrentProgramOverview from "$lib/components/CurrentProgram/CurrentProgramOverview.svelte";
 
+let viewOverview: boolean = true
 
 </script>
 
@@ -12,7 +14,11 @@ import CurrentProgram from "$lib/components/CurrentProgram/CurrentProgram.svelte
 </svelte:head>
 
 {#if $userDB?.athleteData?.currentProgram}
-    <CurrentProgram currentProgramId={$userDB.athleteData.currentProgram.id} />
+    {#if viewOverview}
+        <CurrentProgram currentProgramId={$userDB.athleteData.currentProgram.id} />
+    {:else}
+        <CurrentProgramOverview />
+    {/if}
 {:else}
     <div class="text-center">
         You do not have a program currently

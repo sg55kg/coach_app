@@ -27,7 +27,7 @@
     let selectedDayId: string = ''
     let showDateDropdown: boolean = false
     let inputFocused: boolean = false
-    let athlete: AthleteData
+    let athlete: AthleteData = new AthleteData()
 
     $: athleteOptions = []
 
@@ -271,9 +271,9 @@
 
 </script>
 
-<button on:click={() => showOverview = true} class="text-lg font-semibold text-textblue p-2 lg:ml-24">
+<div on:click={() => showOverview = true} class="text-center lg:text-start text-lg font-semibold text-textblue p-2 lg:ml-24 hover:cursor-pointer">
     Back to overview
-</button>
+</div>
 <div class="flex w-screen justify-center">
     <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 

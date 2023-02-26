@@ -9,6 +9,8 @@
 import {afterUpdate, onMount} from "svelte";
 import dayjs from "dayjs";
 import {Day} from "$lib/classes/program/day";
+import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
+
 
 export let showOverview: boolean
 export let initialIndex: number
@@ -143,13 +145,16 @@ afterUpdate(() => {
                          showOverview = false
                      }}
                 >
-                    <div>
+                    <div class="flex justify-between items-center bg-gray-300 text-textblue">
                         <h3 class="font-semibold text-lg bg-gray-300 text-textblue p-1
                         {day && day.date.isSame($program.startDate, 'day') ? 'text-green' : ''}
                         {day && day.date.isSame($program.endDate, 'day') ? 'text-orange' : ''}"
                         >
                             {day?.date ? day.date.format('MMM ddd DD') : daysOfWeek[idx]}
                         </h3>
+                        <div class="h-4 bg-gray-300 flex items-center">
+                            <FaRegCommentAlt /> <p class="my-0 mx-1">({day ? day.exercises.reduce((a, b) => a + b.comments.length, 0) : 0})</p>
+                        </div>
 
                     </div>
 
@@ -158,7 +163,7 @@ afterUpdate(() => {
                         {#if !day.isRestDay && day.exercises.length > 0}
                             {#each day.exercises as exercise}
                                 <div class="flex">
-                                    <input class="mx-2" type="checkbox" checked={exercise.isComplete}>
+                                    <input class="mx-2" type="checkbox" disabled checked={exercise.isComplete}>
                                     <div class="{exercise.isComplete && (exercise.totalRepsCompleted > 0 || exercise.repCompletedArr.length > 0 || exercise.secondsPerSetCompleted > 0) ?
                                         'text-green' :
                                         (exercise.isComplete ? 'text-red' : '')}"
@@ -209,4 +214,5 @@ afterUpdate(() => {
             margin-bottom: 50px;
         }
     }
+
 </style>
