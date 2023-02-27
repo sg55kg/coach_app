@@ -53,7 +53,8 @@ const copyDay = () => {
         weightCompleted: 0,
         totalRepsCompleted: 0,
         secondsPerSetCompleted: 0,
-        repCompletedArr: []
+        repCompletedArr: [],
+        comments: []
     }))
     $dayClipboard = [day]
 }
