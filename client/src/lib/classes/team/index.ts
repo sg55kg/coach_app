@@ -39,6 +39,16 @@ export class Team {
     numAthletes: number = 0
 }
 
+export interface DisplayTeamDTO {
+    id: string,
+    name: string,
+    description: string,
+    coachName: string,
+    coachId: string,
+    numAthletes: number,
+    teamLogo: string
+}
+
 export class DisplayTeam {
     id: string = ''
     name: string = ''
@@ -47,4 +57,18 @@ export class DisplayTeam {
     coachId: string = ''
     numAthletes: number = 0
     teamLogo: string = ''
+
+    static createFrom(data: DisplayTeamDTO) {
+        const team = new DisplayTeam()
+
+        team.id = data.id
+        team.name = data.name
+        team.description = data.description
+        team.coachId = data.coachId
+        team.coachName = data.coachName
+        team.numAthletes = data.numAthletes
+        team.teamLogo = data.teamLogo
+
+        return team
+    }
 }

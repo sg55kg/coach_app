@@ -74,9 +74,11 @@
 
 <div class="rounded border-2 border-gray-400 p-2 my-2">
     <div class="flex flex-col items-center lg:flex-row lg:justify-between">
-        <h2 class="font-semibold text-xl">
-            {athlete.name}
-        </h2>
+        <a href="/home/coach/team/athlete/{athlete.id}">
+            <h2 class="font-semibold text-xl">
+                {athlete.name}
+            </h2>
+        </a>
         {#if !$isMobile && athlete?.currentProgram}
             {dayjs(athlete.currentProgram.startDate).format('ddd MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('ddd MMM DD')}
         {/if}

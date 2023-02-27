@@ -1,6 +1,4 @@
 <script lang="ts">
-    import {displayPrograms} from "$lib/stores/programStore";
-    import ProgramCard from "$lib/components/ProgramCard.svelte";
     import CreateTeamModal from "$lib/components/modals/CreateTeamModal.svelte";
     import {userDB} from "$lib/stores/authStore";
     import TeamCard from "$lib/components/TeamCard.svelte";

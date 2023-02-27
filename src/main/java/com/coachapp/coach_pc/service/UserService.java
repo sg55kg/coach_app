@@ -6,6 +6,7 @@ import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.repository.UserDataRepo;
 import com.coachapp.coach_pc.request.*;
+import com.coachapp.coach_pc.view.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,15 @@ public class UserService {
         this.userDataRepo = userDataRepo;
     }
 
-    public ResponseEntity<UserData> getUserData(String email) {
+    public ResponseEntity<UserViewModel> getUserData(String email) {
         Optional<UserData> optional = userDataRepo.findByEmail(email);
 
         if(optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             UserData user = optional.get();
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            UserViewModel vm = UserViewModel.convertUser(user);
+            return new ResponseEntity<>(vm, HttpStatus.OK);
         }
     }
 
