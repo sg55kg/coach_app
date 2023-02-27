@@ -31,7 +31,7 @@ const handleContextMenu = (e: Event, week: number, day: number) => {
         return
     }
     contextMenuIndexes = {week, day}
-    points = {x: e.clientX, y: e.clientY}
+    points = {x: e.clientX, y: e.clientY-75}
     clicked = true
 }
 
@@ -53,7 +53,8 @@ const copyDay = () => {
         weightCompleted: 0,
         totalRepsCompleted: 0,
         secondsPerSetCompleted: 0,
-        repCompletedArr: []
+        repCompletedArr: [],
+        comments: []
     }))
     $dayClipboard = [day]
 }
