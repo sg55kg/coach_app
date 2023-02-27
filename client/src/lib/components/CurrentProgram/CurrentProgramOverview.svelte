@@ -5,6 +5,7 @@
     import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
     import {currentDay} from "$lib/stores/athleteProgramStore";
     import dayjs from "dayjs";
+    import {isMobile} from "$lib/stores/authStore.js";
 
     export let viewOverview: boolean
 
@@ -60,7 +61,7 @@
     {#each weeksOfProgram as week, weekIdx}
         <div class="grid grid-cols-7 overflow-x-scroll calendar-row" style="">
             {#each week as day, idx}
-                <div class="flex flex-col col-span-1 h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
+                <div class="flex flex-col col-span-1 h-full lg:h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
                      on:click={() => { viewOverview = false; $currentDay = day }}
                 >
                     <div class="flex justify-between items-center bg-gray-300 text-textblue">
@@ -70,10 +71,11 @@
                         >
                             {day?.date ? day.date.format('MMM ddd DD') : daysOfWeek[idx]}
                         </h3>
-                        <div class="h-4 bg-gray-300 flex items-center">
-                            <FaRegCommentAlt /> <p class="my-0 mx-1">({day ? day.exercises.reduce((a, b) => a + b.comments.length, 0) : 0})</p>
-                        </div>
-
+                        {#if !$isMobile}
+                            <div class="h-4 bg-gray-300 flex items-center">
+                                <FaRegCommentAlt /> <p class="my-0 mx-1">({day ? day.exercises.reduce((a, b) => a + b.comments.length, 0) : 0})</p>
+                            </div>
+                        {/if}
                     </div>
                     {#if day !== undefined}
                         <div class="p-1 overflow-y-auto" >
@@ -112,11 +114,12 @@
         gap: 10px
     }
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 500px) {
         .calendar-row {
             grid-template-columns: repeat(7, calc(50% - 40px));
             gap: 5px;
             margin-bottom: 50px;
+            height: 15em;
         }
     }
 </style>

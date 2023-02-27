@@ -129,12 +129,12 @@
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
                 <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>
-                    <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
+                    <span class="h-6 mr-4"><FaRegPlusSquare /></span> New Program
                 </a>
             </div>
             <div class="h-6 text-link hover:text-link-shade duration-300">
                 <a class="flex h-6" href={`/home/coach/athlete-stats/${athlete.id}`}>
-                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>
+                    <span class="h-6 mr-4"><FaRegChartBar /></span> Stats
                 </a>
             </div>
         </div>

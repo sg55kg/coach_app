@@ -45,7 +45,12 @@
     <meta name="description" content="Dashboard for {team?.name}. Manage your athletes and write new programs" />
 </svelte:head>
 
-<a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold text-textblue mx-4 lg:ml-20 my-4 h-6 flex"><p class="mx-4"><FaChevronLeft /></p><p>Back to teams</p></a>
+<a href="/home/coach/{$userDB?.coachData?.id}" class="font-bold text-textblue mx-4 lg:ml-20 my-4 h-6 flex">
+    <span class="lg:mx-4 mx-2">
+        <FaChevronLeft />
+    </span>
+    Back to teams
+</a>
 
 {#await fetchTeam()}
     <div class="flex flex-col">
