@@ -31,7 +31,7 @@ const handleContextMenu = (e: Event, week: number, day: number) => {
         return
     }
     contextMenuIndexes = {week, day}
-    points = {x: e.clientX, y: e.clientY}
+    points = {x: e.clientX, y: e.clientY-75}
     clicked = true
 }
 
