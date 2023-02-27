@@ -5,6 +5,7 @@ import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.request.AthleteRequest;
+import com.coachapp.coach_pc.view.AthleteViewModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -43,7 +44,7 @@ public class AthleteService {
         return new ResponseEntity<>(athleteData, HttpStatus.OK);
     }
 
-    public ResponseEntity<AthleteData> updateAthlete(UUID id, AthleteRequest request) {
+    public ResponseEntity<AthleteViewModel> updateAthlete(UUID id, AthleteRequest request) {
         Optional<AthleteData> optional = athleteRepo.findById(id);
 
         if (optional.isEmpty()) {
@@ -53,8 +54,9 @@ public class AthleteService {
         AthleteData athlete = optional.get();
         athlete = AthleteRequest.convertRequest(request, athlete);
         athlete = athleteRepo.save(athlete);
+        AthleteViewModel vm = AthleteViewModel.convertAthlete(athlete);
 
-        return new ResponseEntity<>(athlete, HttpStatus.OK);
+        return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 
     public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(UUID athleteId, AthleteRecord record) {

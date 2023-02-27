@@ -27,7 +27,6 @@ public class Team {
             mappedBy = "team",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH}
     )
-    @JsonIgnore
     private List<AthleteData> athletes;
     @CreationTimestamp
     private Date createdAt;
