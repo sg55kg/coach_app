@@ -10,6 +10,7 @@ import {afterUpdate, onMount} from "svelte";
 import dayjs from "dayjs";
 import {Day} from "$lib/classes/program/day";
 import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
+    import {isMobile} from "$lib/stores/authStore.js";
 
 
 export let showOverview: boolean
@@ -30,7 +31,7 @@ const handleContextMenu = (e: Event, week: number, day: number) => {
         return
     }
     contextMenuIndexes = {week, day}
-    points = {x: e.clientX, y: e.clientY-75}
+    points = {x: e.clientX, y: e.clientY}
     clicked = true
 }
 
@@ -43,7 +44,7 @@ const closeContextMenu = () => {
 }
 
 const copyDay = () => {
-    const day = weeksOfProgram[contextMenuIndexes.week][contextMenuIndexes.day]
+    const day = JSON.parse(JSON.stringify(weeksOfProgram[contextMenuIndexes.week][contextMenuIndexes.day]))
     // Only doing 1 day at a time for now
     day.exercises = day.exercises.map(e => ({
         ...e,
@@ -58,10 +59,8 @@ const copyDay = () => {
 }
 
 const pasteDay = () => {
-    console.log($program.days)
     const dayToReplace = weeksOfProgram[contextMenuIndexes.week][contextMenuIndexes.day]
-    console.log(dayToReplace)
-    $program.days = $program.days.map(d => d.id === dayToReplace?.id ? { ...$dayClipboard[0], date: dayjs(dayToReplace.date) } : d)
+    $program.days = $program.days.map(d => d.id === dayToReplace?.id ? { ...$dayClipboard[0], id: d.id ? d.id : '', date: dayjs(dayToReplace.date) } : d)
     initializeCalender()
 }
 
@@ -136,10 +135,10 @@ afterUpdate(() => {
     </div>
 
         {#each weeksOfProgram as week, weekIdx}
-            <div class="grid grid-cols-7 overflow-x-scroll calendar-row" style="">
+            <div class="grid overflow-x-scroll calendar-row" style="">
             {#each week as day, idx}
                 <div on:contextmenu={(e) => handleContextMenu(e, weekIdx, idx)}
-                     class="flex flex-col col-span-1 h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
+                     class="flex flex-col col-span-1 h-full lg:h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
                      on:click={() => {
                          initialIndex = $program.days.findIndex(d => d.id === weeksOfProgram[weekIdx][idx].id)
                          showOverview = false
@@ -152,10 +151,11 @@ afterUpdate(() => {
                         >
                             {day?.date ? day.date.format('MMM ddd DD') : daysOfWeek[idx]}
                         </h3>
-                        <div class="h-4 bg-gray-300 flex items-center">
-                            <FaRegCommentAlt /> <p class="my-0 mx-1">({day ? day.exercises.reduce((a, b) => a + b.comments.length, 0) : 0})</p>
-                        </div>
-
+                        {#if !$isMobile}
+                            <div class="h-4 bg-gray-300 flex items-center">
+                                <FaRegCommentAlt /> <p class="my-0 mx-1">({day ? day.exercises.reduce((a, b) => a + b.comments.length, 0) : 0})</p>
+                            </div>
+                        {/if}
                     </div>
 
                     {#if day !== undefined}
@@ -207,11 +207,12 @@ afterUpdate(() => {
         gap: 10px
     }
     
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 500px) {
         .calendar-row {
             grid-template-columns: repeat(7, calc(50% - 40px));
             gap: 5px;
             margin-bottom: 50px;
+            height: 15em;
         }
     }
 
