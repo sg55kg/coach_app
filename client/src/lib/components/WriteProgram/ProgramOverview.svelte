@@ -31,7 +31,7 @@ const handleContextMenu = (e: Event, week: number, day: number) => {
         return
     }
     contextMenuIndexes = {week, day}
-    points = {x: e.clientX, y: e.clientY-75}
+    points = {x: e.clientX, y: e.clientY-75-document.getElementsByTagName('html')[0].scrollTop}
     clicked = true
 }
 
