@@ -3,10 +3,13 @@
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import {AthleteData} from "$lib/classes/user/athlete";
     import {Exercise} from "$lib/classes/program/exercise";
+    import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
+    import dayjs from "dayjs";
 
     export let exercise: Exercise
     export let athlete: AthleteData
 
+    let showComments: boolean = false
 </script>
 
 <div class="bg-gray-200 my-4 p-2 relative">
@@ -70,5 +73,23 @@
         {/if}
     {/if}
 </div>
+<div class="h-6 flex hover:cursor-pointer" on:click={() => showComments = !showComments}>
+    <span class="mr-2"><FaRegCommentAlt /> </span>
+    Comments ({exercise.comments.length})
+</div>
+{#if showComments}
+    {#if exercise?.comments.length < 1}
+        <p class="m-0">No Comments</p>
+    {/if}
+    {#each exercise?.comments as comment (comment.id)}
+        <div class="flex flex-col p-4 bg-gray-300 rounded-xl lg:w-6/12 text-textblue my-2 lg:ml-16">
+            <div class="flex flex-row justify-between mb-2">
+                <h5 class="text-lg font-bold">{comment.commenterName}</h5>
+                <h5><i>{dayjs(comment.createdAt).format('MMMM D h:mm A')}</i></h5>
+            </div>
+            <p>{comment.content}</p>
+        </div>
+    {/each}
+{/if}
 
 <style></style>
