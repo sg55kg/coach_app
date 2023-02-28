@@ -1,6 +1,7 @@
 <script lang="ts">
     import { confetti } from '@neoconfetti/svelte';
     import {allowed, words, Game} from "./words";
+    import {userDB} from "$lib/stores/authStore.js";
 
 
     let game: Game = new Game()
@@ -117,6 +118,7 @@
     <div class="my-4">
         <h1 class="text-3xl font-bold">Uh oh! Something went wrong</h1>
         <p class="text-xl font-bold">If you're seeing this page, an error on our end has occurred. While you're here, why not play some Wordle? </p>
+        <a class="text-link hover:text-link-shade" href={$userDB ? '/home' : '/'}>Return to home</a>
     </div>
     <div class="grid" class:playing={!won} class:bad-guess={badGuess}>
         {#each Array(6) as _, row}
