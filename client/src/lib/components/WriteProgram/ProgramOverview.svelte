@@ -1,46 +1,67 @@
 <script lang="ts">
-    import {
-        dayClipboard,
-        exerciseClipboard,
-        program,
-        programError,
-        programSuccess
-    } from "$lib/stores/writeProgramStore.js";
+import {
+    dayClipboard,
+    exerciseClipboard,
+    program,
+    programError,
+    programSuccess
+} from "$lib/stores/writeProgramStore.js";
 import {afterUpdate, onMount} from "svelte";
 import dayjs from "dayjs";
 import {Day} from "$lib/classes/program/day";
 import FaRegCommentAlt from 'svelte-icons/fa/FaRegCommentAlt.svelte'
-    import {isMobile} from "$lib/stores/authStore.js";
+import {isMobile} from "$lib/stores/authStore.js";
+import {Exercise} from "$lib/classes/program/exercise";
 
 
 export let showOverview: boolean
 export let initialIndex: number
 
 const daysOfWeek: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-let weeksOfProgram: Day | undefined[][] = []
+let weeksOfProgram: Day[][] | undefined[][] = []
 
 let clicked: boolean = false
 
 let contextMenuIndexes: {week: number, day: number} = {week: -1, day: -1}
 let points: {x: number, y: number} = {x: 0, y: 0}
 
-const handleContextMenu = (e: Event, week: number, day: number) => {
+let noProgramMenuIndexes: {week: number, day: number} = {week: -1, day: -1}
+let noProgramPoints: {x: number, y: number} = {x: 0, y: 0}
+
+const handleContextMenu = (e: MouseEvent, week: number, day: number) => {
     e.preventDefault()
     if (contextMenuIndexes.week === week && contextMenuIndexes.day === day) {
-        closeContextMenu()
         return
     }
+    if (noProgramMenuIndexes.week > -1 || noProgramMenuIndexes.day > -1) {
+        closeContextMenu()
+    }
     contextMenuIndexes = {week, day}
-    points = {x: e.clientX, y: e.clientY-75-document.getElementsByTagName('html')[0].scrollTop}
+    points = {x: e.pageX, y: e.pageY-75}
+    clicked = true
+}
+
+const handleNoProgramContextMenu = (e: MouseEvent, week: number, day: number) => {
+    e.preventDefault()
+    if (noProgramMenuIndexes.week === week && noProgramMenuIndexes.day === day) {
+        return
+    }
+    if (contextMenuIndexes.week > -1 || contextMenuIndexes.day > -1) {
+        closeContextMenu()
+    }
+    noProgramMenuIndexes = {week, day}
+    noProgramPoints = {x: e.pageX, y: e.pageY-75}
     clicked = true
 }
 
 const closeContextMenu = () => {
-    setTimeout(() => {
+    //setTimeout(() => {
         contextMenuIndexes = {week: -1, day: -1}
+        noProgramMenuIndexes = {week: -1, day: -1}
+        noProgramPoints = {x: 0, y: 0}
         points = {x: 0, y: 0}
         clicked = false
-    }, 50)
+    //}, 50)
 }
 
 const copyDay = () => {
@@ -57,6 +78,24 @@ const copyDay = () => {
         comments: []
     }))
     $dayClipboard = [day]
+}
+
+const extendProgram = () => {
+    const lastDay = $program.days.find(d => d.date.isSame($program.endDate, 'day'))
+    // for (let i = noProgramMenuIndexes.week; i >= 0; i--) {
+    //     const week = weeksOfProgram[i]
+    //     for (let j = week.length - 1; j >= 0; j--) {
+    //         let day = week[j]
+    //         if (day !== undefined && day.id === lastDay.id) {
+    //             return
+    //         }
+    //         if (i === 0 && j === 0) {
+    //             day = $dayClipboard[0]
+    //         } else {
+    //             day = new Exercise()
+    //         }
+    //     }
+    // }
 }
 
 const pasteDay = () => {
@@ -105,7 +144,6 @@ const initializeCalender = () => {
 
 onMount(() => {
     initializeCalender()
-    console.log('mounted')
 
     document.addEventListener('click', () => {
         if (clicked) {
@@ -130,7 +168,7 @@ afterUpdate(() => {
 
 </script>
 
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden mb-12">
     <div>
         <h1 class="font-bold text-2xl my-2 px-2">{$program.name}</h1>
     </div>
@@ -138,12 +176,8 @@ afterUpdate(() => {
         {#each weeksOfProgram as week, weekIdx}
             <div class="grid overflow-x-scroll calendar-row" style="">
             {#each week as day, idx}
-                <div on:contextmenu={(e) => handleContextMenu(e, weekIdx, idx)}
-                     class="flex flex-col col-span-1 h-full lg:h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
-                     on:click={() => {
-                         initialIndex = $program.days.findIndex(d => d.id === weeksOfProgram[weekIdx][idx].id)
-                         showOverview = false
-                     }}
+                <div class="flex flex-col col-span-1 h-full lg:h-44 overflow-y-hidden bg-gray-200 hover:bg-gray-400 hover:cursor-pointer lg:m-2"
+
                 >
                     <div class="flex justify-between items-center bg-gray-300 text-textblue">
                         <h3 class="font-semibold text-lg bg-gray-300 text-textblue p-1
@@ -160,29 +194,35 @@ afterUpdate(() => {
                     </div>
 
                     {#if day !== undefined}
-                        <div class="p-1 overflow-y-auto">
-                        {#if !day.isRestDay && day.exercises.length > 0}
-                            {#each day.exercises as exercise}
-                                <div class="flex">
-                                    <input class="mx-2" type="checkbox" disabled checked={exercise.isComplete}>
-                                    <div class="{exercise.isComplete && (exercise.totalRepsCompleted > 0 || exercise.repCompletedArr.length > 0 || exercise.secondsPerSetCompleted > 0) ?
-                                        'text-green' :
-                                        (exercise.isComplete ? 'text-red' : '')}"
-                                    >
-                                        {exercise.nameArr.length > 0 ? exercise.nameArr.join(' + ') : exercise.name}: {exercise.weight}kg
+                        <div class="p-1 h-full overflow-y-auto"
+                             on:click={() => {
+                                 initialIndex = $program.days.findIndex(d => d.id === weeksOfProgram[weekIdx][idx].id)
+                                 showOverview = false
+                             }}
+                             on:contextmenu={(e) => handleContextMenu(e, weekIdx, idx)}
+                        >
+                            {#if !day.isRestDay && day.exercises.length > 0}
+                                {#each day.exercises as exercise}
+                                    <div class="flex items-center">
+                                        <input class="mx-2 h-4 w-4" type="checkbox" disabled checked={exercise.isComplete}>
+                                        <div class="{exercise.isComplete && (exercise.totalRepsCompleted > 0 || exercise.repCompletedArr.length > 0 || exercise.secondsPerSetCompleted > 0) ?
+                                            'text-green' :
+                                            (exercise.isComplete ? 'text-red' : '')}"
+                                        >
+                                            {exercise.nameArr.length > 0 ? exercise.nameArr.join(' + ') : exercise.name}: {exercise.weight}kg
+                                        </div>
                                     </div>
+                                {/each}
+                            {:else if day.isRestDay}
+                                <div class="text-center font-medium text-lg h-full">
+                                    Rest Day
                                 </div>
-                            {/each}
-                        {:else if day.isRestDay}
-                            <div class="text-center font-medium text-lg">
-                                Rest Day
-                            </div>
-                        {:else}
-                            <div>No Entry</div>
-                        {/if}
+                            {:else}
+                                <div class="h-full">No Entry</div>
+                            {/if}
                         </div>
                     {:else}
-                        <div class="bg-gray-100 h-full"></div>
+                        <div class="bg-gray-100 h-full w-full" on:contextmenu={(e) => handleNoProgramContextMenu(e, weekIdx, idx)}></div>
                     {/if}
 
                 </div>
@@ -190,13 +230,27 @@ afterUpdate(() => {
             </div>
         {/each}
         {#if contextMenuIndexes.week > -1 && contextMenuIndexes.day > -1}
-            <div class="bg-gray-200 w-32" style="position: absolute; top: {points.y}px; left: {points.x}px" on:click={closeContextMenu}>
+            <div class="bg-gray-200 w-32"
+                 style="position: absolute; top: {points.y}px; left: {points.x}px"
+                 on:click={() => setTimeout(() => closeContextMenu(), 50)}
+            >
                 <ul>
                     <li on:click={copyDay} class="hover:bg-gray-400 hover:cursor-pointer p-2">Copy Day</li>
                     <li on:click={pasteDay} class="hover:bg-gray-400 hover:cursor-pointer p-2">Paste Day</li>
                 </ul>
             </div>
         {/if}
+    {#if noProgramMenuIndexes.week > -1 && noProgramMenuIndexes.day > -1}
+        <div class="bg-gray-200 w-32"
+             style="position: absolute; top: {noProgramPoints.y}px; left: {noProgramPoints.x}px"
+             on:click={() => setTimeout(() => closeContextMenu(), 50)}
+        >
+            <ul>
+                <li on:click={extendProgram} class="hover:bg-gray-400 hover:cursor-pointer p-2">Extend Program</li>
+                <li class="hover:bg-gray-400 hover:cursor-pointer p-2">Extend and Paste Day</li>
+            </ul>
+        </div>
+    {/if}
 
 
 </div>
