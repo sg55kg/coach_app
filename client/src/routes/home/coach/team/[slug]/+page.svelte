@@ -100,15 +100,17 @@
             {:else if activeTab === 'programs'}
                 <div class="rounded bg-gray-200 w-11/12 flex flex-col p-3">
                     <div>
-                        <h2 class="text-center text-xl font-bold">All Programs</h2>
-                        <input type="text" class="bg-gray-300 text-textblue p-1" on:input={(e) => handleFilterPrograms(e.target.value)}>
+                        <h2 class="text-center text-xl font-bold mb-2">All Programs</h2>
+                        <div class="flex flex-col lg:flex-row">
+                            <input type="text" class="bg-gray-300 text-textblue p-1" on:input={(e) => handleFilterPrograms(e.target.value)}>
 
-                        <button class="p-1 px-5 border-textblue border-2 m-1 rounded bg-gray-100 hover:bg-gray-300">
-                            Search
-                        </button>
+                            <button class="p-1 px-5 border-textblue border-2 mt-2 m-auto rounded bg-gray-100 hover:bg-gray-300">
+                                Search
+                            </button>
+                        </div>
                     </div>
                     <a class="self-center" href="/home/coach/create-program">
-                        <button class="mt-5 text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
+                        <button class="mt-5 mb-5 text-black bg-yellow p-2 rounded font-bold hover:bg-yellow-shade duration-300">
                             Add New Program
                         </button>
                     </a>
