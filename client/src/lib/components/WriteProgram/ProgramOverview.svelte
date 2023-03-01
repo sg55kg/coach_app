@@ -75,7 +75,8 @@ const copyDay = () => {
         totalRepsCompleted: 0,
         secondsPerSetCompleted: 0,
         repCompletedArr: [],
-        comments: []
+        comments: [],
+        dropSets: e.dropSets.map(d => ({ ...d, id: '', isComplete: false, weightCompleted: 0, totalRepsCompleted: 0, secondsPerSetCompleted: 0, repCompletedArr: [], comments: [] }))
     }))
     $dayClipboard = [day]
 }
