@@ -54,8 +54,6 @@ public class ProgramManager {
             }
             program.setAthlete(athlete);
 
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         if (programRequest.getCoachId() != null) {
             Optional<CoachData> optional = coachRepo.findById(programRequest.getCoachId());

@@ -46,6 +46,11 @@ public class ProgramService {
                     program.getStartDate(),
                     program.getEndDate(),
                     program.getName());
+            if (program.getAthlete() != null) {
+                displayProgram.setAthleteId(program.getAthlete().getId());
+            }
+            OffsetDateTime d = getLastUpdatedDay(program);
+            displayProgram.setLastEnteredDay(d);
             result.add(displayProgram);
         });
 
@@ -100,6 +105,9 @@ public class ProgramService {
                     program.getStartDate(),
                     program.getEndDate(),
                     program.getName());
+            if (program.getAthlete() != null) {
+                displayProgram.setAthleteId(program.getAthlete().getId());
+            }
             OffsetDateTime d = getLastUpdatedDay(program);
             displayProgram.setLastEnteredDay(d);
             programs.add(displayProgram);
@@ -133,6 +141,11 @@ public class ProgramService {
                     program.getStartDate(),
                     program.getEndDate(),
                     program.getName());
+            if (program.getAthlete() != null) {
+                displayProgram.setAthleteId(program.getAthlete().getId());
+            }
+            OffsetDateTime d = getLastUpdatedDay(program);
+            displayProgram.setLastEnteredDay(d);
             programs.add(displayProgram);
         });
 
