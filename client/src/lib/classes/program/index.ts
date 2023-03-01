@@ -66,6 +66,7 @@ export class DisplayProgram implements IProgram {
         program.startDate = new Date(programDTO.startDate)
         program.endDate = new Date(programDTO.endDate)
         program.lastEnteredDay = new Date(programDTO.lastEnteredDay!)
+        program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
 
         return program
     }
@@ -75,5 +76,6 @@ export class DisplayProgram implements IProgram {
     startDate: Date = new Date()
     endDate: Date = new Date()
     lastEnteredDay: Date = new Date()
+    athleteId: string = ''
     //coach: string = ''
 }

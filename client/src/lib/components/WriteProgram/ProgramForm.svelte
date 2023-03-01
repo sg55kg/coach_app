@@ -33,7 +33,32 @@
 
 
     const formatDateString = (date: Date) => {
-        return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}`
+        //return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}-${date.getHours().toString().length < 2 ? '0' + (date.getHours()) : (date.getHours())}-${date.getMinutes()}-${date.getSeconds()}`
+
+        let dateString: string = date.getFullYear().toString() + '-'
+
+        if (date.getMonth().toString().length < 2) {
+            dateString += '0' + (date.getMonth() + 1) + '-'
+        } else {
+            dateString += (date.getMonth() + 1) + '-'
+        }
+        if (date.getDate().toString(). length < 2) {
+            dateString += '0' + (date.getDate())
+        } else {
+            dateString += date.getDate().toString()
+        }
+        dateString += 'T'
+        if (date.getHours().toString().length < 2) {
+            dateString += '0' + date.getHours() + ':'
+        } else {
+            dateString += date.getHours() + ':'
+        }
+        if (date.getMinutes().toString().length < 2) {
+            dateString += '0' + date.getMinutes()
+        } else {
+            dateString += date.getMinutes()
+        }
+        return dateString
     }
 
     let startDateString = $program?.startDate ? formatDateString($program.startDate) : ''
@@ -160,6 +185,8 @@
 
         startDateString = formatDateString(startDate.toDate())
         endDateString = formatDateString(endDate.toDate())
+        console.log('start date', startDateString)
+        console.log('end date', endDateString)
 
         program.update(p => {
             p.endDate = endDate.toDate()
@@ -170,7 +197,7 @@
         const daysDiff = endDate.diff(startDate, 'days')
 
         let currentDate = startDate
-        for (let i = 0; i <= daysDiff; i++) {
+        for (let i = 0; i <= daysDiff+1; i++) {
             addDay(currentDate, i)
             currentDate = currentDate.add(1, 'day')
         }
@@ -293,7 +320,7 @@
                 <div class="p-0 lg:p-2 flex justify-start w-9/12 items-center">
                     <div class="flex flex-col mr-4 w-7/12">
                         <label class="text-sm">Start Date</label>
-                        <input type="date"
+                        <input type="datetime-local"
                                class="p-1 bg-gray-300 text-md text-textgray decoration-color-textgray"
                                name="startDate"
                                bind:value={startDateString}
@@ -301,7 +328,7 @@
                     </div>
                     <div class="flex flex-col w-7/12">
                         <label class="text-sm">End Date</label>
-                        <input type="date"
+                        <input type="datetime-local"
                                name="endDate"
                                class= "bg-gray-300 text-md p-1"
                                bind:value={endDateString}

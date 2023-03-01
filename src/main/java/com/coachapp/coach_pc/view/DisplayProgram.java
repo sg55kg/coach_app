@@ -15,6 +15,7 @@ public class DisplayProgram {
     private Date endDate;
     private OffsetDateTime lastEnteredDay;
     private String name;
+    private UUID athleteId;
 
     public DisplayProgram() {}
 
@@ -25,6 +26,7 @@ public class DisplayProgram {
         this.startDate = startDate;
         this.endDate = endDate;
         this.name = name;
+        this.athleteId = athleteId;
     }
 
     public UUID getId() {
@@ -55,6 +57,10 @@ public class DisplayProgram {
         return lastEnteredDay;
     }
 
+    public UUID getAthleteId() {
+        return athleteId;
+    }
+
     public void setLastEnteredDay(OffsetDateTime lastEnteredDay) {
         this.lastEnteredDay = lastEnteredDay;
     }
@@ -83,6 +89,10 @@ public class DisplayProgram {
         this.name = name;
     }
 
+    public void setAthleteId(UUID athleteId) {
+        this.athleteId = athleteId;
+    }
+
     public static DisplayProgram convertProgramForDisplay(Program program) {
         DisplayProgram displayProgram = new DisplayProgram();
 
@@ -100,6 +110,10 @@ public class DisplayProgram {
         displayProgram.setStartDate(program.getStartDate());
         displayProgram.setEndDate(program.getEndDate());
         displayProgram.setLastEnteredDay(lastEntered);
+
+        if (program.getAthlete() != null) {
+            displayProgram.setAthleteId(program.getAthlete().getId());
+        }
 
         return displayProgram;
     }
