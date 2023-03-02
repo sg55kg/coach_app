@@ -48,20 +48,20 @@
    }
 </script>
 
-<div class="m-2 bg-gray-100 p-2">
-    <div class="flex justify-between items-center">
-        <div class="flex items-center mb-4">
-            <h3 class="text-xl">{program.name}</h3>
-            <div class="h-4 mx-2 hover:text-link-shade text-link hover:cursor-pointer">
+<div class="mt-2 mx-0 lg:mx-2 bg-gray-300 p-2">
+    <div class="flex justify-between items-center w-full">
+        <div class="flex items-center mb-4 w-8/12">
+            <h3 class="block text-lg lg:text-xl text-ellipsis overflow-x-hidden whitespace-nowrap overflow-ellipsis max-w-xs">{program.name}</h3>
+            <div class="h-4 ml-2 w-2/12 hover:text-link-shade text-link hover:cursor-pointer">
                 <FaPen />
             </div>
         </div>
-        <div class="flex">
-            <div class="h-5 mx-2 text-red hover:text-red-shade hover:cursor-pointer" on:click={() => showConfirmationModal = !showConfirmationModal}>
+        <div class="flex w-4/12 justify-end">
+            <div class="h-5 min-h-5 mx-2 text-red hover:text-red-shade hover:cursor-pointer" on:click={() => showConfirmationModal = !showConfirmationModal}>
                 <FaTrashAlt />
             </div>
 
-            <div class="h-5 mx-2 hover:text-link-shade text-link hover:cursor-pointer">
+            <div class="h-5 min-h-5 mx-2 hover:text-link-shade text-link hover:cursor-pointer">
                 <FaRegCopy />
             </div>
         </div>
