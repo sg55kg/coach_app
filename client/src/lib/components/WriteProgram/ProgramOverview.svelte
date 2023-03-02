@@ -15,7 +15,7 @@ import {Exercise} from "$lib/classes/program/exercise";
 
 
 export let showOverview: boolean
-export let initialindex: number
+export let initialIndex: number
 
 const daysOfWeek: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 let weeksOfProgram: Day[][] | undefined[][] = []
