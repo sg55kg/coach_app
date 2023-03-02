@@ -34,39 +34,19 @@ public class AthleteProgramStatsService {
     }
 
     public ResponseEntity<AthleteProgramStats> generateAthleteStats(UUID athleteId) {
-        AthleteProgramStats stats = new AthleteProgramStats();
         Optional<AthleteData> optional = athleteRepo.findById(athleteId);
 
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        AthleteData athlete = optional.get();
-        int totalSnatchReps = 0;
-        int totalCleanReps = 0;
-        int totalJerkReps = 0;
-        int totalSquatReps = 0;
-        int totalPullReps = 0;
-        int totalPressReps = 0;
-        int totalRowReps = 0;
-        int totalPRs = 0;
-
-        for (Program program : athlete.getPrograms()) {
-            for (Day day : program.getDays()) {
-                for (Exercise exercise : day.getExercises()) {
-                    String name = exercise.getName().toUpperCase();
-                    name.contains("SNATCH");
-                    switch (name) {
-                        case "A":
-                            System.out.println("Hello Word");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+        try {
+            AthleteData athlete = optional.get();
+            Program currentProgram = athlete.getCurrentProgram();
+            AthleteProgramStats stats = statsRepo.getStats(currentProgram.getId());
+            return new ResponseEntity<>(stats, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(stats, HttpStatus.OK);
     }
 }
