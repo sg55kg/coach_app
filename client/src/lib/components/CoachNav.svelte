@@ -33,7 +33,7 @@
             </a>
             <hr class="w-full h-1 my-2 text-gray-400">
             {#each $userDB.coachData.teams as team}
-                <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer" href="/home/coach/team/{team.id}">
+                <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer" href="/home/coach/team/{team.id}" on:click={() => showNav = false}>
                     {team.name}
                 </a>
             {/each}
