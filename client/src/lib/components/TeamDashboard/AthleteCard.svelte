@@ -1,10 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import dayjs from "dayjs";
-    import FaRegEdit from 'svelte-icons/fa/FaRegEdit.svelte';
     import FaRegChartBar from 'svelte-icons/fa/FaRegChartBar.svelte'
-    import {Team} from "$lib/classes/team";
-    import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {Program} from "$lib/classes/program";
@@ -13,7 +10,6 @@
     import {isMobile} from "$lib/stores/authStore.js";
 
     export let athlete: AthleteData
-    export let team: Team
 
     let updateSeverity: 'low' | 'moderate' | 'severe' | 'none' | 'over'
     let lastDay: dayjs = dayjs()
@@ -25,7 +21,7 @@
             const updatedProgram = {
                 ...athlete.currentProgram
             } as Program
-            const program = await ProgramService.updateProgram(updatedProgram)
+            const program: Program = await ProgramService.updateProgram(updatedProgram)
             userDB.update(prev => {
                 prev!.coachData!.programs = prev!.coachData!.programs!.map(p => p.id === program.id ? program : p)
                 return prev

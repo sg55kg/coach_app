@@ -54,7 +54,7 @@
     </div>
     <div class="relative">
         <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
-            <img src={$authUser.picture} alt="profile" class="ml-2 mr-1">
+            <img src={$authUser.picture} alt="profile" class="rounded-full h-[40px] lg:h-[45px]">
         </button>
         {#if showDropdown}
             <div on:blur={() => showDropdown = false}
@@ -76,8 +76,5 @@
 </header>
 
 <style>
-    img {
-        border-radius: 50%;
-        height: 45px;
-    }
+
 </style>
