@@ -7,6 +7,8 @@
     import {AthleteData, athleteRecordFields} from "$lib/classes/user/athlete";
 
     export let athlete: AthleteData
+    export let records: AthleteData[] = []
+    $: console.log(records)
 
     let recordChart: LineChart
     let moreCheckOptions: any[] = []
@@ -17,12 +19,9 @@
     let recordsError: boolean = false
 
     const changeRecordExercise = (name: string) => {
-        if (!$userDB?.athleteData?.records) return
 
         name = name.split(' ').join('_')
-        series = athlete.records.map(record => {
-            return record.records.get(name)
-        })
+        series = records.map(record => record.records.get(name))
 
         recordChart = new LineChart('#record-chart', {
             series: [series],
@@ -110,11 +109,16 @@
                 <div class="stroke-red " id="record-chart"></div>
             </div>
         </div>
+        <div>
+            <h1 class="text-2xl font-bold lg:mx-60 self-start">{athlete.name}'s Stats</h1>
+        </div>
     </div>
 {:else}
     <div class="flex flex-col text-center font-semibold text-lg m-auto p-4">
         It doesn't look like we've recorded any data for {athlete.name} yet
-        <a class="text-link hover:text-link-shade hover:cursor-pointer mt-4" href="/home/coach">Back to coach dashboard</a>
+        <a class="text-link hover:text-link-shade hover:cursor-pointer mt-4" href="/home/coach/{$userDB.coachData.id}">
+            Back to coach dashboard
+        </a>
     </div>
 {/if}
 

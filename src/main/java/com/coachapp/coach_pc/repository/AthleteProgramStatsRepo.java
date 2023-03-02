@@ -25,7 +25,7 @@ public class AthleteProgramStatsRepo {
 
 
     public AthleteProgramStats getStats(UUID programId) throws Exception {
-        entityManager.getTransaction().begin();
+//        entityManager.getTransaction().begin();
 
         Program program = entityManager.find(Program.class, programId);
 
@@ -52,7 +52,8 @@ public class AthleteProgramStatsRepo {
         int jerkExercises = 0;
 
         for (Day day : completedDays) {
-            for (Exercise exercise : day.getExercises()) {
+            List<Exercise> exercises = day.getExercises();
+            for (Exercise exercise : exercises) {
                 if (exercise.getType() != ExerciseType.EXERCISE) {
                     continue;
                 }

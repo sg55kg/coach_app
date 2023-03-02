@@ -95,4 +95,15 @@ public class AthleteService {
 
         return optional.get();
     }
+
+    public ResponseEntity<List<AthleteRecord>> getAthleteRecords(UUID athleteId) {
+        Optional<AthleteData> optional = athleteRepo.findById(athleteId);
+
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        List<AthleteRecord> records = optional.get().getRecords();
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
 }

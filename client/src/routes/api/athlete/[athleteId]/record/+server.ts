@@ -25,3 +25,25 @@ export const PUT: RequestHandler = async (event) => {
         throw error(405, 'Could not update record')
     }
 }
+
+export const GET: RequestHandler = async (event) => {
+    const token = event.cookies.get('accessToken')
+    const athleteId = event.params.athleteId
+
+    if (!token) {
+        throw redirect(307, '/')
+    }
+    try {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/record`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        const records = await res.json()
+        return new Response(JSON.stringify((records)))
+    } catch (e) {
+        throw error(404, 'Records not found')
+    }
+}
