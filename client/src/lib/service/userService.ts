@@ -190,7 +190,7 @@ export default class UserService {
             body: JSON.stringify({
                 id,
                 teamId: athlete.team ? athlete.team.id : null,
-                coachId: athlete.coach ? athlete.coach.id : null,
+                coachId: athlete.coachId ? athlete.coachId : null,
                 name: athlete.name,
                 records: athlete.records
             })
@@ -201,7 +201,7 @@ export default class UserService {
         return AthleteData.createFrom(await res.json() as AthleteDataDTO)
     }
 
-    static async updateUserData(user: User) {
+    static updateUserData = async (user: User) => {
 
         const res = await fetch(`/api/user/${user.id}`, {
             method: 'PUT',
@@ -209,10 +209,32 @@ export default class UserService {
             body: JSON.stringify(user)
         })
 
-        if (res.status > 200) {
+        if (res.status > 307) {
             throw new Error('Could not update user data')
         }
 
         return User.build(await res.json())
+    }
+
+    static fetchAthleteRecords = async (athleteId: string) => {
+        const res = await fetch(`/api/athlete/${athleteId}/record`)
+
+        if (res.status > 307) {
+            throw new Error('Could not find athlete records')
+        }
+
+        const recordDTOs: AthleteRecordDTO[] = await res.json()
+        return recordDTOs.map(r => new AthleteRecord(r))
+    }
+
+    static fetchAthleteStats = async (athleteId: string) => {
+        const res = await fetch(`/api/athlete/${athleteId}/stats`)
+
+        if (res.status > 307) {
+            throw new Error('Could not generate athlete stats')
+        }
+
+        const stats: any = await res.json()
+        return stats
     }
 }
