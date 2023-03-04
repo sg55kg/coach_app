@@ -66,14 +66,24 @@ public class AthleteViewModel {
     }
 
     public static AthleteViewModel convertAthlete(AthleteData athlete) {
+        if (athlete == null) {
+            return null;
+        }
         AthleteViewModel viewModel = new AthleteViewModel();
 
         viewModel.setId(athlete.getId());
-        viewModel.setCoachId(athlete.getCoach().getId());
-        viewModel.setTeam(DisplayTeam.convertTeam(athlete.getTeam()));
-        viewModel.setCurrentProgram(
-                ProgramViewModel.convertProgram(athlete.getCurrentProgram())
-        );
+        if (athlete.getCoach() != null) {
+            viewModel.setCoachId(athlete.getCoach().getId());
+        }
+        if (athlete.getTeam() != null) {
+            viewModel.setTeam(DisplayTeam.convertTeam(athlete.getTeam()));
+        }
+        if (athlete.getCurrentProgram() != null) {
+            viewModel.setCurrentProgram(
+                    ProgramViewModel.convertProgram(athlete.getCurrentProgram())
+            );
+        }
+
         viewModel.setName(athlete.getName());
         viewModel.setRecords(athlete.getRecords());
 
