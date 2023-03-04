@@ -10,7 +10,6 @@
 
     const handleSubmit = async () => {
         if(!$userDB) return
-
         const newCoach = {
             team: {
                 name: teamName,
