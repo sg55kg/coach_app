@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,15 +17,15 @@ public class CoachData {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Program> programs;
+    private List<Program> programs = new ArrayList<>();
     @OneToOne(mappedBy = "coachData")
     @JsonIgnore
     private UserData user;
     @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    private List<AthleteData> athletes;
+    private List<AthleteData> athletes = new ArrayList<>();
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Team> teams;
+    private List<Team> teams = new ArrayList<>();
 
 
     public CoachData() {}
