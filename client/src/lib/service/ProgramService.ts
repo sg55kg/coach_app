@@ -17,7 +17,7 @@ export class ProgramService {
         return Program.build(program)
     }
 
-    static createProgram = async (program: Program, user: User) => {
+    static createProgram = async (program: Program) => {
 
         let res = await fetch(`/api/program`, {
             method: 'POST',
@@ -27,6 +27,7 @@ export class ProgramService {
 
         if (res.status > 205) {
             throw new Error('Could not create program')
+            console.log(res.statusText)
         }
 
         const dbProgram: ProgramDTO = await res.json()

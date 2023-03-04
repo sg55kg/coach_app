@@ -79,9 +79,9 @@ export class AthleteRecord {
             } else if (key === 'lastUpdated') {
                 this.lastUpdated = dayjs(value);
             } else if (key === 'id') {
-            this.id = value;
+                this.id = value;
             } else {
-            this.records.set(key.toLowerCase(), value)
+                this.records.set(key.toLowerCase(), value)
             }
         }
     }

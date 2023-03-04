@@ -32,4 +32,5 @@ socket-*.tar
 npm-debug.log
 /assets/node_modules/
 
-/config/dev.secret.exs
+config/dev.secret.exs
+deps

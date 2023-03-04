@@ -4,6 +4,7 @@
     import {onMount} from "svelte";
     import {authUser} from "$lib/stores/authStore";
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte'
+    import CoachNav from "$lib/components/CoachNav.svelte";
 
     export let ssr = false
 
@@ -40,6 +41,7 @@
 </script>
 
 <header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
+    <CoachNav />
     <div class="flex items-center align-baseline">
         {#if $userDB}
             <a href="/home" class="font-semibold tracking-widest uppercase text-2xl ml-1 text-yellow-lt">
@@ -50,19 +52,7 @@
                 Coachable
             </a>
         {/if}
-        {#if isMobile === false}
-            <p>&nbsp | &nbsp</p>
-            {#if $userDB.coachData}
-                <a href="/home/coach/{$userDB?.coachData?.id}">Coach</a>
-            {:else}
-                <a href="home/coach/get-started">Coach</a>
-            {/if}
-            <p>&nbsp | &nbsp</p>
-            <a href="/home/athlete">Athlete</a>
-        {/if}
-
     </div>
-
     <div class="flex items-center">
         <div class="h-6 mx-2 hover:cursor-pointer hover:text-yellow-lt">
             <a href="/home/chat">
@@ -71,7 +61,7 @@
         </div>
         <div class="relative">
             <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
-                <img src={$authUser.picture} alt="profile" class="ml-2 mr-1">
+                <img src={$authUser.picture} alt="profile" class="rounded-full h-[40px] lg:h-[45px]">
             </button>
             {#if showDropdown}
                 <div on:blur={() => showDropdown = false}
@@ -94,8 +84,5 @@
 </header>
 
 <style>
-    img {
-        border-radius: 50%;
-        height: 45px;
-    }
+
 </style>

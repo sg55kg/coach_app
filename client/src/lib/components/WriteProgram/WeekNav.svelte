@@ -98,6 +98,11 @@
                         newExercise.weight = e.weight
                         newExercise.weightIntensity = e.weightIntensity
                         newExercise.id = ''
+                        newExercise.nameArr = [...e.nameArr]
+                        newExercise.repArr = [...e.repArr]
+                        newExercise.secondsPerSet = e.secondsPerSet
+                        newExercise.distanceMeters = e.distanceMeters
+                        newExercise.type = e.type
                         return newExercise
                     })
                     return prev

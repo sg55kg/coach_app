@@ -1,10 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import dayjs from "dayjs";
-    import FaRegEdit from 'svelte-icons/fa/FaRegEdit.svelte';
     import FaRegChartBar from 'svelte-icons/fa/FaRegChartBar.svelte'
-    import {Team} from "$lib/classes/team";
-    import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {Program} from "$lib/classes/program";
@@ -13,7 +10,6 @@
     import {isMobile} from "$lib/stores/authStore.js";
 
     export let athlete: AthleteData
-    export let team: Team
 
     let updateSeverity: 'low' | 'moderate' | 'severe' | 'none' | 'over'
     let lastDay: dayjs = dayjs()
@@ -25,7 +21,7 @@
             const updatedProgram = {
                 ...athlete.currentProgram
             } as Program
-            const program = await ProgramService.updateProgram(updatedProgram)
+            const program: Program = await ProgramService.updateProgram(updatedProgram)
             userDB.update(prev => {
                 prev!.coachData!.programs = prev!.coachData!.programs!.map(p => p.id === program.id ? program : p)
                 return prev
@@ -74,9 +70,11 @@
 
 <div class="rounded border-2 border-gray-400 p-2 my-2">
     <div class="flex flex-col items-center lg:flex-row lg:justify-between">
-        <h2 class="font-semibold text-xl">
-            {athlete.name}
-        </h2>
+        <a href="/home/coach/team/athlete/{athlete.id}">
+            <h2 class="font-semibold text-xl">
+                {athlete.name}
+            </h2>
+        </a>
         {#if !$isMobile && athlete?.currentProgram}
             {dayjs(athlete.currentProgram.startDate).format('ddd MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('ddd MMM DD')}
         {/if}
@@ -127,12 +125,12 @@
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
                 <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>
-                    <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
+                    <span class="h-6 mr-1 lg:mr-4"><FaRegPlusSquare /></span> New Program
                 </a>
             </div>
             <div class="h-6 text-link hover:text-link-shade duration-300">
                 <a class="flex h-6" href={`/home/coach/athlete-stats/${athlete.id}`}>
-                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>
+                    <span class="h-6 mr-1 lg:mr-4"><FaRegChartBar /></span> Stats
                 </a>
             </div>
         </div>
