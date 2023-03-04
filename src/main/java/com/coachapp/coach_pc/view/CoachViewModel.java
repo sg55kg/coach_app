@@ -48,11 +48,13 @@ public class CoachViewModel {
     }
 
     public static CoachViewModel convertCoach(CoachData coach) {
+        if (coach == null) {
+            return null;
+        }
         CoachViewModel viewModel = new CoachViewModel();
         List<TeamViewModel> teams = new ArrayList<>();
         List<AthleteViewModel> athletes = new ArrayList<>();
         List<DisplayProgram> programs = new ArrayList<>();
-
         coach.getTeams().forEach(t -> teams.add(TeamViewModel.convertTeam(t)));
         coach.getAthletes().forEach(a -> athletes.add(AthleteViewModel.convertAthlete(a)));
         coach.getPrograms().forEach(p -> programs.add(DisplayProgram.convertProgramForDisplay(p)));
