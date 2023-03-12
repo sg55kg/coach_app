@@ -4,7 +4,7 @@ defmodule SocketWeb.ChatRoomChannel do
   import Gateway
 
   @impl true
-  def join("room:chat_room", payload, socket) do
+  def join("room:" <> _chat_id, payload, socket) do
     Logger.info "Received request to join chatroom"
     # moved get token to authorized function?
     if authorized? payload do
@@ -17,7 +17,6 @@ defmodule SocketWeb.ChatRoomChannel do
           Logger.info "Failed to get token"
           {:error, %{reason: "unauthorized"}}
       end
-#      {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -45,10 +44,19 @@ defmodule SocketWeb.ChatRoomChannel do
     true
   end
 
+  @impl true
+  def handle_in("typing", payload, socket) do
+    IO.inspect payload
+    broadcast! socket, "typing", payload
+    {:reply, {:ok, payload}, socket}
+  end
+
   def handle_in("new:msg", msg, socket) do
-    Gateway.post_message(msg, socket.assigns.access_token)
-    broadcast! socket, "new:msg", %{userId: msg["userId"], contents: msg["contents"], groupId: msg["groupId"], senderName: msg["senderName"]}
+    new_msg = Gateway.post_message(msg, socket.assigns.access_token)
+#    new_msg = %{id: msg["id"], sender: msg["sender"], contents: msg["contents"], chatId: msg["chatId"], sentAt: msg["sentAt"], updatedAt: msg["updatedAt"], replies: msg["replies"]}
+    broadcast! socket, "new:msg", new_msg
     {:reply, {:ok, %{msg: msg["contents"]}}, assign(socket, :user, msg["user"])}
 
   end
+
 end

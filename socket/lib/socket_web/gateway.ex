@@ -7,7 +7,7 @@ defmodule Gateway do
              client_secret: Application.fetch_env!(:auth_0, :client_secret),
              audience: Application.fetch_env!(:auth_0, :audience),
              grant_type: Application.fetch_env!(:auth_0, :grant_type)} |> Poison.encode!
-    case HTTPoison.post("https://dev-iubbkos4gue16ad5.us.auth0.com/oauth/token",body,%{"Content-Type": "application/json"}) do
+    case HTTPoison.post(Application.fetch_env!(:auth_0, :token_url),body,%{"Content-Type": "application/json"}) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, data} = Poison.decode(body)
         IO.inspect data
@@ -18,12 +18,14 @@ defmodule Gateway do
   end
 
   def message_body(msg) do
-    %{senderId: msg["senderId"],
+    %{sender: msg["sender"],
       contents: msg["contents"],
       replies: msg["replies"],
       chatId: msg["chatId"],
+      sentAt: msg["sentAt"],
+      updatedAt: msg["updatedAt"],
       id: msg["id"],
-      senderName: msg["senderName"]} |> Poison.encode!
+    } |> Poison.encode!
   end
 
   def room_body(body) do
@@ -35,19 +37,12 @@ defmodule Gateway do
 
   def post_message(req, token) do
     body = message_body(req)
-    IO.inspect body
     headers = ["Authorization": "Bearer #{token}", "Content-Type": "application/json"]
-    res = HTTPoison.post!("http://localhost:8180/api/messages/", body, headers)
-    IO.inspect res
-#    token_response = get_token
-#    case get_token() do
-#      {:ok, token} ->
-#       # res = HTTPoison.post!("http://localhost:8180/api/messages", body, %{"Content-Type": "application/json", "Authorization": "Bearer " <> token})
-#       # IO.inspect res
-#       IO.puts "Test"
-#      {:error, err} ->
-#        err
-#    end
-
+    %HTTPoison.Response{status_code: status, body: res} =
+      HTTPoison.post!("http://localhost:8180/api/messages/", body, headers)
+      case status do
+        201 -> res |> Poison.decode!
+        405 -> {:error, "Could not post message"}
+      end
   end
 end

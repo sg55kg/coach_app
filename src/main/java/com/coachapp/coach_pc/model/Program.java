@@ -25,7 +25,7 @@ public class Program {
     private Date startDate;
     private Date endDate;
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Day> days;
+    private List<Day> daysList;
     private String name;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id")
@@ -88,11 +88,11 @@ public class Program {
     }
 
     public List<Day> getDays() {
-        return days;
+        return daysList;
     }
 
     public void setDays(List<Day> days) {
-        this.days = days;
+        this.daysList = days;
         for(Day day : days) {
             day.setProgram(this);
             day.getExercises().forEach(e -> e.setDay(day));
@@ -136,7 +136,7 @@ public class Program {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Program program = (Program) o;
-        return id.equals(program.id);
+        return Objects.equals(id, program.id);
     }
 
     @Override

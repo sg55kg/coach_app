@@ -1,15 +1,14 @@
 package com.coachapp.coach_pc.model.chat;
 
 import com.coachapp.coach_pc.model.UserData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "chat_room_member")
 public class ChatRoomMember {
 
     @Id
@@ -17,8 +16,13 @@ public class ChatRoomMember {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @ManyToOne
+    @JoinColumn(name = "chat_room_id", referencedColumnName = "id")
+    @JsonIgnore
     private ChatRoom chatRoom;
-    private UUID userId;
+    @ManyToOne(cascade = {})
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
+    private UserData user;
 
     public ChatRoomMember() {}
 
@@ -38,11 +42,12 @@ public class ChatRoomMember {
         this.chatRoom = chatRoom;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public UserData getUser() {
+        return user;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUser(UserData user) {
+        this.user = user;
     }
+
 }

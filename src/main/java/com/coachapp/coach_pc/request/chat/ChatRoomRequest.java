@@ -14,6 +14,7 @@ public class ChatRoomRequest {
     private UUID teamId;
     private List<UUID> members;
     private UUID coachId;
+    private String name;
 
     public ChatRoomRequest() {}
 
@@ -39,5 +40,13 @@ public class ChatRoomRequest {
 
     public void setCoachId(UUID coachId) {
         this.coachId = coachId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

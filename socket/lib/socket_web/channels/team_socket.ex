@@ -10,7 +10,7 @@ defmodule SocketWeb.TeamSocket do
   # Uncomment the following line to define a "room:*" topic
   # pointing to the `SocketWeb.RoomChannel`:
   #
-  channel "room:chat_room", SocketWeb.ChatRoomChannel
+  channel "room:*", SocketWeb.ChatRoomChannel
   #
   # To create a channel file, use the mix task:
   #

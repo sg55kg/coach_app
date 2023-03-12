@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.request.chat;
 
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.model.chat.ChatRoom;
+import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 import com.coachapp.coach_pc.model.chat.Message;
 
 import java.time.OffsetDateTime;
@@ -13,11 +14,11 @@ public class MessageRequest {
 
     private UUID id;
     private String contents;
-    private UUID senderId;
-    private String senderName;
+    private ChatMemberRequest sender;
     private UUID chatId;
     private List<MessageRequest> replies;
     private OffsetDateTime sentAt;
+    private OffsetDateTime updatedAt;
 
     public MessageRequest() {}
 
@@ -37,20 +38,12 @@ public class MessageRequest {
         this.contents = contents;
     }
 
-    public UUID getSenderId() {
-        return senderId;
+    public ChatMemberRequest getSender() {
+        return sender;
     }
 
-    public void setSenderId(UUID senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public void setSender(ChatMemberRequest sender) {
+        this.sender = sender;
     }
 
     public UUID getChatId() {
@@ -77,16 +70,23 @@ public class MessageRequest {
         this.sentAt = sentAt;
     }
 
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public static Message convertRequest(MessageRequest messageRequest) {
         Message message = new Message();
         ChatRoom chatRoom = new ChatRoom();
-        UserData user = new UserData();
+        ChatRoomMember member = ChatMemberRequest.convertRequest(messageRequest.getSender());
+        member.setChatRoom(chatRoom);
         List<Message> replies = new ArrayList<>();
 
         messageRequest.getReplies().forEach(r -> replies.add(MessageRequest.convertRequest(r)));
         chatRoom.setId(messageRequest.getChatId());
-        user.setId(messageRequest.getSenderId());
-
         message.setReplies(replies);
         message.setContents(messageRequest.getContents());
         if (messageRequest.getId() != null) {
@@ -96,8 +96,9 @@ public class MessageRequest {
             message.setSentAt(messageRequest.getSentAt());
         }
 
-        message.setSender(user);
+        message.setSender(member);
         message.setChatRoom(chatRoom);
+        message.setUpdatedAt(messageRequest.getUpdatedAt());
 
         return message;
     }

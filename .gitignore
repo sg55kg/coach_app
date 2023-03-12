@@ -38,3 +38,4 @@ build/
 *.secret.exs
 socket/config/*.secret.exs
 socket/deps
+/socket/config/

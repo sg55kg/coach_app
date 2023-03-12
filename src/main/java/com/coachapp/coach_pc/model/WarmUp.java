@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -43,5 +44,18 @@ public class WarmUp {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WarmUp warmUp = (WarmUp) o;
+        return Objects.equals(id, warmUp.id) && Objects.equals(day, warmUp.day) && Objects.equals(instructions, warmUp.instructions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, day, instructions);
     }
 }

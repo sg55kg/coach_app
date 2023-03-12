@@ -3,6 +3,8 @@ package com.coachapp.coach_pc.service.chat;
 import com.coachapp.coach_pc.model.chat.Message;
 import com.coachapp.coach_pc.repository.MessageRepository;
 import com.coachapp.coach_pc.request.chat.MessageRequest;
+import com.coachapp.coach_pc.view.chat.MessageCreateView;
+import com.coachapp.coach_pc.view.chat.MessageViewModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,10 +25,12 @@ public class MessageService {
         this.messageRepo = messageRepo;
     }
 
-    public ResponseEntity<Message> createMessage(MessageRequest request) {
-        Message message = MessageRequest.convertRequest(request);
-        message = messageRepo.save(message);
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+    public ResponseEntity<MessageViewModel> createMessage(MessageRequest message) {
+        //Message message1 = MessageRequest.convertRequest(message);
+        MessageViewModel vm = messageRepo.save(message);
+        //MessageViewModel vm = MessageViewModel.convertMessage(message);
+        //return new ResponseEntity<>(vm, HttpStatus.CREATED);
+        return new ResponseEntity<>(vm, HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> deleteMessage(UUID messageId) {
@@ -34,24 +38,16 @@ public class MessageService {
         return new ResponseEntity<>("Successfully deleted message", HttpStatus.OK);
     }
 
-    public ResponseEntity<Message> updateMessage(MessageRequest request) {
-        Optional<Message> o = messageRepo.findById(request.getId());
+    public ResponseEntity<MessageViewModel> updateMessage(MessageRequest request) {
+        Optional<MessageViewModel> o = messageRepo.findById(request.getId());
 
         if (o.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        Message message = o.get();
-        message = MessageRequest.convertRequest(request);
-        message = messageRepo.save(message);
+        MessageViewModel message = o.get();
+        message = messageRepo.update(message);
+       // MessageViewModel vm = MessageViewModel.convertMessage(message);
         return new ResponseEntity<>(message, HttpStatus.OK);
-    }
-
-    public ResponseEntity<List<Message>> getMessagesByChatRoomId(UUID chatRoomId) {
-        Page<Message> messages = messageRepo.findMessagesByChatRoomId(
-                chatRoomId,
-                PageRequest.of(0, 10, Sort.by("sentAt"))
-        );
-        List<Message> list = messages.stream().toList();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+       // return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 }

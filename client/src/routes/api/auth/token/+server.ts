@@ -73,13 +73,23 @@ export const fetchUser = async (user: any, token: string) => {
                     'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email: user.email, name: user.name })
+                body: JSON.stringify({ email: user.email, name: user.name, photoUrl: user.picture })
             })
 
         }
 
         const userData = await userRes.json()
-        console.log(userData)
+        // TODO: After this has run for a week or 2 remove
+        if (!userData.photoUrl) {
+            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${userData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: user.email, username: user.name, photoUrl: user.picture })
+            })
+        }
         return userData
     } catch (e: any) {
         throw error(404, 'Could not fetch user data')

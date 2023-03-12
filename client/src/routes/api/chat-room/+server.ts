@@ -12,8 +12,8 @@ export const POST: RequestHandler = async (event) => {
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify(teamReq)
         })
-        const chatRoom = await res.json()
-        return new Response(JSON.stringify(chatRoom))
+
+        return new Response(res.body, { status: res.status, statusText: res.statusText })
     } catch (e) {
         throw error(405)
     }

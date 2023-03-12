@@ -1,18 +1,17 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.enums.UserType;
+import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
-@Table(name = "user_data")
+//@Table(name = "user_data")
 public class UserData {
 
     @Id
@@ -40,6 +39,9 @@ public class UserData {
     @JoinColumn(name = "athlete_id", referencedColumnName = "id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private AthleteData athleteData;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ChatRoomMember> members = new ArrayList<>();
+    private String photoUrl;
 
     public UserData() {}
     public UserData(UUID id,
@@ -123,5 +125,21 @@ public class UserData {
 
     public void setAthleteData(AthleteData athleteData) {
         this.athleteData = athleteData;
+    }
+
+    public List<ChatRoomMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<ChatRoomMember> members) {
+        this.members = members;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

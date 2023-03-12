@@ -5,9 +5,10 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-@Entity(name = "athlete_data")
+@Entity
 public class AthleteData {
 
     @Id
@@ -22,7 +23,7 @@ public class AthleteData {
     private Program currentProgram;
     @OneToMany(mappedBy = "athlete")
     @JsonIgnore
-    private List<Program> programs;
+    private List<Program> programsList;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     @JsonIgnore
@@ -61,11 +62,11 @@ public class AthleteData {
     }
 
     public List<Program> getPrograms() {
-        return programs;
+        return programsList;
     }
 
     public void setPrograms(List<Program> programs) {
-        this.programs = programs;
+        this.programsList = programs;
     }
 
     public CoachData getCoach() {
@@ -102,5 +103,18 @@ public class AthleteData {
 
     public void addRecord(AthleteRecord record) {
         this.records.add(record);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AthleteData that = (AthleteData) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

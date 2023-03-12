@@ -8,10 +8,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "message")
 public class Message {
 
     @Id
@@ -28,10 +30,10 @@ public class Message {
     @CreationTimestamp
     private OffsetDateTime sentAt;
     @UpdateTimestamp
-    private OffsetDateTime lastEdit;
+    private OffsetDateTime updatedAt;
     private String contents;
-    @OneToMany
-    private List<Message> replies;
+    @OneToMany(mappedBy = "parent")
+    private List<Message> replies = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "parent_id")
     @JsonIgnore
@@ -71,12 +73,12 @@ public class Message {
         this.sentAt = sentAt;
     }
 
-    public OffsetDateTime getLastEdit() {
-        return lastEdit;
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setLastEdit(OffsetDateTime lastEdit) {
-        this.lastEdit = lastEdit;
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getContents() {

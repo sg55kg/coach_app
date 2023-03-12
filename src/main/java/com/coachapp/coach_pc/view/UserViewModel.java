@@ -1,8 +1,11 @@
 package com.coachapp.coach_pc.view;
 
 import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.model.chat.ChatRoomMember;
+import com.coachapp.coach_pc.view.chat.ChatMemberViewModel;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class UserViewModel {
@@ -13,6 +16,7 @@ public class UserViewModel {
     private String username;
     private AthleteViewModel athleteData;
     private CoachViewModel coachData;
+    private List<ChatRoomMember> members;
 
     public UserViewModel() {}
 
@@ -72,6 +76,14 @@ public class UserViewModel {
         this.coachData = coachData;
     }
 
+    public List<ChatRoomMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<ChatRoomMember> members) {
+        this.members = members;
+    }
+
     public static UserViewModel convertUser(UserData user) {
         UserViewModel viewModel = new UserViewModel();
 
@@ -85,6 +97,10 @@ public class UserViewModel {
         viewModel.setAthleteData(
                 AthleteViewModel.convertAthlete(user.getAthleteData())
         );
+        viewModel.setMembers(user.getMembers());
+       // viewModel.setMembers(
+       //         user.getMembers().stream().map(ChatMemberViewModel::convertMember).toList()
+       // );
 
         return viewModel;
     }
