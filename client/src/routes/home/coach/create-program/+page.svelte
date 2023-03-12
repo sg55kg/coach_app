@@ -18,7 +18,7 @@
     const handleSubmit = async (event, programData: Program) => {
         programError.set('')
         try {
-            const savedProgram: Program = await ProgramService.createProgram(programData, $userDB!)
+            const savedProgram: Program = await ProgramService.createProgram(programData)
             userDB.update(prev => {
                 prev?.coachData?.programs.push(DisplayProgram.build(savedProgram as ProgramDTO))
                 return prev
@@ -36,7 +36,7 @@
             window.location.replace(`/home/coach/${$userDB?.coachData?.id}`)
         } catch (e) {
             console.log(e)
-            programError.set(e.message)
+            programError.set(`Error saving ${programData.name}`)
         }
     }
 
@@ -48,7 +48,7 @@
 </svelte:head>
 
 <div class="relative h-full overflow-hidden">
-    <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} />
+    <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} showOverview={false} />
 </div>
 
 <style>

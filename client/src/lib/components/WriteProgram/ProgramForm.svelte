@@ -15,21 +15,50 @@
     import ComplexExerciseForm from "$lib/components/WriteProgram/ComplexExerciseForm.svelte";
     import FaFileDownload from 'svelte-icons/fa/FaFileDownload.svelte'
     import {isMobile} from "$lib/stores/authStore.js";
+    import CompletedExercise from "$lib/components/WriteProgram/CompletedExercise.svelte";
+    import {AthleteData} from "$lib/classes/user/athlete";
 
     export let handleSubmit
     export let initialIndex: number = -1
     export let athleteId: string = ''
+    export let showOverview: boolean
 
     let selectedIndex: number = initialIndex
     let selectedDayId: string = ''
     let showDateDropdown: boolean = false
     let inputFocused: boolean = false
+    let athlete: AthleteData = new AthleteData()
 
     $: athleteOptions = []
 
 
     const formatDateString = (date: Date) => {
-        return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}`
+        //return `${date.getFullYear()}-${(date.getMonth().toString().length < 2 ? `0${date.getMonth()+1}` : (date.getMonth()+1))}-${date.getDate().toString().length < 2 ? '0' + (date.getDate()) : (date.getDate())}-${date.getHours().toString().length < 2 ? '0' + (date.getHours()) : (date.getHours())}-${date.getMinutes()}-${date.getSeconds()}`
+
+        let dateString: string = date.getFullYear().toString() + '-'
+
+        if (date.getMonth().toString().length < 2) {
+            dateString += '0' + (date.getMonth() + 1) + '-'
+        } else {
+            dateString += (date.getMonth() + 1) + '-'
+        }
+        if (date.getDate().toString(). length < 2) {
+            dateString += '0' + (date.getDate())
+        } else {
+            dateString += date.getDate().toString()
+        }
+        dateString += 'T'
+        if (date.getHours().toString().length < 2) {
+            dateString += '0' + date.getHours() + ':'
+        } else {
+            dateString += date.getHours() + ':'
+        }
+        if (date.getMinutes().toString().length < 2) {
+            dateString += '0' + date.getMinutes()
+        } else {
+            dateString += date.getMinutes()
+        }
+        return dateString
     }
 
     let startDateString = $program?.startDate ? formatDateString($program.startDate) : ''
@@ -156,6 +185,8 @@
 
         startDateString = formatDateString(startDate.toDate())
         endDateString = formatDateString(endDate.toDate())
+        console.log('start date', startDateString)
+        console.log('end date', endDateString)
 
         program.update(p => {
             p.endDate = endDate.toDate()
@@ -166,7 +197,7 @@
         const daysDiff = endDate.diff(startDate, 'days')
 
         let currentDate = startDate
-        for (let i = 0; i <= daysDiff; i++) {
+        for (let i = 0; i <= daysDiff+1; i++) {
             addDay(currentDate, i)
             currentDate = currentDate.add(1, 'day')
         }
@@ -218,18 +249,21 @@
         } else if (athleteId && $userDB?.coachData?.athletes) {
             $program.athleteId = athleteId
             $program.coachId = $userDB.coachData.id
-            const athlete = $userDB.coachData.athletes.find(a => a.id === athleteId)
-            if (athlete) {
-                athleteOptions = [{ name: athlete.name, id: athleteId }]
-                $program.name = `New Program for ${athlete.name}`
+            const athleteObj = $userDB.coachData.athletes.find(a => a.id === athleteId)
+            if (athleteObj) {
+                athleteOptions = [{ name: athleteObj.name, id: athleteId }]
+                $program.name = `New Program for ${athleteObj.name}`
+                athlete = athleteObj
             }
         } else if (selectedIndex > -1 && $userDB?.coachData?.athletes && $userDB?.athleteData) {
             selectedDayId = $program.days[selectedIndex].id
             const athleteName = $userDB.coachData.athletes.find(a => a.id === $program.athleteId)
             if (!athleteName) {
                 athleteOptions = [{ name: $userDB.username, id: $userDB.athleteData.id}]
+                athlete = $userDB.athleteData
             } else {
                 athleteOptions = [{ name: athleteName.name, id: $program.athleteId }]
+                athlete = athleteName
             }
         }
         if (selectedIndex > -1 && $program?.days[selectedIndex]?.exercises.length > 0) {
@@ -262,12 +296,11 @@
         }
     })
 
-    onDestroy(() => {
-        program.set(new Program())
-    })
-
 </script>
 
+<div on:click={() => showOverview = true} class="text-center lg:text-start text-lg font-semibold text-textblue p-2 lg:ml-24 hover:cursor-pointer">
+    Back to overview
+</div>
 <div class="flex w-screen justify-center">
     <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 
@@ -287,7 +320,7 @@
                 <div class="p-0 lg:p-2 flex justify-start w-9/12 items-center">
                     <div class="flex flex-col mr-4 w-7/12">
                         <label class="text-sm">Start Date</label>
-                        <input type="date"
+                        <input type="datetime-local"
                                class="p-1 bg-gray-300 text-md text-textgray decoration-color-textgray"
                                name="startDate"
                                bind:value={startDateString}
@@ -295,7 +328,7 @@
                     </div>
                     <div class="flex flex-col w-7/12">
                         <label class="text-sm">End Date</label>
-                        <input type="date"
+                        <input type="datetime-local"
                                name="endDate"
                                class= "bg-gray-300 text-md p-1"
                                bind:value={endDateString}
@@ -393,21 +426,26 @@
             {/if}
             {#if $program?.days[selectedIndex]?.isRestDay === false && $program?.days[selectedIndex]?.exercises.length > 0}
                 {#each $program?.days[selectedIndex]?.exercises as exercise, idx (idx)}
-                    {#if exercise.type === ExerciseType.EXERCISE || exercise.type === ExerciseType.DURATION}
-                        <ExerciseForm
-                                bind:exercise={exercise}
-                                bind:selectedDayIndex={selectedIndex}
-                                bind:inputFocused={inputFocused}
-                                exerciseIndex={idx}
-                        />
+                    {#if !exercise.isComplete}
+                        {#if exercise.type === ExerciseType.EXERCISE || exercise.type === ExerciseType.DURATION}
+                            <ExerciseForm
+                                    bind:exercise={exercise}
+                                    bind:selectedDayIndex={selectedIndex}
+                                    bind:inputFocused={inputFocused}
+                                    exerciseIndex={idx}
+                            />
+                        {:else}
+                            <ComplexExerciseForm
+                                    bind:exercise={exercise}
+                                    bind:selectedDayIndex={selectedIndex}
+                                    bind:inputFocused={inputFocused}
+                                    exerciseIndex={idx}
+                            />
+                        {/if}
                     {:else}
-                        <ComplexExerciseForm
-                                bind:exercise={exercise}
-                                bind:selectedDayIndex={selectedIndex}
-                                bind:inputFocused={inputFocused}
-                                exerciseIndex={idx}
-                        />
+                        <CompletedExercise bind:exercise={exercise} athlete={athlete} />
                     {/if}
+
                 {/each}
             {:else if $program?.days[selectedIndex]?.isRestDay === true}
                 <div class="flex justify-center m-8 font-bold text-2xl">

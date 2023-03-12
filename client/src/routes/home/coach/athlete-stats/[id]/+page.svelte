@@ -2,11 +2,12 @@
 
     import {onMount} from "svelte";
     import UserService from "$lib/service/userService";
-    import {auth0Client} from "$lib/stores/authStore";
     import ProgramStats from "$lib/components/Stats/ProgramStats.svelte";
-    import {AthleteData} from "$lib/classes/user/athlete";
+    import {AthleteData, AthleteRecord} from "$lib/classes/user/athlete";
+    import {userDB} from "$lib/stores/authStore";
 
     let athlete: AthleteData
+    let records: AthleteRecord[] = []
     let loadingAthleteData: boolean = true
 
     onMount(async () => {
@@ -14,18 +15,28 @@
         const pathArr = window.location.pathname.split('/')
         const athleteId = pathArr[pathArr.length-1]
 
+        athlete = $userDB.coachData.athletes.find(a => a.id === athleteId)
+
         try {
-            const athleteRes: AthleteData = await UserService.fetchAthleteData($auth0Client!, athleteId)
-            athlete = athleteRes
+            const athleteRecords: AthleteRecord[] = await UserService.fetchAthleteRecords(athleteId)
+            records = athleteRecords
         } catch (e) {
             console.log(e)
+            return loadingAthleteData = false
+        }
+        try {
+            const stats: any = await UserService.fetchAthleteStats(athleteId)
+            console.log(stats)
+        } catch (e) {
+            console.log(e)
+            return loadingAthleteData = false
         }
         loadingAthleteData = false
     })
 </script>
 
-{#if athlete && !loadingAthleteData}
-    <ProgramStats athlete={athlete} />
+{#if athlete && records && !loadingAthleteData}
+    <ProgramStats athlete={athlete} records={records} />
 {:else if loadingAthleteData}
     <div class="text-center font-semibold text-xl">
         Fetching athlete stats...

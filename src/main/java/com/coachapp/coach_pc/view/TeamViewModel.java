@@ -3,14 +3,16 @@ package com.coachapp.coach_pc.view;
 import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.UserData;
 
 import java.util.*;
 
 public class TeamViewModel {
 
     private UUID id;
-    private List<AthleteData> athletes;
-    private CoachData coach;
+    private List<AthleteViewModel> athletes;
+    private UUID coachId;
+    private String coachName;
     private String name;
     private String description;
     private Date createdAt;
@@ -27,20 +29,28 @@ public class TeamViewModel {
         this.id = id;
     }
 
-    public List<AthleteData> getAthletes() {
+    public List<AthleteViewModel> getAthletes() {
         return athletes;
     }
 
-    public void setAthletes(List<AthleteData> athletes) {
+    public void setAthletes(List<AthleteViewModel> athletes) {
         this.athletes = athletes;
     }
 
-    public CoachData getCoach() {
-        return coach;
+    public UUID getCoachId() {
+        return coachId;
     }
 
-    public void setCoach(CoachData coach) {
-        this.coach = coach;
+    public void setCoachId(UUID coachId) {
+        this.coachId = coachId;
+    }
+
+    public String getCoachName() {
+        return coachName;
+    }
+
+    public void setCoachName(String coachName) {
+        this.coachName = coachName;
     }
 
     public String getName() {
@@ -93,20 +103,15 @@ public class TeamViewModel {
         List<AthleteData> athletes = team.getAthletes();
         viewModel.setNumAthletes(athletes.size());
 
-        // prevent infinite loops in nested coach/athlete data
-        List<AthleteData> viewModelAthletes = new ArrayList<>();
+        List<AthleteViewModel> viewModelAthletes = new ArrayList<>();
         athletes.forEach(a -> {
-            a.setCoach(null);
-            a.setTeam(null);
-            viewModelAthletes.add(a);
+            viewModelAthletes.add(AthleteViewModel.convertAthlete(a));
         });
         viewModel.setAthletes(viewModelAthletes);
 
-        CoachData viewModelCoach = team.getCoach();
-        viewModelCoach.setUser(null);
-        viewModelCoach.setTeams(null);
-        viewModelCoach.setAthletes(Collections.emptyList());
-        viewModel.setCoach(viewModelCoach);
+        viewModel.setCoachId(team.getCoach().getId());
+        UserData coachUser = team.getCoach().getUser();
+        viewModel.setCoachName(coachUser.getUsername());
 
         return viewModel;
     }

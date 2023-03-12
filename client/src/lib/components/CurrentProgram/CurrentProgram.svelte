@@ -12,9 +12,11 @@
     import {Program} from "$lib/classes/program";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
+    import FaCalendar from 'svelte-icons/fa/FaCalendar.svelte'
 
-
-    const today: Dayjs = dayjs()
+    export let currentProgramId: string
+    export let today: Dayjs = dayjs()
+    export let viewOverview: boolean
 
     $: totalExercises = $currentDay?.exercises ? $currentDay.exercises.length : 0
     $: finishedExercises = $currentDay?.exercises ? $currentDay.exercises.filter(e => e.isComplete).length : 0
@@ -106,21 +108,27 @@
 
 
     onMount(async () => {
-        currentDay.set(setCurrentDay(today))
+        if (!$currentDay) {
+            $currentDay = setCurrentDay(today)
+        } else {
+            const arr = [...$currentDay.exercises]
+            incompleteExercises.set(arr.sort((a, b) => a.order - b.order))
+        }
     })
 
-    onDestroy(() => {
-        currentProgram.set(null)
-        currentDay.set(null)
-        incompleteExercises.set([])
-        completedExercises.set([])
-    })
+
 
 </script>
 
 {#if $currentProgram}
     <div>
-        <h1 class="text-lg font-semibold tracking-wide text-center mx-2">{$currentProgram.name}</h1>
+        <div class="flex justify-between p-4">
+            <h1 class="text-lg font-semibold tracking-wide text-center mx-2">{$currentProgram.name}</h1>
+            <div class="h-8 grid hover:cursor-pointer text-yellow hover:text-yellow-shade" on:click={() => {viewOverview = true; console.log(viewOverview)}}>
+
+                <FaCalendar />
+            </div>
+        </div>
         {#if $currentDay?.exercises?.length > 0}
             <div class="text-md text-center font-semibold bg-gray-200 m-4 flex flex-col p-2">
                 {#if daySkipped}
