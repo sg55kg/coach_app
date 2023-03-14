@@ -23,7 +23,7 @@
 
 </script>
 
-<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between items-center align-middle w-screen">
+<header class="lg:mb-4 p-2 bg-gray-200 text-textgray flex justify-between items-center align-middle w-screen">
     <AthleteNav />
     <div class="flex items-center {$isMobile && 'justify-center'} align-baseline">
         {#if $userDB}

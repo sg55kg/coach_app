@@ -1,6 +1,6 @@
 <script lang="ts">
 
-import {userDB} from "$lib/stores/authStore.js";
+    import {isMobile, userDB} from "$lib/stores/authStore.js";
 import dayjs from "dayjs";
 import AuthHeader from "$lib/components/AuthHeader.svelte";
 import ChatRoomComp from "$lib/components/Inbox/ChatRoomComp.svelte";
@@ -38,7 +38,7 @@ const connect = async () => {
         chatRooms = rooms
     }
 
-    const socket = new Socket('ws://localhost:4000/socket')
+    const socket = new Socket(import.meta.env.VITE_SOCKET_URL)
     socket.onOpen(() => console.log('connected'))
     socket.connect({})
     for (const member of $userDB?.members) {
@@ -94,12 +94,13 @@ $: $chatTimeout ? setTimeout(() => $chatTimeout = '', 3000) : null
 onMount(() => {
     connect()
 })
-$: console.log($notifications)
+
 </script>
 
 <AuthHeader />
-<div class="grid grid-cols-10 h-[94vh] overflow-hidden mt-[-1em]">
-    <div class="flex flex-col col-span-2 bg-gray-300 ">
+<div class="grid grid-cols-10 h-11/12 lg:h-[94vh] overflow-hidden lg:mt-[-1em]">
+    {#if ($isMobile && !selectedChatId) || !$isMobile}
+    <div class="flex flex-col col-span-2 bg-gray-300 {$isMobile ? 'col-span-10' : ''}">
         <div class="flex justify-center mb-4 p-4">
             <h1 class="text-xl text-textblue font-bold">Rooms</h1>
         </div>
@@ -131,15 +132,41 @@ $: console.log($notifications)
                    </div>
                </div>
            {/each}
+           {#if $isMobile}
+               <div class="flex flex-col col-span-8 items-center">
+                   <div class="flex flex-col bg-gray-300 rounded-xl shadow-lg p-6 px-10">
+                       <h2 class="text-xl font-semibold text-textblue m-4 mb-8">Start a group chat with your team</h2>
+                       <select class="bg-gray-100 p-2" on:change={(e) => selectedTeamForCreate = e.target.value}>
+                           <option value="">Select a team...</option>
+                           {#each $userDB.coachData.teams.filter(t => chatRooms.findIndex(c => c.teamId === t.id) < 0) as team}
+                               <option value={team.id}>{team.name}</option>
+                           {/each}
+                       </select>
+                       <input class="bg-gray-100 p-2 my-2 text-yellow-lt placeholder:text-textgray"
+                              type="text"
+                              placeholder="Enter chat name"
+                              bind:value={newChatName}
+                       >
+                       <button class="bg-yellow p-2 rounded text-black my-4 hover:bg-yellow-shade disabled:bg-gray-200"
+                               on:click={createTeamChat}
+                               disabled={!selectedTeamForCreate || !newChatName}
+                       >
+                           Get Started
+                       </button>
+                   </div>
+               </div>
+           {/if}
        </div>
+
     </div>
-    {#if $userDB?.coachData?.teams?.length > 0 && !selectedChatId && $userDB.members.length < 1}
+    {/if}
+    {#if $userDB?.coachData?.teams?.length > 0 && !selectedChatId && !$isMobile}
         <div class="flex flex-col col-span-8 items-center h-full">
             <div class="flex flex-col m-auto bg-gray-300 rounded-xl shadow-lg p-6 px-10">
                 <h2 class="text-xl font-semibold text-textblue m-4 mb-8">Start a group chat with your team</h2>
                 <select class="bg-gray-100 p-2" on:change={(e) => selectedTeamForCreate = e.target.value}>
                     <option value="">Select a team...</option>
-                    {#each $userDB.coachData.teams as team}
+                    {#each $userDB.coachData.teams.filter(t => chatRooms.findIndex(c => c.teamId === t.id) < 0) as team}
                         <option value={team.id}>{team.name}</option>
                     {/each}
                 </select>
@@ -148,7 +175,10 @@ $: console.log($notifications)
                        placeholder="Enter chat name"
                        bind:value={newChatName}
                 >
-                <button class="bg-yellow p-2 rounded text-black my-4 hover:bg-yellow-shade" on:click={createTeamChat}>
+                <button class="bg-yellow p-2 rounded text-black my-4 hover:bg-yellow-shade disabled:bg-gray-200"
+                        on:click={createTeamChat}
+                        disabled={!selectedTeamForCreate || !newChatName}
+                >
                     Get Started
                 </button>
             </div>
@@ -159,18 +189,19 @@ $: console.log($notifications)
         </div>
     {/if}
     {#if selectedChatId && selectedChannel}
-        <div class="flex flex-col col-span-8 items-center justify-center w-full">
+        <div class="flex flex-col {$isMobile ? 'w-[100vw]' : 'col-span-8'} lg:h-screen self-end h-screen items-center lg:justify-center w-full">
             <ChatRoomComp channel={selectedChannel.channel}
                           bind:messages={messages}
                           groupId={groupId}
                           member={selectedMember}
                           bind:chatRoom={selectedRoom}
+                          bind:selectedChatId={selectedChatId}
             />
         </div>
     {/if}
 </div>
 {#if $chatError}
-    <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+    <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-9/12 lg:w-4/12 flex justify-between items-center">
         {$chatError}
         <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $chatError = ''}>
             <MdClose />

@@ -40,7 +40,7 @@
 
 </script>
 
-<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
+<header class="lg:mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle">
     <CoachNav />
     <div class="flex items-center align-baseline">
         {#if $userDB}
