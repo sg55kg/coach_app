@@ -39,5 +39,3 @@ build/
 #socket/config/*.secret.exs
 socket/deps
 /socket/config/dev.secret.exs
-/socket/config/prod.exs
-/socket/config/runtime.exs
