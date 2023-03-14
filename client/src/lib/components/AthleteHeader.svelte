@@ -1,11 +1,10 @@
 <script lang="ts">
     import {userDB} from "../stores/authStore";
     import {onMount} from "svelte";
-    import {authUser} from "$lib/stores/authStore";
     import AthleteNav from "$lib/components/AthleteNav.svelte";
     import {isMobile} from "$lib/stores/authStore.js";
+    import FaInbox from 'svelte-icons/fa/FaInbox.svelte'
 
-    export let ssr = false
 
     const logout = async () => {
         const res = await fetch('/api/auth/logout', {
@@ -17,7 +16,6 @@
         }
     }
 
-    let showDropdown: boolean = false
 
     onMount(() => {
 
@@ -25,7 +23,7 @@
 
 </script>
 
-<header class="mb-4 p-2 bg-gray-200 text-textgray flex justify-between align-middle w-screen">
+<header class="lg:mb-4 p-2 bg-gray-200 text-textgray flex justify-between items-center align-middle w-screen">
     <AthleteNav />
     <div class="flex items-center {$isMobile && 'justify-center'} align-baseline">
         {#if $userDB}
@@ -49,27 +47,13 @@
         {/if}
 
     </div>
-    <div class="relative">
-        <button class="align-middle" on:click={() => { showDropdown = !showDropdown }}>
-            <img src={$authUser.picture} alt="profile" class="rounded-full h-[40px] lg:h-[45px]">
-        </button>
-        {#if showDropdown}
-            <div on:blur={() => showDropdown = false}
-                 id="header-dropdown"
-                 class="absolute right-0 w-56 flex flex-col z-40 bg-gray-300 items-center justify-center py-5 drop-shadow-2xl drop-shadow-black">
-                {#if isMobile}
-                    {#if $userDB.coachData}
-                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/{$userDB.coachData.id}">Coach Dashboard</a>
-                    {:else}
-                        <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/coach/get-started">Coach Dashboard</a>
-                    {/if}
-                    <a class="w-full py-2 hover:bg-gray-200 text-center" href="/home/athlete">Athlete Dashboard</a>
-                {/if}
-                <a on:click={() => showDropdown = false} class="w-full py-2 hover:bg-gray-200 text-center" href="/home/user">Settings</a>
-                <button on:click={logout} class="w-full py-2 hover:bg-gray-200">Sign Out</button>
-            </div>
-        {/if}
-    </div>
+
+        <div class="h-6 mx-2 hover:cursor-pointer hover:text-yellow-lt">
+            <a href="/home/chat">
+                <FaInbox />
+            </a>
+        </div>
+
 </header>
 
 <style>

@@ -15,6 +15,7 @@
 		"@sveltejs/kit": "^1.0.7",
 		"@types/cookie": "^0.5.1",
 		"@types/js-cookie": "^3.0.2",
+		"@types/phoenix": "^1.5.4",
 		"autoprefixer": "^10.4.13",
 		"postcss": "^8.4.19",
 		"svelte": "^3.46.0",
@@ -41,6 +42,7 @@
 		"dotenv": "^16.0.3",
 		"js-cookie": "^3.0.1",
 		"jwt-decode": "^3.1.2",
+		"phoenix": "^1.7.0-rc.2",
 		"svelte-icons": "^2.1.0",
 		"zod": "^3.19.1"
 	}

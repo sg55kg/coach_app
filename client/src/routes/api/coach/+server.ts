@@ -13,8 +13,7 @@ export const POST: RequestHandler = async (event) => {
             body: JSON.stringify(newCoach)
         })
 
-        const updatedUser = await res.json()
-        return new Response(JSON.stringify(updatedUser))
+        return new Response(res.body, {status: res.status, statusText: res.statusText })
     } catch (e) {
         console.log(e)
         throw error(405, 'Could not save new coach data')

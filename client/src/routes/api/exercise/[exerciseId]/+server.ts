@@ -13,9 +13,8 @@ export const PUT: RequestHandler = async (event) => {
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify(exercise)
         })
-        const exerciseData = await res.json()
 
-        return new Response(JSON.stringify(exerciseData))
+        return new Response(res.body, { status: res.status, statusText: res.statusText })
     } catch (e) {
         throw error(405, 'Could not update exercise')
     }
