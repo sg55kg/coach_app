@@ -12,6 +12,7 @@ public class UpdateUserRequest {
     private UUID id;
     private String username;
     private String athleteName;
+    private String photoUrl;
 
     public UpdateUserRequest() {}
 
@@ -35,8 +36,15 @@ public class UpdateUserRequest {
         this.username = username;
     }
 
-
     public void setAthleteName(String athleteName) {
         this.athleteName = athleteName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

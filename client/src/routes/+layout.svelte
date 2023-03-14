@@ -31,9 +31,11 @@
 			$isMobile = true
 			console.log($isMobile)
 		}
-		if ($userDB && $authUser && window.location.pathname === '/') {
+
+		if ((($userDB && $authUser) || (data.user && data.userData)) && window.location.pathname === '/') {
+			console.log('Found')
 			await goto('/home')
-		} else if (!$userDB && window.location.pathname !== '/') {
+		} else if (!$userDB && !data.user && window.location.pathname !== '/') {
 			await goto('/')
 		}
 

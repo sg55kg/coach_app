@@ -6,7 +6,8 @@ import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.NewUserRequest;
 import com.coachapp.coach_pc.request.UpdateUserRequest;
 import com.coachapp.coach_pc.service.UserService;
-import com.coachapp.coach_pc.view.UserViewModel;
+import com.coachapp.coach_pc.view.user.UserViewModel;
+import com.coachapp.coach_pc.view.user.UserWithMappings;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -26,27 +27,27 @@ public class UsersController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<UserViewModel> getUserData(@PathVariable String email) {
+    public ResponseEntity<UserWithMappings> getUserData(@PathVariable String email) {
         return userService.getUserData(email);
     }
 
     @PostMapping
-    public ResponseEntity<UserData> addUser(@RequestBody NewUserRequest userRequest) {
+    public ResponseEntity<UserWithMappings> addUser(@RequestBody NewUserRequest userRequest) {
         return userService.addUser(userRequest);
     }
 
     @PutMapping("/coach")
-    public ResponseEntity<UserData> addCoachData(@RequestBody NewCoachRequest coachRequest) {
+    public ResponseEntity<UserWithMappings> addCoachData(@RequestBody NewCoachRequest coachRequest) {
         return userService.addCoachData(coachRequest);
     }
 
     @PutMapping("/athlete")
-    public ResponseEntity<UserData> addAthleteData(@RequestBody NewAthleteRequest athleteRequest) {
+    public ResponseEntity<UserWithMappings> addAthleteData(@RequestBody NewAthleteRequest athleteRequest) {
         return userService.addAthleteData(athleteRequest);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserData> updateUserData(@PathVariable UUID id, @RequestBody UpdateUserRequest userRequest) {
+    public ResponseEntity<UserWithMappings> updateUserData(@PathVariable UUID id, @RequestBody UpdateUserRequest userRequest) {
         return userService.updateUserData(id, userRequest);
     }
 }

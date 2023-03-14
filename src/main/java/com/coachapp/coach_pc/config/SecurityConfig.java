@@ -41,7 +41,8 @@ public class SecurityConfig {
         an OAuth2 Resource Server, using JWT validation.
         */
         http.authorizeRequests() //.requiresChannel().antMatchers("/api/**").requiresSecure().and().authorizeRequests()
-                .antMatchers("/auth/").permitAll()
+                //.antMatchers("/auth/").permitAll()
+                //.antMatchers("/api/messages").
                 .anyRequest().authenticated()
                 .and().cors()
                 .and()
@@ -50,7 +51,8 @@ public class SecurityConfig {
                 .jwt()
                 .decoder(jwtDecoder())
                 //.jwtAuthenticationConverter(makePermissionsConverter())
-                .and();
+                .and()
+                ;
                // .and().and().build();
                return http.build();
 

@@ -13,8 +13,7 @@ export const POST: RequestHandler = async (event) => {
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify(comment)
         })
-        const commentData = await res.json()
-        return new Response(JSON.stringify(commentData))
+        return new Response(res.body, { status: res.status, statusText: res.statusText })
     } catch (e) {
         throw error(405, 'Could not update comment')
     }

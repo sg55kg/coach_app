@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "coach_data")
+@Entity
 public class CoachData {
 
     @Id
@@ -17,7 +17,7 @@ public class CoachData {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Program> programs = new ArrayList<>();
+    private List<Program> programsList = new ArrayList<>();
     @OneToOne(mappedBy = "coachData")
     @JsonIgnore
     private UserData user;
@@ -39,11 +39,11 @@ public class CoachData {
     }
 
     public List<Program> getPrograms() {
-        return programs;
+        return programsList;
     }
 
     public void setPrograms(List<Program> programs) {
-        this.programs = programs;
+        this.programsList = programs;
     }
 
     public UserData getUser() {

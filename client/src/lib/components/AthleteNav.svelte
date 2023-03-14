@@ -1,11 +1,23 @@
 <script lang="ts">
     import MdMenu from 'svelte-icons/md/MdMenu.svelte'
     import logo from '../images/logo-yellow.png'
-    import {userDB} from "$lib/stores/authStore.js";
+    import {authUser, userDB} from "$lib/stores/authStore.js";
+    import FaDoorOpen from 'svelte-icons/fa/FaDoorOpen.svelte'
+    import FaWrench from 'svelte-icons/fa/FaWrench.svelte'
 
     let showNav: boolean = false
     //w-screen max-w-lg right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform
     //absolute top-0 left-0 w-7/12 bg-gray-100 h-full z-50 opacity-100
+
+    const logout = async () => {
+        const res = await fetch('/api/auth/logout', {
+            method: 'POST'
+        })
+        const body = await res.json()
+        if (body.redirectUrl) {
+            window.location.replace(body.redirectUrl)
+        }
+    }
 </script>
 
 <div class="h-full flex items-center justify-center">
@@ -13,7 +25,7 @@
         <MdMenu />
     </div>
 </div>
-<div class="fixed overflow-hidden z-40 overlay inset-0 transform ease-in-out {showNav ? 'transition-opacity opacity-100 duration-300 translate-x-0' : 'transition-all delay-500 opacity-0 translate-x-full'}">
+<div class="fixed overflow-hidden z-40 overlay inset-0 transform ease-in-out {showNav ? 'transition-opacity opacity-100 duration-300 translate-x-0' : 'transition-all delay-100 opacity-0 translate-x-full'}">
     <div class="w-9/12 lg:w-3/12 left-0 absolute bg-gray-100 h-full shadow-xl delay-200 duration-200 ease-in-out transition-all transform {showNav ? 'translate-x-0' : 'translate-x-[-30em]'}">
         <div class="flex p-2 mt-2 justify-center">
             <img class="h-10" src={logo} alt="Coachable Logo">
@@ -37,8 +49,29 @@
                 </a>
                 <a class="hover:text-link text-textblue font-bold text-lg my-2" href="/home/athlete/teams">Browse Teams</a>
             {:else}
-                <a class="text-lg text-center md:text-left underline text-link" href="/home/athlete/teams">Join a team</a>
+                <a class="hover:text-link text-textblue text-lg my-2 text-center underline" href="/home/athlete/teams">Join a team</a>
             {/if}
+            <div class="mt-12 w-full flex flex-col">
+                <img src={$authUser.picture} alt="profile" class="rounded-full h-14 mb-4 self-center">
+                <div class="flex flex-col items-center w-full pl-4">
+                    <a class="hover:text-yellow-lt pr-8" on:click={() => { showNav = false; logout() }}>
+                        <button class="h-8 flex items-center text-lg">
+                            <span class="h-4 mr-4">
+                                <FaDoorOpen />
+                            </span>
+                            Sign Out
+                        </button>
+                    </a>
+                    <a class="hover:text-yellow-lt" href="/home/user" on:click={() => showNav = false}>
+                        <button class="h-8 flex items-center text-lg mr-8">
+                            <span class="h-4 mr-4">
+                                <FaWrench />
+                            </span>
+                            Settings
+                        </button>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

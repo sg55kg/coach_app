@@ -8,9 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "team")
 public class Team {
 
     @Id
@@ -98,5 +100,18 @@ public class Team {
 
     public void setTeamLogo(String teamLogo) {
         this.teamLogo = teamLogo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return Objects.equals(id, team.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

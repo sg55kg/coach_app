@@ -5,8 +5,10 @@ import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.repository.UserDataRepo;
+import com.coachapp.coach_pc.repository.UserRepository;
 import com.coachapp.coach_pc.request.*;
-import com.coachapp.coach_pc.view.UserViewModel;
+import com.coachapp.coach_pc.view.user.UserViewModel;
+import com.coachapp.coach_pc.view.user.UserWithMappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,37 +20,37 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private UserDataRepo userDataRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    public UserService(UserDataRepo userDataRepo) {
-        this.userDataRepo = userDataRepo;
+    public UserService(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
-    public ResponseEntity<UserViewModel> getUserData(String email) {
-        Optional<UserData> optional = userDataRepo.findByEmail(email);
+    public ResponseEntity<UserWithMappings> getUserData(String email) {
+        Optional<UserWithMappings> optional = userRepo.findUserByEmail(email);
 
         if(optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            UserData user = optional.get();
-            UserViewModel vm = UserViewModel.convertUser(user);
-            return new ResponseEntity<>(vm, HttpStatus.OK);
+            UserWithMappings user = optional.get();
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<UserData> addUser(NewUserRequest userRequest) {
+    public ResponseEntity<UserWithMappings> addUser(NewUserRequest userRequest) {
         UserData userData = new UserData();
         userData.setEmail(userRequest.getEmail());
         userData.setUsername(userRequest.getName());
+        userData.setPhotoUrl(userRequest.getPhotoUrl());
 
-        UserData dbUser = userDataRepo.save(userData);
+        UserWithMappings dbUser = userRepo.addUser(userData);
         return new ResponseEntity<>(dbUser, HttpStatus.CREATED);
     }
 
 
-    public ResponseEntity<UserData> addCoachData(NewCoachRequest coachRequest) {
-        Optional<UserData> optional = userDataRepo.findById(coachRequest.getUserId());
+    public ResponseEntity<UserWithMappings> addCoachData(NewCoachRequest coachRequest) {
+        Optional<UserData> optional = userRepo.findUserById(coachRequest.getUserId());
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -58,12 +60,12 @@ public class UserService {
         coach.setUser(user);
         user.setCoachData(coach);
 
-        user = userDataRepo.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserWithMappings updated = userRepo.updateUser(user);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    public ResponseEntity<UserData> addAthleteData(NewAthleteRequest athleteRequest) {
-        Optional<UserData> o = userDataRepo.findById(athleteRequest.getUserId());
+    public ResponseEntity<UserWithMappings> addAthleteData(NewAthleteRequest athleteRequest) {
+        Optional<UserData> o = userRepo.findUserById(athleteRequest.getUserId());
         if(o.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -75,22 +77,25 @@ public class UserService {
         athleteRequest.getRecords().get(0).setAthlete(athlete);
         user.setAthleteData(athlete);
 
-        user = userDataRepo.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserWithMappings updated = userRepo.updateUser(user);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    public ResponseEntity<UserData> updateUserData(UUID id, UpdateUserRequest userRequest) {
-        Optional<UserData> optional = userDataRepo.findById(id);
+    public ResponseEntity<UserWithMappings> updateUserData(UUID id, UpdateUserRequest userRequest) {
+        Optional<UserData> optional = userRepo.findUserById(id);
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         UserData user = optional.get();
         user.setUsername(userRequest.getUsername());
+        if (userRequest.getPhotoUrl() != null) {
+            user.setPhotoUrl(userRequest.getPhotoUrl());
+        }
         if (userRequest.getAthleteName() != null) {
             user.getAthleteData().setName(userRequest.getAthleteName());
         }
 
-        user = userDataRepo.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserWithMappings updated = userRepo.updateUser(user);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }

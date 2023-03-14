@@ -239,15 +239,15 @@ public class Exercise {
         this.isMaxReps = isMaxReps;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Exercise exercise = (Exercise) o;
-        return id.equals(exercise.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Exercise exercise = (Exercise) o;
+//        return id.equals(exercise.id);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
 }
