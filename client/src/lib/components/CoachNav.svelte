@@ -27,7 +27,7 @@
 </div>
 <div class="fixed overflow-hidden z-40 overlay inset-0 transform ease-in-out
     {showNav ?
-    'transition-opacity opacity-100 duration-300 translate-x-0' :
+    'transition-opacity opacity-100 duration-100 translate-x-0' :
     'transition-all delay-500 opacity-0 translate-x-full'}"
 >
     <div class="w-9/12 lg:w-2/12 left-0 absolute bg-gray-100 h-full shadow-xl delay-200 duration-200 ease-in-out transition-all transform {showNav ? 'translate-x-0' : 'translate-x-[-30em]'}">
