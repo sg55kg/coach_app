@@ -33,6 +33,7 @@ npm-debug.log
 /assets/node_modules/
 
 config/dev.secret.exs
+config/prod.exs
+config/runtime.exs
 deps
-/config/
-config
+_build

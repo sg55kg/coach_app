@@ -11,7 +11,6 @@ defmodule Gateway do
     case HTTPoison.post(url,body,%{"Content-Type": "application/json"}) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, data} = Poison.decode(body)
-        IO.inspect data
         {:ok, data["access_token"]}
       {:error, err} ->
         {:error, err}

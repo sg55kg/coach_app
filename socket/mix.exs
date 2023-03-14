@@ -20,7 +20,7 @@ defmodule Socket.MixProject do
   def application do
     [
       mod: {Socket.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools],
     ]
   end
 
@@ -34,7 +34,6 @@ defmodule Socket.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.6.15"},
-      {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.17.5"},
       {:floki, ">= 0.30.0", only: :test},

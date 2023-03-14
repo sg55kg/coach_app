@@ -27,25 +27,24 @@ defmodule SocketWeb do
     end
   end
 
-  def view do
-    quote do
-      use Phoenix.View,
-        root: "lib/socket_web/templates",
-        namespace: SocketWeb
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller,
-        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
-
-      # Include shared imports and aliases for views
-      unquote(view_helpers())
-    end
-  end
+#  def view do
+#    quote do
+#      use Phoenix.View,
+#        root: "lib/socket_web/templates",
+#        namespace: SocketWeb
+#
+#      # Import convenience functions from controllers
+#      import Phoenix.Controller,
+#        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
+#
+#      # Include shared imports and aliases for views
+#      unquote(view_helpers())
+#    end
+#  end
 
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {SocketWeb.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end
@@ -86,14 +85,10 @@ defmodule SocketWeb do
 
   defp view_helpers do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
       import Phoenix.LiveView.Helpers
 
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
 
       import SocketWeb.ErrorHelpers
       import SocketWeb.Gettext

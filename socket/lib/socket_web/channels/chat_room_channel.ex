@@ -11,7 +11,6 @@ defmodule SocketWeb.ChatRoomChannel do
       case Gateway.get_token do
         {:ok, token} ->
           socket = assign(socket, :access_token, token)
-          IO.inspect socket
           {:ok, socket}
         {:error, err} ->
           Logger.info "Failed to get token"
@@ -46,14 +45,12 @@ defmodule SocketWeb.ChatRoomChannel do
 
   @impl true
   def handle_in("typing", payload, socket) do
-    IO.inspect payload
     broadcast! socket, "typing", payload
     {:reply, {:ok, payload}, socket}
   end
 
   def handle_in("new:msg", msg, socket) do
     new_msg = Gateway.post_message(msg, socket.assigns.access_token)
-#    new_msg = %{id: msg["id"], sender: msg["sender"], contents: msg["contents"], chatId: msg["chatId"], sentAt: msg["sentAt"], updatedAt: msg["updatedAt"], replies: msg["replies"]}
     broadcast! socket, "new:msg", new_msg
     {:reply, {:ok, %{msg: msg["contents"]}}, assign(socket, :user, msg["user"])}
 
