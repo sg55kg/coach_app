@@ -46,7 +46,7 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
     ],
-    check_origin: [System.get_env("CLIENT_URL")]
+    check_origin: [System.get_env("CLIENT_URL")],
     secret_key_base: secret_key_base
 
   config :socket,
