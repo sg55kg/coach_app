@@ -1,20 +1,24 @@
 <script lang="ts">
     import {userDB} from "$lib/stores/authStore.js";
     import {Channel} from "phoenix";
-    import {ChatMember, Message} from "$lib/classes/chat";
+    import {ChatMember, ChatRoom, Message} from "$lib/classes/chat";
     import dayjs from "dayjs";
-    import {loadingChat} from "$lib/stores/chatStore";
+    import {chatError, loadingChat, notifications} from "$lib/stores/chatStore";
     import {onMount} from "svelte";
     import MessageBubble from "$lib/components/Inbox/MessageBubble.svelte";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import {ChatService} from "$lib/service/ChatService";
 
     export let channel: Channel
     export let messages: Message[] = []
     export let groupId: string
     export let member: ChatMember
+    export let chatRoom: ChatRoom
 
     let newMessageContent: string = ''
     let messagesContainer: HTMLDivElement
     let showContextMenu: boolean = false
+    let fetchingNextPage: boolean = false
 
     let typingUsers: string[] = []
 
@@ -32,16 +36,17 @@
         } as Message
 
         channel.push('new:msg', newMessage)
-            .receive('error', (reasons) => console.log('flop', reasons))
+            .receive('error', (reasons) => $chatError = 'Error: Your message could not be sent at this time')
             .receive('timeout', () => console.log('slow much?'))
+            .receive('ok', () => chatRoom.messageCount = chatRoom.messageCount + 1)
         //messages.unshift(newMessage)
         newMessageContent = ''
 
         $loadingChat = false
     }
     $: channel?.on('new:msg', (msg) => {
-        console.log('shout', msg)
         const message = Message.createFrom(msg)
+
         if (messages.findIndex(m => m.id === msg.id) === -1) {
             messages.push(message)
         }
@@ -50,6 +55,40 @@
             document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight
         }, 50)
     })
+
+    const handleScroll = (e: Event) => {
+        const container = document.getElementById('message-container')
+        const scrollTop = container.scrollTop
+
+        if (scrollTop === 0) {
+            fetchingNextPage = true
+
+        }
+    }
+
+    const fetchPage = async () => {
+        let end = chatRoom.messageCount - messages.length
+        if (end < 1) {
+            return fetchingNextPage = false
+        }
+        const scrollHeight = document.getElementById('message-container')?.scrollHeight
+        const PAGE_SIZE = 20
+        let start = end <= PAGE_SIZE ? 0 : end - PAGE_SIZE - 1
+        end = end > PAGE_SIZE ? PAGE_SIZE : end - 1
+
+        try {
+            const res: Message[] = await ChatService.getNext20Messages(groupId, start, end)
+            messages = [...res, ...messages]
+            chatRoom.messages = [...res, ...chatRoom.messages]
+
+            document.getElementById('message-container').scrollTo(0, scrollHeight)
+        } catch (e) {
+            $chatError = 'Could not retrieve messages'
+        }
+        fetchingNextPage = false
+    }
+
+    $: fetchingNextPage ? fetchPage() : null
 
     $: channel?.on('typing', res => {
         if (!typingUsers.includes(res.user) && res.user !== $userDB?.username) {
@@ -65,11 +104,18 @@
 
     onMount(() => {
         document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight + 20
+        document.getElementById('message-container').addEventListener('scroll', handleScroll)
+        $notifications = $notifications.filter(m => m.chatId !== groupId)
     })
 </script>
 
 <div class="flex flex-col h-[90vh] overflow-hidden w-full px-6 relative">
-    <div class="flex flex-col p-2 overflow-scroll h-[87vh] pb-12" id="message-container" bind:this={messagesContainer}>
+    {#if fetchingNextPage}
+        <div class="flex justify-center w-full">
+            <LoadingSpinner width={8} height={8} />
+        </div>
+    {/if}
+    <div class="flex flex-col p-2 overflow-scroll h-[87vh] pb-12 w-full" id="message-container" bind:this={messagesContainer}>
         {#each messages as message, idx}
             <MessageBubble message={message} messages={messages} index={idx} />
         {/each}

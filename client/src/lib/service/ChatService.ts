@@ -1,6 +1,6 @@
-import {ChatRoom} from "$lib/classes/chat";
+import {ChatRoom, Message, type MessageDTO} from "$lib/classes/chat";
 import type {ChatRoomDTO} from "$lib/classes/chat";
-import {Socket} from "phoenix";
+
 
 
 export class ChatService {
@@ -29,6 +29,15 @@ export class ChatService {
 
     static getChatRoom = async (chatId: string) => {
 
+    }
+
+    static getNext20Messages = async (chatId: string, start: number, end: number) => {
+        const res = await fetch(`/api/message/${chatId}?start=${start}&end=${end}`, {
+            method: 'GET'
+        })
+        console.log(res)
+        const data: MessageDTO[] = await res.json()
+        return data.map(m => Message.createFrom(m))
     }
 
 }

@@ -7,14 +7,12 @@ export interface MessageDTO {
     sender: ChatMemberDTO,
     chatId: string,
     contents: string,
-    replies: Array<MessageDTO>
+    replies: Array<MessageDTO>,
 }
 
 export class Message {
     static createFrom(data: MessageDTO) {
-
         let message = new Message()
-
         message.id = data.id
         message.sentAt = dayjs(data.sentAt)
         message.updatedAt = dayjs(data.updatedAt)
@@ -40,13 +38,14 @@ export interface ChatRoomDTO {
     members: Array<ChatMemberDTO>
     teamId: string,
     messages: Array<MessageDTO>,
-    name: string
+    name: string,
+    messageCount: number
 }
 
 export class ChatRoom {
     static createFrom(data: ChatRoomDTO) {
         let chatRoom = new ChatRoom()
-        console.log('chat',data)
+
         chatRoom.id = data.id
         chatRoom.members = data.members.filter(d => d !== undefined).map(d => d ?? ChatMember.createFrom(d))
         chatRoom.teamId = data.teamId
@@ -55,6 +54,7 @@ export class ChatRoom {
                 .sort((a, b) => a.sentAt.valueOf() - b.sentAt.valueOf()) :
             []
         chatRoom.name = data.name
+        chatRoom.messageCount = data.messageCount
 
         return chatRoom
     }
@@ -64,6 +64,7 @@ export class ChatRoom {
     teamId: string = ''
     messages: Message[] = []
     name: string = ''
+    messageCount: number = 0
 }
 
 export interface ChatMemberDTO {
@@ -77,7 +78,7 @@ export interface ChatMemberDTO {
 export class ChatMember {
     static createFrom(data: ChatMemberDTO) {
         const member = new ChatMember()
-        console.log(data)
+
         member.id = data.id
         member.userId = data.userId
         member.chatId = data.chatId

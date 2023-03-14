@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.service.chat;
 
+import com.blazebit.persistence.PagedList;
 import com.coachapp.coach_pc.model.chat.Message;
 import com.coachapp.coach_pc.repository.MessageRepository;
 import com.coachapp.coach_pc.request.chat.MessageRequest;
@@ -49,5 +50,10 @@ public class MessageService {
        // MessageViewModel vm = MessageViewModel.convertMessage(message);
         return new ResponseEntity<>(message, HttpStatus.OK);
        // return new ResponseEntity<>(vm, HttpStatus.OK);
+    }
+
+    public ResponseEntity<PagedList<MessageViewModel>> fetchNext20Messages(UUID chatId, int start, int end) {
+        PagedList<MessageViewModel> messages = messageRepo.fetchNext20Messages(chatId, start, end);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.repository;
 
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.PagedList;
 import com.blazebit.persistence.view.ConvertOption;
 import com.blazebit.persistence.view.EntityViewManager;
 import com.blazebit.persistence.view.EntityViewSetting;
@@ -59,5 +60,18 @@ public class MessageRepository {
     @Transactional
     public void deleteById(UUID id) {
         em.remove(id);
+    }
+
+    public PagedList<MessageViewModel> fetchNext20Messages(UUID chatId, int start, int end) {
+        CriteriaBuilder<Message> cb = cbf.create(em, Message.class);
+
+        PagedList<MessageViewModel> messages = evm.applySetting(EntityViewSetting.create(MessageViewModel.class), cb)
+                .orderByAsc("sentAt")
+                .orderByAsc("id")
+                .where("chatRoom.id").eq(chatId)
+                .page(null, start, end)
+                .getResultList();
+
+        return messages;
     }
 }

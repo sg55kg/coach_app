@@ -7,9 +7,13 @@ import ChatRoomComp from "$lib/components/Inbox/ChatRoomComp.svelte";
 import {onMount} from "svelte";
 import {Channel, Socket} from 'phoenix'
 import {Team} from "$lib/classes/team";
-import type {ChatRoom, ChatRoomDTO} from "$lib/classes/chat";
-import {ChatMember} from "$lib/classes/chat";
+import type {ChatRoom, MessageDTO} from "$lib/classes/chat";
+import {ChatMember, Message} from "$lib/classes/chat";
 import {ChatService} from "$lib/service/ChatService";
+import MdClose from 'svelte-icons/md/MdClose.svelte'
+import {chatError, chatTimeout, notifications} from "$lib/stores/chatStore.js";
+import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+
 
 let selectedChatId: string = ''
 
@@ -24,6 +28,7 @@ let channels: { channel: Channel, id: string }[] = []
 let selectedTeamForCreate: string = ''
 let newChatName: string = ''
 $: selectedChannel = selectedChatId ? channels.find(c => c.id === selectedChatId) : null
+$: selectedRoom = selectedChatId ? chatRooms.find(c => c.id === selectedChatId) : null
 
 const connect = async () => {
     const rooms = await ChatService.getChatRoomsByUser($userDB.id)
@@ -39,9 +44,22 @@ const connect = async () => {
     for (const member of $userDB?.members) {
         const chan = socket.channel(`room:${member.chatId}`)
         chan.join()
-            .receive('error', () => console.log('Access denied.'))
+            .receive('error', () => $chatError = 'Could not join this chat')
             .receive('ok', (res) => console.log('Access granted.' + JSON.stringify(res)))
-            .receive('timeout', () => console.log('Must be MongoDB.'))
+            .receive('timeout', () => $chatTimeout = 'Connection timed out. Retrying...')
+
+        chan.on('new:msg', (msg: MessageDTO) => {
+            if (selectedChatId === '' && msg.sender.userId !== $userDB.id) {
+                if (!$notifications.findIndex(m => m.id === msg.id) > -1) {
+                    $notifications.push(Message.createFrom(msg))
+                    $notifications = $notifications
+                    const room = chatRooms.find(r => r.id === msg.chatId)
+                    room.messages = [...room.messages, Message.createFrom(msg)]
+                    room.messageCount = room.messageCount + 1
+                    chatRooms = chatRooms
+                }
+            }
+        })
         channels.push({ channel: chan, id: member.chatId })
         console.log(chan)
     }
@@ -70,34 +88,46 @@ const createTeamChat = async () => {
     }
 }
 
+$: $chatError ? setTimeout(() => $chatError = '', 3000) : null
+$: $chatTimeout ? setTimeout(() => $chatTimeout = '', 3000) : null
+
 onMount(() => {
     connect()
 })
-
+$: console.log($notifications)
 </script>
 
 <AuthHeader />
-<div class="grid grid-cols-10 h-[92vh] overflow-hidden mt-[-1em]">
+<div class="grid grid-cols-10 h-[94vh] overflow-hidden mt-[-1em]">
     <div class="flex flex-col col-span-2 bg-gray-300 ">
         <div class="flex justify-center mb-4 p-4">
             <h1 class="text-xl text-textblue font-bold">Rooms</h1>
         </div>
        <div class="overflow-y-auto">
            {#each chatRooms as room}
-               <div class="p-2 bg-gray-200 hover:bg-gray-400 hover:cursor-pointer" on:click={() => selectedChatId = room.id}>
+               <div class="p-2 py-5 bg-gray-200 hover:bg-gray-400 hover:cursor-pointer max-h-32" on:click={() => selectedChatId = room.id}>
                    <div class="flex w-full justify-between">
                        <h4 class="text-lg mb-2">{room.name}</h4>
                        {#if room.messages.length > 0}
-                           <h4>{dayjs().subtract(room.messages[0].sentAt).get('minutes')}m</h4>
+                           <h4>
+                               {dayjs().diff(room.messages[room.messages.length-1].sentAt, 'days') ?
+                                dayjs().diff(room.messages[room.messages.length-1].sentAt, 'days') + 'd' :
+                                   (dayjs().diff(room.messages[room.messages.length-1].sentAt, 'hours') ?
+                                    dayjs().diff(room.messages[room.messages.length-1].sentAt, 'hours') + 'h' :
+                                    dayjs().diff(room.messages[room.messages.length-1].sentAt, 'minutes') + 'm')}
+                           </h4>
                        {/if}
                    </div>
-                   <div class="flex flex-nowrap">
-                       <small class="truncate-ellipsis overflow-hidden text-textblue">
+                   <div class="flex justify-between flex-nowrap w-11/12">
+                       <small class="truncate-ellipsis overflow-hidden text-textblue w-11/12">
                            {room.messages.length > 0 ?
-                               room.messages[0].sender.username + ": " + room.messages[0].contents :
+                               room.messages[room.messages.length-1].sender.username + ": " + room.messages[room.messages.length-1].contents :
                                'No messages'
                            }
                        </small>
+                       {#if $notifications.findIndex(n => n.chatId === room.id) > -1}
+                           <div class="rounded-full h-4 w-4 bg-sky-300 self-center"></div>
+                       {/if}
                    </div>
                </div>
            {/each}
@@ -130,9 +160,33 @@ onMount(() => {
     {/if}
     {#if selectedChatId && selectedChannel}
         <div class="flex flex-col col-span-8 items-center justify-center w-full">
-            <ChatRoomComp channel={selectedChannel.channel} bind:messages={messages} groupId={groupId} member={selectedMember} />
+            <ChatRoomComp channel={selectedChannel.channel}
+                          bind:messages={messages}
+                          groupId={groupId}
+                          member={selectedMember}
+                          bind:chatRoom={selectedRoom}
+            />
         </div>
     {/if}
 </div>
+{#if $chatError}
+    <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        {$chatError}
+        <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $chatError = ''}>
+            <MdClose />
+        </button>
+    </div>
+{/if}
+{#if $chatTimeout}
+    <div class="sticky bottom-5 left-10 z-10 text-sky-500 border-l-4 border-l-sky-500 bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        <div class="flex items-center">
+            <p class="mr-3">{$chatTimeout}</p>
+            <LoadingSpinner />
+        </div>
+        <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $chatTimeout = ''}>
+            <MdClose />
+        </button>
+    </div>
+{/if}
 
 <style></style>

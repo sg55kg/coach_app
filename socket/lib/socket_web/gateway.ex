@@ -3,11 +3,12 @@ defmodule Gateway do
   require Logger
 
   def get_token() do
-    body = %{client_id: Application.fetch_env!(:auth_0, :client_id),
-             client_secret: Application.fetch_env!(:auth_0, :client_secret),
-             audience: Application.fetch_env!(:auth_0, :audience),
-             grant_type: Application.fetch_env!(:auth_0, :grant_type)} |> Poison.encode!
-    case HTTPoison.post(Application.fetch_env!(:auth_0, :token_url),body,%{"Content-Type": "application/json"}) do
+    body = %{client_id: Application.fetch_env!(:socket, :client_id),
+             client_secret: Application.fetch_env!(:socket, :client_secret),
+             audience: Application.fetch_env!(:socket, :audience),
+             grant_type: Application.fetch_env!(:socket, :grant_type)} |> Poison.encode!
+    url = Application.fetch_env!(:socket, :token_url)
+    case HTTPoison.post(url,body,%{"Content-Type": "application/json"}) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, data} = Poison.decode(body)
         IO.inspect data

@@ -18,12 +18,12 @@
 
 {#if isFirstInGroup}
     <p class="text-textblue self-center">{message.sentAt.format('ddd MMM DD hh:mm A')}</p>
-    <p class="text-textblue {isSender ? 'self-end mr-12' : 'self-start ml-12'}">{message.sender.username}</p>
+    <p class="text-textblue text-sm {isSender ? 'self-end mr-12' : 'self-start ml-12'}">{message.sender.username}</p>
 {/if}
 <div class="flex {isSender ? 'flex-row-reverse' : 'flex-row'}">
     <div class="flex items-center {isSender ? 'flex-row' : 'flex-row-reverse'}">
         <p on:contextmenu={(e) => handleContextMenu(e)}
-           class="rounded-xl p-3 my-2 {message.sender.userId === $userDB.id ? 'bg-gradient-to-t to-purple-500 from-purple-600' : 'bg-gray-200'}"
+           class="rounded-xl p-3 my-2 {message.sender.userId === $userDB.id ? 'bg-gradient-to-t to-purple-500 from-purple-600' : 'bg-gray-200'} lg:max-w-[685px]"
         >
             {message.contents}
         </p>

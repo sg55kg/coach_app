@@ -24,7 +24,7 @@ export class User {
         console.log(userDTO)
         user.athleteData = userDTO.athleteData ? AthleteData.createFrom(userDTO.athleteData) : null
         user.coachData = userDTO.coachData ? CoachData.createFrom(userDTO.coachData) : null
-        user.createdAt = dayjs(userDTO.createdAt)
+        user.createdAt = userDTO.createdAt ? dayjs(userDTO.createdAt) : dayjs()
         user.updatedAt = dayjs(userDTO.updatedAt)
         user.email = userDTO.email
         user.id = userDTO.id

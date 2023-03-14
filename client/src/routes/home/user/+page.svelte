@@ -5,6 +5,8 @@
     import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
     import UserService from "$lib/service/userService";
+    import AuthHeader from "$lib/components/AuthHeader.svelte";
+    import AthleteHeader from "$lib/components/AthleteHeader.svelte";
 
     let user: User
 
@@ -39,6 +41,11 @@
 </svelte:head>
 
 {#if user}
+    {#if $userDB.coachData.teams?.length > 0 }
+        <AuthHeader />
+    {:else}
+        <AthleteHeader />
+    {/if}
     <div class="flex flex-col m-4">
         <h1 class="font-bold text-4xl">Settings</h1>
         <br>
@@ -88,7 +95,7 @@
             {/if}
         </div>
         <div class="flex flex-col my-2">
-            <p>Coachable member since: {user.createdAt ? user.createdAt.format('MMMM DD, YYYY') : dayjs().format('MMMM DD, YYYY')}</p>
+            <p>Coachable member since: {$userDB.createdAt ? $userDB.createdAt.format('MMMM DD, YYYY') : dayjs().format('MMMM DD, YYYY')}</p>
         </div>
     </div>
 {/if}

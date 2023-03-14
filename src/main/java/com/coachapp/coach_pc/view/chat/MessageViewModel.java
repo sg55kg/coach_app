@@ -27,7 +27,8 @@ public interface MessageViewModel {
     @Mapping("updatedAt")
     OffsetDateTime getUpdatedAt();
     void setUpdatedAt(OffsetDateTime updatedAt);
-
+    @Mapping("COUNT(*)")
+    Long getMessageCount();
 
 }
 

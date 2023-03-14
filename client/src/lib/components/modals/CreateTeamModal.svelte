@@ -11,7 +11,6 @@
     let team = new Team()
 
     const createTeam = async () => {
-        if (!$userDB?.coachData || !$auth0Client) return
 
         if (team.coachId === '' && team.coachName === '') {
             team.coachId = $userDB.coachData.id
@@ -19,7 +18,7 @@
         }
 
         try {
-            const savedTeam = await TeamService.createTeam($auth0Client, team)
+            const savedTeam = await TeamService.createTeam(team)
             userDB.update(prev => {
                 prev?.coachData?.teams.push(savedTeam)
                 return prev
@@ -74,11 +73,11 @@
                                 <div class="w-10/12 self-center font-bold border-green text-green">
                                     <p>Successfully added team!</p>
                                     <div class="bg-gray-50 px-4 py-3 mr-4 96 sm:flex sm:flex-row sm:px-6 justify-end">
-                                                        <button type="button"
-                                                              on:click={() => dispatch('closeModal')}
-                                                              class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-green px-4 py-2 text-base font-medium text-gray-shade shadow-sm hover:bg-yellow-shade focus:outline-none focus:ring-2  focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                                                                See your team
-                                                        </button>
+                                        <button type="button"
+                                                on:click={() => dispatch('closeModal')}
+                                                class="mt-3 inline-flex w-full justify-center rounded-md px-4 py-2 text-base font-medium text-green shadow-sm hover:text-green-dark focus:outline-none focus:ring-2  focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            See your team
+                                        </button>
                                     </div>
                                 </div>
                             {/if}
