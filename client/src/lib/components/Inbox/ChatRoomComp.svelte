@@ -24,7 +24,8 @@
 
     let typingUsers: string[] = []
 
-    const addMessage = async () => {
+    const addMessage = async (e: Event) => {
+        e.preventDefault()
         $loadingChat = true
 
         const newMessage: Message = {
@@ -45,6 +46,7 @@
         newMessageContent = ''
 
         $loadingChat = false
+        return false
     }
     $: channel?.on('new:msg', (msg) => {
         const message = Message.createFrom(msg)
@@ -102,7 +104,7 @@
     $: typingUsers.length > 0 ? setTimeout(() => {
         typingUsers.shift()
         typingUsers = typingUsers
-    }, 2500) : null
+    }, 20000) : null
 
     onMount(() => {
         document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight + 20
@@ -111,7 +113,7 @@
     })
 </script>
 
-<div class="flex flex-col h-[89.8vh] overflow-hidden lg:mt-[-1em] w-full lg:px-6 relative">
+<div class="flex flex-col h-[89.8vh] overflow-hidden lg:mt-[-1em] w-full relative">
     {#if $isMobile}
         <div class="flex items-center h-12 w-screen bg-gray-200">
             <div class="w-5 h-5 mx-4" on:click={() => selectedChatId = ''}>
@@ -125,38 +127,35 @@
             <LoadingSpinner width={8} height={8} />
         </div>
     {/if}
-    <div class="flex flex-col p-2 overflow-scroll h-[84vh] lg:h-[93vh] lg:pb-12 w-full" id="message-container" bind:this={messagesContainer}>
+    <div class="flex flex-col p-2 overflow-scroll h-[84vh] lg:h-[93vh] lg:pb-12 w-full lg:px-6" id="message-container" bind:this={messagesContainer}>
         {#each messages as message, idx}
             <MessageBubble message={message} messages={messages} index={idx} />
         {/each}
-
-    </div>
-
-    <div class="absolute bottom-0 w-full bg-gray-200">
         {#if typingUsers.length > 0}
-            <p class="text-textblue text-center mb-2">
+            <p class="text-textblue text-center">
                 {typingUsers.length < 2 ? typingUsers[0] + ' is typing...' :
                     (typingUsers.length < 3 ? typingUsers.join(' and ') + ' are typing...' :
                         typingUsers.length + ' users are typing...')}
             </p>
         {/if}
-        <div class="grid grid-cols-6 lg:grid-cols-12 w-full h-12 max-h-44 lg:h-6/12 mt-4">
-            <div class="col-span-5 lg:col-span-11 mr-2 lg:mr-4">
-                <textarea
-                       bind:value={newMessageContent}
-                       style="resize: none"
-                       on:keydown={(e) => e.key === 'Enter' ? addMessage() : channel.push("typing", { user: $userDB.username })}
-                       class="w-full p-3 h-12 max-h-44 bg-gray-400 rounded-xl focus:outline focus:outline-link focus:outline-2"
-                ></textarea>
-            </div>
-            <div class="col-span-1">
-                <button class="bg-purple-600 hover:bg-purple-700 font-semibold rounded-xl p-3 lg:px-5" on:click={addMessage}>
-                    Send
-                </button>
-            </div>
-        </div>
     </div>
 
+    <div class="grid grid-cols-6 lg:grid-cols-12 w-full h-24 items-center content-center max-h-44 mt-1 bg-gray-200 w-full">
+
+        <div class="col-span-5 lg:col-span-11 mr-2 lg:mr-4">
+                <textarea
+                        bind:value={newMessageContent}
+                        style="resize: none"
+                        on:keydown={(e) => e.key === 'Enter' ? addMessage(e) : channel.push("typing", { user: $userDB.username })}
+                        class="w-full p-3 h-12 max-h-44 bg-gray-400 rounded-xl focus:outline focus:outline-link focus:outline-2"
+                ></textarea>
+        </div>
+        <div class="col-span-1">
+            <button class="bg-purple-600 hover:bg-purple-700 font-semibold rounded-xl p-3 lg:px-5" on:click={addMessage}>
+                Send
+            </button>
+        </div>
+    </div>
 </div>
 
 <style>
