@@ -104,7 +104,7 @@
     $: typingUsers.length > 0 ? setTimeout(() => {
         typingUsers.shift()
         typingUsers = typingUsers
-    }, 20000) : null
+    }, 2000) : null
 
     onMount(() => {
         document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight + 20
