@@ -1,0 +1,1 @@
+DELETE FROM team WHERE coach_id = null;
