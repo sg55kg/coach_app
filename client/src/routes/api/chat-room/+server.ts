@@ -7,7 +7,7 @@ export const POST: RequestHandler = async (event) => {
     const teamReq = await event.request.json()
 
     try {
-        const res = await event.fetch('http://localhost:8180/api/chat-rooms/', {
+        const res = await event.fetch(`${import.meta.env.VITE_SERVER_URL}api/chat-rooms/`, {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify(teamReq)
