@@ -87,6 +87,8 @@ public class ChatRoomRepository {
 
             chatRoom.setTeam(athletes.get(0).getTeam());
 
+        } else {
+            chatRoom.setTeam(coach.getTeams().stream().filter(t -> t.getId().equals(request.getTeamId())).toList().get(0));
         }
         chatRoom.setMembers(members);
         chatRoom.setName(request.getName());
