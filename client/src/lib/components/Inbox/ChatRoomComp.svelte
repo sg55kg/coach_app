@@ -111,7 +111,7 @@
     })
 </script>
 
-<div class="flex flex-col h-screen lg:h-screen h-full overflow-hidden lg:mt-[-10em] w-full lg:px-6 relative">
+<div class="flex flex-col h-[89.8vh] overflow-hidden lg:mt-[-1em] w-full lg:px-6 relative">
     {#if $isMobile}
         <div class="flex items-center h-12 w-screen bg-gray-200">
             <div class="w-5 h-5 mx-4" on:click={() => selectedChatId = ''}>
