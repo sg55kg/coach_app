@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.service;
 
+import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.repository.CoachRepo;
@@ -61,6 +62,10 @@ public class TeamService {
         team.setTeamLogo(request.getTeamLogo());
         team.setName(request.getName());
         team.setDescription(request.getDescription());
+
+        CoachData coach = new CoachData();
+        coach.setId(request.getCoachId());
+        team.setCoach(coach);
         team = teamRepo.save(team);
 
         return new ResponseEntity<>(team, HttpStatus.CREATED);
