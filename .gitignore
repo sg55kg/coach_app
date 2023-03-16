@@ -39,3 +39,5 @@ build/
 #socket/config/*.secret.exs
 socket/deps
 /socket/config/dev.secret.exs
+
+/logs/

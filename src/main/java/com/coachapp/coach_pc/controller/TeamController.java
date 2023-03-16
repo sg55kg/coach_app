@@ -8,6 +8,8 @@ import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.DisplayTeam;
 import com.coachapp.coach_pc.view.ProgramViewModel;
 import com.coachapp.coach_pc.view.TeamViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class TeamController {
 
     private TeamService teamService;
+    private Logger logger = LoggerFactory.getLogger(TeamController.class);
 
     public TeamController(TeamService teamService) {
         this.teamService = teamService;
@@ -42,11 +45,13 @@ public class TeamController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Team> updateTeam(@PathVariable UUID id, @RequestBody TeamRequest team) {
+        logger.info("Received request to update team: " + team.getId());
         return teamService.updateTeam(id, team);
     }
 
     @PostMapping
     public ResponseEntity<Team> addTeam(@RequestBody NewTeamRequest team) {
+        logger.info("Received request to create a new team");
         return teamService.addTeam(team);
     }
 }

@@ -7,6 +7,8 @@ import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class ProgramController {
 
     private ProgramService _programService;
     private ProgramManager programManager;
+    private Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
     @Autowired
     public ProgramController(ProgramService programService, ProgramManager programManager) {
@@ -37,13 +40,13 @@ public class ProgramController {
 
     @PostMapping("/coach/{coachId}")
     public ResponseEntity<Program> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
-        System.out.println("Received request to add new program");
+        logger.info("Received request to add new program");
         return programManager.createProgram(program);
     }
 
     @GetMapping("/{id}")
     public ProgramViewModel getProgram(@PathVariable UUID id) {
-        System.out.println("Received Request to get program " + id);
+        logger.info("Received Request to get program " + id);
         return _programService.getProgram(id);
     }
 
@@ -59,7 +62,7 @@ public class ProgramController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProgramViewModel> updateProgram(@PathVariable UUID id, @RequestBody UpdateProgramRequest program) {
-        System.out.println("Received request to update program " + id);
+        logger.info("Received request to update program " + id);
         return _programService.updateProgram(program, id);
     }
 
@@ -70,7 +73,7 @@ public class ProgramController {
 
     @GetMapping("/team/{id}")
     public ResponseEntity<List<DisplayProgram>> getTeamPrograms(@PathVariable UUID id) {
-        System.out.println("Received request to get programs by team id: " + id);
+        logger.info("Received request to get programs by team id: " + id);
         return _programService.getProgramsByTeamId(id);
     }
 
