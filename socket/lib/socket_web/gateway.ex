@@ -38,12 +38,13 @@ defmodule Gateway do
   def post_message(req, token) do
     body = message_body(req)
     headers = ["Authorization": "Bearer #{token}", "Content-Type": "application/json"]
-    server_url = Application.fetch_env!(:socket, :audience)
+    server_url = Application.fetch_env!(:socket, :audience) <> "/api/messages/"
     %HTTPoison.Response{status_code: status, body: res} =
       HTTPoison.post!(server_url, body, headers)
       case status do
-        201 -> res |> Poison.decode!
-        405 -> {:error, "Could not post message"}
+        201 -> {:ok, res |> Poison.decode!}
+        405 -> {:error, res |> Poison.decode!}
+        500 -> {:error, res |> Poison.decode!}
       end
   end
 end

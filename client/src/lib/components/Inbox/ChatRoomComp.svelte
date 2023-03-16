@@ -106,6 +106,9 @@
         typingUsers = typingUsers
     }, 2000) : null
 
+    $: channel?.on('error', (err) => {
+        console.log(err)
+    })
     onMount(() => {
         document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight + 20
         document.getElementById('message-container').addEventListener('scroll', handleScroll)
