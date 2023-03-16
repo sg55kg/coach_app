@@ -9,6 +9,7 @@
     $: isSender = message.sender.userId === $userDB?.id
     $: isLastInGroup = index >= messages.length - 1 || messages[index+1]?.sender?.id !== message.sender.id
     $: isFirstInGroup = index === 0 || messages[index-1].sender.id !== message.sender.id
+    $: showDate = index === 0 || message.sentAt.diff(messages[index-1]?.sentAt, 'minutes') > 20
 
     const handleContextMenu = (e: PointerEvent) => {
         e.preventDefault()
@@ -16,8 +17,10 @@
 
 </script>
 
-{#if isFirstInGroup}
+{#if showDate}
     <p class="text-textblue self-center py-4">{message.sentAt.format('ddd MMM DD hh:mm A')}</p>
+{/if}
+{#if isFirstInGroup}
     <p class="text-textblue text-sm {isSender ? 'self-end mr-12' : 'self-start ml-12'}">{message.sender.username}</p>
 {/if}
 <div class="flex {isSender ? 'flex-row-reverse' : 'flex-row'}">
