@@ -6,6 +6,8 @@ import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.service.ExerciseService;
 import com.coachapp.coach_pc.view.ExerciseViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class ExerciseController {
 
     private ExerciseService exerciseService;
+    private Logger logger = LoggerFactory.getLogger(ExerciseController.class);
 
     public ExerciseController(ExerciseService exerciseService) {
         this.exerciseService = exerciseService;
@@ -29,6 +32,7 @@ public class ExerciseController {
 
     @DeleteMapping("{id}")
     public  ResponseEntity<String> deleteExercise(@PathVariable UUID id) {
+        logger.info("Received request to delete exercise: " + id);
         return exerciseService.deleteExercise(id);
     }
 

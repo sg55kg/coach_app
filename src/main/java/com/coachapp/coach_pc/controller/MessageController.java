@@ -21,8 +21,6 @@ public class MessageController {
 
     @PostMapping("/")
     public ResponseEntity<MessageViewModel> createMessage(@RequestBody MessageRequest message) {
-        System.out.println("Made it");
-        //return new ResponseEntity<>(null, HttpStatus.CREATED);
         return messageService.createMessage(message);
     }
 

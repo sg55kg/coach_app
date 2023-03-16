@@ -1,6 +1,5 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.repository.ComplexExerciseRepo;
@@ -8,6 +7,8 @@ import com.coachapp.coach_pc.repository.ExerciseRepo;
 import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.view.ExerciseViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class ExerciseService {
 
     private ExerciseRepo exerciseRepo;
     private ComplexExerciseRepo complexExerciseRepo;
+    private Logger logger = LoggerFactory.getLogger(ExerciseService.class);
 
     public ExerciseService(ExerciseRepo exerciseRepo, ComplexExerciseRepo complexExerciseRepo) {
         this.exerciseRepo = exerciseRepo;
@@ -48,7 +50,7 @@ public class ExerciseService {
             exerciseRepo.deleteById(id);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            System.out.println(e.getStackTrace());
+            logger.trace(e.getStackTrace().toString());
             return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
         }
     }
