@@ -23,9 +23,11 @@ public class ResponseHeadersFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
+        System.out.println(((HttpServletRequest) req).getHeader("Origin"));
         if (request.getHeader("Origin") != null && (request.getHeader("Origin").equals("https://localhost:5173") ||
                 request.getHeader("Origin").equals("https://coachablefitness.com") ||
-                request.getHeader("Origin").equals("https://www.coachablefitness.com"))
+                request.getHeader("Origin").equals("https://www.coachablefitness.com") ||
+                request.getHeader("Origin").equals("http://localhost:4000"))
         ) {
             response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         }

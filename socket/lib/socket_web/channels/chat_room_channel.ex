@@ -51,8 +51,14 @@ defmodule SocketWeb.ChatRoomChannel do
 
   def handle_in("new:msg", msg, socket) do
     new_msg = Gateway.post_message(msg, socket.assigns.access_token)
-    broadcast! socket, "new:msg", new_msg
-    {:reply, {:ok, %{msg: msg["contents"]}}, assign(socket, :user, msg["user"])}
+    case new_msg do
+      {:ok, msg} ->
+        broadcast! socket, "new:msg", msg
+        {:reply, {:ok, %{msg: msg["contents"]}}, assign(socket, :user, msg["user"])}
+      {:error, msg} ->
+        {:reply, :error, socket}
+    end
+
 
   end
 
