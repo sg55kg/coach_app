@@ -55,18 +55,18 @@
             <hr class="w-full h-1 my-2 text-gray-400">
             <div class="mt-12 w-full flex flex-col">
                 <img src={$authUser.picture} alt="profile" class="rounded-full h-14 mb-4 self-center">
-                <div class="flex flex-col items-start w-full pl-4">
+                <div class="flex flex-col items-center lg:items-start w-full lg:pl-4">
                     <a class="hover:text-yellow-lt" on:click={() => { showNav = false; logout() }}>
-                        <button class="h-8 flex items-center text-lg">
-                            <span class="h-4 mr-4">
+                        <button class="h-8 w-full flex items-center text-lg font-medium">
+                            <span class="h-4 w-8 lg:mr-4">
                                 <FaDoorOpen />
                             </span>
                             Sign Out
                         </button>
                     </a>
                     <a class="hover:text-yellow-lt" href="/home/user" on:click={() => showNav = false}>
-                        <button class="h-8 flex items-center text-lg">
-                            <span class="h-4 mr-4">
+                        <button class="h-8 flex items-center text-lg font-medium">
+                            <span class="h-4 w-8 lg:mr-4">
                                 <FaWrench />
                             </span>
                             Settings
