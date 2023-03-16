@@ -54,7 +54,7 @@
         {/if}
     </div>
     <div class="flex items-center">
-        <div class="h-6 mx-2 hover:cursor-pointer hover:text-yellow-lt">
+        <div class="h-6 w-8 lg:mx-2 hover:cursor-pointer hover:text-yellow-lt">
             <a href="/home/chat">
                 <FaInbox />
             </a>
