@@ -13,8 +13,9 @@ import {ChatService} from "$lib/service/ChatService";
 import MdClose from 'svelte-icons/md/MdClose.svelte'
 import {chatError, chatTimeout, notifications} from "$lib/stores/chatStore.js";
 import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import type {PageServerData} from "../../../../.svelte-kit/types/src/routes/$types";
 
-
+export let data: PageServerData
 let selectedChatId: string = ''
 
 let chatRooms: ChatRoom[] = []
@@ -42,7 +43,7 @@ const connect = async () => {
     socket.onOpen(() => console.log('connected'))
     socket.connect({})
     for (const member of $userDB?.members) {
-        const chan = socket.channel(`room:${member.chatId}`)
+        const chan = socket.channel(`room:${member.chatId}`, data.token)
         chan.join()
             .receive('error', () => $chatError = 'Could not join this chat')
             .receive('ok', (res) => console.log('Access granted.' + JSON.stringify(res)))
