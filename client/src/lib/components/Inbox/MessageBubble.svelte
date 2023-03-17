@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Message} from "$lib/classes/chat";
-    import {userDB} from "$lib/stores/authStore.js";
+    import {isMobile, userDB} from "$lib/stores/authStore.js";
 
     export let message: Message
     export let messages: Message[]
@@ -11,9 +11,17 @@
     $: isFirstInGroup = index === 0 || messages[index-1].sender.id !== message.sender.id
     $: showDate = index === 0 || message.sentAt.diff(messages[index-1]?.sentAt, 'minutes') > 20
 
+    let showContext: boolean = false
+    // let showMobileContext: boolean = false
+
     const handleContextMenu = (e: PointerEvent) => {
         e.preventDefault()
     }
+
+    // const handleMobileContextMenu = (e: PointerEvent) => {
+    //     e.preventDefault()
+    //     showMobileContext = true
+    // }
 
 </script>
 
@@ -25,7 +33,7 @@
 {/if}
 <div class="flex {isSender ? 'flex-row-reverse' : 'flex-row'}">
     <div class="flex items-center {isSender ? 'flex-row' : 'flex-row-reverse'}">
-        <p on:contextmenu={(e) => handleContextMenu(e)}
+        <p  on:contextmenu={(e) => handleContextMenu(e)}
            class="rounded-xl p-3 my-2 {message.sender.userId === $userDB.id ? 'bg-gradient-to-t to-purple-500 from-purple-600' : 'bg-gray-200'} max-w-[250px] lg:max-w-[685px]"
         >
             {message.contents}
@@ -38,4 +46,10 @@
     </div>
 </div>
 
-<style></style>
+
+<style>
+    p {
+        -webkit-user-select: none !important;
+        -webkit-touch-callout: none !important;
+    }
+</style>

@@ -4,7 +4,7 @@
 import dayjs from "dayjs";
 import AuthHeader from "$lib/components/AuthHeader.svelte";
 import ChatRoomComp from "$lib/components/Inbox/ChatRoomComp.svelte";
-import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
 import {Channel, Socket} from 'phoenix'
 import {Team} from "$lib/classes/team";
 import type {ChatRoom, MessageDTO} from "$lib/classes/chat";
@@ -94,6 +94,10 @@ $: $chatTimeout ? setTimeout(() => $chatTimeout = '', 3000) : null
 onMount(() => {
     connect()
 })
+
+    onDestroy(() => {
+        channels.forEach(c => c.channel.leave())
+    })
 
 </script>
 
