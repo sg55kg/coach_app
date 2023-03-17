@@ -7,15 +7,18 @@ defmodule SocketWeb.ChatRoomChannel do
   def join("room:" <> _chat_id, payload, socket) do
     Logger.info "Received request to join chatroom"
     # moved get token to authorized function?
+    IO.inspect payload
     if authorized? payload do
-      case Gateway.get_token do
-        {:ok, token} ->
-          socket = assign(socket, :access_token, token)
-          {:ok, socket}
-        {:error, err} ->
-          Logger.info "Failed to get token"
-          {:error, %{reason: "unauthorized"}}
-      end
+      socket = assign(socket, :access_token, payload)
+      {:ok, socket}
+#      case Gateway.get_token do
+#        {:ok, token} ->
+#          socket = assign(socket, :access_token, token)
+#          {:ok, socket}
+#        {:error, err} ->
+#          Logger.info "Failed to get token"
+#          {:error, %{reason: "unauthorized"}}
+#      end
     else
       {:error, %{reason: "unauthorized"}}
     end
