@@ -8,6 +8,7 @@ import com.coachapp.coach_pc.view.DisplayTeam;
 import com.coachapp.coach_pc.view.program.ProgramViewModel;
 import com.coachapp.coach_pc.view.program.ProgramWithDays;
 import com.coachapp.coach_pc.view.program.ProgramWithIds;
+import com.coachapp.coach_pc.view.team.TeamViewModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,4 +25,6 @@ public interface AthleteViewModel {
     List<ProgramWithIds> getPrograms();
     @Limit(limit = "10", order = "lastUpdated DESC")
     List<AthleteRecord> getRecords();
+    @Mapping("team")
+    TeamViewModel getTeam();
 }
