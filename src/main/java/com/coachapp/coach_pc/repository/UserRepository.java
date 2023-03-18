@@ -34,8 +34,12 @@ public class UserRepository {
                 .where("email").eq(email);
 
 
+        try {
+            return Optional.ofNullable(cb1.getSingleResult());
+        } catch (Exception e){
+            return Optional.ofNullable(null);
+        }
 
-        return Optional.ofNullable(cb1.getSingleResult());
 //        return Optional.ofNullable(evm.applySetting(EntityViewSetting.create(UserWithMappings.class), cb)
 //                .from(UserData.class, "user")
 //                .where("user.email").eq(email)
@@ -47,12 +51,12 @@ public class UserRepository {
         return Optional.ofNullable(em.find(UserData.class, id));
     }
 
+    @Transactional
     public UserWithMappings addUser(UserData newUser) {
         CriteriaBuilder<UserData> cb = cbf.create(em, UserData.class);
         em.persist(newUser);
         CriteriaBuilder<UserWithMappings> cb1 = evm.applySetting(EntityViewSetting.create(UserWithMappings.class), cb)
-                .from(UserData.class, "user")
-                .where("user.email").eq(newUser.getEmail());
+                .where("email").eq(newUser.getEmail());
 
         UserWithMappings user = cb1.getSingleResult();
 

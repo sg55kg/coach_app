@@ -30,11 +30,11 @@ $: console.log($userDB)
         if ($userDB.athleteData.team === null) {
             updatedAthlete.records = recordsDTO
             updatedAthlete.team = team as Team
-            updatedAthlete.coach = { id: team.coachId } as CoachData
+            updatedAthlete.coachId = team.coachId
         } else {
             updatedAthlete.records = recordsDTO
             updatedAthlete.team = null
-            updatedAthlete.coach = null
+            updatedAthlete.coachId = null
         }
         // let updatedAthlete = $userDB.athleteData.team === null ?
         //     { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :

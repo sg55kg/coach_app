@@ -304,7 +304,7 @@
 <div class="flex w-screen justify-center">
     <WeekNav bind:selectedDayIndex={selectedIndex} bind:dayId={selectedDayId} />
 
-    <div class="flex flex-col self-start w-9/12 h-screen overflow-scroll">
+    <div class="flex flex-col self-start w-9/12 h-screen overflow-scroll z-10">
         <div class="flex flex-col sticky lg:sticky bg-gray-200 top-0 mb-10 p-2 z-50 shadow-md shadow-black lg:mb-4">
             <div class="flex flex-col lg:flex-row justify-start">
                 <div class="flex items-center p-1 lg:p-2">
