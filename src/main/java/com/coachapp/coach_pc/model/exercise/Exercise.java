@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +34,7 @@ public class Exercise {
     private Integer sets;
     private Integer repsPerSet;
     private Integer weight;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="day_id", nullable = true)
     @JsonIgnore
     private Day day;
@@ -42,10 +44,11 @@ public class Exercise {
     @Column(name = "reps_completed")
     private Integer totalRepsCompleted = 0;
     private Integer setsCompleted = 0;
-    @ManyToOne
-    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
-    private AthleteData athleteCommentId;
+//    @ManyToOne
+//    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
+//    private AthleteData athleteCommentId;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise", orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     private List<AthleteExerciseComment> comments = new ArrayList<>();
     private boolean isComplete;
     @Column(name = "list_order")
@@ -53,6 +56,7 @@ public class Exercise {
     @Transient
     private final ExerciseType type = ExerciseType.EXERCISE;
     @OneToMany(mappedBy = "topSet", cascade = CascadeType.MERGE)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Exercise> dropSets = new ArrayList<>();
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "top_set")
@@ -146,13 +150,13 @@ public class Exercise {
         this.totalRepsCompleted = totalRepsCompleted;
     }
 
-    public AthleteData getAthleteCommentId() {
-        return athleteCommentId;
-    }
-
-    public void setAthleteCommentId(AthleteData athleteCommentId) {
-        this.athleteCommentId = athleteCommentId;
-    }
+//    public AthleteData getAthleteCommentId() {
+//        return athleteCommentId;
+//    }
+//
+//    public void setAthleteCommentId(AthleteData athleteCommentId) {
+//        this.athleteCommentId = athleteCommentId;
+//    }
 
     public List<AthleteExerciseComment> getComments() {
         return comments;
@@ -239,15 +243,15 @@ public class Exercise {
         this.isMaxReps = isMaxReps;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Exercise exercise = (Exercise) o;
-//        return id.equals(exercise.id);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id);
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass() || id == null) return false;
+        Exercise exercise = (Exercise) o;
+        return id.equals(exercise.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

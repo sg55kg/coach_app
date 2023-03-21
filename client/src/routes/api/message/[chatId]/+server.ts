@@ -21,3 +21,20 @@ export const GET: RequestHandler = async (event) => {
         throw error(404, 'Messages not found')
     }
 }
+
+export const POST: RequestHandler = async (event) => {
+    const token = import.meta.env.VITE_CF_STREAM_TOKEN
+    const file = event.request.body
+
+    try {
+        const res = await fetch(import.meta.env.VITE_CF_STREAM_URL, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        return new Response(null)
+    } catch (e) {
+        throw error(405, 'Could not save video')
+    }
+}

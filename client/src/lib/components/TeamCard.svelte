@@ -20,6 +20,7 @@
             if (!athlete.currentProgram) {
                 return numNoneUpdateSeverity = numNoneUpdateSeverity + 1
             }
+            if (!athlete.currentProgram.days) return
             const today = dayjs()
             const lastEntered = athlete.currentProgram.days.find(d => d.exercises.length < 1 && !d.isRestDay)
             if (!lastEntered) {

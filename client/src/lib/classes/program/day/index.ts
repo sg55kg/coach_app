@@ -1,4 +1,4 @@
-import type {Exercise} from "$lib/classes/program/exercise";
+import {Exercise, type ExerciseDTO} from "$lib/classes/program/exercise";
 import type {Dayjs} from "dayjs";
 import dayjs from "dayjs";
 
@@ -13,7 +13,7 @@ export interface IDay {
 export interface DayDTO {
     id: string,
     date: string,
-    exercises: Exercise[],
+    exercises: ExerciseDTO[],
     isRestDay: boolean,
     warmUp: WarmUp | null
 }
@@ -24,7 +24,7 @@ export class Day implements IDay {
 
         day.id = dayDTO.id
         day.date = dayjs(dayDTO.date)
-        day.exercises = dayDTO.exercises
+        day.exercises = dayDTO.exercises.map(e => Exercise.createFrom(e))
         day.isRestDay = dayDTO.isRestDay
         day.warmUp = dayDTO.warmUp
 

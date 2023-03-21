@@ -14,7 +14,7 @@
     let activeTab: 'athletes' | 'programs' | 'settings' = 'athletes'
     $: athleteList = $team ? $team.athletes : []
     $: programList = []
-$: console.log($team)
+
     const handleFilterPrograms = (str: string) => {
         if (!$userDB?.coachData?.programs) return
         programList = $userDB.coachData.programs.filter(p => p.name.includes(str))

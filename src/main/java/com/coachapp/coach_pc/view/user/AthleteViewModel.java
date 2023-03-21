@@ -20,11 +20,10 @@ public interface AthleteViewModel {
     UUID getId();
     @Mapping("name")
     String getName();
-    Program getCurrentProgram();
-    @Mapping("programsList")
-    List<ProgramWithIds> getPrograms();
-    @Limit(limit = "10", order = "lastUpdated DESC")
-    List<AthleteRecord> getRecords();
+    @Mapping(value = "currentProgram")
+    ProgramWithDays getCurrentProgram();
+//    @Limit(limit = "10", order = "lastUpdated DESC")
+//    List<AthleteRecord> getRecords();
     @Mapping("team")
     TeamViewModel getTeam();
 }

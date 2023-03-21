@@ -2,11 +2,11 @@ package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class AthleteExerciseComment {
     private Date createdAt;
     @UpdateTimestamp
     private Date updatedAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id")
     @JsonIgnore
     private Exercise exercise;

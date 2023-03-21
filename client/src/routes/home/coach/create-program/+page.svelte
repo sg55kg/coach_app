@@ -25,6 +25,7 @@
             })
             if (savedProgram.athleteId === $userDB?.athleteData?.id) {
                 userDB.update(prev => {
+                    if (!prev?.athleteData?.programs) return prev
                     prev?.athleteData?.programs.push(savedProgram)
                     if (programData.isCurrent) {
                         prev!.athleteData!.currentProgram = savedProgram
