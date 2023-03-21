@@ -7,6 +7,8 @@ import com.blazebit.persistence.view.EntityViewSetting;
 import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.view.user.UserViewModel;
 import com.coachapp.coach_pc.view.user.UserWithMappings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,7 @@ public class UserRepository {
     private final EntityManager em;
     private final CriteriaBuilderFactory cbf;
     private final EntityViewManager evm;
+    private Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     public UserRepository(EntityManager em, CriteriaBuilderFactory cbf, EntityViewManager evm) {
         this.em = em;
@@ -37,6 +40,8 @@ public class UserRepository {
         try {
             return Optional.ofNullable(cb1.getSingleResult());
         } catch (Exception e){
+            logger.info(e.getMessage());
+            e.printStackTrace();
             return Optional.ofNullable(null);
         }
 
@@ -65,7 +70,6 @@ public class UserRepository {
 
     @Transactional
     public UserWithMappings updateUser(UserData updatedUser) {
-        CriteriaBuilder<UserData> cb = cbf.create(em, UserData.class);
         em.merge(updatedUser);
         UserWithMappings user = evm.find(em, UserWithMappings.class, updatedUser.getId());
 

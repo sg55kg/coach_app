@@ -33,7 +33,6 @@ defmodule SocketWeb.TeamSocket do
   # performing token verification on connect.
   @impl true
   def connect(params, socket, _connect_info) do
-    IO.inspect socket
     {:ok, socket}
   end
 

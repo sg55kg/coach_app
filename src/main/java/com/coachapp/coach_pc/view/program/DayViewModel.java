@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.view.program;
 
 import com.blazebit.persistence.view.EntityView;
+import com.blazebit.persistence.view.FetchStrategy;
 import com.blazebit.persistence.view.IdMapping;
 import com.blazebit.persistence.view.Mapping;
 import com.coachapp.coach_pc.model.Day;
@@ -20,6 +21,6 @@ public interface DayViewModel {
     OffsetDateTime getDate();
     @Mapping("isRestDay")
     boolean getIsRestDay();
-   // WarmUpViewModel getWarmUp();
-    List<ExerciseViewModel> getExercises();
+    @Mapping(value = "exercises", fetch = FetchStrategy.SUBSELECT)
+    List<Exercise> getExercises();
 }

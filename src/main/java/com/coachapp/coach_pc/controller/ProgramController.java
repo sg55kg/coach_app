@@ -1,12 +1,10 @@
 package com.coachapp.coach_pc.controller;
 
-import com.coachapp.coach_pc.manager.ProgramManager;
-import com.coachapp.coach_pc.request.ExerciseRequest;
+
 import com.coachapp.coach_pc.request.ProgramRequest;
-import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
-import com.coachapp.coach_pc.view.DisplayProgram;
-import com.coachapp.coach_pc.view.ProgramViewModel;
+import com.coachapp.coach_pc.view.program.ProgramWithDays;
+import com.coachapp.coach_pc.view.program.ProgramWithIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +22,21 @@ import java.util.UUID;
 public class ProgramController {
 
     private ProgramService _programService;
-    private ProgramManager programManager;
     private Logger logger = LoggerFactory.getLogger(ProgramController.class);
 
     @Autowired
-    public ProgramController(ProgramService programService, ProgramManager programManager) {
+    public ProgramController(ProgramService programService) {
         this._programService = programService;
-        this.programManager = programManager;
-    }
-
-    @GetMapping
-    public List<DisplayProgram> getPrograms() {
-        return _programService.getPrograms();
     }
 
     @PostMapping("/coach/{coachId}")
-    public ResponseEntity<Program> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
+    public ResponseEntity<ProgramWithDays> addProgram(@RequestBody ProgramRequest program, @PathVariable UUID coachId) {
         logger.info("Received request to add new program");
-        return programManager.createProgram(program);
+        return _programService.addProgram(program);
     }
 
     @GetMapping("/{id}")
-    public ProgramViewModel getProgram(@PathVariable UUID id) {
+    public ProgramWithDays getProgram(@PathVariable UUID id) {
         logger.info("Received Request to get program " + id);
         return _programService.getProgram(id);
     }
@@ -61,24 +52,24 @@ public class ProgramController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProgramViewModel> updateProgram(@PathVariable UUID id, @RequestBody UpdateProgramRequest program) {
+    public ResponseEntity<ProgramWithDays> updateProgram(@PathVariable UUID id, @RequestBody UpdateProgramRequest program) {
         logger.info("Received request to update program " + id);
         return _programService.updateProgram(program, id);
     }
 
     @GetMapping("/coach/{coachId}")
-    public ResponseEntity<List<DisplayProgram>> getCoachPrograms(@PathVariable UUID coachId) {
+    public ResponseEntity<List<ProgramWithIds>> getCoachPrograms(@PathVariable UUID coachId) {
         return _programService.getProgramsByCoachId(coachId);
     }
 
     @GetMapping("/team/{id}")
-    public ResponseEntity<List<DisplayProgram>> getTeamPrograms(@PathVariable UUID id) {
+    public ResponseEntity<List<ProgramWithIds>> getTeamPrograms(@PathVariable UUID id) {
         logger.info("Received request to get programs by team id: " + id);
         return _programService.getProgramsByTeamId(id);
     }
 
-    @PutMapping("/{id}/day")
-    public ResponseEntity<ProgramViewModel> updateProgramDay(@PathVariable UUID id, @RequestBody ExerciseRequest request) {
-        return _programService.updateProgramDay(id, request);
-    }
+//    @PutMapping("/{id}/day")
+//    public ResponseEntity<ProgramViewModel> updateProgramDay(@PathVariable UUID id, @RequestBody ExerciseRequest request) {
+//        return _programService.updateProgramDay(id, request);
+//    }
 }

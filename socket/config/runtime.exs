@@ -55,6 +55,8 @@ if config_env() == :prod do
          audience: System.get_env("AUTH0_AUDIENCE"),
          grant_type: System.get_env("AUTH0_GRANT_TYPE"),
          token_url: System.get_env("AUTH0_TOKEN_URL")
+#         stream_token: System.get_env("CLOUDFLARE_TOKEN"),
+#         stream_url: System.get_env("CLOUDFLARE_URL")
 
   # ## Configuring the mailer
   #

@@ -17,6 +17,7 @@
     let initialIndex: number = 0
 
     if (programDto) {
+        console.log(programDto)
         $program = Program.build(programDto)
         program.update(prev => {
             prev.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))

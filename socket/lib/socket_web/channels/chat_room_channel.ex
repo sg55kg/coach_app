@@ -7,7 +7,6 @@ defmodule SocketWeb.ChatRoomChannel do
   def join("room:" <> _chat_id, payload, socket) do
     Logger.info "Received request to join chatroom"
     # moved get token to authorized function?
-    IO.inspect payload
     if authorized? payload do
       socket = assign(socket, :access_token, payload)
       {:ok, socket}
@@ -61,8 +60,22 @@ defmodule SocketWeb.ChatRoomChannel do
       {:error, msg} ->
         {:reply, :error, socket}
     end
-
-
   end
+
+#  def handle_in("upload:media", payload, socket) do
+#    Logger.info "Received request to upload media"
+##    IO.inspect payload["binary"]
+#    encoded = Base.decode64!(payload["binary"])
+#    res = Gateway.upload_media(encoded, payload["filename"])
+#    case res do
+#      {:ok, body} ->
+#        broadcast! socket, "upload:media", res
+#        {:reply, :ok, socket}
+#      {:error, msg} ->
+#        {:reply, :error, socket}
+#    end
+#
+##    {:reply, :ok, socket}
+#  end
 
 end
