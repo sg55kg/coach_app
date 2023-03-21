@@ -9,6 +9,7 @@
     import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
     import {ChatService} from "$lib/service/ChatService";
     import FaChevronLeft from 'svelte-icons/fa/FaChevronLeft.svelte'
+    import FaPhotoVideo from 'svelte-icons/fa/FaPhotoVideo.svelte'
 
     export let channel: Channel
     export let messages: Message[] = []
@@ -21,6 +22,7 @@
     let messagesContainer: HTMLDivElement
     let showContextMenu: boolean = false
     let fetchingNextPage: boolean = false
+    let fileUpload: HTMLInputElement
 
     let typingUsers: string[] = []
 
@@ -92,6 +94,23 @@
         fetchingNextPage = false
     }
 
+    const handleUpload = async (file: File) => {
+        console.log(file)
+        let reader = new FileReader()
+        reader.addEventListener('load', () => {
+            const payload = { binary: reader?.result?.split(',', 2)[1], filename: file.name }
+            channel.push('upload:media', payload)
+                .receive('error', () => $chatError = 'Error, could not upload video at this time')
+                .receive('ok', (res) => console.log(res))
+        })
+
+        reader.readAsDataURL(file)
+
+
+
+
+    }
+
     $: fetchingNextPage ? fetchPage() : null
 
     $: channel?.on('typing', res => {
@@ -148,7 +167,7 @@
 
    <div class="flex lg:justify-center w-full bg-gray-200 absolute bottom-0"> <!-- class="grid grid-cols-6 lg:grid-cols-12 w-full h-24 items-center content-center max-h-44 mt-1 bg-gray-200 w-full">-->
 
-        <div class="w-10/12 lg:w-11/12 lg:col-span-11 mr-2 lg:mr-4 flex justify-center items-center p-2">
+        <div class="w-10/12 lg:w-11/12 lg:col-span-11 mr-2 lg:mr-1 flex justify-center items-center p-2">
                 <textarea
                         bind:value={newMessageContent}
                         style="resize: none"
@@ -156,10 +175,14 @@
                         class="w-full p-3 h-12 max-h-44 bg-gray-400 rounded-xl focus:outline focus:outline-link focus:outline-2"
                 ></textarea>
         </div>
-        <div class="w-2/12 lg:w-1/12 flex justify-center items-center">
-            <button class="bg-purple-600 hover:bg-purple-700 font-semibold rounded-xl p-3 lg:px-5" on:click={addMessage}>
+        <div class="w-2/12 lg:w-1/12 flex justify-around items-center">
+<!--            <button class="text-gray-500 mx-1 h-8" on:click={() => fileUpload.click()}>-->
+<!--                <FaPhotoVideo />-->
+<!--            </button>-->
+            <button class="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 font-semibold rounded-xl p-3 lg:px-3" disabled={!newMessageContent} on:click={addMessage}>
                 Send
             </button>
+            <input type="file" hidden bind:this={fileUpload} on:change={(e) => handleUpload(e.target.files[0])}>
         </div>
     </div>
 </div>

@@ -2,10 +2,14 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.*;
 import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.coachapp.coach_pc.repository.ProgramRepository;
 import com.coachapp.coach_pc.request.ExerciseRequest;
+import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
 import com.coachapp.coach_pc.view.DisplayProgram;
 import com.coachapp.coach_pc.view.ProgramViewModel;
+import com.coachapp.coach_pc.view.program.ProgramWithDays;
+import com.coachapp.coach_pc.view.program.ProgramWithIds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +22,11 @@ import java.util.*;
 @Service
 public class ProgramService {
 
-    private ProgramRepo _programRepo;
+    private ProgramRepository programRepo;
 
     @Autowired
-    public ProgramService(ProgramRepo programRepo) {
-        this._programRepo = programRepo;
+    public ProgramService(ProgramRepository programRepo) {
+        this.programRepo = programRepo;
     }
 
 
@@ -33,38 +37,13 @@ public class ProgramService {
         }
     }
 
-    public List<DisplayProgram> getPrograms() {
-        List<Program> programs = _programRepo.findAll();
-        List<DisplayProgram> result = new ArrayList<>();
-
-
-        programs.forEach(program -> {
-            DisplayProgram displayProgram = new DisplayProgram(
-                    program.getId(),
-                    program.getCreatedAt(),
-                    program.getUpdatedAt(),
-                    program.getStartDate(),
-                    program.getEndDate(),
-                    program.getName());
-            if (program.getAthlete() != null) {
-                displayProgram.setAthleteId(program.getAthlete().getId());
-            }
-            OffsetDateTime d = getLastUpdatedDay(program);
-            displayProgram.setLastEnteredDay(d);
-            result.add(displayProgram);
-        });
-
-        return result;
-    }
-
-    public ProgramViewModel getProgram(UUID id) {
-        Optional<Program> op = _programRepo.findById(id);
+    public ProgramWithDays getProgram(UUID id) {
+        Optional<ProgramWithDays> op = programRepo.findById(id);
         if(op.isEmpty()) {
             return null;
         }
 
-        Program raw = op.get();
-        ProgramViewModel program = ProgramViewModel.convertProgram(raw);
+        ProgramWithDays program = op.get();
 
         return program;
     }
@@ -72,112 +51,58 @@ public class ProgramService {
 
 
     public void deleteProgram(UUID id) {
-        _programRepo.deleteById(id);
+        programRepo.deleteById(id);
     }
 
-    public Program addProgram(Program program) {
-        program = _programRepo.save(program);
-        return program;
+    public ResponseEntity<ProgramWithDays> addProgram(ProgramRequest program) {
+        ProgramWithDays result = programRepo.save(program);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<ProgramViewModel> updateProgram(UpdateProgramRequest request, UUID id) {
-        Optional<Program> dbProgram = _programRepo.findById(id);
-        if(dbProgram.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ProgramWithDays> updateProgram(UpdateProgramRequest request, UUID id) {
+        ProgramWithDays result = programRepo.update(request, id);
 
-        Program program = UpdateProgramRequest.convertRequest(request, dbProgram.get());
-        program = _programRepo.save(program);
-
-        ProgramViewModel vm = ProgramViewModel.convertProgram(program);
-        return new ResponseEntity<>(vm, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<DisplayProgram>> getProgramsByCoachId(UUID coachId) {
-        List<Program> dbPrograms = _programRepo.getProgramsByCoachId(coachId);
-        List<DisplayProgram> programs = new ArrayList<>();
+    public ResponseEntity<List<ProgramWithIds>> getProgramsByCoachId(UUID coachId) {
+        List<ProgramWithIds> dbPrograms = programRepo.getProgramsByCoachId(coachId);
 
-        dbPrograms.forEach(program -> {
-            DisplayProgram displayProgram = new DisplayProgram(
-                    program.getId(),
-                    program.getCreatedAt(),
-                    program.getUpdatedAt(),
-                    program.getStartDate(),
-                    program.getEndDate(),
-                    program.getName());
-            if (program.getAthlete() != null) {
-                displayProgram.setAthleteId(program.getAthlete().getId());
-            }
-            OffsetDateTime d = getLastUpdatedDay(program);
-            displayProgram.setLastEnteredDay(d);
-            programs.add(displayProgram);
-        });
-
-        return new ResponseEntity<>(programs, HttpStatus.OK);
+        return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
     }
 
-    private OffsetDateTime getLastUpdatedDay(Program program) {
-        OffsetDateTime result = OffsetDateTime.now();
-        for (int i = 0; i <= program.getDays().size() - 1; i++) {
-            Day day = program.getDays().get(i);
+    public ResponseEntity<List<ProgramWithIds>> getProgramsByTeamId(UUID teamId) {
+        List<ProgramWithIds> dbPrograms = programRepo.getProgramsByTeamId(teamId);
 
-            if (!day.getIsRestDay() && day.getExercises().size() < 1) {
-                result = day.getDate();
-                break;
-            }
-        }
-        return result;
+        return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<DisplayProgram>> getProgramsByTeamId(UUID teamId) {
-        List<Program> dbPrograms = _programRepo.getProgramsByTeamId(teamId);
-        List<DisplayProgram> programs = new ArrayList<>();
-
-        dbPrograms.forEach(program -> {
-            DisplayProgram displayProgram = new DisplayProgram(
-                    program.getId(),
-                    program.getCreatedAt(),
-                    program.getUpdatedAt(),
-                    program.getStartDate(),
-                    program.getEndDate(),
-                    program.getName());
-            if (program.getAthlete() != null) {
-                displayProgram.setAthleteId(program.getAthlete().getId());
-            }
-            OffsetDateTime d = getLastUpdatedDay(program);
-            displayProgram.setLastEnteredDay(d);
-            programs.add(displayProgram);
-        });
-
-        return new ResponseEntity<>(programs, HttpStatus.OK);
-    }
-
-    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
-        Optional<Program> optional = _programRepo.findById(id);
-
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        Exercise exercise = ExerciseRequest.convertRequest(new Exercise(), request);
-        Program program = optional.get();
-
-        boolean dayFound = false;
-//        for (Day day : program.getDays()) {
-//            if (dayFound) break;
+//    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
+//        Optional<Program> optional = _programRepo.findById(id);
 //
-//            for (int i = 0; i < day.getExercises().size(); i++) {
-//                if (day.getExercises().get(i).getId().equals(exercise.getId())) {
-//                    exercise.setDay(day.getExercises().get(i).getDay());
-//                    day.getExercises().set(i, exercise);
-//                    dayFound = true;
-//                    break;
-//                }
-//            }
+//        if (optional.isEmpty()) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 //        }
-
-        program = _programRepo.save(program);
-        ProgramViewModel viewModel = ProgramViewModel.convertProgram(program);
-        return new ResponseEntity<>(viewModel, HttpStatus.OK);
-    }
+//
+//        Exercise exercise = ExerciseRequest.convertRequest(new Exercise(), request);
+//        Program program = optional.get();
+//
+//        boolean dayFound = false;
+////        for (Day day : program.getDays()) {
+////            if (dayFound) break;
+////
+////            for (int i = 0; i < day.getExercises().size(); i++) {
+////                if (day.getExercises().get(i).getId().equals(exercise.getId())) {
+////                    exercise.setDay(day.getExercises().get(i).getDay());
+////                    day.getExercises().set(i, exercise);
+////                    dayFound = true;
+////                    break;
+////                }
+////            }
+////        }
+//
+//        program = _programRepo.save(program);
+//        ProgramViewModel viewModel = ProgramViewModel.convertProgram(program);
+//        return new ResponseEntity<>(viewModel, HttpStatus.OK);
+//    }
 }

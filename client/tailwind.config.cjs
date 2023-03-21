@@ -8,6 +8,7 @@ module.exports = {
       'gray-200': '#2a2e3b',
       'gray-300': '#12141c',
       'gray-400': '#505360',
+      'gray-500': '#d1d5db',
       'textgray': '#cfc9bc',
       'textblue': '#adbdd2',
       'link': '#65c9e7',

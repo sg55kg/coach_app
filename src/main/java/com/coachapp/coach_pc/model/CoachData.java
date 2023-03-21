@@ -69,4 +69,8 @@ public class CoachData {
     public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
+
+    public void addProgram(Program program) {
+        this.programsList.add(program);
+    }
 }

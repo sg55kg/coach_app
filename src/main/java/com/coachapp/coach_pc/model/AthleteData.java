@@ -1,6 +1,8 @@
 package com.coachapp.coach_pc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -23,6 +25,7 @@ public class AthleteData {
     private Program currentProgram;
     @OneToMany(mappedBy = "athlete")
     @JsonIgnore
+    @Fetch(FetchMode.SUBSELECT)
     private List<Program> programsList;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
@@ -32,7 +35,8 @@ public class AthleteData {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<AthleteRecord> records;
 
     public AthleteData() {}
@@ -103,6 +107,10 @@ public class AthleteData {
 
     public void addRecord(AthleteRecord record) {
         this.records.add(record);
+    }
+
+    public void addProgram(Program program) {
+        this.programsList.add(program);
     }
 
     @Override
