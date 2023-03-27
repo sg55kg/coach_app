@@ -3,12 +3,33 @@
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte'
     import {Exercise} from "$lib/classes/program/exercise";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import {getContext, onDestroy} from "svelte";
 
     export let expandedExerciseId: string = ' '
     export let exercise: Exercise
+
+    const { getProgram, getSelectedDay } = getContext('program')
+    const program = getProgram()
+    const selectedDay = getSelectedDay()
+
+    const setComplexType = () => {
+        exercise.type = ExerciseType.COMPLEX
+        exercise.nameArr = [exercise.name, '']
+        exercise.repArr = [exercise.repsPerSet, 0]
+        exercise.name = ''
+        exercise.repsPerSet = 0
+    }
+
+    onDestroy(() => {
+        // sync the program with any potential changes that might have been made to this day
+        const day = $program.days.find(d => d.id === $selectedDay.id)
+        let ex = day.exercises.find(e => e.id === expandedExerciseId)
+        ex = exercise
+        $program = $program
+    })
 </script>
 
-<div class="absolute right-1 left-1 bg-gray-200 flex flex-col items-center">
+<div class="absolute right-1 left-1 bg-gray-200 flex flex-col items-center lg:p-8">
     {#if exercise.type === ExerciseType.EXERCISE}
         <div class="grid grid-cols-6 p-2 w-full gap-2">
             <input type="text"
@@ -17,21 +38,21 @@
                    bind:value={exercise.name}
             >
             <button class="col-span-1 flex items-center justify-center">
-            <span class="w-5 flex justify-center">
+            <span class="w-5 flex justify-center" on:click={setComplexType}>
                 <FaPlus />
             </span>
             </button>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Weight (kg)</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Sets</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Reps</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
             </div>
             <div class="col-span-2"></div>
             <div class="col-span-2 flex flex-col items-end">
@@ -65,15 +86,18 @@
             {/each}
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Weight (kg)</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                <input type="number" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Sets</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                <input type="number" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Reps</label>
-                <input type="text" placeholder="" class="bg-gray-300 p-1 w-full">
+                {#each exercise.repArr as repGroup}
+                    <input type="number" placeholder="" bind:value={repGroup} class="bg-gray-300 p-1 w-full mb-2">
+                {/each}
+
             </div>
             <div class="col-span-2"></div>
             <div class="col-span-2 flex flex-col items-end">

@@ -3,15 +3,17 @@
     import {isMobile} from "$lib/stores/authStore.js";
     import {Day} from "$lib/classes/program/day";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
-    import dayjs from "dayjs";
     import {program} from "$lib/stores/writeProgramStore";
+    import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte'
+    import MdContentPaste from 'svelte-icons/md/MdContentPaste.svelte'
 
     export let day: Day = new Day()
-    export let index: number
+    export let idx: number = 0
+    let showContext: boolean = false
+    export let contextCoordinates: { x: number, y: number }
 
     let isPressing: boolean = false
-    let showContext: boolean = false
-    let points: { x: number, y: number } = { x: -1, y: -1 }
+    let dayStatus: 'completed' | 'changed' | 'skipped' | 'unfinished' = 'unfinished'
 
     const {
         setSelectedDay,
@@ -31,40 +33,102 @@
         }, 500) : null
 
     const handleBrowserContext = (e: PointerEvent) => {
-        console.log('fired')
-        points = { x: e.clientX, y: e.clientY }
+        if (showContext) {
+            showContext = false
+            contextCoordinates = { x: -1, y: -1 }
+            return
+        }
+        contextCoordinates = { x: e.clientX, y: e.clientY - 75 }
         showContext = true
     }
-
     const copyDay = () => {
         const dayCopy = JSON.parse(JSON.stringify(day)) as Day
         dayCopy.id = ''
+        dayCopy.exercises.forEach((e, i) => e.id = i + '')
         $dayClipboard = [dayCopy]
+        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
         showContext = false
     }
 
     const pasteDay = () => {
-        if ($dayClipboard.length < 1) return
-        $program.days[index] = $dayClipboard[0]
-        day = $dayClipboard[0]
+        if ($dayClipboard.length < 1) {
+            document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+            showContext = false
+
+            return
+        }
+        program.update((prev) => {
+            let id = prev.days[idx].id
+            prev.days[idx] = {...$dayClipboard[0], id}
+            return prev
+        })
+        $program = $program
+        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
         showContext = false
     }
 
     onMount(() => {
-        document.getElementById(`day-card-${index}`).addEventListener('touchstart', (e) => {
+        document.getElementById(`day-card-${idx}`).addEventListener('touchstart', (e) => {
+            if (showContext) {
+                showContext = false
+                document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+                return
+            }
             showContext = false
             isPressing = true
-            document.getElementById(`day-card-${index}`)?.classList.add('selected-day')
+            document.getElementById(`day-card-${idx}`)?.classList.add('selected-day')
         })
-        document.getElementById(`day-card-${index}`).addEventListener('touchend', () => {
+        document.getElementById(`day-card-${idx}`).addEventListener('touchend', () => {
             isPressing = false
             if (!showContext) {
-                document.getElementById(`day-card-${index}`).classList.remove('selected-day')
-                setSelectedDay(day)
-                setSelectedDayIdx(index)
+                document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+                setSelectedDay($program.days[idx])
+                setSelectedDayIdx(idx)
                 console.log($selectedDay)
             }
         })
+
+        let allComplete: boolean = true
+        let unchanged: boolean = true
+        for (const exercise of day.exercises) {
+            switch (exercise.type) {
+                case ExerciseType.EXERCISE:
+                    if (exercise.isMax) {
+                        allComplete = allComplete && exercise.weight > 0
+                    } else if (exercise.isMaxReps) {
+                        allComplete = exercise.totalRepsCompleted > 0
+                    } else {
+                        allComplete = allComplete &&
+                            (exercise.weightCompleted > 0 || exercise.weightCompleted === exercise.weight) &&
+                            (exercise.totalRepsCompleted > 0 || exercise.totalRepsCompleted === (exercise.repsPerSet * exercise.sets))
+                        unchanged = unchanged &&
+                            (exercise.weightCompleted === exercise.weight) &&
+                            (exercise.totalRepsCompleted === (exercise.sets * exercise.repsPerSet))
+                    }
+                    break
+                case ExerciseType.COMPLEX:
+                    for (let i = 0; i < exercise.repArr.length; i++) {
+                        allComplete = allComplete &&
+                            (exercise.repArr[i] > 0 || exercise.repArr[i] === exercise.repCompletedArr[i])
+                        unchanged = unchanged && exercise.weight === exercise.weightCompleted &&
+                            exercise.repArr[i] === exercise.repCompletedArr[i]
+                    }
+                    break
+                case ExerciseType.DURATION:
+                    break
+                case ExerciseType.ACCESSORY:
+                    break
+                case ExerciseType.CARRY:
+                    break
+            }
+            if (unchanged && allComplete) {
+                dayStatus = 'completed'
+            } else if (!unchanged) {
+                dayStatus = 'changed'
+            }
+
+        }
+
     })
 
 </script>
@@ -72,6 +136,7 @@
 <svelte:window on:click={() => {
     if (!$isMobile && showContext) {
         showContext = false
+        contextCoordinates = { x: -1, y: -1 }
     }
 }} />
 
@@ -79,56 +144,52 @@
      on:contextmenu|preventDefault={handleBrowserContext}
      on:click={() => {
          if(!$isMobile) {
-             setSelectedDay(new Day())
-             setSelectedDayIdx(index)
+             setSelectedDay(day)
+             setSelectedDayIdx(idx)
          }
      }}
-     id="day-card-{index}"
-     class="bg-gray-200 relative border-l-2 border-green aspect-square hover:cursor-pointer hover:scale-105 overflow-y-auto"
+     id="day-card-{idx}"
+     class="bg-gray-200 border-l-2 border-green aspect-square hover:cursor-pointer hover:scale-105 overflow-y-auto"
 >
     <div class="w-full flex justify-between py-1 px-2">
-        <h3 class="font-semibold text-lg">{index+1}</h3>
+        <h3 class="font-semibold text-lg">{idx+1}</h3>
     </div>
     <div class="px-2 py-1">
         <ul class="text-sm">
-            {#each day.exercises as exercise}
-                {#if exercise.type === ExerciseType.EXERCISE}
-                    <h4>
-                        {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
-                    </h4>
-                {:else if exercise.type === ExerciseType.COMPLEX}
-                    <h4>
-                        {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-                    </h4>
-                {:else if exercise.type === ExerciseType.DURATION}
-                    <h4>Test</h4>
-                {:else}
-                    <h4>Test</h4>
-                {/if}
-            {/each}
+            {#if $program.days[idx]}
+                {#each $program.days[idx]?.exercises as exercise, idx (exercise?.id+idx)}
+                    {#if exercise.type === ExerciseType.EXERCISE}
+                        <h4>
+                            {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
+                        </h4>
+                    {:else if exercise.type === ExerciseType.COMPLEX}
+                        <h4>
+                            {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
+                        </h4>
+                    {:else if exercise.type === ExerciseType.DURATION}
+                        <h4>Test</h4>
+                    {:else}
+                        <h4>Test</h4>
+                    {/if}
+                {/each}
+            {/if}
+
         </ul>
+
     </div>
-    {#if showContext && !$isMobile}
-        <div class="bg-gray-200 p-2 flex flex-col" style="position: absolute; top: {points.y}px; left: ${points.x}px">
-            <button on:click={copyDay}>
-                Copy Day
-            </button>
-            <button on:click={pasteDay}>
-                Paste Day
-            </button>
-        </div>
-    {/if}
+
 </div>
 {#if showContext && $isMobile}
-    <div on:click={() => {
+    <div on:click={(e) => {
         if (!isPressing && showContext) {
+            e.preventDefault()
+            document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
             showContext = false
-            document.getElementById(`day-card-${index}`).classList.remove('selected-day')
         }
     }}
          class="top-0 bottom-0 left-0 right-0 absolute z-20 bg-gray-300 opacity-50">
     </div>
-    <div class="absolute bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-20">
+    <div class="absolute bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30">
         <button class="p-4 py-6 text-lg font-semibold" on:click={copyDay}>
             Copy Day
         </button>
@@ -140,6 +201,19 @@
         </button>
         <button class="p-4 py-6 text-lg font-semibold">
             Insert Day Right
+        </button>
+    </div>
+
+{/if}
+{#if showContext && !$isMobile}
+    <div class="p-2 flex flex-col z-40 bg-red shadow-lg w-44" on:click={() => console.log(idx)} style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px">
+        <button class="px-4 py-2 flex items-center justify-around my-px hover:bg-gray-200" on:click={copyDay}>
+            <span class="h-6 w-6 px-1 flex items-center"><FaRegCopy /></span>
+            Copy Day
+        </button>
+        <button class="px-4 py-2 flex items-center justify-around my-px hover:bg-gray-200" on:click={pasteDay}>
+            <span class="h-6 w-6 flex items-center"><MdContentPaste /></span>
+            Paste Day
         </button>
     </div>
 {/if}

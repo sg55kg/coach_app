@@ -2,12 +2,13 @@ import {Day} from "./day";
 import type {DayDTO} from "./day";
 import type {TeamDTO} from "$lib/classes/team";
 import type {CoachDataDTO} from "$lib/classes/user/coach";
+import dayjs, {Dayjs} from "dayjs";
 
 export interface IProgram {
     id?: string,
     name: string,
-    startDate: Date,
-    endDate: Date,
+    startDate: Dayjs,
+    endDate: Dayjs,
     days?: Day[],
     athleteId?: string,
     coachId?: string,
@@ -36,8 +37,8 @@ export class Program implements IProgram {
 
         program.id = programDTO.id
         program.name = programDTO.name
-        program.startDate = new Date(programDTO.startDate)
-        program.endDate = new Date(programDTO.endDate)
+        program.startDate = dayjs(programDTO.startDate)
+        program.endDate = dayjs(programDTO.endDate)
         program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
         program.coachId = programDTO.coachId ? programDTO.coachId : ''
         program.teamId = programDTO.teamId ? programDTO.teamId : ''
@@ -48,8 +49,8 @@ export class Program implements IProgram {
 
     id: string = ''
     name: string = ''
-    startDate: Date = new Date()
-    endDate: Date = new Date()
+    startDate: Dayjs = dayjs()
+    endDate: Dayjs = dayjs()
     days: Day[] = []
     athleteId: string = ''
     coachId: string = ''
@@ -63,8 +64,8 @@ export class DisplayProgram implements IProgram {
 
         program.id = programDTO.id
         program.name = programDTO.name
-        program.startDate = new Date(programDTO.startDate)
-        program.endDate = new Date(programDTO.endDate)
+        program.startDate = dayjs(programDTO.startDate)
+        program.endDate = dayjs(programDTO.endDate)
         program.lastEnteredDay = new Date(programDTO.lastEnteredDay!)
         program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
 
@@ -73,8 +74,8 @@ export class DisplayProgram implements IProgram {
 
     id: string = ''
     name: string = ''
-    startDate: Date = new Date()
-    endDate: Date = new Date()
+    startDate: Dayjs = dayjs()
+    endDate: Dayjs = dayjs()
     lastEnteredDay: Date = new Date()
     athleteId: string = ''
     //coach: string = ''
