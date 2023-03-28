@@ -4,13 +4,15 @@
     import {Exercise} from "$lib/classes/program/exercise";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import {getContext, onDestroy} from "svelte";
+    import MdClose from 'svelte-icons/md/MdClose.svelte'
 
     export let expandedExerciseId: string = ' '
     export let exercise: Exercise
 
-    const { getProgram, getSelectedDay } = getContext('program')
+    const { getProgram, getSelectedDay, getSelectedExerciseIdx } = getContext('program')
     const program = getProgram()
     const selectedDay = getSelectedDay()
+    const selectedExerciseIdx = getSelectedExerciseIdx()
 
     const setComplexType = () => {
         exercise.type = ExerciseType.COMPLEX
@@ -20,12 +22,25 @@
         exercise.repsPerSet = 0
     }
 
+    const removeComplexPart = (compIndex: number) => {
+        exercise.nameArr.splice(compIndex, 1)
+        exercise.repArr.splice(compIndex, 1)
+        if (exercise.nameArr.length === 1) {
+            exercise.type = ExerciseType.EXERCISE
+            exercise.name = exercise.nameArr[0]
+            exercise.repsPerSet = exercise.repArr[0]
+            exercise.nameArr = []
+            exercise.repArr = []
+        }
+    }
+
     onDestroy(() => {
         // sync the program with any potential changes that might have been made to this day
         const day = $program.days.find(d => d.id === $selectedDay.id)
-        let ex = day.exercises.find(e => e.id === expandedExerciseId)
+        let ex: Exercise = day.exercises[$selectedExerciseIdx]
         ex = exercise
         $program = $program
+        $selectedExerciseIdx = -1
     })
 </script>
 
@@ -60,30 +75,36 @@
                     <input type="checkbox">
                     <span class="slider round"></span>
                 </label>
-                <label class="text-sm"># of Reps</label>
+                <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="switch">
                     <input type="checkbox">
                     <span class="slider round"></span>
                 </label>
-                <label class="text-sm">Sets x Reps</label>
+                <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
             </div>
         </div>
     {:else if exercise.type === ExerciseType.COMPLEX}
-        <div class="grid grid-cols-6 p-2 w-full gap-2">
+        <div class="grid grid-cols-8 p-2 w-full gap-2">
             {#each exercise.nameArr as name, idx}
+                <button class="col-span-1 flex items-center justify-center">
+                    <span class="w-5 flex justify-center" on:click={() => removeComplexPart(idx)}>
+                        <MdClose />
+                    </span>
+                </button>
                 <input type="text"
                        placeholder="Exercise Name"
-                       class="bg-gray-300 p-1 col-span-5"
+                       class="bg-gray-300 p-1 col-span-6"
                        bind:value={exercise.nameArr[idx]}
                 >
                 <button class="col-span-1 flex items-center justify-center">
-            <span class="w-5 flex justify-center">
-                <FaPlus />
-            </span>
+                    <span class="w-5 flex justify-center">
+                        <FaPlus />
+                    </span>
                 </button>
             {/each}
+            <div class="col-span-1"></div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Weight (kg)</label>
                 <input type="number" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full">
@@ -99,15 +120,8 @@
                 {/each}
 
             </div>
-            <div class="col-span-2"></div>
-            <div class="col-span-2 flex flex-col items-end">
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
-                <label class="text-sm"># of Reps</label>
-            </div>
-            <div class="col-span-2 flex flex-col items-end">
+            <div class="col-span-4"></div>
+            <div class="col-span-3 flex flex-col items-end">
                 <label class="switch">
                     <input type="checkbox">
                     <span class="slider round"></span>
@@ -122,7 +136,11 @@
     <button class="text-yellow h-7 w-7 my-2">
         <FaPlus />
     </button>
-    <button class="text-yellow w-6 h-6 mx-4 mt-6 mb-2" on:click={() => expandedExerciseId = ' '}>
+    <div class="flex flex-col items-start w-full p-2">
+        <label>Exercise Notes</label>
+        <textarea class="bg-gray-300 w-full p-px" bind:value={exercise.notes}></textarea>
+    </div>
+    <button class="text-yellow w-6 h-6 mx-4 mt-6 mb-2" on:click={() => $selectedExerciseIdx = -1}>
         <FaChevronUp />
     </button>
 </div>

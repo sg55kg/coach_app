@@ -12,19 +12,44 @@
     import {Exercise} from "$lib/classes/program/exercise";
     import {ExerciseType} from "$lib/classes/program/exercise/enums";
     import CreateProgramModal from "$lib/components/WriteProgram2/CreateProgramModal.svelte";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import {ProgramService} from "$lib/service/ProgramService";
+    import MdClose from 'svelte-icons/md/MdClose.svelte'
+    import AssignAthleteModal from "$lib/components/WriteProgram2/AssignAthleteModal.svelte";
 
     export let selectedProgram = new Program()
 
     let showActionContext: boolean = false
-    let showContext: boolean = false
     let contextCoordinates: { x: number, y: number } = { x: -1, y: -1 }
     let showCreateProgram: boolean = false
+    let showAssignAthlete: boolean = false
 
     const program: Writable<Program> = writable(selectedProgram)
     const selectedDay: Writable<Day | undefined> = writable(undefined)
     const selectedDayIdx: Writable<number> = writable(-1)
-    export const exerciseClipboard: Writable<Exercise[]> = writable([])
-    export const dayClipboard: Writable<Day[]> = writable([])
+    const selectedExerciseIdx: Writable<number> = writable(-1)
+    const exerciseClipboard: Writable<Exercise[]> = writable([])
+    const dayClipboard: Writable<Day[]> = writable([])
+    const programError: Writable<string> = writable('')
+    const programSuccess: Writable<string> = writable('')
+    const programLoading: Writable<boolean> = writable(false)
+
+    const updateProgram = async () => {
+        $programLoading = true
+        $programSuccess = ''
+        $programError = ''
+
+        try {
+            const res = await ProgramService.updateProgram($program)
+            $program = res
+            $programSuccess = 'Updated'
+        } catch (e) {
+            $programError = `There was an error while updating ${$program.name}`
+        } finally {
+            $programLoading = false
+            showActionContext = false
+        }
+    }
 
     setContext('program', {
         getProgram: () => program,
@@ -32,10 +57,15 @@
         setSelectedDay: (day: Day) => $selectedDay = day,
         getSelectedDayIdx: () => selectedDayIdx,
         setSelectedDayIdx: (num: number) => $selectedDayIdx = num,
+        getSelectedExerciseIdx: () => selectedExerciseIdx,
         getExerciseClipboard: () => exerciseClipboard,
         setExerciseClipboard: (arr: Exercise[]) => $exerciseClipboard = arr,
         getDayClipboard: () => dayClipboard,
-        setDayClipboard: (arr: Day[]) => $dayClipboard = arr
+        setDayClipboard: (arr: Day[]) => $dayClipboard = arr,
+        getProgramError: () => programError,
+        getProgramSuccess: () => programSuccess,
+        getProgramLoading: () => programLoading,
+        updateProgram
     })
 
     const generateCSV = () => {
@@ -90,9 +120,15 @@
 
     const addDay = () => {
         const day = new Day()
-        $program.days.push(day)
+        $program.days = [...$program.days, day]
         $program = $program
     }
+
+
+
+
+    $: $programError ? setTimeout(() => {programError.set('')}, 5000) : null
+    $: $programSuccess ? setTimeout(() => {programSuccess.set('')}, 5000) : null
 
 </script>
 
@@ -112,59 +148,17 @@
                      bind:contextCoordinates={contextCoordinates}
             />
         {/each}
-
-<!--        <div class="bg-gray-200 border-l-2 border-red aspect-square">-->
-<!--            <div class="w-full flex justify-between py-1 px-2">-->
-<!--                <h3 class="font-semibold text-lg">2</h3>-->
-<!--            </div>-->
-<!--            <div class="px-2 py-1">-->
-<!--                <ul class="text-sm">-->
-<!--                    <li>Wide Grip Deadlift: 3RM</li>-->
-<!--                    <li>Reverse Grip Bent Over Row: 62kg</li>-->
-<!--                    <li>DB Shoulder Press: 5kg</li>-->
-<!--                    <li>1 Arm Farmer Carry: 50kg</li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="bg-gray-200 border-l-2 border-red aspect-square">-->
-<!--            <div class="w-full flex justify-between py-1 px-2">-->
-<!--                <h3 class="font-semibold text-lg">2</h3>-->
-<!--            </div>-->
-<!--            <div class="px-2 py-1">-->
-<!--                <ul class="text-sm">-->
-<!--                    <li>Wide Grip Deadlift: 3RM</li>-->
-<!--                    <li>Reverse Grip Bent Over Row: 62kg</li>-->
-<!--                    <li>DB Shoulder Press: 5kg</li>-->
-<!--                    <li>1 Arm Farmer Carry: 50kg</li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="bg-gray-200 border-l-2 border-red aspect-square">-->
-<!--            <div class="w-full flex justify-between py-1 px-2">-->
-<!--                <h3 class="font-semibold text-lg">2</h3>-->
-<!--            </div>-->
-<!--            <div class="px-2 py-1">-->
-<!--                <ul class="text-sm">-->
-<!--                    <li>Wide Grip Deadlift: 3RM</li>-->
-<!--                    <li>Reverse Grip Bent Over Row: 62kg</li>-->
-<!--                    <li>DB Shoulder Press: 5kg</li>-->
-<!--                    <li>1 Arm Farmer Carry: 50kg</li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
         <div class="bg-gray-200 aspect-square flex justify-center items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>
             <div class="h-7 w-7 text-yellow">
                 <FaPlus />
             </div>
         </div>
     </div>
-
-
 </div>
 <button class="absolute bottom-5 left-10 right-10 p-4 bg-yellow text-gray-300 rounded font-bold"
         on:click={() => showActionContext = !showActionContext}
 >
-    Action Button
+    Options
 </button>
 {#if $selectedDay}
     <ExpandedDay />
@@ -176,19 +170,55 @@
         <button class="h-6 w-full pt-2" on:click={() => showActionContext = false}>
             <FaChevronDown />
         </button>
-        <button class="w-full p-4 text-lg" on:click={() => showCreateProgram = true}>
-            Create Program
-        </button>
+        {#if !$program.id}
+            <button class="w-full p-4 text-lg" on:click={() => showCreateProgram = true}>
+                Create Program
+            </button>
+        {/if}
+        {#if !$program.athleteId}
+            <button class="w-full p-4 text-lg" on:click={() => showAssignAthlete = true}>
+                Assign To Athlete
+            </button>
+        {/if}
         <button class="w-full p-4 text-lg" on:click={generateCSV}>
             Export to CSV
         </button>
-        <button class="w-full p-4 text-lg">
-            Save
-        </button>
+        {#if $program.id}
+            <button class="w-full p-4 text-lg" on:click={updateProgram}>
+                Save
+            </button>
+        {/if}
     </div>
 {/if}
 {#if showCreateProgram}
     <CreateProgramModal bind:show={showCreateProgram} />
+{/if}
+{#if showAssignAthlete}
+    <AssignAthleteModal bind:show={showAssignAthlete} />
+{/if}
+{#if $programLoading}
+    <div class="absolute z-[110] top-0 bottom-0 right-0 left-0 bg-gray-300 opacity-25">
+
+    </div>
+    <div class="absolute bottom-0 top-0 right-0 left-0 z-[115] flex items-center justify-center">
+        <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
+    </div>
+
+{/if}
+{#if $programSuccess}
+    <div class="sticky bottom-5 left-10 z-10 text-green border-l-4 border-l-green bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        {$programSuccess}
+        <button class="h-8 w-8 hover:bg-gray-400 text-green-dark rounded-full hover:text-green p-1" on:click={() => $programSuccess = ''}>
+            <MdClose />
+        </button>
+    </div>
+{:else if $programError}
+    <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        {$programError}
+        <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $programError = ''}>
+            <MdClose />
+        </button>
+    </div>
 {/if}
 
 

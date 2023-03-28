@@ -27,7 +27,6 @@ export class ProgramService {
 
         if (res.status > 205) {
             throw new Error('Could not create program')
-            console.log(res.statusText)
         }
 
         const dbProgram: ProgramDTO = await res.json()
@@ -46,18 +45,23 @@ export class ProgramService {
     static updateProgram = async (program: Program) => {
         const id = program.id
         console.log(program)
-        const res = await fetch(`/api/program/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(program)
-        })
-        console.log(res.status)
-        if (res.status > 299) {
+        try {
+            const res = await fetch(`/api/program/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(program)
+            })
+            console.log(res.status)
+            if (res.status > 299) {
+                throw new Error(res.statusText)
+            }
+
+            const dto: ProgramDTO = await res.json()
+            return Program.build(dto)
+        } catch (e) {
             throw new Error('Could not update program')
         }
 
-        const dto: ProgramDTO = await res.json()
-        return Program.build(dto)
     }
 
     static updateExercise = async (exercise: Exercise) => {

@@ -8,10 +8,14 @@
     import {Exercise} from "$lib/classes/program/exercise";
     import {userDB} from "$lib/stores/authStore";
 
-    const { getProgram, getSelectedDay, getSelectedDayIdx, setSelectedDay } = getContext('program')
+    const {
+        getProgram, getSelectedDay, getSelectedDayIdx, setSelectedDay, getSelectedExerciseIdx, updateProgram
+    } = getContext('program')
+
     const program = getProgram()
     const selectedDay = getSelectedDay()
     const index = getSelectedDayIdx()
+    const exerciseIndex = getSelectedExerciseIdx()
 
     let expandedExerciseId: string = ' ' //change to exercise id
     let athlete = $userDB?.coachData ? $userDB.coachData.athletes.find(a => a.id === $program.athleteId) : null
@@ -30,6 +34,8 @@
 
     const addExercise = () => {
         $selectedDay.exercises = [...$selectedDay.exercises, new Exercise()]
+        $program.days[$index].exercises = $selectedDay.exercises
+        $program = $program
     }
 </script>
 
@@ -50,10 +56,10 @@
         </div>
         <div class="flex flex-col self-start justify-start items-start w-full pr-2">
             {#each $selectedDay.exercises as exercise, idx}
-                {#if expandedExerciseId === exercise.id}
+                {#if $exerciseIndex === idx}
                     <ExpandedExercise bind:exercise={exercise} bind:expandedExerciseId={expandedExerciseId} />
                 {:else}
-                    <ExerciseCard bind:exercise={exercise} bind:expandedExerciseId={expandedExerciseId} />
+                    <ExerciseCard bind:exercise={exercise} bind:expandedExerciseId={expandedExerciseId} index={idx} />
                 {/if}
             {/each}
 
@@ -75,7 +81,7 @@
     <button class="bg-yellow text-gray-300 text-lg font-bold rounded px-4 py-2 my-2">
         Paste
     </button>
-    <button class="bg-yellow text-gray-300 text-lg font-bold rounded px-4 py-2 my-2">
+    <button class="bg-yellow text-gray-300 text-lg font-bold rounded px-4 py-2 my-2" on:click={updateProgram}>
         Save
     </button>
 </div>

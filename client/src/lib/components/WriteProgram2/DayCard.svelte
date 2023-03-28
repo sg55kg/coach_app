@@ -3,9 +3,10 @@
     import {isMobile} from "$lib/stores/authStore.js";
     import {Day} from "$lib/classes/program/day";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
-    import {program} from "$lib/stores/writeProgramStore";
     import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte'
     import MdContentPaste from 'svelte-icons/md/MdContentPaste.svelte'
+    import FaLongArrowAltLeft from 'svelte-icons/fa/FaLongArrowAltLeft.svelte'
+    import FaLongArrowAltRight from 'svelte-icons/fa/FaLongArrowAltRight.svelte'
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -20,10 +21,12 @@
         setSelectedDayIdx,
         getSelectedDay,
         getDayClipboard,
+        getProgram
     } = getContext('program')
 
     const selectedDay = getSelectedDay()
     const dayClipboard = getDayClipboard()
+    const program = getProgram()
 
     $: isPressing ?
         setTimeout(() => {
@@ -44,7 +47,7 @@
     const copyDay = () => {
         const dayCopy = JSON.parse(JSON.stringify(day)) as Day
         dayCopy.id = ''
-        dayCopy.exercises.forEach((e, i) => e.id = i + '')
+        dayCopy.exercises.forEach((e, i) => e.id = '')
         $dayClipboard = [dayCopy]
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
         showContext = false
@@ -57,7 +60,9 @@
 
             return
         }
+        console.log($program)
         program.update((prev) => {
+            console.log(prev)
             let id = prev.days[idx].id
             prev.days[idx] = {...$dayClipboard[0], id}
             return prev
@@ -88,46 +93,6 @@
             }
         })
 
-        let allComplete: boolean = true
-        let unchanged: boolean = true
-        for (const exercise of day.exercises) {
-            switch (exercise.type) {
-                case ExerciseType.EXERCISE:
-                    if (exercise.isMax) {
-                        allComplete = allComplete && exercise.weight > 0
-                    } else if (exercise.isMaxReps) {
-                        allComplete = exercise.totalRepsCompleted > 0
-                    } else {
-                        allComplete = allComplete &&
-                            (exercise.weightCompleted > 0 || exercise.weightCompleted === exercise.weight) &&
-                            (exercise.totalRepsCompleted > 0 || exercise.totalRepsCompleted === (exercise.repsPerSet * exercise.sets))
-                        unchanged = unchanged &&
-                            (exercise.weightCompleted === exercise.weight) &&
-                            (exercise.totalRepsCompleted === (exercise.sets * exercise.repsPerSet))
-                    }
-                    break
-                case ExerciseType.COMPLEX:
-                    for (let i = 0; i < exercise.repArr.length; i++) {
-                        allComplete = allComplete &&
-                            (exercise.repArr[i] > 0 || exercise.repArr[i] === exercise.repCompletedArr[i])
-                        unchanged = unchanged && exercise.weight === exercise.weightCompleted &&
-                            exercise.repArr[i] === exercise.repCompletedArr[i]
-                    }
-                    break
-                case ExerciseType.DURATION:
-                    break
-                case ExerciseType.ACCESSORY:
-                    break
-                case ExerciseType.CARRY:
-                    break
-            }
-            if (unchanged && allComplete) {
-                dayStatus = 'completed'
-            } else if (!unchanged) {
-                dayStatus = 'changed'
-            }
-
-        }
 
     })
 
@@ -206,14 +171,22 @@
 
 {/if}
 {#if showContext && !$isMobile}
-    <div class="p-2 flex flex-col z-40 bg-red shadow-lg w-44" on:click={() => console.log(idx)} style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px">
-        <button class="px-4 py-2 flex items-center justify-around my-px hover:bg-gray-200" on:click={copyDay}>
-            <span class="h-6 w-6 px-1 flex items-center"><FaRegCopy /></span>
+    <div class="p-2 flex flex-col z-40 bg-gray-100 shadow-lg w-56 text-left" on:click={() => console.log(idx)} style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px">
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={copyDay}>
+            <span class="h-6 w-6 mr-2 px-1 flex items-center"><FaRegCopy /></span>
             Copy Day
         </button>
-        <button class="px-4 py-2 flex items-center justify-around my-px hover:bg-gray-200" on:click={pasteDay}>
-            <span class="h-6 w-6 flex items-center"><MdContentPaste /></span>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={pasteDay}>
+            <span class="h-5 w-6 mr-2 flex items-center"><MdContentPaste /></span>
             Paste Day
+        </button>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200">
+            <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltLeft /></span>
+            Insert Day Left
+        </button>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200">
+            <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltRight /></span>
+            Insert Day Right
         </button>
     </div>
 {/if}

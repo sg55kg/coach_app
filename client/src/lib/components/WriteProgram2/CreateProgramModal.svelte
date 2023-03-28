@@ -7,6 +7,7 @@
     import {Program} from "$lib/classes/program";
     import {ProgramService} from "$lib/service/ProgramService";
     import {goto} from "$app/navigation";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
 
     export let show: boolean = false
 
@@ -21,6 +22,10 @@
         'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'
     ]
     let dayOptions: string[] = []
+
+    let loading: boolean = false
+    let success: boolean = false
+    let error: boolean = false
 
     $: isInvalid = () => {
         if (!programName.trim()) {
@@ -41,20 +46,28 @@
     }
 
     const createProgram = async () => {
+        error = false
+        success = false
+        loading = true
         try {
             const newProgram = new Program()
             newProgram.name = programName
             newProgram.athleteId = selectedAthleteId
             newProgram.startDate = dayjs(selectedMonth + ' ' + selectedDay + ', ' + currentYear)
             newProgram.endDate = newProgram.startDate
+            newProgram.coachId = $userDB.coachData.id
 
             const res = await ProgramService.createProgram(newProgram)
             if (!res.id) {
                 throw new Error('Could not create program')
             }
+            success = true
             await goto(`/home/coach/program/${res.id}`)
         } catch (e) {
-
+            console.log(e)
+            error = true
+        } finally {
+            loading = false
         }
     }
 
@@ -111,13 +124,27 @@
             </div>
         </div>
         <div class="flex justify-center mt-8">
-            <button class="bg-yellow rounded text-gray-300 p-2 px-4 m-auto text-lg font-bold hover:bg-yellow-shade disabled:bg-gray-100"
-                    disabled={isInvalid()}
+            <button class="bg-yellow rounded text-gray-300 p-2 px-4 m-auto text-lg font-bold
+                           hover:bg-yellow-shade disabled:bg-yellow-lt flex"
+                    disabled={isInvalid() || loading}
                     on:click={createProgram}
             >
+                {#if loading}
+                    <LoadingSpinner spinnerColor="fill-gray-300" spinnerBackground="text-yellow-lt" />
+                {/if}
                 Create
             </button>
         </div>
+        {#if error}
+            <div class="rounded my-8 p-2 px-4 border border-red text-red font-semibold text-center">
+                There was an error creating your program
+            </div>
+        {/if}
+        {#if success}
+            <div class="rounded my-8 p-2 px-4 border border-green text-green font-semibold text-center">
+                Created!
+            </div>
+        {/if}
     </div>
 </div>
 
