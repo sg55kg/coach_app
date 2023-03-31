@@ -34,6 +34,14 @@
         }
     }
 
+    const toggleMaxWeight = (isMax: boolean) => {
+        exercise.isMax = isMax
+    }
+
+    const toggleMaxReps = (isMaxReps: boolean) => {
+        exercise.isMaxReps = isMaxReps
+    }
+
     onDestroy(() => {
         // sync the program with any potential changes that might have been made to this day
         const day = $program.days.find(d => d.id === $selectedDay.id)
@@ -65,25 +73,33 @@
                 <label class="text-sm">Sets</label>
                 <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
             </div>
-            <div class="col-span-2 flex flex-col items-end">
-                <label class="text-sm">Reps</label>
-                <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
-            </div>
+            {#if exercise.isMaxReps}
+                <div class="col-span-2 flex items-center">
+                    AMRAP
+                </div>
+            {:else}
+                <div class="col-span-2 flex flex-col items-end">
+                    <label class="text-sm">Reps</label>
+                    <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
+                </div>
+            {/if}
             <div class="col-span-2"></div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" on:change={(e) => toggleMaxReps(e.target.checked)}>
                     <span class="slider round"></span>
                 </label>
                 <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
             </div>
-            <div class="col-span-2 flex flex-col items-end">
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider round"></span>
-                </label>
-                <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
-            </div>
+            {#if !exercise.isMaxReps}
+                <div class="col-span-2 flex flex-col items-end">
+                    <label class="switch">
+                        <input type="checkbox" on:change={(e) => toggleMaxWeight(e.target.checked)}>
+                        <span class="slider round"></span>
+                    </label>
+                    <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
+                </div>
+            {/if}
         </div>
     {:else if exercise.type === ExerciseType.COMPLEX}
         <div class="grid grid-cols-8 p-2 w-full gap-2">

@@ -16,6 +16,11 @@
     import {ProgramService} from "$lib/service/ProgramService";
     import MdClose from 'svelte-icons/md/MdClose.svelte'
     import AssignAthleteModal from "$lib/components/WriteProgram2/AssignAthleteModal.svelte";
+    import FaCaretDown from 'svelte-icons/fa/FaCaretDown.svelte'
+    import FaRegSave from 'svelte-icons/fa/FaRegSave.svelte'
+    import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte'
+    import FaFileExport from 'svelte-icons/fa/FaFileExport.svelte'
+    import FaUserPlus from 'svelte-icons/fa/FaUserPlus.svelte'
 
     export let selectedProgram = new Program()
 
@@ -23,6 +28,7 @@
     let contextCoordinates: { x: number, y: number } = { x: -1, y: -1 }
     let showCreateProgram: boolean = false
     let showAssignAthlete: boolean = false
+    let showFileMenu: boolean = false
 
     const program: Writable<Program> = writable(selectedProgram)
     const selectedDay: Writable<Day | undefined> = writable(undefined)
@@ -140,8 +146,43 @@
 
 </script>
 
-<div class="relative w-screen flex flex-col lg:p-3 h-[83vh] overflow-y-auto pb-32">
-    <header class="flex  {$isMobile ? 'flex-row' : 'flex-col'} p-2 items-center">
+<div class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
+    {#if !$isMobile}
+        <nav class="relative bg-gray-200 flex items-center p-2">
+            <input type="text" class="bg-gray-300 p-1 rounded" bind:value={$program.name}>
+            <button class="bg-yellow rounded text-gray-300 text-md font-medium px-2 p-1 mx-2">
+                Save
+            </button>
+            <div class="relative inline-block dropdown">
+                <button class="flex items-center hover:bg-gray-400 rounded p-1" on:click={() => showFileMenu = !showFileMenu}>
+                    File
+                    <span class="h-3 mx-1"><FaCaretDown /></span>
+                </button>
+                {#if showFileMenu}
+                    <div class="fixed top-0 right-0 left-0 bottom-0 z-[114]" on:click={() => showFileMenu = !showFileMenu}></div>
+                    <div class="bg-gray-400 shadow-lg absolute w-56 origin-top-right p-3 z-[115]">
+                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">
+                            <span class="h-5 mr-2"><FaRegSave /></span>
+                            Save
+                        </button>
+                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
+                            <span class="h-5 mr-2"><FaRegCopy /></span>
+                            Make a copy
+                        </button>
+                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
+                            <span class="h-5 mr-2"><FaFileExport /></span>
+                            Export to CSV
+                        </button>
+                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
+                            <span class="h-5 mr-2"><FaUserPlus /></span>
+                            Assign to athlete
+                        </button>
+                    </div>
+                {/if}
+            </div>
+        </nav>
+    {/if}
+    <header class="flex  {$isMobile ? 'flex-row' : 'flex-col'} p-3 items-center">
         <input type="text"
                class="bg-gray-300 p-1 {$isMobile ? 'w-11/12' : 'w-full'} mx-4 my-2 font-semibold"
                placeholder="Program Name"
@@ -150,7 +191,7 @@
         >
         <ProgramSearch />
     </header>
-    <div class="grid {$isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-4'} w-full px-2">
+    <div class="grid {$isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-4'} w-full p-3">
         {#each $program.days as day, index (day.id+index)}
             <DayCard bind:day={day}
                      idx={index}
@@ -163,42 +204,53 @@
             </div>
         </div>
     </div>
+
 </div>
-<button class="absolute bottom-5 left-10 right-10 p-4 bg-yellow text-gray-300 rounded font-bold"
-        on:click={() => showActionContext = !showActionContext}
->
-    Options
-</button>
+{#if $isMobile}
+    <button class="absolute bottom-5 left-10 right-10 p-4 bg-yellow text-gray-300 rounded font-bold"
+            on:click={() => showActionContext = !showActionContext}
+    >
+        Options
+    </button>
+
+    {#if showActionContext}
+        <div class="absolute top-0 bottom-0 right-0 left-0 z-0" on:click={() => showActionContext = false}></div>
+        <div class="absolute transition-all transform ease-in-out bottom-0 bg-gray-400 flex flex-col w-screen right-0 left-0 text-center z-10
+        {showActionContext ? ' -translate-y-0' : ' translate-y-0'}">
+            <button class="h-6 w-full pt-2" on:click={() => showActionContext = false}>
+                <FaChevronDown />
+            </button>
+            {#if !$program.id}
+                <button class="w-full p-4 text-lg" on:click={() => showCreateProgram = true}>
+                    Create Program
+                </button>
+            {/if}
+            {#if !$program.athleteId}
+                <button class="w-full p-4 text-lg" on:click={() => $program.name ? showAssignAthlete = true : focusNameInput()}>
+                    Assign To Athlete
+                </button>
+            {/if}
+            {#if $program.id}
+                <button class="w-full p-4 text-lg">
+                    Make a Copy
+                </button>
+            {/if}
+            <button class="w-full p-4 text-lg" on:click={generateCSV}>
+                Export to CSV
+            </button>
+            {#if $program.id}
+                <button class="w-full p-4 text-lg" on:click={updateProgram}>
+                    Save
+                </button>
+            {/if}
+        </div>
+    {/if}
+{/if}
+
 {#if $selectedDay}
     <ExpandedDay />
 {/if}
-{#if showActionContext}
-    <div class="absolute top-0 bottom-0 right-0 left-0 z-0" on:click={() => showActionContext = false}></div>
-    <div class="absolute transition-all transform ease-in-out bottom-0 bg-gray-400 flex flex-col w-screen right-0 left-0 text-center z-10
-        {showActionContext ? ' -translate-y-0' : ' translate-y-0'}">
-        <button class="h-6 w-full pt-2" on:click={() => showActionContext = false}>
-            <FaChevronDown />
-        </button>
-        {#if !$program.id}
-            <button class="w-full p-4 text-lg" on:click={() => showCreateProgram = true}>
-                Create Program
-            </button>
-        {/if}
-        {#if !$program.athleteId}
-            <button class="w-full p-4 text-lg" on:click={() => $program.name ? showAssignAthlete = true : focusNameInput()}>
-                Assign To Athlete
-            </button>
-        {/if}
-        <button class="w-full p-4 text-lg" on:click={generateCSV}>
-            Export to CSV
-        </button>
-        {#if $program.id}
-            <button class="w-full p-4 text-lg" on:click={updateProgram}>
-                Save
-            </button>
-        {/if}
-    </div>
-{/if}
+
 {#if showCreateProgram}
     <CreateProgramModal bind:show={showCreateProgram} />
 {/if}

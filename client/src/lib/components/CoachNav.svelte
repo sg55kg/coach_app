@@ -44,7 +44,7 @@
                 <h3>My Teams</h3>
             </a>
             <hr class="w-full h-1 my-2 text-gray-400">
-            {#if $userDB.coachData}
+            {#if $userDB?.coachData}
                 {#each $userDB.coachData.teams as team}
                     <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer" href="/home/coach/team/{team.id}/athletes" on:click={() => showNav = false}>
                         {team.name}
@@ -54,7 +54,7 @@
             <h3 class="self-start pl-4 font-medium text-lg mt-8">Feed</h3>
             <hr class="w-full h-1 my-2 text-gray-400">
             <div class="mt-12 w-full flex flex-col">
-                <img src={$authUser.picture} alt="profile" class="rounded-full h-14 mb-4 self-center">
+                <img src={$authUser?.picture} alt="profile" class="rounded-full h-14 mb-4 self-center">
                 <div class="flex flex-col items-center lg:items-start w-full lg:pl-4">
                     <a class="hover:text-yellow-lt" on:click={() => { showNav = false; logout() }}>
                         <button class="h-8 w-full flex items-center text-lg font-medium">
