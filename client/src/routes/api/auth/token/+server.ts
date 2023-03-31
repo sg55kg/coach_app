@@ -10,10 +10,10 @@ export const POST: RequestHandler = async (event) => {
         throw error(405, 'Invalid code provided')
     }
     try {
-        const { accessToken, user, idToken } = await fetchToken(code)
+        const { accessToken, user, idToken } = await _fetchToken(code)
         event.cookies.set('accessToken', accessToken, {httpOnly: true, path: '/'})
         event.cookies.set('idToken', idToken, {httpOnly: true, path: '/'})
-        const userData = await fetchUser(user, accessToken)
+        const userData = await _fetchUser(user, accessToken)
         console.log(accessToken)
         return new Response(JSON.stringify({ user, userData }))
     } catch (e) {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async (event) => {
     }
 }
 
-export const fetchToken = async (code: string) => {
+export const _fetchToken = async (code: string) => {
     const options = {
         "grant_type": "authorization_code",
         "client_id": import.meta.env.VITE_AUTH0_CLIENT_ID,
@@ -53,7 +53,7 @@ export const fetchToken = async (code: string) => {
 }
 
 
-export const fetchUser = async (user: any, token: string) => {
+export const _fetchUser = async (user: any, token: string) => {
     if (!user?.email || !user?.name) {
         throw error(405, 'Invalid ID token')
     }

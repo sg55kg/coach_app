@@ -1,0 +1,36 @@
+<script lang="ts">
+
+    export let containerId: string = 'starburst'
+    export let hidden: string = ''
+</script>
+
+<svg class="w-24 h-24 {hidden}" id={containerId}>
+    <g transform="translate(12,12)">
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(45)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(90)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(135)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(180)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(225)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(270)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+        <line x1="0" y1="-4" x2="0" y2="-6" stroke="currentColor" stroke-width="2" transform="rotate(315)">
+            <animate attributeName="y2" values="-4;-10" dur=".7s" begin="0s" repeatCount="indefinite" />
+        </line>
+    </g>
+</svg>
+
+<style></style>

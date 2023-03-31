@@ -124,7 +124,15 @@
         $program = $program
     }
 
-
+    const focusNameInput = () => {
+        showActionContext = false
+        const input = document.getElementById('program-name-input')
+        input.focus()
+        input.classList.add('error-focus')
+        input.addEventListener('focusout', () => {
+            input.classList.remove('error-focus')
+        })
+    }
 
 
     $: $programError ? setTimeout(() => {programError.set('')}, 5000) : null
@@ -137,6 +145,7 @@
         <input type="text"
                class="bg-gray-300 p-1 {$isMobile ? 'w-11/12' : 'w-full'} mx-4 my-2 font-semibold"
                placeholder="Program Name"
+               id="program-name-input"
                bind:value={$program.name}
         >
         <ProgramSearch />
@@ -176,7 +185,7 @@
             </button>
         {/if}
         {#if !$program.athleteId}
-            <button class="w-full p-4 text-lg" on:click={() => showAssignAthlete = true}>
+            <button class="w-full p-4 text-lg" on:click={() => $program.name ? showAssignAthlete = true : focusNameInput()}>
                 Assign To Athlete
             </button>
         {/if}
@@ -226,5 +235,11 @@
     li, button, h3 {
         -webkit-touch-callout:none;
         -webkit-user-select:none;
+    }
+
+    :global(.error-focus:focus) {
+        outline: none;
+        border: 2px solid #f62222;
+        border-radius: 5px;
     }
 </style>

@@ -7,6 +7,7 @@
     import MdContentPaste from 'svelte-icons/md/MdContentPaste.svelte'
     import FaLongArrowAltLeft from 'svelte-icons/fa/FaLongArrowAltLeft.svelte'
     import FaLongArrowAltRight from 'svelte-icons/fa/FaLongArrowAltRight.svelte'
+    import Starburst from "$lib/components/shared/animation/Starburst.svelte";
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -60,7 +61,6 @@
 
             return
         }
-        console.log($program)
         program.update((prev) => {
             console.log(prev)
             let id = prev.days[idx].id
@@ -70,6 +70,43 @@
         $program = $program
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
         showContext = false
+    }
+
+    const insertDayLeft = () => {
+        const dayToInsert = new Day()
+        let updatedDays = []
+        $program.days.forEach((d, i) => {
+            if (idx === 0) {
+                updatedDays.push(dayToInsert)
+            }
+            updatedDays.push(d)
+            if (i === idx-1 && idx > 0) {
+                updatedDays.push(dayToInsert)
+            }
+
+        })
+        $program.days = updatedDays
+        showContext = false
+        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+    }
+
+    const insertDayRight = () => {
+        const dayToInsert = new Day()
+        let updatedDays = []
+        if (idx === $program.days.length - 1) {
+            updatedDays = [...$program.days, dayToInsert]
+        } else {
+            $program.days.forEach((d, i) => {
+                if (i === idx+1) {
+                    updatedDays.push(dayToInsert)
+                }
+                updatedDays.push(d)
+            })
+        }
+        $program.days = updatedDays
+        showContext = false
+
+        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
     }
 
     onMount(() => {
@@ -92,8 +129,6 @@
                 console.log($selectedDay)
             }
         })
-
-
     })
 
 </script>
@@ -154,24 +189,26 @@
     }}
          class="top-0 bottom-0 left-0 right-0 absolute z-20 bg-gray-300 opacity-50">
     </div>
-    <div class="absolute bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30">
+    <div class="fixed bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30">
         <button class="p-4 py-6 text-lg font-semibold" on:click={copyDay}>
             Copy Day
         </button>
         <button class="p-4 py-6 text-lg font-semibold" on:click={pasteDay}>
             Paste Day
         </button>
-        <button class="p-4 py-6 text-lg font-semibold">
+        <button class="p-4 py-6 text-lg font-semibold" on:click={insertDayLeft}>
             Insert Day Left
         </button>
-        <button class="p-4 py-6 text-lg font-semibold">
+        <button class="p-4 py-6 text-lg font-semibold" on:click={insertDayRight}>
             Insert Day Right
         </button>
     </div>
 
 {/if}
 {#if showContext && !$isMobile}
-    <div class="p-2 flex flex-col z-40 bg-gray-100 shadow-lg w-56 text-left" on:click={() => console.log(idx)} style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px">
+    <div class="p-2 flex flex-col z-40 bg-gray-100 shadow-lg w-56 text-left"
+         style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px"
+    >
         <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={copyDay}>
             <span class="h-6 w-6 mr-2 px-1 flex items-center"><FaRegCopy /></span>
             Copy Day
@@ -180,11 +217,11 @@
             <span class="h-5 w-6 mr-2 flex items-center"><MdContentPaste /></span>
             Paste Day
         </button>
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200">
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={insertDayLeft}>
             <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltLeft /></span>
             Insert Day Left
         </button>
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200">
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={insertDayRight}>
             <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltRight /></span>
             Insert Day Right
         </button>
