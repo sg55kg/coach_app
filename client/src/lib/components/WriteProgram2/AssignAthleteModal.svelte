@@ -44,7 +44,7 @@
             programCopy.endDate = currentDate.subtract(1, 'day')
             programCopy.athleteId = selectedAthlete.id
             programCopy.coachId = $userDB.coachData.id
-            programCopy.teamId = $team.id
+            programCopy.teamId = selectedAthlete.team.id
             if (makeCopy) {
                 programCopy.days.forEach(d => {
                     d.id = ''
@@ -53,7 +53,6 @@
                         e.dropSets.forEach(d => d.id = '')
                     })
                 })
-                console.log(programCopy)
                 const res = await ProgramService.createProgram({ ...programCopy, isCurrent })
                 show = false
                 await goto(`/home/coach/program/${res.id}`)

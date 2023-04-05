@@ -19,3 +19,19 @@ export const POST: RequestHandler = async (event) => {
         throw error(405, 'Could not create new team')
     }
 }
+
+export const GET: RequestHandler = async (event) => {
+    const token = event.cookies.get('accessToken')
+    const name = event.url.searchParams.get('name')
+    const coachId = event.url.searchParams.get('coach')
+    try {
+        let res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/coach/${coachId}/search?name=${name}`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+        })
+        return new Response(res.body)
+    } catch (e) {
+        console.log(e)
+        throw error(404, 'Could not retrieve programs')
+    }
+}

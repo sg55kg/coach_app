@@ -103,5 +103,19 @@ export class ProgramService {
     static getCoachPrograms = async (id: string) => {
         const res = await fetch(`/api/`)
     }
+
+    static searchProgramsByName = async (coachId: string, name: string) => {
+        const res = await fetch(`/api/program?coach=${coachId}&name=${name}`, {
+            method: 'GET',
+        })
+
+        if (res.status > 205) {
+            console.log(res.status)
+            console.log(res.statusText)
+            throw new Error('Could not retrieve results')
+        }
+        const dtos: ProgramDTO[] = await res.json()
+        return dtos.map(d => DisplayProgram.build(d))
+    }
 }
 

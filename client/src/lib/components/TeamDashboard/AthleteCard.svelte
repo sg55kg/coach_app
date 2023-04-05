@@ -88,7 +88,7 @@
                     {#if updateSeverity === 'severe'}
                         <div class="flex items-center">
                             <div class="rounded-full h-3 w-3 bg-red-shade mr-2"></div>
-                            <h5 class="text-xl text-center text-red-shade w-12 overflow-hidden">{athlete.currentProgram.name}</h5>
+                            <h5 class="text-xl text-center text-red-shade {$isMobile ? 'w-12' : 'w-full'} overflow-hidden">{athlete.currentProgram.name}</h5>
                         </div>
                     {:else if updateSeverity === 'moderate'}
                         <div class="flex items-center">

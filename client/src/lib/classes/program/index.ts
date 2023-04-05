@@ -7,8 +7,8 @@ import dayjs, {Dayjs} from "dayjs";
 export interface IProgram {
     id?: string,
     name: string,
-    startDate: Dayjs,
-    endDate: Dayjs,
+    startDate: Dayjs | null,
+    endDate: Dayjs | null,
     days?: Day[],
     athleteId?: string,
     coachId?: string,
@@ -24,7 +24,8 @@ export interface ProgramDTO {
     coachId?: string,
     teamId?: string,
     athleteId?: string,
-    lastEnteredDay?: string
+    lastEnteredDay?: string,
+    athleteName?: string
 }
 
 
@@ -64,19 +65,21 @@ export class DisplayProgram implements IProgram {
 
         program.id = programDTO.id
         program.name = programDTO.name
-        program.startDate = dayjs(programDTO.startDate)
-        program.endDate = dayjs(programDTO.endDate)
+        program.startDate = programDTO.startDate ? dayjs(programDTO.startDate) : null
+        program.endDate = programDTO.endDate ? dayjs(programDTO.endDate) : null
         program.lastEnteredDay = new Date(programDTO.lastEnteredDay!)
         program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
+        program.athleteName = programDTO.athleteName ? programDTO.athleteName : ''
 
         return program
     }
 
     id: string = ''
     name: string = ''
-    startDate: Dayjs = dayjs()
-    endDate: Dayjs = dayjs()
+    startDate: Dayjs | null = dayjs()
+    endDate: Dayjs | null = dayjs()
     lastEnteredDay: Date = new Date()
     athleteId: string = ''
+    athleteName: string = ''
     //coach: string = ''
 }

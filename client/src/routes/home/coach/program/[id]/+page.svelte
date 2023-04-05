@@ -10,21 +10,22 @@
     import MdClose from 'svelte-icons/md/MdClose.svelte'
 
     export let data
+    let reloading: boolean = false
 
-    const { programDto } = data
-
-    let showOverview: boolean = true
-    let initialIndex: number = 0
-
-    if (programDto) {
-        console.log(programDto)
+    $: programDto = data.programDto
+    $: programDto ? (() => {
+        reloading = true
+        $program.id = ''
         $program = Program.build(programDto)
         program.update(prev => {
             prev.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             return prev
         })
-        initialIndex = $program.days.length - 1
-    }
+        setTimeout(() => reloading = false, 100) // hacky work around to get the page to reload after searching program
+    })() : null
+
+    let showOverview: boolean = true
+    let initialIndex: number = 0
 
     const handleSubmit = async (event, programData: Program) => {
         event.preventDefault()
@@ -52,29 +53,7 @@
     })
 </script>
 
-{#if $program?.id}
-<!--    <div class="relative">-->
-<!--        {#if !showOverview}-->
-<!--            <ProgramForm handleSubmit={handleSubmit} initialIndex={initialIndex} bind:showOverview={showOverview} />-->
-<!--        {:else}-->
-<!--            <ProgramOverview bind:showOverview={showOverview} bind:initialIndex={initialIndex} />-->
-<!--        {/if}-->
-<!--        {#if $programSuccess}-->
-<!--            <div class="sticky bottom-5 left-10 z-10 text-green border-l-4 border-l-green bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">-->
-<!--                {$programSuccess}-->
-<!--                <button class="h-8 w-8 hover:bg-gray-400 text-green-dark rounded-full hover:text-green p-1" on:click={() => $programSuccess = ''}>-->
-<!--                    <MdClose />-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        {:else if $programError}-->
-<!--            <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">-->
-<!--                {$programError}-->
-<!--                <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $programError = ''}>-->
-<!--                    <MdClose />-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        {/if}-->
-<!--    </div>-->
+{#if $program?.id && !reloading}
     <ProgramOverview selectedProgram={$program} />
 {/if}
 

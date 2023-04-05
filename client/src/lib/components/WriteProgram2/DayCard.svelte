@@ -22,7 +22,8 @@
         setSelectedDayIdx,
         getSelectedDay,
         getDayClipboard,
-        getProgram
+        getProgram,
+        formatProgramDates
     } = getContext('program')
 
     const selectedDay = getSelectedDay()
@@ -69,6 +70,7 @@
         })
         $program = $program
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+        formatProgramDates()
         showContext = false
     }
 
@@ -88,6 +90,7 @@
         $program.days = updatedDays
         showContext = false
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+        formatProgramDates()
     }
 
     const insertDayRight = () => {
@@ -107,6 +110,7 @@
         showContext = false
 
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
+        formatProgramDates()
     }
 
     onMount(() => {
@@ -153,6 +157,9 @@
 >
     <div class="w-full flex justify-between py-1 px-2">
         <h3 class="font-semibold text-lg">{idx+1}</h3>
+        {#if $program?.days[idx]?.date && $program?.athleteId}
+            <h3>{$program.days[idx].date.format('ddd MMM DD')}</h3>
+        {/if}
     </div>
     <div class="px-2 py-1">
         <ul class="text-sm">

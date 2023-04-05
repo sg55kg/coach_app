@@ -21,6 +21,9 @@
     import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte'
     import FaFileExport from 'svelte-icons/fa/FaFileExport.svelte'
     import FaUserPlus from 'svelte-icons/fa/FaUserPlus.svelte'
+    import MdAdd from 'svelte-icons/md/MdAdd.svelte'
+    import dayjs from "dayjs";
+    import {goto} from "$app/navigation";
 
     export let selectedProgram = new Program()
 
@@ -40,6 +43,20 @@
     const programSuccess: Writable<string> = writable('')
     const programLoading: Writable<boolean> = writable(false)
 
+    //$: selectedProgram ? $program = writable(selectedProgram) : null
+
+    const formatProgramDates = () => {
+        let currentDate = $program.startDate
+        $program.days.forEach(d => {
+            d.date = currentDate
+            currentDate = currentDate.add(1, 'day')
+            return d
+        })
+        $program.endDate = currentDate.subtract(1, 'day')
+        $program = $program
+        console.log('program after dates', $program)
+    }
+
     const updateProgram = async () => {
         $programLoading = true
         $programSuccess = ''
@@ -57,6 +74,26 @@
         }
     }
 
+    const createProgram = async (newProgram: Program) => {
+        $programError = ''
+        $programSuccess = ''
+        $programLoading = true
+        try {
+            const res = await ProgramService.createProgram(newProgram)
+            if (!res.id) {
+                throw new Error('Could not create program')
+            }
+            $programSuccess = 'Saved!'
+            $program = res
+            await goto(`/home/coach/program/${res.id}`)
+        } catch (e) {
+            console.log(e)
+            $programError = 'Could not create this program at this time'
+        } finally {
+            $programLoading = false
+        }
+    }
+
     setContext('program', {
         getProgram: () => program,
         getSelectedDay: () => selectedDay,
@@ -71,7 +108,8 @@
         getProgramError: () => programError,
         getProgramSuccess: () => programSuccess,
         getProgramLoading: () => programLoading,
-        updateProgram
+        updateProgram,
+        formatProgramDates
     })
 
     const generateCSV = () => {
@@ -127,7 +165,7 @@
     const addDay = () => {
         const day = new Day()
         $program.days = [...$program.days, day]
-        $program = $program
+        formatProgramDates()
     }
 
     const focusNameInput = () => {
@@ -140,6 +178,43 @@
         })
     }
 
+    const makeACopy = async () => {
+        if (!$program.id) return
+
+        let programCopy = JSON.parse(JSON.stringify($program))
+        programCopy.id = ''
+        programCopy.name = 'Copy of ' + programCopy.name
+        programCopy.startDate = null
+        programCopy.endDate = null
+        programCopy.athleteId = null
+        programCopy.isCurrent = false
+        programCopy.days.forEach(d => {
+            d.id = ''
+            d.date = null
+            d.exercises.forEach(e => {
+                e.id = ''
+                e.weightCompleted = 0
+                e.secondsPerSetCompleted = 0
+                e.totalRepsCompleted = 0
+                e.repCompletedArr = []
+                e.distanceCompletedMeters = 0
+                e.dropSets.forEach(ds => {
+                    ds.id = ''
+                    ds.weightCompleted = 0
+                    ds.secondsPerSetCompleted = 0
+                    ds.totalRepsCompleted = 0
+                    ds.repCompletedArr = []
+                    ds.distanceCompletedMeters = 0
+                    return ds
+                })
+                return e
+            })
+            return d
+        })
+        console.log(programCopy)
+        await createProgram(programCopy)
+    }
+
 
     $: $programError ? setTimeout(() => {programError.set('')}, 5000) : null
     $: $programSuccess ? setTimeout(() => {programSuccess.set('')}, 5000) : null
@@ -148,47 +223,61 @@
 
 <div class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
     {#if !$isMobile}
-        <nav class="relative bg-gray-200 flex items-center p-2">
-            <input type="text" class="bg-gray-300 p-1 rounded" bind:value={$program.name}>
-            <button class="bg-yellow rounded text-gray-300 text-md font-medium px-2 p-1 mx-2">
-                Save
-            </button>
-            <div class="relative inline-block dropdown">
-                <button class="flex items-center hover:bg-gray-400 rounded p-1" on:click={() => showFileMenu = !showFileMenu}>
-                    File
-                    <span class="h-3 mx-1"><FaCaretDown /></span>
+        <nav class="relative bg-gray-200 flex flex-col p-2">
+            <div>
+                <input type="text" class="bg-gray-300 p-1 rounded w-3/12" bind:value={$program.name} placeholder="Program Name" id="program-name-input">
+                <p><i></i></p>
+            </div>
+            <div class="py-2">
+                <button class="bg-yellow rounded text-gray-300 text-md font-medium px-2 p-1 mx-2 disabled:bg-gray-400"
+                        on:click={updateProgram}
+                        disabled={!$program.id}
+                >
+                    Save
                 </button>
-                {#if showFileMenu}
-                    <div class="fixed top-0 right-0 left-0 bottom-0 z-[114]" on:click={() => showFileMenu = !showFileMenu}></div>
-                    <div class="bg-gray-400 shadow-lg absolute w-56 origin-top-right p-3 z-[115]">
-                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">
-                            <span class="h-5 mr-2"><FaRegSave /></span>
-                            Save
-                        </button>
-                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
-                            <span class="h-5 mr-2"><FaRegCopy /></span>
-                            Make a copy
-                        </button>
-                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
-                            <span class="h-5 mr-2"><FaFileExport /></span>
-                            Export to CSV
-                        </button>
-                        <button class="p-2 w-full text-left flex items-center hover:bg-gray-200">
-                            <span class="h-5 mr-2"><FaUserPlus /></span>
-                            Assign to athlete
-                        </button>
-                    </div>
-                {/if}
+                <div class="relative inline-block dropdown">
+                    <button class="flex items-center hover:bg-gray-400 rounded p-1" on:click={() => showFileMenu = !showFileMenu}>
+                        File
+                        <span class="h-3 mx-1"><FaCaretDown /></span>
+                    </button>
+                    {#if showFileMenu}
+                        <div class="fixed top-0 right-0 left-0 bottom-0 z-[114]" on:click={() => showFileMenu = !showFileMenu}></div>
+                        <div class="bg-gray-400 shadow-lg absolute w-56 origin-top-right p-3 z-[115]" on:click={() => setTimeout(() => showFileMenu = false, 100)}>
+<!--                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">-->
+<!--                                <span class="h-5 mr-2"><FaRegSave /></span>-->
+<!--                                Save-->
+<!--                            </button>-->
+                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200" on:click={() => showCreateProgram = true}>
+                                <span class="h-5 mr-2"><MdAdd /></span>
+                                New
+                            </button>
+                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200" on:click={makeACopy}>
+                                <span class="h-5 mr-2"><FaRegCopy /></span>
+                                Make a copy
+                            </button>
+                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200" on:click={generateCSV}>
+                                <span class="h-5 mr-2"><FaFileExport /></span>
+                                Export to CSV
+                            </button>
+                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200" on:click={() => $program.name ? showAssignAthlete = true : focusNameInput()}>
+                                <span class="h-5 mr-2"><FaUserPlus /></span>
+                                Assign to athlete
+                            </button>
+                        </div>
+                    {/if}
+                </div>
             </div>
         </nav>
     {/if}
     <header class="flex  {$isMobile ? 'flex-row' : 'flex-col'} p-3 items-center">
-        <input type="text"
-               class="bg-gray-300 p-1 {$isMobile ? 'w-11/12' : 'w-full'} mx-4 my-2 font-semibold"
-               placeholder="Program Name"
-               id="program-name-input"
-               bind:value={$program.name}
-        >
+        {#if $isMobile}
+            <input type="text"
+                   class="bg-gray-300 p-1 w-11/12 mx-4 my-2 font-semibold"
+                   placeholder="Program Name"
+                   id="program-name-input"
+                   bind:value={$program.name}
+            >
+        {/if}
         <ProgramSearch />
     </header>
     <div class="grid {$isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-4'} w-full p-3">

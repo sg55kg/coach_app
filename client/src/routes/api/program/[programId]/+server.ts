@@ -15,6 +15,9 @@ export const PUT: RequestHandler = async (event) => {
         const programData = await res.json()
         return new Response(JSON.stringify(programData))
     } catch (e) {
+        // if (e.status === 401) {
+        //     console.log('hey')
+        // }
         throw error(405, 'Could not update program')
     }
 }

@@ -68,6 +68,12 @@ public class ProgramController {
         return _programService.getProgramsByTeamId(id);
     }
 
+    @GetMapping("/coach/{coachId}/search")
+    public ResponseEntity<List<ProgramWithIds>> searchProgramsByName(@PathVariable UUID coachId, @RequestParam String name) {
+        logger.info("Searching for programs similar to: " + name);
+        return _programService.searchProgramsByName(coachId, name);
+    }
+
 //    @PutMapping("/{id}/day")
 //    public ResponseEntity<ProgramViewModel> updateProgramDay(@PathVariable UUID id, @RequestBody ExerciseRequest request) {
 //        return _programService.updateProgramDay(id, request);

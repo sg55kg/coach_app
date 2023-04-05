@@ -11,7 +11,7 @@
     const selectedExerciseIdx = getSelectedExerciseIdx()
 </script>
 
-<div class="bg-gray-200 border-l-2 border-textgrey w-full p-2" on:click={() => $selectedExerciseIdx = index}>
+<div class="bg-gray-200 border-l-2 border-textgrey w-full p-2 my-1" on:click={() => $selectedExerciseIdx = index}>
     {#if exercise.type === ExerciseType.EXERCISE}
         <h4>
             {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
