@@ -7,6 +7,7 @@
 	import {User} from "$lib/classes/user";
 	import {onMount} from "svelte";
 	import {goto} from "$app/navigation";
+	import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
 
 	export let data: LayoutServerData
 
@@ -96,9 +97,10 @@
 	<main class="w-screen m-0">
 		<slot />
 	</main>
-	<button id="add-btn" class="hidden absolute bottom-0">Install</button>
 	{:else}
-	<h1>Loading</h1>
+	<div class="w-screen h-screen flex items-center justify-center">
+		<LoadingSpinner spinnerColor="fill-yellow" width="16" height="16" />
+	</div>
 {/if}
 
 </div>

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import ProgramForm from "$lib/components/WriteProgram/ProgramForm.svelte";
     import type {Program, ProgramDTO} from "$lib/classes/program";
-    import {auth0Client, userDB} from "$lib/stores/authStore";
+    import {userDB} from "$lib/stores/authStore";
     import {ProgramService} from "$lib/service/ProgramService";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import {DisplayProgram} from "$lib/classes/program";
     import type {PageData} from './$types';
+    import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
 
     export let data: PageData
     let athleteId: string = ''
@@ -48,9 +48,10 @@
     <meta name="description" content="Create a new program" />
 </svelte:head>
 
-<div class="relative h-full overflow-hidden">
-    <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} showOverview={false} />
-</div>
+<!--<div class="relative h-full overflow-hidden">-->
+<!--    <ProgramForm athleteId={athleteId} handleSubmit={handleSubmit} showOverview={false} />-->
+<!--</div>-->
+<ProgramOverview />
 
 <style>
 

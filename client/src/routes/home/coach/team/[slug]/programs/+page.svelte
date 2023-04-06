@@ -1,7 +1,7 @@
 <script lang="ts">
 
 import {team} from "$lib/stores/teamStore.js";
-import ProgramOverview from "$lib/components/WriteProgram2/ProgramOverview.svelte";
+import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
 </script>
 
 <svelte:head>

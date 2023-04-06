@@ -7,7 +7,7 @@
     import MdContentPaste from 'svelte-icons/md/MdContentPaste.svelte'
     import FaLongArrowAltLeft from 'svelte-icons/fa/FaLongArrowAltLeft.svelte'
     import FaLongArrowAltRight from 'svelte-icons/fa/FaLongArrowAltRight.svelte'
-    import Starburst from "$lib/components/shared/animation/Starburst.svelte";
+    import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -23,7 +23,11 @@
         getSelectedDay,
         getDayClipboard,
         getProgram,
-        formatProgramDates
+        insertDayRight,
+        insertDayLeft,
+        clearExercises,
+        copyDay,
+        pasteDay
     } = getContext('program')
 
     const selectedDay = getSelectedDay()
@@ -46,72 +50,8 @@
         contextCoordinates = { x: e.clientX, y: e.clientY - 75 }
         showContext = true
     }
-    const copyDay = () => {
-        const dayCopy = JSON.parse(JSON.stringify(day)) as Day
-        dayCopy.id = ''
-        dayCopy.exercises.forEach((e, i) => e.id = '')
-        $dayClipboard = [dayCopy]
-        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-        showContext = false
-    }
 
-    const pasteDay = () => {
-        if ($dayClipboard.length < 1) {
-            document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-            showContext = false
 
-            return
-        }
-        program.update((prev) => {
-            console.log(prev)
-            let id = prev.days[idx].id
-            prev.days[idx] = {...$dayClipboard[0], id}
-            return prev
-        })
-        $program = $program
-        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-        formatProgramDates()
-        showContext = false
-    }
-
-    const insertDayLeft = () => {
-        const dayToInsert = new Day()
-        let updatedDays = []
-        $program.days.forEach((d, i) => {
-            if (idx === 0) {
-                updatedDays.push(dayToInsert)
-            }
-            updatedDays.push(d)
-            if (i === idx-1 && idx > 0) {
-                updatedDays.push(dayToInsert)
-            }
-
-        })
-        $program.days = updatedDays
-        showContext = false
-        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-        formatProgramDates()
-    }
-
-    const insertDayRight = () => {
-        const dayToInsert = new Day()
-        let updatedDays = []
-        if (idx === $program.days.length - 1) {
-            updatedDays = [...$program.days, dayToInsert]
-        } else {
-            $program.days.forEach((d, i) => {
-                if (i === idx+1) {
-                    updatedDays.push(dayToInsert)
-                }
-                updatedDays.push(d)
-            })
-        }
-        $program.days = updatedDays
-        showContext = false
-
-        document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-        formatProgramDates()
-    }
 
     onMount(() => {
         document.getElementById(`day-card-${idx}`).addEventListener('touchstart', (e) => {
@@ -196,17 +136,17 @@
     }}
          class="top-0 bottom-0 left-0 right-0 absolute z-20 bg-gray-300 opacity-50">
     </div>
-    <div class="fixed bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30">
-        <button class="p-4 py-6 text-lg font-semibold" on:click={copyDay}>
+    <div class="fixed bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30" on:click={() => setTimeout(() => showContext = false, 100)}>
+        <button class="p-4 py-6 text-lg font-semibold" on:click={() => {copyDay(idx); showContext = false}}>
             Copy Day
         </button>
-        <button class="p-4 py-6 text-lg font-semibold" on:click={pasteDay}>
+        <button class="p-4 py-6 text-lg font-semibold" on:click={() => {pasteDay(idx); showContext = false}}>
             Paste Day
         </button>
-        <button class="p-4 py-6 text-lg font-semibold" on:click={insertDayLeft}>
+        <button class="p-4 py-6 text-lg font-semibold" on:click={() => {insertDayLeft(idx); showContext = false}}>
             Insert Day Left
         </button>
-        <button class="p-4 py-6 text-lg font-semibold" on:click={insertDayRight}>
+        <button class="p-4 py-6 text-lg font-semibold" on:click={() => {insertDayRight(idx); showContext = false}}>
             Insert Day Right
         </button>
     </div>
@@ -215,22 +155,27 @@
 {#if showContext && !$isMobile}
     <div class="p-2 flex flex-col z-40 bg-gray-100 shadow-lg w-56 text-left"
          style="position: absolute; top: {contextCoordinates.y}px; left: {contextCoordinates.x}px"
+         on:click={() => setTimeout(() => showContext = false, 100)}
     >
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={copyDay}>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={() => {copyDay(idx)}}>
             <span class="h-6 w-6 mr-2 px-1 flex items-center"><FaRegCopy /></span>
             Copy Day
         </button>
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={pasteDay}>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={() => {pasteDay(idx)}}>
             <span class="h-5 w-6 mr-2 flex items-center"><MdContentPaste /></span>
             Paste Day
         </button>
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={insertDayLeft}>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={() => {insertDayLeft(idx)}}>
             <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltLeft /></span>
             Insert Day Left
         </button>
-        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={insertDayRight}>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={() => {insertDayRight(idx)}}>
             <span class="h-6 w-6 mr-2 flex items-center"><FaLongArrowAltRight /></span>
             Insert Day Right
+        </button>
+        <button class="px-4 py-1 flex items-center my-px hover:bg-gray-200" on:click={() => {clearExercises(idx)}}>
+            <span class="h-6 w-6 mr-2 flex items-center"><MdClearAll /></span>
+            Clear Exercises
         </button>
     </div>
 {/if}

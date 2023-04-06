@@ -5,10 +5,10 @@ import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
 const CACHE = `cache-${version}`
 
 const ASSETS = [
-   // '/', // Attention: might not be ideal for your use case - read more below.
+    '/', // Attention: might not be ideal for your use case - read more below.
     ...build,
     ...files,
-   // ...prerendered
+    ...prerendered
 ]
 
 self.addEventListener('install', (event) => {

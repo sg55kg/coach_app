@@ -1,13 +1,10 @@
 <script lang="ts">
-    import {onDestroy, onMount} from "svelte";
+    import {onDestroy} from "svelte";
     import {Program} from "$lib/classes/program";
-    import ProgramForm from "$lib/components/WriteProgram/ProgramForm.svelte";
     import {ProgramService} from "$lib/service/ProgramService";
-    import {auth0Client} from "$lib/stores/authStore";
     import {program, programError, programSuccess} from "$lib/stores/writeProgramStore";
     import dayjs from "dayjs";
-    import ProgramOverview from "$lib/components/WriteProgram2/ProgramOverview.svelte";
-    import MdClose from 'svelte-icons/md/MdClose.svelte'
+    import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
 
     export let data
     let reloading: boolean = false
