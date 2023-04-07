@@ -1,10 +1,10 @@
 <script lang="ts">
 
-    import {isMobile, userDB} from "$lib/stores/authStore.js";
+import {isMobile, userDB} from "$lib/stores/authStore.js";
 import dayjs from "dayjs";
 import AuthHeader from "$lib/components/AuthHeader.svelte";
 import ChatRoomComp from "$lib/components/Inbox/ChatRoomComp.svelte";
-    import {onDestroy, onMount} from "svelte";
+import {onDestroy, onMount} from "svelte";
 import {Channel, Socket} from 'phoenix'
 import {Team} from "$lib/classes/team";
 import type {ChatRoom, MessageDTO} from "$lib/classes/chat";
@@ -13,7 +13,7 @@ import {ChatService} from "$lib/service/ChatService";
 import MdClose from 'svelte-icons/md/MdClose.svelte'
 import {chatError, chatTimeout, notifications} from "$lib/stores/chatStore.js";
 import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
-    import type {PageServerData} from "../../../../.svelte-kit/types/src/routes/$types";
+import type {PageServerData} from "../../../../.svelte-kit/types/src/routes/$types";
 
 export let data: PageServerData
 let selectedChatId: string = ''

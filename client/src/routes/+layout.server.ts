@@ -2,7 +2,7 @@
 import type {LayoutServerLoad} from './$types';
 import jwtDecode from "jwt-decode";
 import {error, redirect} from "@sveltejs/kit";
-import {fetchUser} from "./api/auth/token/+server";
+import {_fetchUser} from "./api/auth/token/+server";
 
 
 export const prerender = false
@@ -26,7 +26,7 @@ export const load: LayoutServerLoad = async ({ cookies, params, url, locals }) =
     if (cookies.get('accessToken') && cookies.get('idToken')) {
         try {
             const user = jwtDecode(cookies.get('idToken')!)
-            const userData = await fetchUser(user, cookies.get('accessToken')!)
+            const userData = await _fetchUser(user, cookies.get('accessToken')!)
             return { user, userData }
         } catch (e) {
             cookies.delete('accessToken', { path: '/'})

@@ -55,7 +55,7 @@ public class Exercise {
     private int order;
     @Transient
     private final ExerciseType type = ExerciseType.EXERCISE;
-    @OneToMany(mappedBy = "topSet", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "topSet", cascade = {CascadeType.MERGE}, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<Exercise> dropSets = new ArrayList<>();
     @ManyToOne(cascade = CascadeType.MERGE)

@@ -24,7 +24,7 @@ export class Day implements IDay {
 
         day.id = dayDTO.id
         day.date = dayjs(dayDTO.date)
-        day.exercises = dayDTO.exercises.map(e => Exercise.createFrom(e))
+        day.exercises = dayDTO.exercises.map(e => Exercise.createFrom(e)).sort((a, b) => a.order - b.order)
         day.isRestDay = dayDTO.isRestDay
         day.warmUp = dayDTO.warmUp
 

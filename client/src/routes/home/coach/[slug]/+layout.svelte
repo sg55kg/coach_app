@@ -23,16 +23,7 @@
 </svelte:head>
 
 <slot />
-{#if $programError}
-    <div class="fixed bottom-0 p-2 m-2 border-red border-2 text-red rounded">
-        <p>{$programError}</p>
-    </div>
-{/if}
-{#if $programSuccess}
-    <div class="fixed bottom-0 p-2 m-2 border-green border-2 text-green rounded">
-        <p>{$programSuccess}</p>
-    </div>
-{/if}
+
 
 <style>
 
