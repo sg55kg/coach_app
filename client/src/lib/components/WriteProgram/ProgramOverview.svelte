@@ -163,6 +163,20 @@
         formatProgramDates()
     }
 
+    const deleteExercise = async (exercise: Exercise) => {
+        $programLoading = true
+        $programSuccess = ''
+        $programError = ''
+        try {
+            await ProgramService.deleteExercise(exercise)
+        } catch (e) {
+            console.log(e)
+            $programError = 'There was an error trying to delete this exercise'
+        } finally {
+            $programLoading = false
+        }
+    }
+
     setContext('program', {
         getProgram: () => program,
         getSelectedDay: () => selectedDay,
@@ -183,7 +197,8 @@
         insertDayRight,
         clearExercises,
         copyDay,
-        pasteDay
+        pasteDay,
+        deleteExercise
     })
 
     const generateCSV = () => {

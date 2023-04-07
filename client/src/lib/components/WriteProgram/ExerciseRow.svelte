@@ -8,24 +8,28 @@
    export let exercise: Exercise
    export let isDropSet: boolean = false
 
-   const setComplexType = () => {
-       exercise.type = ExerciseType.COMPLEX
-       exercise.nameArr = [exercise.name, '']
-       exercise.repArr = [exercise.repsPerSet, 0]
-       exercise.name = ''
-       exercise.repsPerSet = 0
+   const setComplexType = (ex: Exercise) => {
+       ex.type = ExerciseType.COMPLEX
+       ex.nameArr = [exercise.name, '']
+       ex.repArr = [exercise.repsPerSet, 0]
+       ex.name = ''
+       ex.repsPerSet = 0
+       ex.dropSets.forEach((d) => setComplexType(d))
+       return ex
    }
 
-   const removeComplexPart = (compIndex: number) => {
-       exercise.nameArr.splice(compIndex, 1)
-       exercise.repArr.splice(compIndex, 1)
-       if (exercise.nameArr.length === 1) {
-           exercise.type = ExerciseType.EXERCISE
-           exercise.name = exercise.nameArr[0]
-           exercise.repsPerSet = exercise.repArr[0]
-           exercise.nameArr = []
-           exercise.repArr = []
+   const removeComplexPart = (ex: Exercise, compIndex: number) => {
+       ex.nameArr.splice(compIndex, 1)
+       ex.repArr.splice(compIndex, 1)
+       if (ex.nameArr.length === 1) {
+           ex.type = ExerciseType.EXERCISE
+           ex.name = ex.nameArr[0]
+           ex.repsPerSet = ex.repArr[0]
+           ex.nameArr = []
+           ex.repArr = []
        }
+       ex.dropSets.forEach((e) => removeComplexPart(e, compIndex))
+       return ex
    }
 
    const toggleMaxWeight = (isMax: boolean) => {
@@ -49,41 +53,50 @@
                    bind:value={exercise.name}
             >
             <button class="col-span-1 flex items-center justify-center">
-                <span class="w-5 flex justify-center" on:click={setComplexType}>
+                <span class="w-5 flex justify-center" on:click={() => exercise = setComplexType(exercise)}>
                     <FaPlus />
                 </span>
             </button>
         {/if}
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="text-sm">Weight (kg)</label>
-            <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
-        </div>
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="text-sm">Sets</label>
-            <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
-        </div>
-        {#if exercise.isMaxReps}
-            <div class="col-span-2 flex items-center">
-                AMRAP
+        {#if exercise.isMax}
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Rep Max</label>
+                <input type="text" placeholder="Reps" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
             </div>
         {:else}
             <div class="col-span-2 flex flex-col items-end">
-                <label class="text-sm">Reps</label>
-                <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
+                <label class="text-sm">Weight (kg)</label>
+                <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
+            </div>
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Sets</label>
+                <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
+            </div>
+            {#if exercise.isMaxReps}
+                <div class="col-span-2 flex items-end text-center">
+                    <p class="w-full text-lg font-medium text-yellow-lt tracking-wide">AMRAP</p>
+                </div>
+            {:else}
+                <div class="col-span-2 flex flex-col items-end">
+                    <label class="text-sm">Reps</label>
+                    <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
+                </div>
+            {/if}
+        {/if}
+        <div class="{(!exercise.isMax && !exercise.isMaxReps) || exercise.isMaxReps ? 'col-span-2' : 'col-span-4'}"></div>
+        {#if !exercise.isMax}
+            <div class="col-span-2 flex flex-col items-end justify-center">
+                <label class="switch">
+                    <input type="checkbox" checked={exercise.isMaxReps} on:change={(e) => toggleMaxReps(e.target.checked)}>
+                    <span class="slider round"></span>
+                </label>
+                <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
             </div>
         {/if}
-        <div class="col-span-2"></div>
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="switch">
-                <input type="checkbox" on:change={(e) => toggleMaxReps(e.target.checked)}>
-                <span class="slider round"></span>
-            </label>
-            <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
-        </div>
         {#if !exercise.isMaxReps}
-            <div class="col-span-2 flex flex-col items-end">
+            <div class="col-span-2 flex flex-col items-end justify-center">
                 <label class="switch">
-                    <input type="checkbox" on:change={(e) => toggleMaxWeight(e.target.checked)}>
+                    <input type="checkbox" checked={exercise.isMax} on:change={(e) => toggleMaxWeight(e.target.checked)}>
                     <span class="slider round"></span>
                 </label>
                 <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
@@ -95,7 +108,7 @@
         {#if !isDropSet}
             {#each exercise.nameArr as name, idx}
                 <button class="col-span-1 flex items-center justify-center">
-                        <span class="w-5 flex justify-center" on:click={() => removeComplexPart(idx)}>
+                        <span class="w-5 flex justify-center" on:click={() => exercise = removeComplexPart(exercise, idx)}>
                             <MdClose />
                         </span>
                 </button>
@@ -112,28 +125,37 @@
             {/each}
         {/if}
         <div class="col-span-1"></div>
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="text-sm">Weight (kg)</label>
-            <input type="number" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full">
-        </div>
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="text-sm">Sets</label>
-            <input type="number" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full">
-        </div>
-        <div class="col-span-2 flex flex-col items-end">
-            <label class="text-sm">Reps</label>
-            {#each exercise.repArr as repGroup}
-                <input type="number" placeholder="" bind:value={repGroup} class="bg-gray-300 p-1 w-full mb-2">
-            {/each}
+        {#if !exercise.isMax}
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Weight (kg)</label>
+                <input type="number" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full">
+            </div>
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Sets</label>
+                <input type="number" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full">
+            </div>
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Reps</label>
+                {#each exercise.repArr as repGroup}
+                    <input type="number" placeholder="" bind:value={repGroup} class="bg-gray-300 p-1 w-full mb-2">
+                {/each}
+            </div>
+        {:else}
+            <div class="col-span-2 flex flex-col items-end">
+                <label class="text-sm">Rep Max</label>
+                {#each exercise.repArr as repGroup}
+                    <input type="number" placeholder="" bind:value={repGroup} class="bg-gray-300 p-1 w-full mb-2">
+                {/each}
+            </div>
+        {/if}
 
-        </div>
         <div class="col-span-4"></div>
         <div class="col-span-3 flex flex-col items-end">
             <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" checked={exercise.isMax} on:change={(e) => toggleMaxWeight(e.target.checked)}>
                 <span class="slider round"></span>
             </label>
-            <label class="text-sm">Sets x Reps</label>
+            <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
         </div>
     </div>
 {:else if exercise.type === ExerciseType.DURATION}

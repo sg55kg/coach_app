@@ -44,7 +44,9 @@
     }
 
     const addExercise = () => {
-        $selectedDay.exercises = [...$selectedDay.exercises, new Exercise()]
+        let newExercise = new Exercise()
+        newExercise.order = $selectedDay.exercises.length
+        $selectedDay.exercises = [...$selectedDay.exercises, newExercise]
         $program.days[$index].exercises = $selectedDay.exercises
         $program = $program
     }
@@ -92,9 +94,9 @@
             {:else}
                 {#each $selectedDay.exercises as exercise, idx}
                     {#if $exerciseIndex === idx}
-                        <ExpandedExercise bind:exercise={exercise} bind:expandedExerciseId={expandedExerciseId} />
+                        <ExpandedExercise bind:exercise={exercise} />
                     {:else}
-                        <ExerciseCard bind:exercise={exercise} bind:expandedExerciseId={expandedExerciseId} index={idx} />
+                        <ExerciseCard bind:exercise={exercise} index={idx} />
                     {/if}
                 {/each}
             {/if}

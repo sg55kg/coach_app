@@ -5,19 +5,18 @@
     import {getContext, onDestroy} from "svelte";
     import ExerciseRow from "$lib/components/WriteProgram/ExerciseRow.svelte";
 
-    export let expandedExerciseId: string = ' '
     export let exercise: Exercise
 
     const { getProgram, getSelectedDay, getSelectedExerciseIdx } = getContext('program')
     const program = getProgram()
     const selectedDay = getSelectedDay()
     const selectedExerciseIdx = getSelectedExerciseIdx()
-
     const addDropSet = () => {
         const newExercise = new Exercise()
         newExercise.type = exercise.type
         newExercise.name = exercise.name
         newExercise.nameArr = [...exercise.nameArr]
+        newExercise.order = exercise.dropSets.length
         exercise.dropSets = [...exercise.dropSets, newExercise]
         // $program.days[selectedExerciseIdx]
     }
@@ -33,7 +32,7 @@
     })
 </script>
 
-<div class="absolute right-1 left-1 bg-gray-200 flex flex-col items-center lg:p-8 z-20">
+<div class="absolute right-1 left-1 bg-gray-200 h-[70vh] overflow-y-auto flex flex-col items-center lg:p-8 z-20">
     <ExerciseRow bind:exercise={exercise} />
     {#each exercise.dropSets as dropSet}
         <ExerciseRow bind:exercise={dropSet} isDropSet={true} />

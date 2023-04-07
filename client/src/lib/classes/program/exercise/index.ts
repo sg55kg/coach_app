@@ -64,14 +64,14 @@ export class Exercise {
 
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
-        console.log('exercise data',data)
-
+        console.log('Exercise data', data.order)
         exercise.id = data.id
         exercise.isMaxReps = data.isMaxReps
         exercise.name = data.name
         exercise.weight = data.weight
         exercise.sets = data.sets
         exercise.repsPerSet = data.repsPerSet
+        exercise.order = data.order
         if (data.type === ExerciseType.COMPLEX) {
             exercise.repCompletedArr = data.repCompletedArr.split(',').map(v => parseInt(v))
             exercise.repArr = data.repArr.split(',').map(v => parseInt(v))
@@ -89,7 +89,7 @@ export class Exercise {
         exercise.setsCompleted = data.setsComplete
         exercise.dropSetPercent = data.dropSetPercent
         exercise.actualIntesity = data.actualIntensity
-        exercise.dropSets = data.dropSets.map(s => Exercise.createFrom(s))
+        exercise.dropSets = data.dropSets.map(s => Exercise.createFrom(s)).sort((a, b) => a.order - b.order)
         exercise.type = data.type
         exercise.equipment = data.equipment
         exercise.unilateral = data.unilateral
