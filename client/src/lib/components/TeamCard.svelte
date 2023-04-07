@@ -58,7 +58,7 @@
         {/if}
     </ul>
     <div class="mt-2">
-        <a class="text-link underline" href={`/home/coach/team/${team.id}`}>View</a>
+        <a class="text-link underline" href={`/home/coach/team/${team.id}/athletes`}>View</a>
     </div>
 </div>
 

@@ -134,4 +134,15 @@ public class ProgramRepository {
         List<ProgramWithIds> result = cb1.getResultList();
         return result;
     }
+
+    @Transactional
+    public List<ProgramWithIds> searchProgramsByName(UUID coachId, String name) {
+        CriteriaBuilder<Program> cb = cbf.create(em, Program.class);
+        CriteriaBuilder<ProgramWithIds> cb1 = evm.applySetting(EntityViewSetting.create(ProgramWithIds.class), cb)
+                .where("name").like(false).value("%" + name + "%").noEscape()
+                .where("coach.id").eq(coachId);
+
+        List<ProgramWithIds> result = cb1.getResultList();
+        return result;
+    }
 }

@@ -11,6 +11,8 @@ public interface ProgramWithIds extends ProgramViewModel {
 
     @Mapping("athlete.id")
     UUID getAthleteId();
+    @Mapping("athlete.name")
+    String getAthleteName();
     @Mapping("coach.id")
     UUID getCoachId();
     @Mapping("team.id")

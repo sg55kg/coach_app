@@ -11,8 +11,6 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
         })
-        console.log(res.status)
-        console.log(res.statusText)
         const programData = await res.json()
         return { programDto: programData }
     } catch (e) {

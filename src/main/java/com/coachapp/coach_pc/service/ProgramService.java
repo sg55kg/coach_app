@@ -77,6 +77,12 @@ public class ProgramService {
         return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
     }
 
+    public ResponseEntity<List<ProgramWithIds>> searchProgramsByName(UUID coachId, String name) {
+        List<ProgramWithIds> dbPrograms = programRepo.searchProgramsByName(coachId, name);
+
+        return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
+    }
+
 //    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
 //        Optional<Program> optional = _programRepo.findById(id);
 //

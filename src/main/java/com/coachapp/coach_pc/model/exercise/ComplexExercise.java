@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -59,6 +60,7 @@ public class ComplexExercise extends Exercise {
         List<String> repStrArr = List.of(reps.split(","));
         List<Integer> repArr = repStrArr
                 .stream()
+                .filter(Objects::nonNull)
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         return repArr;
@@ -71,6 +73,7 @@ public class ComplexExercise extends Exercise {
         List<String> repCompletedStrArr = List.of(repsCompleted.split(","));
         List<Integer> repCompletedArr = repCompletedStrArr
                 .stream()
+                .filter(n -> !n.equals("null"))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         return repCompletedArr;
