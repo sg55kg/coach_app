@@ -7,11 +7,7 @@
     import {onMount} from "svelte";
     import {team} from "$lib/stores/teamStore";
 
-
     $: athleteList = $team ? $team.athletes : []
-$: console.log(athleteList)
-
-$:console.log($team)
 </script>
 
 <svelte:head>

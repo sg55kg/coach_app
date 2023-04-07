@@ -70,7 +70,6 @@
                 document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
                 setSelectedDay($program.days[idx])
                 setSelectedDayIdx(idx)
-                console.log($selectedDay)
             }
         })
     })

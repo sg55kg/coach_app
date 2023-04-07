@@ -51,7 +51,6 @@ export class ProgramService {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(program)
             })
-            console.log(res.status)
             if (res.status > 299) {
                 throw new Error(res.statusText)
             }
@@ -110,8 +109,6 @@ export class ProgramService {
         })
 
         if (res.status > 205) {
-            console.log(res.status)
-            console.log(res.statusText)
             throw new Error('Could not retrieve results')
         }
         const dtos: ProgramDTO[] = await res.json()

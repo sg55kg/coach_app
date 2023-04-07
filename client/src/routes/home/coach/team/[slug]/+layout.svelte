@@ -19,7 +19,6 @@
             console.log(e)
         }
     }
-    console.log($page.url.pathname.includes('athletes'))
 </script>
 
 <div class="flex flex-col items-center">

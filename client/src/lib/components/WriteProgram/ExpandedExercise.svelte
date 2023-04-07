@@ -18,7 +18,6 @@
         newExercise.nameArr = [...exercise.nameArr]
         newExercise.order = exercise.dropSets.length
         exercise.dropSets = [...exercise.dropSets, newExercise]
-        // $program.days[selectedExerciseIdx]
     }
 
     onDestroy(() => {
