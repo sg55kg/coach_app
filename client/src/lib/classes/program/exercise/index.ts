@@ -64,7 +64,6 @@ export class Exercise {
 
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
-        console.log('Exercise data', data.order)
         exercise.id = data.id
         exercise.isMaxReps = data.isMaxReps
         exercise.name = data.name
