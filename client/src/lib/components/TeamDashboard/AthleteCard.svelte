@@ -9,6 +9,7 @@
     import FaRegPlusSquare from 'svelte-icons/fa/FaRegPlusSquare.svelte'
     import {isMobile} from "$lib/stores/authStore.js";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
+    import {team} from "$lib/stores/teamStore.js";
 
     export let athlete: AthleteData
 
@@ -145,15 +146,15 @@
         <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>
+                <a class="flex" href={`/home/coach/team/${$team.id}/programs`}>
                     <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
                 </a>
             </div>
-            <div class="h-6 text-link hover:text-link-shade duration-300">
-                <a class="flex" href={`/home/coach/athlete-stats/${athlete.id}`}>
-                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>
-                </a>
-            </div>
+<!--            <div class="h-6 text-link hover:text-link-shade duration-300">-->
+<!--                <a class="flex" href={`/home/coach/athlete-stats/${athlete.id}`}>-->
+<!--                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>-->
+<!--                </a>-->
+<!--            </div>-->
         </div>
     {/if}
 </div>
