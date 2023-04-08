@@ -106,46 +106,46 @@
     const saveExerciseChanges = async (updatedExercise: Exercise) => {
         loadingAthleteProgram.set(true)
         if (updatedExercise.weightCompleted > 0) {
-            let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
-
-            if (recordKey !== '') {
-                // set the records to a plain object to copy to DTO format later
-                const updatedAthleteData = {
-                    ...$userDB.athleteData,
-                    records: $userDB.athleteData.records.map(r => {
-                        return { ...r, records: Object.fromEntries(r.records)}
-                    })
-                } as AthleteData
-
-                console.log('beforeRecords', updatedAthleteData)
-                // grab the most recent record
-                const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
-
-                updatedAthleteData.records.push({
-                    ...newRecord,
-                    id: null,
-                    lastUpdated: dayjs($currentDay!.date),
-                    ...newRecord.records,
-                    [recordKey]: updatedExercise.weightCompleted
-                } as AthleteRecord)
-                console.log('updatedRecords',updatedAthleteData.records)
-
-                try {
-                    const res = await UserService.updateAthleteRecords(
-                        updatedAthleteData.records[updatedAthleteData.records.length-1],
-                        $userDB.athleteData.id
-                    )
-                    userDB.update(prev => {
-                        prev!.athleteData!.records = res
-                        return prev
-                    })
-                    isNewPersonalBest = true
-                    isPersonalBest = false
-                    console.log(res)
-                } catch (e) {
-                    console.log(e)
-                }
-            }
+            // let recordKey = weightIsNewPersonalBest(updatedExercise, $userDB.athleteData.records[$userDB.athleteData.records.length - 1])
+            //
+            // if (recordKey !== '') {
+            //     // set the records to a plain object to copy to DTO format later
+            //     const updatedAthleteData = {
+            //         ...$userDB.athleteData,
+            //         records: $userDB.athleteData.records.map(r => {
+            //             return { ...r, records: Object.fromEntries(r.records)}
+            //         })
+            //     } as AthleteData
+            //
+            //     console.log('beforeRecords', updatedAthleteData)
+            //     // grab the most recent record
+            //     const newRecord = updatedAthleteData.records[updatedAthleteData.records.length-1]
+            //
+            //     updatedAthleteData.records.push({
+            //         ...newRecord,
+            //         id: null,
+            //         lastUpdated: dayjs($currentDay!.date),
+            //         ...newRecord.records,
+            //         [recordKey]: updatedExercise.weightCompleted
+            //     } as AthleteRecord)
+            //     console.log('updatedRecords',updatedAthleteData.records)
+            //
+            //     try {
+            //         const res = await UserService.updateAthleteRecords(
+            //             updatedAthleteData.records[updatedAthleteData.records.length-1],
+            //             $userDB.athleteData.id
+            //         )
+            //         userDB.update(prev => {
+            //             prev!.athleteData!.records = res
+            //             return prev
+            //         })
+            //         isNewPersonalBest = true
+            //         isPersonalBest = false
+            //         console.log(res)
+            //     } catch (e) {
+            //         console.log(e)
+            //     }
+            // }
         }
 
         try {
@@ -233,7 +233,7 @@
     }
 
     onMount(() => {
-        isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
+        // isPersonalBest = weightIsTiedPersonalBest(exercise, $userDB!.athleteData!.records[$userDB!.athleteData!.records.length-1]) !== ''
         repsPerSetComplete = (exercise.totalRepsCompleted > 0 && exercise.setsCompleted > 0) ? Math.round(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
         setsComplete = exercise.setsCompleted > 0 ? exercise.setsCompleted : 0
 
@@ -242,7 +242,6 @@
             secondsPerSet = exercise.secondsPerSet - (minutesPerSet * 60)
         }
     })
-    $: console.log(exercise)
 
 </script>
 
@@ -359,16 +358,16 @@
                 </button>
             {/if}
         </div>
-        {#if isPersonalBest}
-            <div class="m-2 p-2 flex justify-center">
-                <p class="text-yellow">Current Record</p>
-            </div>
-        {/if}
-        {#if isNewPersonalBest}
-            <div class="m-2 p-2 flex justify-center">
-                <p class="text-green">New Record!</p>
-            </div>
-        {/if}
+        <!--{#if isPersonalBest}-->
+        <!--    <div class="m-2 p-2 flex justify-center">-->
+        <!--        <p class="text-yellow">Current Record</p>-->
+        <!--    </div>-->
+        <!--{/if}-->
+        <!--{#if isNewPersonalBest}-->
+        <!--    <div class="m-2 p-2 flex justify-center">-->
+        <!--        <p class="text-green">New Record!</p>-->
+        <!--    </div>-->
+        <!--{/if}-->
         {#if exercise?.isComplete && exercise?.weightCompleted > 0}
             <div class="h-1 absolute bottom-0 w-full left-0 bg-green"></div>
         {:else if exercise?.isComplete}
