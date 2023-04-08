@@ -18,6 +18,13 @@
        return ex
    }
 
+   const addToComplex = (ex: Exercise, nameIndex: number) => {
+       ex.nameArr.splice(nameIndex+1, 0, '')
+       ex.repArr.splice(nameIndex+1, 0, 0)
+       ex.dropSets.forEach((d) => addToComplex(d, nameIndex))
+       return ex
+   }
+
    const removeComplexPart = (ex: Exercise, compIndex: number) => {
        ex.nameArr.splice(compIndex, 1)
        ex.repArr.splice(compIndex, 1)
@@ -118,7 +125,7 @@
                        bind:value={exercise.nameArr[idx]}
                 >
                 <button class="col-span-1 flex items-center justify-center">
-                        <span class="w-5 flex justify-center">
+                        <span class="w-5 flex justify-center" on:click={() => exercise = addToComplex(exercise, idx)}>
                             <FaPlus />
                         </span>
                 </button>
