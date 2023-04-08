@@ -39,7 +39,7 @@
             if (isPressing) {
                 showContext = true
             }
-        }, 500) : null
+        }, 750) : null
 
     const handleBrowserContext = (e: PointerEvent) => {
         if (showContext) {
@@ -92,7 +92,7 @@
          }
      }}
      id="day-card-{idx}"
-     class="bg-gray-200 border-l-2 border-green aspect-square hover:cursor-pointer hover:scale-105 overflow-y-auto"
+     class="bg-gray-200 border-l-2 {$isMobile ? 'mx-8' : ''} border-green aspect-square hover:cursor-pointer hover:scale-105 overflow-y-auto"
 >
     <div class="w-full flex justify-between py-1 px-2">
         <h3 class="font-semibold text-lg">{idx+1}</h3>
@@ -130,10 +130,10 @@
         if (!isPressing && showContext) {
             e.preventDefault()
             document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-            showContext = false
+            setTimeout(() => showContext = false, 100)
         }
     }}
-         class="top-0 bottom-0 left-0 right-0 absolute z-20 bg-gray-300 opacity-50">
+         class="top-0 bottom-0 left-0 right-0 fixed z-20 bg-gray-300 opacity-50">
     </div>
     <div class="fixed bottom-0 right-0 left-0 grid grid-cols-2 bg-gray-400 z-30" on:click={() => setTimeout(() => showContext = false, 100)}>
         <button class="p-4 py-6 text-lg font-semibold" on:click={() => {copyDay(idx); showContext = false}}>
