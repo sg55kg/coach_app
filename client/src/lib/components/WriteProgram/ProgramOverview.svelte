@@ -369,14 +369,14 @@
         {/if}
         <ProgramSearch />
     </header>
-    <div class="grid {$isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-4'} w-full p-3">
+    <div class="grid {$isMobile ? 'grid-cols-1 gap-10' : 'grid-cols-7 gap-4'} w-full p-3">
         {#each $program.days as day, index (day.id+index)}
             <DayCard bind:day={day}
                      idx={index}
                      bind:contextCoordinates={contextCoordinates}
             />
         {/each}
-        <div class="bg-gray-200 aspect-square flex justify-center items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>
+        <div class="bg-gray-200 aspect-square flex justify-center {$isMobile ? 'mx-10' : ''} items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>
             <div class="h-7 w-7 text-yellow">
                 <FaPlus />
             </div>
