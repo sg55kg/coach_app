@@ -1,14 +1,18 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    import {onMount, setContext} from "svelte";
     import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
-    import IncompleteExercise from "$lib/components/CurrentProgram/IncompleteExercise.svelte";
-    import {currentDay, currentProgram} from "$lib/stores/athleteProgramStore";
     import {goto} from "$app/navigation";
     import {Program, type ProgramDTO} from "$lib/classes/program";
-    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
-    import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
+    import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
+    import type {Writable} from "svelte/store";
+    import {Day} from "../../../lib/classes/program/day";
+    import {writable} from "svelte/store";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
 
+
+    const currentDay: Writable<Day> = writable(new Day())
+    const currentProgram: Writable<Program> = writable(new Program())
 
     const fetchCurrentProgram = async () => {
         if (!$userDB?.athleteData?.currentProgram) {
@@ -21,6 +25,7 @@
             program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             const today = dayjs()
             const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
+
             if (day) {
                 day.exercises.sort((a, b) => a.order - b.order)
                 $currentDay = day
@@ -30,6 +35,11 @@
             console.log(e)
         }
     }
+
+    setContext('athlete-program', {
+        getCurrentProgram: () => currentProgram,
+        getCurrentDay: () => currentDay
+    })
 
     onMount(async () => {
         if ($userDB && (!$userDB?.athleteData )) {
@@ -46,23 +56,26 @@
     </div>
     <div class="lg:m-4">
         <div class="flex flex-col items-center lg:items-start">
-            <h3 class="text-2xl font-bold tracking-wider">My Program</h3>
-            <h5 class="my-3 text-xl">{dayjs().format('dddd, MMMM D')}</h5>
+<!--            <h3 class="text-2xl font-bold tracking-wider">My Program</h3>-->
+<!--            <h5 class="my-3 text-xl">{dayjs().format('dddd, MMMM D')}</h5>-->
         </div>
 
         {#await fetchCurrentProgram()}
-            <p>Loading your program...</p>
+            <div class="w-screen p-4 flex items-center justify-center">
+                <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
+            </div>
         {:then e}
-            {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
-                <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
-                    {#each $currentDay.exercises as exercise, index (exercise.id)}
-                        {#if exercise.type === ExerciseType.EXERCISE}
-                            <IncompleteExercise bind:exercise={exercise} />
-                        {:else}
-                            <AthleteComplexExercise bind:exercise={exercise} />
-                        {/if}
-                    {/each}
-                </div>
+            {#if $currentDay.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
+<!--                <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">-->
+<!--                    {#each $currentDay.exercises as exercise, index (exercise.id)}-->
+<!--                        {#if exercise.type === ExerciseType.EXERCISE}-->
+<!--                            <IncompleteExercise bind:exercise={exercise} />-->
+<!--                        {:else}-->
+<!--                            <AthleteComplexExercise bind:exercise={exercise} />-->
+<!--                        {/if}-->
+<!--                    {/each}-->
+<!--                </div>-->
+                <AthleteExpandedDay />
             {:else if $currentDay && $currentDay?.isRestDay}
                 <div>
                     Rest Day

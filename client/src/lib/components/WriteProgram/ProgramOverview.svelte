@@ -32,6 +32,7 @@
     let showCreateProgram: boolean = false
     let showAssignAthlete: boolean = false
     let showFileMenu: boolean = false
+    let daysContainer: HTMLDivElement
 
     const program: Writable<Program> = writable(selectedProgram)
     const selectedDay: Writable<Day | undefined> = writable(undefined)
@@ -369,10 +370,11 @@
         {/if}
         <ProgramSearch />
     </header>
-    <div class="grid {$isMobile ? 'grid-cols-1 gap-10' : 'grid-cols-7 gap-4'} w-full p-3">
+    <div class="grid {$isMobile ? 'grid-cols-1 gap-10' : 'grid-cols-7 gap-4'} w-full p-3" bind:this={daysContainer}>
         {#each $program.days as day, index (day.id+index)}
             <DayCard bind:day={day}
                      idx={index}
+                     container={daysContainer}
                      bind:contextCoordinates={contextCoordinates}
             />
         {/each}

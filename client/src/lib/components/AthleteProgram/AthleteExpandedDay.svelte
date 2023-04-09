@@ -1,7 +1,71 @@
 <script lang="ts">
+    import {Day} from "../../classes/program/day";
+    import {getContext} from "svelte";
+    import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
+    import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
+    import {isMobile} from "$lib/stores/authStore.js";
+    import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
+    import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
+
+    const { getCurrentProgram, getCurrentDay } = getContext('athlete-program')
+    const currentProgram = getCurrentProgram()
+    const currentDay = getCurrentDay()
+
+    let selectedExerciseIdx: number = -1
 
 </script>
 
-
+<div class="bg-gray-300 w-full">
+    <header class="flex flex-col p-2 w-full">
+        <h2 class="text-3xl font-semibold text-center">{$currentProgram.name}</h2>
+        <div class="flex items-center justify-center w-full">
+            <div class="relative flex items-center justify-center {$isMobile ? 'w-8/12' : 'w-4/12'} p-2">
+                <button class="h-10 absolute left-0 text-yellow w-6">
+                    <FaAngleLeft />
+                </button>
+                <h3 class="text-yellow text-2xl font-medium">{$currentDay.date.format('dddd, MMMM DD')}</h3>
+                <button class="h-10 absolute right-0 text-yellow w-6">
+                    <FaAngleRight />
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="flex flex-col w-full">
+        <h4 class="p-1 text-lg">Warm Up</h4>
+        <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
+            No warm up entered for today
+        </div>
+    </div>
+    <div class="flex flex-col w-full">
+        <h4 class="p-1 text-lg">Exercises</h4>
+        {#each $currentDay.exercises as exercise, idx}
+            {#if selectedExerciseIdx === idx}
+                <AthleteExpandedExercise bind:exercise={exercise}
+                                         bind:selectedExerciseIdx={selectedExerciseIdx}
+                />
+            {:else}
+                <AthleteExerciseCard bind:exercise={exercise}
+                                     exerciseIndex={idx}
+                                     bind:selectedExerciseIdx={selectedExerciseIdx}
+                />
+            {/if}
+        {/each}
+    </div>
+    <div class="flex flex-col w-full">
+        <h4 class="p-1 text-lg">Notes from your coach:</h4>
+        <p class="text-textblue p-2"><i>Test</i></p>
+    </div>
+    <div class="flex flex-col items-center">
+        <h3 class="p-1 text-xl font-semibold">0/1 Exercises Complete</h3>
+        <div class="flex justify-center items-center p-2 w-full">
+            <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
+                Skip Day
+            </button>
+            <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm">
+                Mark Day Finished
+            </button>
+        </div>
+    </div>
+</div>
 
 <style></style>

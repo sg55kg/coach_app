@@ -16,6 +16,7 @@
 
     let isPressing: boolean = false
     let dayStatus: 'completed' | 'changed' | 'skipped' | 'unfinished' = 'unfinished'
+    export let container: HTMLDivElement
 
     const {
         setSelectedDay,
@@ -47,7 +48,10 @@
             contextCoordinates = { x: -1, y: -1 }
             return
         }
-        contextCoordinates = { x: e.clientX, y: e.clientY - 75 }
+        let rect = container.getBoundingClientRect()
+        console.log(rect)
+        console.log(e.clientY + container.scrollTop + rect.top - document.body.getBoundingClientRect().top)
+        contextCoordinates = { x: e.clientX, y: e.clientY + container.clientHeight + rect.top - document.body.getBoundingClientRect().top - 100 }
         showContext = true
     }
 
