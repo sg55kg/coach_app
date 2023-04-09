@@ -410,7 +410,6 @@
                      idx={index}
                      container={daysContainer}
                      bind:contextCoordinates={contextCoordinates}
-                     container={daysContainer}
             />
         {/each}
         <div class="bg-gray-200 aspect-square flex justify-center {$isMobile ? 'mx-10' : ''} items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>
