@@ -48,10 +48,7 @@
             contextCoordinates = { x: -1, y: -1 }
             return
         }
-        let rect = container.getBoundingClientRect()
-        console.log(rect)
-        console.log(e.clientY + container.scrollTop + rect.top - document.body.getBoundingClientRect().top)
-        contextCoordinates = { x: e.clientX, y: e.clientY + container.clientHeight + rect.top - document.body.getBoundingClientRect().top - 100 }
+        contextCoordinates = { x: e.clientX, y: e.clientY + container.scrollTop - container.getBoundingClientRect().top }
         showContext = true
     }
 
