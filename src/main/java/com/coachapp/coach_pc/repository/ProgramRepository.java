@@ -51,7 +51,10 @@ public class ProgramRepository {
 
     @Transactional
     public void deleteById(UUID id) {
-        em.remove(id);
+        Program program = em.find(Program.class, id);
+        if (program != null) {
+            em.remove(program);
+        }
     }
 
     @Transactional
