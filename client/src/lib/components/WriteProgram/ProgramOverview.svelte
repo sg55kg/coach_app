@@ -24,6 +24,10 @@
     import MdAdd from 'svelte-icons/md/MdAdd.svelte'
     import dayjs from "dayjs";
     import {goto} from "$app/navigation";
+    import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
+    import ProgramStats from "../Stats/ProgramStats.svelte";
+    import {team} from "../../stores/teamStore";
+    import {userDB} from "../../stores/authStore";
 
     export let selectedProgram = new Program()
 
@@ -32,6 +36,7 @@
     let showCreateProgram: boolean = false
     let showAssignAthlete: boolean = false
     let showFileMenu: boolean = false
+    let daysContainer: HTMLDivElement
 
     const program: Writable<Program> = writable(selectedProgram)
     const selectedDay: Writable<Day | undefined> = writable(undefined)
@@ -304,13 +309,38 @@
         await createProgram(programCopy)
     }
 
+    const deleteProgram = async () => {
+        $programLoading = true
+        $programSuccess = ''
+        $programError = ''
+        try {
+            await ProgramService.deleteProgram($program.id)
+            $programSuccess = 'Successfully deleted ' + $program.name + '. Redirecting you to home...'
+            $userDB.coachData.programs = $userDB.coachData.programs.filter(p => p.id !== $program.id)
+            if ($team) {
+                 setTimeout( async () => {
+                    await goto(`/home/coach/team/${$team.id}/programs`)
+                 }, 2000)
+            } else {
+                 setTimeout( async () => {
+                    await goto('/home')
+                 }, 2000)
+            }
+        } catch (e) {
+            console.log(e)
+            $programError = 'Error, can\'t delete ' + $program.name + ' at this time.'
+        } finally {
+            $programLoading = false
+        }
+    }
+
 
     $: $programError ? setTimeout(() => {programError.set('')}, 5000) : null
     $: $programSuccess ? setTimeout(() => {programSuccess.set('')}, 5000) : null
 
 </script>
 
-<div class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
+<div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
     {#if !$isMobile}
         <nav class="relative bg-gray-100 flex flex-col p-2">
             <div>
@@ -331,7 +361,7 @@
                     </button>
                     {#if showFileMenu}
                         <div class="fixed top-0 right-0 left-0 bottom-0 z-[114]" on:click={() => showFileMenu = !showFileMenu}></div>
-                        <div class="bg-gray-400 shadow-lg absolute w-56 origin-top-right p-3 z-[115]" on:click={() => setTimeout(() => showFileMenu = false, 100)}>
+                        <div class="bg-gray-400 shadow-lg absolute w-56 origin-top-right p-2 z-[115]" on:click={() => setTimeout(() => showFileMenu = false, 100)}>
 <!--                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">-->
 <!--                                <span class="h-5 mr-2"><FaRegSave /></span>-->
 <!--                                Save-->
@@ -351,6 +381,11 @@
                             <button class="p-2 w-full text-left flex items-center hover:bg-gray-200" on:click={() => $program.name ? showAssignAthlete = true : focusNameInput()}>
                                 <span class="h-5 mr-2"><FaUserPlus /></span>
                                 Assign to athlete
+                            </button>
+                            <hr>
+                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 text-red-shade" on:click={deleteProgram}>
+                                <span class="h-5 mr-2"><FaTrashAlt /></span>
+                                Delete Program
                             </button>
                         </div>
                     {/if}
@@ -374,6 +409,7 @@
             <DayCard bind:day={day}
                      idx={index}
                      bind:contextCoordinates={contextCoordinates}
+                     container={daysContainer}
             />
         {/each}
         <div class="bg-gray-200 aspect-square flex justify-center {$isMobile ? 'mx-10' : ''} items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>
