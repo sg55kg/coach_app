@@ -14,7 +14,7 @@ export interface ExerciseDTO {
     totalRepsCompleted: number
     comments: ExerciseComment[]
     isComplete: boolean
-    setsComplete: number
+    setsCompleted: number
     order: number
     effortIntensity: EffortIntensity
     unilateral: boolean
@@ -61,6 +61,7 @@ export class Exercise {
     dropSetPercent: number = 0
     actualIntesity: EffortIntensity = EffortIntensity.EASY
     isMaxReps: boolean = false
+    repsPerSetComplete: number = 0
 
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
@@ -71,6 +72,8 @@ export class Exercise {
         exercise.sets = data.sets
         exercise.repsPerSet = data.repsPerSet
         exercise.order = data.order
+        exercise.isComplete = data.isComplete
+        exercise.weightCompleted = data.weightCompleted
         if (data.type === ExerciseType.COMPLEX) {
             exercise.repCompletedArr = data.repCompletedArr.split(',').map(v => parseInt(v))
             exercise.repArr = data.repArr.split(',').map(v => parseInt(v))
@@ -85,7 +88,7 @@ export class Exercise {
         }
 
         exercise.totalRepsCompleted = data.totalRepsCompleted
-        exercise.setsCompleted = data.setsComplete
+        exercise.setsCompleted = data.setsCompleted
         exercise.dropSetPercent = data.dropSetPercent
         exercise.actualIntesity = data.actualIntensity
         exercise.dropSets = data.dropSets.map(s => Exercise.createFrom(s)).sort((a, b) => a.order - b.order)

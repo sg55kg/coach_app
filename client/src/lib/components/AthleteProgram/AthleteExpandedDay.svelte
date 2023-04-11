@@ -7,12 +7,25 @@
     import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
     import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
 
-    const { getCurrentProgram, getCurrentDay } = getContext('athlete-program')
+    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
     const currentDay = getCurrentDay()
+    const loading = getAthleteProgramLoading()
 
     let selectedExerciseIdx: number = -1
-
+    $: exercisesComplete = () => {
+        let count = 0
+        for (const e of $currentDay.exercises) {
+            if (e.isComplete) {
+                if (e.dropSets.length > 0 && e.dropSets.reduce((a = e.isComplete, b) => a && b.isComplete)) {
+                    count++
+                } else {
+                    count++
+                }
+            }
+        }
+        return count
+    }
 </script>
 
 <div class="bg-gray-300 w-full">
@@ -53,18 +66,20 @@
     </div>
     <div class="flex flex-col w-full">
         <h4 class="p-1 text-lg">Notes from your coach:</h4>
-        <p class="text-textblue p-2"><i>Test</i></p>
+        <p class="text-textblue p-2"><i>No notes entered for today</i></p>
     </div>
     <div class="flex flex-col items-center">
-        <h3 class="p-1 text-xl font-semibold">0/1 Exercises Complete</h3>
-        <div class="flex justify-center items-center p-2 w-full">
-            <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
-                Skip Day
-            </button>
-            <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm">
-                Mark Day Finished
-            </button>
-        </div>
+        <h3 class="p-2 text-xl font-semibold {exercisesComplete() ? 'text-green' : ''}">{exercisesComplete()}/{$currentDay.exercises.length} Exercises Complete</h3>
+        {#if exercisesComplete() !== $currentDay.exercises.length}
+            <div class="flex justify-center items-center p-2 w-full">
+                <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
+                    Skip Day
+                </button>
+                <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm" on:click={() => markDayCompleteAsWritten($currentDay, $currentProgram)}>
+                    Mark Day Finished
+                </button>
+            </div>
+        {/if}
     </div>
 </div>
 

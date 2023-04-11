@@ -145,7 +145,10 @@
         const day = $program.days[idx]
         const dayCopy = JSON.parse(JSON.stringify(day)) as Day
         dayCopy.id = ''
-        dayCopy.exercises.forEach((e, i) => e.id = '')
+        dayCopy.exercises.forEach((e, i) => {
+            e.id = ''
+            e.dropSets.forEach(d => d.id = '')
+        })
         $dayClipboard = [dayCopy]
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
     }
@@ -390,6 +393,11 @@
                         </div>
                     {/if}
                 </div>
+                <a href="/home/coach/program/{$program.id}/stats">
+                    <button>
+                        Program Stats
+                    </button>
+                </a>
             </div>
         </nav>
     {/if}

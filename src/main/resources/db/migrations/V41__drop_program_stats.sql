@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS athlete_program_stats;

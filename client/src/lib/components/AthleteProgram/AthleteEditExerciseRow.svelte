@@ -1,12 +1,14 @@
 <script lang="ts">
     import {Exercise} from "../../classes/program/exercise";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
+    import {getContext} from "svelte";
 
     export let exercise: Exercise
 
     let repsPerSetCompleted: number = 0
+    exercise.repsPerSetComplete = exercise.isComplete ? Math.floor(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
 
-    $: repMaxesPerSetCompleted = exercise.type === ExerciseType.EXERCISE && exercise.isMaxReps ? Array(exercise.sets) : []
+    $: repMaxesPerSetCompleted = exercise.type === ExerciseType.EXERCISE && exercise.isMaxReps ? Array(exercise.sets).fill(0) : []
 </script>
 
 {#if exercise.type === ExerciseType.EXERCISE}
@@ -42,7 +44,7 @@
             </div>
             <div class="flex flex-col w-24">
                 <p class="text-sm">Reps</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={repsPerSetCompleted}>
+                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.repsPerSetComplete}>
             </div>
         {/if}
     </div>
