@@ -14,14 +14,17 @@
        ex.repArr = [exercise.repsPerSet, 0]
        ex.name = ''
        ex.repsPerSet = 0
-       ex.dropSets.forEach((d) => setComplexType(d))
+       ex.dropSets.forEach((d) => d = setComplexType(d))
+       console.log('ex', ex)
        return ex
    }
 
    const addToComplex = (ex: Exercise, nameIndex: number) => {
+
        ex.nameArr.splice(nameIndex+1, 0, '')
        ex.repArr.splice(nameIndex+1, 0, 0)
-       ex.dropSets.forEach((d) => addToComplex(d, nameIndex))
+       ex.dropSets.forEach((d) => d = addToComplex(d, nameIndex))
+       console.log('ex', ex)
        return ex
    }
 
