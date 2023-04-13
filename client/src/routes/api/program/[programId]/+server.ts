@@ -18,6 +18,7 @@ export const PUT: RequestHandler = async (event) => {
         // if (e.status === 401) {
         //     console.log('hey')
         // }
+        console.log(e)
         throw error(405, 'Could not update program')
     }
 }
