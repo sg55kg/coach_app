@@ -6,10 +6,14 @@
     import {Chart} from "chart.js/auto";
     import {getRelativePosition} from "chart.js/helpers";
     import dayjs from "dayjs";
+    import type {ChartConfiguration} from "chart.js";
 
     let overallStats: AthleteProgramStats
     let weeklyStats: AthleteProgramStats[]
     let selectedWeek: AthleteProgramStats
+
+    let loadingDaily: boolean = false
+    let selectedWeekDays: AthleteProgramStats[] | undefined
 
     const fetchStats = async () => {
         if (overallStats) return
@@ -37,6 +41,24 @@
             return res
         } catch (e) {
             console.log(e)
+        }
+    }
+
+    const fetchDailyStats = async () => {
+        if (!selectedWeek) return
+        loadingDaily = true
+        selectedWeekDays = undefined
+
+        const programId = $page.params.id
+        try {
+            const res = await ProgramService.getDailyProgramStats(programId, selectedWeek.startDate, selectedWeek.endDate)
+            console.log(res)
+            selectedWeekDays = res
+            return res
+        } catch (e) {
+            console.log(e)
+        } finally {
+            loadingDaily = false
         }
     }
 
@@ -88,10 +110,11 @@
                     const label = chart.scales.x.getLabelForValue(dataX)
                     const labelArr = label.split(' - ')
                     selectedWeek = weeklyStats.find(s => s.startDate.isSame(dayjs(labelArr[0]), 'date'))
+                    fetchDailyStats()
                 }
             },
 
-        } as any)
+        } as ChartConfiguration)
     }
 
     const renderOverallIntensityChart = (weeks: AthleteProgramStats[]) => {
@@ -142,14 +165,184 @@
                     const label = chart.scales.x.getLabelForValue(dataX)
                     const labelArr = label.split(' - ')
                     selectedWeek = weeklyStats.find(s => s.startDate.isSame(dayjs(labelArr[0]), 'date'))
+                    fetchDailyStats()
                 }
             }
-        } as any)
+        } as ChartConfiguration)
     }
 
+    const renderDailyVolumeChart = (days: AthleteProgramStats[]) => {
+        const canvas = <HTMLCanvasElement>document.getElementById('daily-total-volume')
+        const labels = days.map(d => d.startDate.format('ddd, MMM DD'))
+        const plannedData = days.map(d => d.plannedTotalVolume)
+        const actualData = days.map(d => d.actualTotalVolume)
+
+        const chart = new Chart(canvas, {
+            data: {
+                datasets: [{
+                    type: 'bar',
+                    label: 'Planned Daily Volume',
+                    data: plannedData,
+                    order: 2,
+                    backgroundColor: '#0ea5e9'
+                }, {
+                    type: 'line',
+                    label: 'Actual Daily Volume',
+                    data: actualData,
+                    order: 1,
+                    backgroundColor: '#10b981',
+                    borderColor: '#10b981',
+                }],
+                labels: labels
+            },
+            options: {
+                plugins: {
+                    tooltip: true,
+                    title: {
+                        display: true,
+                        text: 'Daily Volume',
+                        color: 'black'
+                    },
+                    legend: {
+                        labels: { color: 'black' }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        },
+
+                    },
+                    x: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        }
+                    }
+                }
+            }
+        } as ChartConfiguration)
+    }
+
+    const renderDailyAvgIntensityChart = (days: AthleteProgramStats[]) => {
+        const canvas = <HTMLCanvasElement>document.getElementById('daily-avg-intensity')
+        const labels = days.map(d => d.startDate.format('ddd, MMM DD'))
+        const plannedData = days.map(d => d.plannedAverageIntensity)
+        const actualData = days.map(d => d.actualAverageIntensity)
+
+        const chart = new Chart(canvas, {
+            data: {
+                datasets: [{
+                    type: 'bar',
+                    label: 'Planned Daily Avg. Intensity',
+                    data: plannedData,
+                    order: 2,
+                    backgroundColor: '#0ea5e9'
+                }, {
+                    type: 'line',
+                    label: 'Actual Daily Avg. Intensity',
+                    data: actualData,
+                    order: 1,
+                    backgroundColor: '#10b981',
+                    borderColor: '#10b981'
+                }],
+                labels: labels
+            },
+            options: {
+                plugins: {
+                    tooltip: true,
+                    title: {
+                        display: true,
+                        text: 'Daily Avg. Intensity',
+                        color: 'black'
+                    },
+                    legend: {
+                        labels: { color: 'black' }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        },
+
+                    },
+                    x: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        }
+                    }
+                }
+            }
+        } as ChartConfiguration)
+    }
+
+    const renderDailyRepsChart = (days: AthleteProgramStats[]) => {
+        const canvas = <HTMLCanvasElement>document.getElementById('daily-total-reps')
+        const labels = days.map(d => d.startDate.format('ddd, MMM DD'))
+        const plannedData = days.map(d => d.plannedTotalReps)
+        const actualData = days.map(d => d.actualTotalReps)
+
+        const chart = new Chart(canvas, {
+            data: {
+                datasets: [{
+                    type: 'bar',
+                    label: 'Planned Daily Reps',
+                    data: plannedData,
+                    order: 2,
+                    backgroundColor: '#0ea5e9'
+                }, {
+                    type: 'line',
+                    label: 'Actual Daily Reps',
+                    data: actualData,
+                    order: 1,
+                    backgroundColor: '#10b981',
+                    borderColor: '#10b981',
+                }],
+                labels: labels,
+            },
+            options: {
+                plugins: {
+                    tooltip: true,
+                    title: {
+                        display: true,
+                        text: 'Daily Reps',
+                        color: 'black'
+                    },
+                    legend: {
+                        labels: { color: 'black' },
+                    },
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        },
+
+                    },
+                    x: {
+                        ticks: {
+                            fontColor: 'black',
+                            color: 'black'
+                        }
+                    }
+                }
+            },
+        } as ChartConfiguration)
+    }
 
     $: weeklyStats  ? setTimeout(() => renderOverallTotalVolumeChart(weeklyStats), 100) : null
     $: weeklyStats ? setTimeout(() => renderOverallIntensityChart(weeklyStats), 100) : null
+    $: selectedWeekDays ? setTimeout(() => {
+        renderDailyAvgIntensityChart(selectedWeekDays!)
+        renderDailyVolumeChart(selectedWeekDays!)
+        renderDailyRepsChart(selectedWeekDays!)
+    }, 100) : null
 
 </script>
 
@@ -164,11 +357,11 @@
             <div class="p-4">
                 <h2 class="text-2xl text-textblue font-semibold">{stats[0].programName} Overall</h2>
                 <div class="flex w-screen">
-                    <div class="p-2 w-11/12 flex" id="overall-total-volume-container">
-                        <div class="p-2 w-1/2">
+                    <div class="p-2 w-11/12 flex">
+                        <div class="p-2 w-1/2" id="overall-total-volume-container">
                             <canvas id="overall-total-volume"></canvas>
                         </div>
-                        <div class="p-2 w-1/2">
+                        <div class="p-2 w-1/2" id="overall-average-intensity-container">
                             <canvas id="overall-average-intensity"></canvas>
                         </div>
                     </div>
@@ -180,7 +373,7 @@
                     <div class="col-span-1 flex flex-col">
                         {#each stats as week}
                             <div class="{selectedWeek === week ? 'bg-gray-400' : 'bg-gray-200'} p-2 my-2 border-l-2 border-l-white cursor-pointer"
-                                 on:click={() => selectedWeek = week}
+                                 on:click={() => { selectedWeek = week; fetchDailyStats() }}
                             >
                                 <h3 class="text-lg {selectedWeek === week ? 'text-yellow-lt' : 'text-textblue'} font-bold py-2">
                                     {week.startDate.format('dddd DD MMM')} - {week.endDate.format('dddd DD MMM')}
@@ -207,6 +400,23 @@
                                 <h3 class="text-xl font-medium text-yellow-lt p-3">
                                     {selectedWeek.startDate.format('dddd DD MM')} - {selectedWeek.endDate.format('dddd DD MM')}
                                 </h3>
+                                {#if loadingDaily}
+                                    <div class="w-full h-full flex justify-center items-center">
+                                        <LoadingSpinner spinnerColor="fill-yellow" />
+                                    </div>
+                                {:else if selectedWeekDays}
+                                    <div class="w-full h-full flex flex-col items-center">
+                                        <div class="w-full h-[15em] flex justify-center" id="daily-total-volume-container">
+                                            <canvas id="daily-total-volume"></canvas>
+                                        </div>
+                                        <div class="w-full h-[15em] flex justify-center" id="daily-avg-intensity-container">
+                                            <canvas id="daily-avg-intensity"></canvas>
+                                        </div>
+                                        <div class="w-full h-[15em] flex justify-center" id="daily-total-reps-container">
+                                            <canvas id="daily-total-reps"></canvas>
+                                        </div>
+                                    </div>
+                                {/if}
                             </div>
                         {:else}
                             <div class="flex justify-center items-center">Select a week to view more</div>

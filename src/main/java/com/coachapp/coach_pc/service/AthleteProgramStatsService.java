@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,15 @@ public class AthleteProgramStatsService {
 
     public ResponseEntity<List<AthleteProgramStatsView>> getAthleteProgramStatsByWeek(UUID programId) {
         List<AthleteProgramStatsView> stats = repository.getWeeklyStatsByProgramId(programId);
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
+
+    public  ResponseEntity<List<AthleteProgramStatsView>> getAthleteProgramStatsByDay(
+            UUID programId,
+            OffsetDateTime startDate,
+            OffsetDateTime endDate
+    ) {
+        List<AthleteProgramStatsView> stats = repository.getDailyBreakdowns(programId, startDate, endDate);
         return new ResponseEntity<>(stats, HttpStatus.OK);
     }
 }

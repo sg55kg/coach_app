@@ -1,5 +1,9 @@
 package com.coachapp.coach_pc.repository;
 
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.view.EntityViewManager;
+import com.blazebit.persistence.view.EntityViewSetting;
 import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
@@ -20,9 +24,13 @@ import java.util.UUID;
 public class AthleteProgramStatsRepository {
 
     private final EntityManager em;
+    private final CriteriaBuilderFactory cbf;
+    private final EntityViewManager evm;
 
-    public AthleteProgramStatsRepository(EntityManager em) {
+    public AthleteProgramStatsRepository(EntityManager em, CriteriaBuilderFactory cbf, EntityViewManager evm) {
         this.em = em;
+        this.cbf = cbf;
+        this.evm = evm;
     }
 
     public AthleteProgramStatsView getStatsByProgramId(UUID programId) {
@@ -155,6 +163,67 @@ public class AthleteProgramStatsRepository {
         }
         return result;
     }
+
+    public List<AthleteProgramStatsView> getDailyBreakdowns(UUID programId, OffsetDateTime startDate, OffsetDateTime endDate) {
+        List<Day> days = cbf.create(em, Day.class)
+                .where("program.id").eq(programId)
+                .where("date").between(startDate).and(endDate)
+                .getResultList();
+
+        List<AthleteProgramStatsView> result = new ArrayList<>();
+
+        for (Day day : days) {
+            AthleteProgramStatsView currentStats = new AthleteProgramStatsView();
+            OffsetDateTime currentDate = day.getDate();
+
+            int totalRepsPlanned = 0;
+            int totalRepsActual = 0;
+            double totalVolumePlanned = 0.0;
+            double totalVolumeActual = 0.0;
+            double averageIntensityPlanned = 0.0;
+            double averageIntensityActual = 0.0;
+            double kValuePlanned = 0.0;
+            double kValueActual = 0.0;
+            double inolPlanned = 0.0;
+            double inolActual = 0.0;
+
+            for (Exercise e : day.getExercises()) {
+                if (e.getType() != ExerciseType.EXERCISE) {
+                    continue;
+                }
+                totalRepsPlanned += formatDouble(e.getRepsPerSet() * e.getSets());
+                totalRepsActual += formatDouble(e.getTotalRepsCompleted());
+                totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
+                totalVolumeActual += formatDouble((double)e.getTotalRepsCompleted() * e.getWeightCompleted());
+            }
+
+            averageIntensityPlanned = totalVolumePlanned > 0 ? formatDouble(totalVolumePlanned / totalRepsPlanned) : 0.0;
+            averageIntensityActual = totalVolumeActual > 0 ? formatDouble(totalVolumeActual / totalRepsActual) : 0.0;
+
+            // TODO: potentially rename this property so stats can be used on a program or day level
+            currentStats.setProgramId(day.getId());
+
+            currentStats.setActualAverageIntensity(averageIntensityActual);
+            currentStats.setPlannedAverageIntensity(averageIntensityPlanned);
+            currentStats.setActualTotalReps(totalRepsActual);
+            currentStats.setPlannedTotalReps(totalRepsPlanned);
+            currentStats.setActualTotalVolume(totalVolumeActual);
+            currentStats.setPlannedTotalVolume(totalVolumePlanned);
+            currentStats.setActualKValue(kValueActual);
+            currentStats.setPlannedKValue(kValuePlanned);
+            currentStats.setActualInol(inolActual);
+            currentStats.setPlannedInol(inolPlanned);
+            currentStats.setStartDate(currentDate);
+            currentStats.setEndDate(currentDate);
+
+            result.add(currentStats);
+        }
+
+        return result;
+    }
+
+    // TODO: Add helper function to break complex exercises into regular exercises
+    // Each item in repArr/NameArr will become a regular exercise with the same weights across
 
     private double formatDouble(double d) {
         DecimalFormat df = new DecimalFormat("#.#####");

@@ -2,9 +2,11 @@ package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.service.AthleteProgramStatsService;
 import com.coachapp.coach_pc.view.programStats.AthleteProgramStatsView;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,5 +28,14 @@ public class ProgramStatsController {
     @GetMapping("{programId}/weekly")
     public ResponseEntity<List<AthleteProgramStatsView>> getProgramStatsByWeek(@PathVariable UUID programId) {
         return service.getAthleteProgramStatsByWeek(programId);
+    }
+
+    @GetMapping("{programId}/daily")
+    public ResponseEntity<List<AthleteProgramStatsView>> getProgramStatsByDay(
+            @PathVariable UUID programId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate
+    ) {
+        return service.getAthleteProgramStatsByDay(programId, startDate, endDate);
     }
 }

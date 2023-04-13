@@ -6,6 +6,7 @@ import type {Exercise} from "$lib/classes/program/exercise";
 import type {ExerciseComment} from "$lib/classes/program/exercise";
 import type {AthleteProgramStatsDTO} from "../classes/program/stats";
 import {AthleteProgramStats} from "../classes/program/stats";
+import type {Dayjs} from "dayjs";
 
 
 export class ProgramService {
@@ -141,6 +142,19 @@ export class ProgramService {
 
         const dtos: AthleteProgramStatsDTO[] = await res.json()
         console.log('dtos', dtos)
+        return dtos.map(d => AthleteProgramStats.createFrom(d))
+    }
+
+    static getDailyProgramStats = async (programId: string, startDate: Dayjs, endDate: Dayjs) => {
+        const res = await fetch(`/api/stats/${programId}/daily?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
+            method: 'GET'
+        })
+
+        if (res.status > 205) {
+            throw new Error('Could not retrieve daily stats')
+        }
+
+        const dtos: AthleteProgramStatsDTO[] = await res.json()
         return dtos.map(d => AthleteProgramStats.createFrom(d))
     }
 }
