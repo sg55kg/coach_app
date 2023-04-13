@@ -12,10 +12,12 @@
     const selectedDay = getSelectedDay()
     const selectedExerciseIdx = getSelectedExerciseIdx()
     const addDropSet = () => {
+
         const newExercise = new Exercise()
         newExercise.type = exercise.type
         newExercise.name = exercise.name
         newExercise.nameArr = [...exercise.nameArr]
+        newExercise.repArr = [...exercise.repArr]
         newExercise.order = exercise.dropSets.length
         exercise.dropSets = [...exercise.dropSets, newExercise]
     }
