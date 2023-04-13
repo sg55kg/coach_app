@@ -8,9 +8,11 @@ import com.coachapp.coach_pc.view.programStats.AthleteProgramStatsView;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,13 +98,17 @@ public class AthleteProgramStatsRepository {
         double inolPlanned = 0.0;
         double inolActual = 0.0;
 
-        for (Day day : program.getDays()) {
+        List<Day> days = program.getDays().stream().sorted(Comparator.comparing(Day::getDate)).toList();
+        for (Day day : days) {
             if (dayCount == 7) {
+                dayCount = 0;
                 result.add(currentStats);
                 startDate = day.getDate();
                 currentStats = new AthleteProgramStatsView();
                 totalRepsPlanned = 0;
                 totalRepsActual = 0;
+                totalVolumePlanned = 0.0;
+                totalVolumeActual = 0.0;
                 averageIntensityPlanned = 0.0;
                 averageIntensityActual = 0.0;
                 kValuePlanned = 0.0;
@@ -117,14 +123,14 @@ public class AthleteProgramStatsRepository {
                 if (e.getType() != ExerciseType.EXERCISE) {
                     continue;
                 }
-                totalRepsPlanned += e.getRepsPerSet() * e.getSets();
-                totalRepsActual += e.getTotalRepsCompleted();
-                totalVolumePlanned += (((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
-                totalVolumeActual += (double)e.getTotalRepsCompleted() * e.getWeightCompleted();
+                totalRepsPlanned += formatDouble(e.getRepsPerSet() * e.getSets());
+                totalRepsActual += formatDouble(e.getTotalRepsCompleted());
+                totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
+                totalVolumeActual += formatDouble((double)e.getTotalRepsCompleted() * e.getWeightCompleted());
             }
 
-            averageIntensityPlanned = totalVolumePlanned > 0 ? totalVolumePlanned / totalRepsPlanned : 0.0;
-            averageIntensityActual = totalVolumeActual > 0 ? totalVolumeActual / totalRepsActual : 0.0;
+            averageIntensityPlanned = totalVolumePlanned > 0 ? formatDouble(totalVolumePlanned / totalRepsPlanned) : 0.0;
+            averageIntensityActual = totalVolumeActual > 0 ? formatDouble(totalVolumeActual / totalRepsActual) : 0.0;
 
             currentStats.setProgramId(programId);
             currentStats.setActualAverageIntensity(averageIntensityActual);
@@ -148,5 +154,12 @@ public class AthleteProgramStatsRepository {
             }
         }
         return result;
+    }
+
+    private double formatDouble(double d) {
+        DecimalFormat df = new DecimalFormat("#.#####");
+        String formatted = df.format(d);
+
+        return Double.parseDouble(formatted);
     }
 }

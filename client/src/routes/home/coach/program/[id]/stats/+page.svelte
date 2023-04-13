@@ -45,7 +45,15 @@
         const labels = weeks.map(w => w.startDate.format('MM/DD/YY') + ' - ' + w.endDate.format('MM/DD/YY'))
         const plannedData = weeks.map(w => w.plannedTotalVolume)
         const actualData = weeks.map(w => w.actualTotalVolume)
-        const plannedColors = weeks.map(w => dayjs().diff(w.startDate, 'days') >= 0 && w.endDate.valueOf() > Date.now() ? '#fde577' : '#9333ea')
+        const plannedColors = weeks.map(w => {
+            if(dayjs().diff(w.startDate, 'days') >= 0 && w.endDate.valueOf() > Date.now()) {
+                return '#fde577'
+            } else if (w.startDate.valueOf() > Date.now()) {
+                return '#505360'
+            } else {
+                return '#9333ea'
+            }
+        })
 
         const chart = new Chart(canvas, {
             data: {
@@ -67,7 +75,12 @@
             },
             options: {
                 plugins: {
-                    tooltip: true
+                    tooltip: true,
+                    title: {
+                        display: true,
+                        text: 'Total Volume',
+                        color: '#ADBDD2'
+                    }
                 },
                 onClick: (e) => {
                     const pos = getRelativePosition(e, chart as Chart)
@@ -86,7 +99,15 @@
         const labels = weeks.map(w => w.startDate.format('MM/DD/YY') + ' - ' + w.endDate.format('MM/DD/YY'))
         const plannedData = weeks.map(w => w.plannedAverageIntensity)
         const actualData = weeks.map(w => w.actualAverageIntensity)
-        const plannedColors = weeks.map(w => dayjs().diff(w.startDate, 'days') >= 0 && w.endDate.valueOf() > Date.now() ? '#fde577' : '#9333ea')
+        const plannedColors = weeks.map(w => {
+            if(dayjs().diff(w.startDate, 'days') >= 0 && w.endDate.valueOf() > Date.now()) {
+                return '#fde577'
+            } else if (w.startDate.valueOf() > Date.now()) {
+                return '#505360'
+            } else {
+                return '#9333ea'
+            }
+        })
 
         const chart = new Chart(canvas, {
             data: {
@@ -108,7 +129,12 @@
             },
             options: {
                 plugins: {
-                    tooltip: true
+                    tooltip: true,
+                    title: {
+                        display: true,
+                        text: 'Average Intensity',
+                        color: '#ADBDD2'
+                    }
                 },
                 onClick: (e) => {
                     const pos = getRelativePosition(e, chart as Chart)
@@ -138,11 +164,11 @@
             <div class="p-4">
                 <h2 class="text-2xl text-textblue font-semibold">{stats[0].programName} Overall</h2>
                 <div class="flex w-screen">
-                    <div class="p-2 w-full flex" id="overall-total-volume-container">
-                        <div class="p-2 w-1/3">
+                    <div class="p-2 w-11/12 flex" id="overall-total-volume-container">
+                        <div class="p-2 w-1/2">
                             <canvas id="overall-total-volume"></canvas>
                         </div>
-                        <div class="p-2 w-1/3">
+                        <div class="p-2 w-1/2">
                             <canvas id="overall-average-intensity"></canvas>
                         </div>
                     </div>
