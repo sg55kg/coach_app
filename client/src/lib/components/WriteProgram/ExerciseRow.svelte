@@ -15,7 +15,6 @@
        ex.name = ''
        ex.repsPerSet = 0
        ex.dropSets.forEach((d) => d = setComplexType(d))
-       console.log('ex', ex)
        return ex
    }
 
@@ -24,7 +23,6 @@
        ex.nameArr.splice(nameIndex+1, 0, '')
        ex.repArr.splice(nameIndex+1, 0, 0)
        ex.dropSets.forEach((d) => d = addToComplex(d, nameIndex))
-       console.log('ex', ex)
        return ex
    }
 
@@ -44,6 +42,8 @@
 
    const toggleMaxWeight = (isMax: boolean) => {
        exercise.isMax = isMax
+       exercise.weight = 0
+       exercise.sets = 1
    }
 
    const toggleMaxReps = (isMaxReps: boolean) => {

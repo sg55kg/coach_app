@@ -8,6 +8,7 @@
     import FaLongArrowAltLeft from 'svelte-icons/fa/FaLongArrowAltLeft.svelte'
     import FaLongArrowAltRight from 'svelte-icons/fa/FaLongArrowAltRight.svelte'
     import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
+    import CalendarCard from "$lib/components/shared/layout/CalendarCard.svelte";
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -84,16 +85,16 @@
     }
 }} />
 
-<div on:dragstart|preventDefault
-     on:contextmenu|preventDefault={handleBrowserContext}
-     on:click={() => {
+<CalendarCard
+     onContextmenu={handleBrowserContext}
+     onClick={() => {
          if(!$isMobile) {
              setSelectedDay(day)
              setSelectedDayIdx(idx)
          }
      }}
-     id="day-card-{idx}"
-     class="bg-gray-200 border-l-2 {$isMobile ? 'mx-8' : ''} border-green aspect-square hover:cursor-pointer hover:scale-105 overflow-y-auto"
+     ID="day-card-{idx}"
+     borderColor="border-green"
 >
     <div class="w-full flex justify-between py-1 px-2">
         <h3 class="font-semibold text-lg">{idx+1}</h3>
@@ -104,28 +105,34 @@
     <div class="px-2 py-1">
         <ul class="text-sm">
             {#if $program.days[idx]}
-                {#each $program.days[idx]?.exercises as exercise, idx (exercise?.id+idx)}
-                    {#if exercise.type === ExerciseType.EXERCISE}
-                        <h4>
-                            {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
-                        </h4>
-                    {:else if exercise.type === ExerciseType.COMPLEX}
-                        <h4>
-                            {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-                        </h4>
-                    {:else if exercise.type === ExerciseType.DURATION}
-                        <h4>Test</h4>
-                    {:else}
-                        <h4>Test</h4>
-                    {/if}
-                {/each}
+                {#if $program.days[idx].isRestDay}
+                    <div class="text-center w-full">
+                        <h4 class="text-lg font-medium text-textblue py-2">Rest Day</h4>
+                    </div>
+                {:else}
+                    {#each $program.days[idx]?.exercises as exercise, idx (exercise?.id+idx)}
+                        {#if exercise.type === ExerciseType.EXERCISE}
+                            <h4>
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
+                            </h4>
+                        {:else if exercise.type === ExerciseType.COMPLEX}
+                            <h4>
+                                {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
+                            </h4>
+                        {:else if exercise.type === ExerciseType.DURATION}
+                            <h4>Test</h4>
+                        {:else}
+                            <h4>Test</h4>
+                        {/if}
+                    {/each}
+                {/if}
             {/if}
 
         </ul>
 
     </div>
 
-</div>
+</CalendarCard>
 {#if showContext && $isMobile}
     <div on:click={(e) => {
         if (!isPressing && showContext) {

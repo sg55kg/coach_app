@@ -61,34 +61,22 @@
         <h1 class="font-bold text-xl w-fit">Welcome {$userDB?.username ? $userDB.username : ''}</h1>
     </div>
     <div class="lg:m-4">
-        <div class="flex flex-col items-center lg:items-start">
-<!--            <h3 class="text-2xl font-bold tracking-wider">My Program</h3>-->
-<!--            <h5 class="my-3 text-xl">{dayjs().format('dddd, MMMM D')}</h5>-->
-        </div>
-
         {#await fetchCurrentProgram()}
             <div class="w-screen p-4 flex items-center justify-center">
                 <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
             </div>
         {:then e}
             {#if $currentDay.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
-<!--                <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">-->
-<!--                    {#each $currentDay.exercises as exercise, index (exercise.id)}-->
-<!--                        {#if exercise.type === ExerciseType.EXERCISE}-->
-<!--                            <IncompleteExercise bind:exercise={exercise} />-->
-<!--                        {:else}-->
-<!--                            <AthleteComplexExercise bind:exercise={exercise} />-->
-<!--                        {/if}-->
-<!--                    {/each}-->
-<!--                </div>-->
                 <AthleteExpandedDay />
             {:else if $currentDay && $currentDay?.isRestDay}
-                <div>
+                <div class="flex flex-col">
                     Rest Day
+                    <a class="text-link font-medium text-md" href="/home/athlete/program">View Full Program</a>
                 </div>
             {:else}
-                <div class="py-4 text-center md:text-left">
+                <div class="py-4 text-center md:text-left flex flex-col">
                     No programming available for today
+                    <a class="text-link font-medium text-md" href="/home/athlete/program">View Full Program</a>
                 </div>
             {/if}
         {:catch e}

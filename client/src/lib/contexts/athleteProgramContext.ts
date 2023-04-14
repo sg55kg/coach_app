@@ -2,7 +2,7 @@
 import type {Writable} from "svelte/store";
 import {Program} from "../classes/program";
 import {writable} from "svelte/store";
-import {Day} from "../classes/program/day";
+import type {Day} from "../classes/program/day";
 import {ExerciseType} from "../classes/program/exercise/enums";
 import {ProgramService} from "../service/ProgramService";
 import type {Exercise} from "../classes/program/exercise";
@@ -26,7 +26,8 @@ export class ExerciseMaxRepsError extends Error {
 }
 
 let currentProgram: Writable<Program> = writable(new Program())
-let currentDay: Writable<Day> = writable(new Day())
+let currentDay: Writable<Day | undefined> = writable(undefined)
+let currentDayIdx: Writable<number> = writable(-1)
 let athleteProgramLoading: Writable<boolean> = writable(false)
 let athleteProgramSuccess: Writable<string> = writable('')
 let athleteProgramError: Writable<Error | undefined> = writable()
@@ -137,6 +138,7 @@ const markExerciseFieldsComplete = (e: Exercise) => {
 export const athleteProgramContext = {
     getCurrentProgram: () => currentProgram,
     getCurrentDay: () => currentDay,
+    getCurrentDayIdx: () => currentDayIdx,
     getAthleteProgramLoading: () => athleteProgramLoading,
     getAthleteProgramError: () => athleteProgramError,
     getAthleteProgramSuccess: () => athleteProgramSuccess,
