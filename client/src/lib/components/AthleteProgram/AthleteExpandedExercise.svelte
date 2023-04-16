@@ -94,11 +94,17 @@
                            bind:value={row.totalRepsCompleted}
                     >
                 {:else}
-                    <h5>{row.weight}kg - {exercise.sets} sets of {exercise.repsPerSet} reps</h5>
+                    <h5>{row.weight}kg - {row.sets} sets of {row.repsPerSet} reps</h5>
                 {/if}
             {/each}
         {:else if exercise.type === ExerciseType.COMPLEX}
-            <h3 class="text-lg font-semibold text-textblue">{exercise.nameArr.join('+')}</h3>
+            <h3 class="text-lg font-semibold text-textblue">{exercise.nameArr.join(' + ')}</h3>
+            {#each [exercise, ...exercise.dropSets] as row}
+                {#if row.isMax}
+                {:else}
+                    <h5>{row.weight}kg - {row.sets} sets of {row.repArr.join(' + ')}</h5>
+                {/if}
+            {/each}
         {:else if exercise.type === ExerciseType.DURATION}
             <h3>Test</h3>
         {:else if exercise.type === ExerciseType.ACCESSORY}
@@ -113,7 +119,7 @@
             <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm"
                 on:click={() => markExerciseCompleteAsWritten(exercise, $currentDay, $currentProgram)}
             >
-                Mark Complete As Written
+                {exercise.weightCompleted ? 'Mark Complete' : 'Mark Complete As Written'}
             </button>
             <button class="mx-2 p-2 text-red-shade" on:click={() => skipExercise(exercise, $currentDay, $currentProgram)}>Skip Exercise</button>
         </div>

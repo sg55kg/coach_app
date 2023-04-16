@@ -79,10 +79,10 @@
                 <p class="text-sm">Sets</p>
                 <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.setsCompleted}>
             </div>
-            <div>
+            <div class="flex flex-col">
                 <p class="text-sm">Reps</p>
                 {#each exercise.repArr as complexRep, i}
-                    <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.repCompletedArr[i]}>
+                    <input type="number" class="bg-gray-300 p-1 rounded my-1" bind:value={exercise.repCompletedArr[i]}>
                 {/each}
             </div>
         {/if}

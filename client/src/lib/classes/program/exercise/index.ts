@@ -25,9 +25,9 @@ export interface ExerciseDTO {
     secondsPerSetCompleted: number
     type: ExerciseType
     dropSets: ExerciseDTO[]
-    repArr: string
-    nameArr: string
-    repCompletedArr: string
+    repArr: number[] | string
+    nameArr: string[] | string
+    repCompletedArr: number[] | string
     dropSetPercent: number
     actualIntensity: string
 }
@@ -76,9 +76,10 @@ export class Exercise {
         exercise.isComplete = data.isComplete
         exercise.weightCompleted = data.weightCompleted
         if (data.type === ExerciseType.COMPLEX) {
-            exercise.repCompletedArr = data.repCompletedArr.split(',').map(v => parseInt(v))
-            exercise.repArr = data.repArr.split(',').map(v => parseInt(v))
-            exercise.nameArr = data.nameArr.split(',')
+            console.log(data)
+            exercise.repCompletedArr = typeof(data.repCompletedArr) === 'string' ? data.repCompletedArr.split(',').map(r => parseInt(r)) : data.repCompletedArr
+            exercise.repArr = typeof(data.repArr) === 'string' ? data.repArr.split(',').map(r => parseInt(r)) : data.repArr
+            exercise.nameArr = typeof(data.nameArr) === 'string' ? data.nameArr.split(',') : data.nameArr
         }
         exercise.isMax = data.isMax
         if (data.type === ExerciseType.DURATION) {

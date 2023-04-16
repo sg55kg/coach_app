@@ -82,11 +82,12 @@ const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, progr
         program.days = program.days.map(d => d.id === day.id ? day : d)
         currentProgram.set(program)
         currentDay.set(day)
-        athleteProgramSuccess.set('Saved ' + updated.name)
+        athleteProgramSuccess.set('Saved ' + updated.nameArr.length ? updated.nameArr.join(' + ') : updated.name)
     } catch (e: any) {
         if (e instanceof ExerciseMaxRepsError || e instanceof ExerciseMaxWeightError) {
             athleteProgramError.set(e)
         } else {
+            console.log(e)
             e.message = 'An unknown error occurred while trying to mark this day as complete'
             athleteProgramError.set(e)
         }
@@ -108,7 +109,7 @@ const skipExercise = async (exercise: Exercise, day: Day, program: Program) => {
         const programRes = await ProgramService.updateProgram(program)
         currentProgram.set(programRes)
         currentDay.set(programRes.days.find(d => d.id === day.id)!)
-        athleteProgramSuccess.set('Skipped ' + exercise.name)
+        athleteProgramSuccess.set('Skipped ' + exercise.nameArr.length ? exercise.nameArr.join(' + ') : exercise.name)
     } catch (e: any) {
         console.log(e)
         e.message = 'An error occurred trying to skip ' + exercise.name

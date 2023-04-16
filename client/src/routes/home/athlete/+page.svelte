@@ -96,10 +96,10 @@
 </div>
 
 {#if $loading}
-    <div class="absolute z-[110] top-0 bottom-0 right-0 left-0 bg-gray-300 opacity-25">
+    <div class="fixed z-[110] top-0 bottom-0 right-0 left-0 bg-gray-300 opacity-25">
 
     </div>
-    <div class="absolute bottom-0 top-0 right-0 left-0 z-[115] flex items-center justify-center">
+    <div class="fixed bottom-0 top-0 right-0 left-0 z-[115] flex items-center justify-center">
         <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
     </div>
 

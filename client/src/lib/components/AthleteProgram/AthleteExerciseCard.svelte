@@ -67,15 +67,27 @@
         {/each}
     {:else if exercise.type === ExerciseType.COMPLEX}
         {#each [exercise, ...exercise.dropSets] as row}
+            <div class="flex">
             {#if row.isMax}
+                {#if row.isComplete && (row.weightCompleted < 1 && !row.repCompletedArr[0])}
+                    <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
+                {:else if row.isComplete}
+                    <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
+                {/if}
                 <h4>
                     {row.nameArr.join(' + ')}: {row.repArr.join(' + ')}RM
                 </h4>
             {:else}
+                {#if row.isComplete && (row.weightCompleted < 1 && !row.repCompletedArr[0])}
+                    <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
+                {:else if row.isComplete}
+                    <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
+                {/if}
                 <h4>
                     {row.nameArr.join(' + ')}: {row.weight}kg {row.sets}sets {row.repArr.join(' + ')}reps
                 </h4>
             {/if}
+            </div>
         {/each}
     {:else if exercise.type === ExerciseType.DURATION}
         <h4>Test</h4>
