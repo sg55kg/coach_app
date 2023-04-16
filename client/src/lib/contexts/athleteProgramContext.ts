@@ -70,8 +70,19 @@ const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, progr
     athleteProgramSuccess.set('')
     athleteProgramError.set(undefined)
     try {
-        const exerciseCopy = JSON.parse(JSON.stringify(exercise)) as Exercise
-        // exerciseCopy.weightCompleted = ex
+        let exerciseCopy = JSON.parse(JSON.stringify(exercise)) as Exercise
+        exerciseCopy = markExerciseFieldsComplete(exerciseCopy)
+        exerciseCopy.dropSets.forEach(d => {
+            d = markExerciseFieldsComplete(d)
+            return d
+        })
+        const updated = await ProgramService.updateExercise(exerciseCopy)
+        console.log('updated', updated)
+        day.exercises = day.exercises.map(e => e.id === updated.id ? updated : e)
+        program.days = program.days.map(d => d.id === day.id ? day : d)
+        currentProgram.set(program)
+        currentDay.set(day)
+        athleteProgramSuccess.set('Saved ' + updated.name)
     } catch (e: any) {
         if (e instanceof ExerciseMaxRepsError || e instanceof ExerciseMaxWeightError) {
             athleteProgramError.set(e)
@@ -79,6 +90,8 @@ const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, progr
             e.message = 'An unknown error occurred while trying to mark this day as complete'
             athleteProgramError.set(e)
         }
+    } finally {
+        athleteProgramLoading.set(false)
     }
 }
 
@@ -113,6 +126,8 @@ const markExerciseFieldsSkipped = (e: Exercise) => {
         e.totalRepsCompleted = 0
     } else if (e.type === ExerciseType.COMPLEX) {
         e.repCompletedArr = e.repArr.map(r => 0)
+    } else if (e.type === ExerciseType.ACCESSORY) {
+        e.totalRepsCompleted = 0
     }
     return e
 }
@@ -131,6 +146,9 @@ const markExerciseFieldsComplete = (e: Exercise) => {
         e.totalRepsCompleted = e.repsPerSetComplete ? (e.repsPerSetComplete * e.setsCompleted) : (e.repsPerSet * e.setsCompleted)
     } else if (e.type === ExerciseType.COMPLEX) {
         e.repCompletedArr = [...e.repArr]
+    } if (e.type === ExerciseType.ACCESSORY) {
+        e.totalRepsCompleted = e.repsPerSetComplete ? (e.repsPerSetComplete * e.setsCompleted) : (e.repsPerSet * e.setsCompleted)
+        e.actualIntesity = e.actualIntesity !== null ? e.actualIntesity : e.effortIntensity
     }
     return e
 }
@@ -143,5 +161,6 @@ export const athleteProgramContext = {
     getAthleteProgramError: () => athleteProgramError,
     getAthleteProgramSuccess: () => athleteProgramSuccess,
     markDayCompleteAsWritten,
+    markExerciseCompleteAsWritten,
     skipExercise
 }

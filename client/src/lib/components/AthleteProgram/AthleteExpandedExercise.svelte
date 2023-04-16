@@ -6,11 +6,12 @@
     import AthleteEditExerciseRow from "$lib/components/AthleteProgram/AthleteEditExerciseRow.svelte";
     import {getContext, onMount} from "svelte";
     import {ExerciseMaxRepsError, ExerciseMaxWeightError} from "../../contexts/athleteProgramContext";
+    import {EffortIntensity} from "../../classes/program/exercise/enums";
 
     export let exercise: Exercise
     export let selectedExerciseIdx: number
 
-    const { getAthleteProgramError, skipExercise, getCurrentDay, getCurrentProgram } = getContext('athlete-program')
+    const { getAthleteProgramError, skipExercise, getCurrentDay, getCurrentProgram, markExerciseCompleteAsWritten } = getContext('athlete-program')
     const error = getAthleteProgramError()
     const currentDay = getCurrentDay()
     const currentProgram = getCurrentProgram()
@@ -41,6 +42,21 @@
             }
         }
     })
+
+    const formatEffortString = (effort: EffortIntensity) => {
+        console.log(effort, exercise)
+        switch (effort) {
+            case EffortIntensity.EASY:
+                return 'Easy'
+            case EffortIntensity.MODERATE:
+                return 'Moderate'
+            case EffortIntensity.DIFFICULT:
+                return 'Hard'
+            case EffortIntensity.MAX:
+                return 'Max Effort'
+        }
+    }
+
     let editMode: boolean = false
 </script>
 
@@ -53,7 +69,7 @@
         {:else if exercise.type === ExerciseType.DURATION}
             <h3>Test</h3>
         {:else if exercise.type === ExerciseType.ACCESSORY}
-            <h3>Test</h3>
+            <h3 class="text-lg font-semibold text-textblue">{exercise.name}</h3>
         {/if}
         <AthleteEditExerciseRow bind:exercise={exercise} />
         {#each exercise.dropSets as dropSet}
@@ -86,12 +102,19 @@
         {:else if exercise.type === ExerciseType.DURATION}
             <h3>Test</h3>
         {:else if exercise.type === ExerciseType.ACCESSORY}
-            <h3>Test</h3>
+            <h3 class="text-lg font-semibold text-textblue">{exercise.name}</h3>
+            {#each [exercise, ...exercise.dropSets] as row}
+                <h5>{row.weight ? row.weight + 'kg' : formatEffortString(row.effortIntensity)} - {exercise.sets} sets of {exercise.repsPerSet} reps</h5>
+            {/each}
         {/if}
     {/if}
     {#if (!hasMax || !enteredWeight) && !exercise.isComplete}
         <div class="flex flex-col items-center py-2">
-            <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm">Mark Complete As Written</button>
+            <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm"
+                on:click={() => markExerciseCompleteAsWritten(exercise, $currentDay, $currentProgram)}
+            >
+                Mark Complete As Written
+            </button>
             <button class="mx-2 p-2 text-red-shade" on:click={() => skipExercise(exercise, $currentDay, $currentProgram)}>Skip Exercise</button>
         </div>
     {/if}

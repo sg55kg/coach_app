@@ -60,6 +60,12 @@ public class AthleteProgramStatsRepository {
             totalRepsActual += e.getTotalRepsCompleted();
             totalVolumePlanned += (((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
             totalVolumeActual += (double)e.getTotalRepsCompleted() * e.getWeightCompleted();
+            for (Exercise d : e.getDropSets()) {
+                totalRepsPlanned += formatDouble(d.getRepsPerSet() * e.getSets());
+                totalRepsActual += formatDouble(d.getTotalRepsCompleted());
+                totalVolumePlanned += formatDouble(((double)d.getRepsPerSet() * d.getSets()) * d.getWeight());
+                totalVolumeActual += formatDouble((double)d.getTotalRepsCompleted() * d.getWeightCompleted());
+            }
         }
 
         averageIntensityPlanned = totalVolumePlanned / totalRepsPlanned;
@@ -135,6 +141,12 @@ public class AthleteProgramStatsRepository {
                 totalRepsActual += formatDouble(e.getTotalRepsCompleted());
                 totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
                 totalVolumeActual += formatDouble((double)e.getTotalRepsCompleted() * e.getWeightCompleted());
+                for (Exercise d : e.getDropSets()) {
+                    totalRepsPlanned += formatDouble(d.getRepsPerSet() * e.getSets());
+                    totalRepsActual += formatDouble(d.getTotalRepsCompleted());
+                    totalVolumePlanned += formatDouble(((double)d.getRepsPerSet() * d.getSets()) * d.getWeight());
+                    totalVolumeActual += formatDouble((double)d.getTotalRepsCompleted() * d.getWeightCompleted());
+                }
             }
 
             averageIntensityPlanned = totalVolumePlanned > 0 ? formatDouble(totalVolumePlanned / totalRepsPlanned) : 0.0;
@@ -195,6 +207,12 @@ public class AthleteProgramStatsRepository {
                 totalRepsActual += formatDouble(e.getTotalRepsCompleted());
                 totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
                 totalVolumeActual += formatDouble((double)e.getTotalRepsCompleted() * e.getWeightCompleted());
+                for (Exercise d : e.getDropSets()) {
+                    totalRepsPlanned += formatDouble(d.getRepsPerSet() * e.getSets());
+                    totalRepsActual += formatDouble(d.getTotalRepsCompleted());
+                    totalVolumePlanned += formatDouble(((double)d.getRepsPerSet() * d.getSets()) * d.getWeight());
+                    totalVolumeActual += formatDouble((double)d.getTotalRepsCompleted() * d.getWeightCompleted());
+                }
             }
 
             averageIntensityPlanned = totalVolumePlanned > 0 ? formatDouble(totalVolumePlanned / totalRepsPlanned) : 0.0;

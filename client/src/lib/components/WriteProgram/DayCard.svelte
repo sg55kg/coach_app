@@ -9,6 +9,7 @@
     import FaLongArrowAltRight from 'svelte-icons/fa/FaLongArrowAltRight.svelte'
     import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
     import CalendarCard from "$lib/components/shared/layout/CalendarCard.svelte";
+    import {EffortIntensity} from "../../classes/program/exercise/enums";
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -53,6 +54,18 @@
         showContext = true
     }
 
+    const formatEffortString = (effort: EffortIntensity) => {
+        switch (effort) {
+            case EffortIntensity.EASY:
+                return 'Easy'
+            case EffortIntensity.MODERATE:
+                return 'Moderate'
+            case EffortIntensity.DIFFICULT:
+                return 'Hard'
+            case EffortIntensity.MAX:
+                return 'Max Effort'
+        }
+    }
 
 
     onMount(() => {
@@ -122,7 +135,9 @@
                         {:else if exercise.type === ExerciseType.DURATION}
                             <h4>Test</h4>
                         {:else}
-                            <h4>Test</h4>
+                            <h4>
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.weight + 'kg' : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
+                            </h4>
                         {/if}
                     {/each}
                 {/if}

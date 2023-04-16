@@ -2,11 +2,12 @@ import type {Auth0Client} from "@auth0/auth0-spa-js";
 import {DisplayProgram, Program} from "../classes/program";
 import type {ProgramDTO} from "../classes/program"
 import type {User} from "../classes/user";
-import type {Exercise} from "$lib/classes/program/exercise";
+import {Exercise} from "$lib/classes/program/exercise";
 import type {ExerciseComment} from "$lib/classes/program/exercise";
 import type {AthleteProgramStatsDTO} from "../classes/program/stats";
 import {AthleteProgramStats} from "../classes/program/stats";
 import type {Dayjs} from "dayjs";
+import type {ExerciseDTO} from "../classes/program/exercise";
 
 
 export class ProgramService {
@@ -74,7 +75,8 @@ export class ProgramService {
             body: JSON.stringify(exercise)
         })
 
-        return await res.json()
+        const dto: ExerciseDTO = await res.json()
+        return Exercise.createFrom(dto)
     }
 
     static deleteExercise = async (exercise: Exercise) => {

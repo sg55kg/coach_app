@@ -4,10 +4,11 @@
     import AthleteDayCard from "$lib/components/AthleteProgram/AthleteDayCard.svelte";
     import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
 
-    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading } = getContext('athlete-program')
+    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading, getCurrentDayIdx } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()
+    const currentIdx = getCurrentDayIdx()
 
     let daysContainer: HTMLDivElement
     let contextCoordinates: {x: number, y: number} = {x: -1, y: -1}
@@ -26,7 +27,10 @@ $: console.log('CURRENT DAY', $currentDay)
     </div>
 </div>
 {#if $currentDay}
-    <AthleteExpandedDay />
+    <div class="fixed top-0 right-0 bottom-0 left-0 z-10" on:click={() => { $currentDay = undefined; $currentIdx = -1 }}></div>
+    <div class="z-20 fixed top-20 right-10 left-10">
+        <AthleteExpandedDay />
+    </div>
 {/if}
 
 <style></style>

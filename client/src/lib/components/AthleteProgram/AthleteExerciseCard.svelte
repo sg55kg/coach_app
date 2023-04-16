@@ -4,11 +4,25 @@
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
     import GoCheck from 'svelte-icons/go/GoCheck.svelte'
+    import GoDash from 'svelte-icons/go/GoDash.svelte'
+    import {EffortIntensity} from "../../classes/program/exercise/enums";
 
     export let exercise: Exercise
     export let exerciseIndex: number
     export let selectedExerciseIdx: number
 
+    const formatEffortString = (effort: EffortIntensity) => {
+        switch (effort) {
+            case EffortIntensity.EASY:
+                return 'Easy'
+            case EffortIntensity.MODERATE:
+                return 'Moderate'
+            case EffortIntensity.DIFFICULT:
+                return 'Hard'
+            case EffortIntensity.MAX:
+                return 'Max Effort'
+        }
+    }
 </script>
 
 <div class="relative bg-gray-200 mr-2 border-l-2 border-l-textblue mb-2 p-2 hover:cursor-pointer flex flex-col justify-center items-start"
@@ -19,7 +33,7 @@
             {#if row.isMax}
                 <div class="flex">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
-                        <span class="h-6 w-6 text-orange-shade mr-1"><GoCheck /></span>
+                        <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
                         <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                     {/if}
@@ -30,7 +44,7 @@
             {:else if row.isMaxReps}
                 <div class="flex">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
-                        <span class="h-6 w-6 text-orange-shade mr-1"><GoCheck /></span>
+                        <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
                         <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                     {/if}
@@ -41,7 +55,7 @@
             {:else}
                 <div class="flex">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
-                        <span class="h-6 w-6 text-orange-shade mr-1"><GoCheck /></span>
+                        <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
                         <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                     {/if}
@@ -66,7 +80,18 @@
     {:else if exercise.type === ExerciseType.DURATION}
         <h4>Test</h4>
     {:else}
-        <h4>Test</h4>
+        {#each [exercise, ...exercise.dropSets] as row}
+            <div class="flex">
+                {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
+                    <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
+                {:else if row.isComplete}
+                    <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
+                {/if}
+                <h4>
+                    {row.name ? row.name : 'No Name'}: {row.weight ? row.weight + 'kg' : formatEffortString(row.effortIntensity)} {row.sets}sets {row.repsPerSet}reps
+                </h4>
+            </div>
+        {/each}
     {/if}
     <button class="absolute right-3 h-4 w-4">
         <FaChevronDown />

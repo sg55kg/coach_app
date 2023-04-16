@@ -4,9 +4,11 @@
    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
    import MdClose from 'svelte-icons/md/MdClose.svelte'
    import FaPlus from 'svelte-icons/fa/FaPlus.svelte'
+   import {EffortIntensity} from "../../classes/program/exercise/enums";
 
    export let exercise: Exercise
    export let isDropSet: boolean = false
+   export let useWeightForAccessory: boolean = false
 
    const setComplexType = (ex: Exercise) => {
        ex.type = ExerciseType.COMPLEX
@@ -50,7 +52,22 @@
        exercise.isMaxReps = isMaxReps
    }
 
-
+   const changeExerciseEffort = (effort: 'Easy' | 'Moderate' | 'Hard' | 'Max Effort') => {
+       switch (effort) {
+           case "Easy":
+               exercise.effortIntensity = EffortIntensity.EASY
+               break
+           case "Moderate":
+               exercise.effortIntensity = EffortIntensity.MODERATE
+               break
+           case "Hard":
+               exercise.effortIntensity = EffortIntensity.DIFFICULT
+               break
+           case "Max Effort":
+               exercise.effortIntensity = EffortIntensity.MAX
+               break
+       }
+   }
 
 </script>
 
@@ -170,6 +187,37 @@
     </div>
 {:else if exercise.type === ExerciseType.DURATION}
 {:else if exercise.type === ExerciseType.ACCESSORY}
+    <div class="grid grid-cols-6 p-2 w-full gap-2">
+        {#if !isDropSet}
+            <input type="text"
+                   placeholder="Exercise Name"
+                   class="bg-gray-300 p-1 col-span-5"
+                   bind:value={exercise.name}
+            >
+        {/if}
+        <div class="col-span-2 flex flex-col items-end">
+            {#if useWeightForAccessory}
+                <label class="text-sm">Weight (kg)</label>
+                <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
+            {:else}
+                <label>Effort</label>
+                <select class="bg-gray-300 p-1 rounded" on:change={(e) => changeExerciseEffort(e.target.value)}>
+                    <option selected={exercise.effortIntensity === EffortIntensity.EASY}>Easy</option>
+                    <option selected={exercise.effortIntensity === EffortIntensity.MODERATE}>Moderate</option>
+                    <option selected={exercise.effortIntensity === EffortIntensity.DIFFICULT}>Hard</option>
+                    <option selected={exercise.effortIntensity === EffortIntensity.MAX}>Max Effort</option>
+                </select>
+            {/if}
+        </div>
+        <div class="col-span-2 flex flex-col items-end">
+            <label class="text-sm">Sets</label>
+            <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
+        </div>
+        <div class="col-span-2 flex flex-col items-end">
+            <label class="text-sm">Reps</label>
+            <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
+        </div>
+    </div>
 {:else}
 {/if}
 
