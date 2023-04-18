@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Entity
@@ -19,11 +20,11 @@ public class Program {
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @CreationTimestamp
-    private Date createdAt;
+    private OffsetDateTime createdAt;
     @UpdateTimestamp
-    private Date updatedAt;
-    private Date startDate;
-    private Date endDate;
+    private OffsetDateTime updatedAt;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> daysList;
     private String name;
@@ -55,35 +56,35 @@ public class Program {
         this.id = id;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
 

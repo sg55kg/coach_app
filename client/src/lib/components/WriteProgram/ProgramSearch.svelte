@@ -92,8 +92,8 @@
         <div class="w-full justify-end flex">
             <button class="h-10 w-12 px-2" on:click={() => viewFilters = false}><span><MdClose /></span></button>
         </div>
-        <div class="py-2 flex items-center justify-center">
-            <input type="text" class="bg-gray-300 p-1" placeholder="Search Programs" bind:value={searchName} on:keyup={() => processSearch()}>
+        <div class="p-2 flex items-center justify-center">
+            <input type="text" class="bg-gray-300 w-full p-1" placeholder="Search Programs" bind:value={searchName} on:keyup={() => processSearch()}>
         </div>
         {#if searchResults.length > 0}
             <div class="flex flex-col h-[70vh] overflow-y-auto pl-4">

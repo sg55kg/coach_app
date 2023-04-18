@@ -25,7 +25,9 @@ export interface ProgramDTO {
     teamId?: string,
     athleteId?: string,
     lastEnteredDay?: string,
-    athleteName?: string
+    athleteName?: string,
+    updatedAt: string,
+
 }
 
 
@@ -44,6 +46,7 @@ export class Program implements IProgram {
         program.coachId = programDTO.coachId ? programDTO.coachId : ''
         program.teamId = programDTO.teamId ? programDTO.teamId : ''
         program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
+        program.updatedAt = programDTO.updatedAt ? dayjs(programDTO.updatedAt) : dayjs()
 
         return { ...program }
     }
@@ -57,6 +60,7 @@ export class Program implements IProgram {
     coachId: string = ''
     teamId: string = ''
     isCurrent: boolean = true
+    updatedAt: Dayjs = dayjs()
 }
 
 export class DisplayProgram implements IProgram {

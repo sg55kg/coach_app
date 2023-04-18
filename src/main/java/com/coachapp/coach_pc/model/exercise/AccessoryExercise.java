@@ -13,6 +13,7 @@ public class AccessoryExercise extends Exercise {
     private String equipment;
     private WeightIntensity weightIntensity = WeightIntensity.NONE;
     private EffortIntensity effortIntensity = EffortIntensity.EASY;
+    private EffortIntensity actualIntensity;
     private boolean unilateral = false;
     @Transient
     private final ExerciseType type = ExerciseType.ACCESSORY;
@@ -47,8 +48,16 @@ public class AccessoryExercise extends Exercise {
         return unilateral;
     }
 
-    public void setUnilateral(boolean unilateral) {
+    public void setUnilateral(boolean Unilateral) {
         this.unilateral = unilateral;
+    }
+
+    public EffortIntensity getActualIntensity() {
+        return actualIntensity;
+    }
+
+    public void setActualIntensity(EffortIntensity actualIntensity) {
+        this.actualIntensity = actualIntensity;
     }
 
     @Override

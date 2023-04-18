@@ -1,14 +1,23 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    import {getContext, onDestroy, onMount, setContext} from "svelte";
     import {userDB} from "$lib/stores/authStore";
     import dayjs from "dayjs";
-    import IncompleteExercise from "$lib/components/CurrentProgram/IncompleteExercise.svelte";
-    import {currentDay, currentProgram} from "$lib/stores/athleteProgramStore";
     import {goto} from "$app/navigation";
     import {Program, type ProgramDTO} from "$lib/classes/program";
-    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
-    import AthleteComplexExercise from "$lib/components/CurrentProgram/AthleteComplexExercise.svelte";
+    import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import {athleteProgramContext} from "../../../lib/contexts/athleteProgramContext.js";
+    import {Day} from "$lib/classes/program/day";
+    import MdClose from 'svelte-icons/md/MdClose.svelte'
 
+    setContext('athlete-program', athleteProgramContext)
+
+    const { getCurrentProgram, getCurrentDay, getAthleteProgramError, getAthleteProgramLoading, getAthleteProgramSuccess } = athleteProgramContext
+    const currentProgram = getCurrentProgram()
+    const currentDay = getCurrentDay()
+    const error = getAthleteProgramError()
+    const loading = getAthleteProgramLoading()
+    const success = getAthleteProgramSuccess()
 
     const fetchCurrentProgram = async () => {
         if (!$userDB?.athleteData?.currentProgram) {
@@ -17,11 +26,13 @@
         try {
             const res = await fetch(`/api/athlete/program/${$userDB.athleteData.currentProgram.id}`)
             const programData: ProgramDTO = await res.json()
+            console.log('program', programData)
             const program = Program.build(programData)
             program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             const today = dayjs()
             const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
-            if (day) {
+
+            if (day && !day.isRestDay && day.exercises.length > 0) {
                 day.exercises.sort((a, b) => a.order - b.order)
                 $currentDay = day
             }
@@ -31,12 +42,17 @@
         }
     }
 
+
     onMount(async () => {
         if ($userDB && (!$userDB?.athleteData )) {
             await goto(`/home/athlete/get-started/${$userDB.id}`)
         }
     })
 
+    onDestroy(() => {
+        $currentDay = new Day()
+        $currentProgram = new Program()
+    })
 
 </script>
 
@@ -45,31 +61,22 @@
         <h1 class="font-bold text-xl w-fit">Welcome {$userDB?.username ? $userDB.username : ''}</h1>
     </div>
     <div class="lg:m-4">
-        <div class="flex flex-col items-center lg:items-start">
-            <h3 class="text-2xl font-bold tracking-wider">My Program</h3>
-            <h5 class="my-3 text-xl">{dayjs().format('dddd, MMMM D')}</h5>
-        </div>
-
         {#await fetchCurrentProgram()}
-            <p>Loading your program...</p>
+            <div class="w-screen p-4 flex items-center justify-center">
+                <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
+            </div>
         {:then e}
-            {#if $currentDay && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
-                <div class="lg:m-4 flex flex-col justify-center lg:p-5 sm:p-2 md:p-2">
-                    {#each $currentDay.exercises as exercise, index (exercise.id)}
-                        {#if exercise.type === ExerciseType.EXERCISE}
-                            <IncompleteExercise bind:exercise={exercise} />
-                        {:else}
-                            <AthleteComplexExercise bind:exercise={exercise} />
-                        {/if}
-                    {/each}
-                </div>
+            {#if $currentDay.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
+                <AthleteExpandedDay />
             {:else if $currentDay && $currentDay?.isRestDay}
-                <div>
+                <div class="flex flex-col">
                     Rest Day
+                    <a class="text-link font-medium text-md" href="/home/athlete/program">View Full Program</a>
                 </div>
             {:else}
-                <div class="py-4 text-center md:text-left">
+                <div class="py-4 text-center md:text-left flex flex-col">
                     No programming available for today
+                    <a class="text-link font-medium text-md" href="/home/athlete/program">View Full Program</a>
                 </div>
             {/if}
         {:catch e}
@@ -87,6 +94,31 @@
         {/if}
     </div>
 </div>
+
+{#if $loading}
+    <div class="fixed z-[110] top-0 bottom-0 right-0 left-0 bg-gray-300 opacity-25">
+
+    </div>
+    <div class="fixed bottom-0 top-0 right-0 left-0 z-[115] flex items-center justify-center">
+        <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
+    </div>
+
+{/if}
+{#if $success}
+    <div class="sticky bottom-5 left-10 z-10 text-green border-l-4 border-l-green bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        {$success}
+        <button class="h-8 w-8 hover:bg-gray-400 text-green-dark rounded-full hover:text-green p-1" on:click={() => $success = ''}>
+            <MdClose />
+        </button>
+    </div>
+{:else if $error}
+    <div class="sticky bottom-5 left-10 z-10 text-red border-l-4 border-l-red-shade bg-gray-200 shadow-2xl shadow-black p-4 w-8/12 lg:w-4/12 flex justify-between items-center">
+        {$error}
+        <button class="h-8 w-8 hover:bg-gray-400 rounded-full hover:text-red-shade p-1" on:click={() => $error = ''}>
+            <MdClose />
+        </button>
+    </div>
+{/if}
 
 
 <style>

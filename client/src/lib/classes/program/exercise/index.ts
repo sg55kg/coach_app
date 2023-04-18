@@ -14,9 +14,9 @@ export interface ExerciseDTO {
     totalRepsCompleted: number
     comments: ExerciseComment[]
     isComplete: boolean
-    setsComplete: number
+    setsCompleted: number
     order: number
-    effortIntensity: EffortIntensity
+    effortIntensity: string
     unilateral: boolean
     equipment: string
     distanceMeters: number
@@ -25,11 +25,11 @@ export interface ExerciseDTO {
     secondsPerSetCompleted: number
     type: ExerciseType
     dropSets: ExerciseDTO[]
-    repArr: string
-    nameArr: string
-    repCompletedArr: string
+    repArr: number[] | string
+    nameArr: string[] | string
+    repCompletedArr: number[] | string
     dropSetPercent: number
-    actualIntensity: EffortIntensity
+    actualIntensity: string
 }
 export class Exercise {
     id: string = ''
@@ -59,11 +59,13 @@ export class Exercise {
     nameArr: string[] = []
     repCompletedArr: number[] = []
     dropSetPercent: number = 0
-    actualIntesity: EffortIntensity = EffortIntensity.EASY
+    actualIntesity: EffortIntensity | null = null
     isMaxReps: boolean = false
+    repsPerSetComplete: number = 0
 
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
+
         exercise.id = data.id
         exercise.isMaxReps = data.isMaxReps
         exercise.name = data.name
@@ -71,10 +73,13 @@ export class Exercise {
         exercise.sets = data.sets
         exercise.repsPerSet = data.repsPerSet
         exercise.order = data.order
+        exercise.isComplete = data.isComplete
+        exercise.weightCompleted = data.weightCompleted
         if (data.type === ExerciseType.COMPLEX) {
-            exercise.repCompletedArr = data.repCompletedArr.split(',').map(v => parseInt(v))
-            exercise.repArr = data.repArr.split(',').map(v => parseInt(v))
-            exercise.nameArr = data.nameArr.split(',')
+            console.log(data)
+            exercise.repCompletedArr = typeof(data.repCompletedArr) === 'string' ? data.repCompletedArr.split(',').map(r => parseInt(r)) : data.repCompletedArr
+            exercise.repArr = typeof(data.repArr) === 'string' ? data.repArr.split(',').map(r => parseInt(r)) : data.repArr
+            exercise.nameArr = typeof(data.nameArr) === 'string' ? data.nameArr.split(',') : data.nameArr
         }
         exercise.isMax = data.isMax
         if (data.type === ExerciseType.DURATION) {
@@ -83,16 +88,18 @@ export class Exercise {
             exercise.secondsPerSetCompleted = data.secondsPerSetCompleted
             exercise.secondsPerSet = data.secondsPerSet
         }
+        if (data.type === ExerciseType.ACCESSORY) {
+            exercise.effortIntensity = getEffortIntensity(data.effortIntensity)
+            exercise.actualIntesity = data.actualIntensity ? getEffortIntensity(data.actualIntensity) : null
+        }
 
         exercise.totalRepsCompleted = data.totalRepsCompleted
-        exercise.setsCompleted = data.setsComplete
+        exercise.setsCompleted = data.setsCompleted
         exercise.dropSetPercent = data.dropSetPercent
-        exercise.actualIntesity = data.actualIntensity
         exercise.dropSets = data.dropSets.map(s => Exercise.createFrom(s)).sort((a, b) => a.order - b.order)
         exercise.type = data.type
         exercise.equipment = data.equipment
         exercise.unilateral = data.unilateral
-        exercise.effortIntensity = data.effortIntensity
         exercise.comments = data.comments
         exercise.notes = data.notes
 
@@ -100,6 +107,20 @@ export class Exercise {
     }
 }
 
+const getEffortIntensity = (str: string) => {
+    switch (str) {
+        case "EASY":
+            return EffortIntensity.EASY
+        case 'MODERATE':
+            return EffortIntensity.MODERATE
+        case 'DIFFICULT':
+            return EffortIntensity.DIFFICULT
+        case 'MAX':
+            return EffortIntensity.MAX
+        default:
+            return EffortIntensity.EASY
+    }
+}
 
 export class ExerciseComment {
     id: string = ''

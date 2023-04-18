@@ -2,8 +2,12 @@ import type {Auth0Client} from "@auth0/auth0-spa-js";
 import {DisplayProgram, Program} from "../classes/program";
 import type {ProgramDTO} from "../classes/program"
 import type {User} from "../classes/user";
-import type {Exercise} from "$lib/classes/program/exercise";
+import {Exercise} from "$lib/classes/program/exercise";
 import type {ExerciseComment} from "$lib/classes/program/exercise";
+import type {AthleteProgramStatsDTO} from "../classes/program/stats";
+import {AthleteProgramStats} from "../classes/program/stats";
+import type {Dayjs} from "dayjs";
+import type {ExerciseDTO} from "../classes/program/exercise";
 
 
 export class ProgramService {
@@ -71,7 +75,8 @@ export class ProgramService {
             body: JSON.stringify(exercise)
         })
 
-        return await res.json()
+        const dto: ExerciseDTO = await res.json()
+        return Exercise.createFrom(dto)
     }
 
     static deleteExercise = async (exercise: Exercise) => {
@@ -113,6 +118,46 @@ export class ProgramService {
         }
         const dtos: ProgramDTO[] = await res.json()
         return dtos.map(d => DisplayProgram.build(d))
+    }
+
+    static getProgramStats = async (programId: string) => {
+        const res = await fetch(`/api/stats/${programId}`, {
+            method: 'GET'
+        })
+
+        if (res.status > 205) {
+            throw new Error('Could not retrieve stats')
+        }
+
+        const dto: AthleteProgramStatsDTO = await res.json()
+        return AthleteProgramStats.createFrom(dto);
+    }
+
+    static getWeeklyProgramStats = async (programId: string) => {
+        const res = await fetch(`/api/stats/${programId}/weekly`, {
+            method: 'GET'
+        })
+
+        if (res.status > 205) {
+            throw new Error('Could not retrieve weekly stats')
+        }
+
+        const dtos: AthleteProgramStatsDTO[] = await res.json()
+        console.log('dtos', dtos)
+        return dtos.map(d => AthleteProgramStats.createFrom(d))
+    }
+
+    static getDailyProgramStats = async (programId: string, startDate: Dayjs, endDate: Dayjs) => {
+        const res = await fetch(`/api/stats/${programId}/daily?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
+            method: 'GET'
+        })
+
+        if (res.status > 205) {
+            throw new Error('Could not retrieve daily stats')
+        }
+
+        const dtos: AthleteProgramStatsDTO[] = await res.json()
+        return dtos.map(d => AthleteProgramStats.createFrom(d))
     }
 }
 

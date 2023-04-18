@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.enums.EffortIntensity;
 import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.exercise.AccessoryExercise;
 import com.coachapp.coach_pc.model.exercise.ComplexExercise;
 import com.coachapp.coach_pc.model.exercise.DurationExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
@@ -309,6 +310,8 @@ public class ExerciseRequest {
                 exercise = new ComplexExercise();
             } else if (request.getType() == ExerciseType.DURATION) {
                 exercise = new DurationExercise();
+            } else if (request.getType() == ExerciseType.ACCESSORY) {
+                exercise = new AccessoryExercise();
             }
 
         }
@@ -353,6 +356,12 @@ public class ExerciseRequest {
             ((DurationExercise) exercise).setDistanceCompletedMeters(request.getDistanceCompletedMeters());
             ((DurationExercise) exercise).setSecondsPerSet(request.getSecondsPerSet());
             ((DurationExercise) exercise).setSecondsPerSetCompleted(request.getSecondsPerSetCompleted());
+        } else if (request.getType() == ExerciseType.ACCESSORY) {
+            ((AccessoryExercise) exercise).setName(request.getName());
+            ((AccessoryExercise) exercise).setEffortIntensity(request.getEffortIntensity());
+            ((AccessoryExercise) exercise).setActualIntensity(request.getActualIntensity());
+            ((AccessoryExercise) exercise).setRepsPerSet(request.getRepsPerSet());
+            ((AccessoryExercise) exercise).setTotalRepsCompleted(request.getTotalRepsCompleted());
         }
 
 

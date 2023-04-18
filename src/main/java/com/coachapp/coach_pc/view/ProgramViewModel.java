@@ -3,14 +3,15 @@ package com.coachapp.coach_pc.view;
 import com.coachapp.coach_pc.model.*;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 public class ProgramViewModel {
 
     private UUID id;
     private String name;
-    private Date startDate;
-    private Date endDate;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private List<DayViewModel> days;
     private UUID athleteId;
     private UUID coachId;
@@ -20,7 +21,7 @@ public class ProgramViewModel {
 
     }
 
-    public ProgramViewModel(UUID id, String name, Date startDate, Date endDate, List<DayViewModel> days, UUID athleteId, UUID coachId, UUID teamId) {
+    public ProgramViewModel(UUID id, String name, OffsetDateTime startDate, OffsetDateTime endDate, List<DayViewModel> days, UUID athleteId, UUID coachId, UUID teamId) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -47,19 +48,19 @@ public class ProgramViewModel {
         this.name = name;
     }
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
 
