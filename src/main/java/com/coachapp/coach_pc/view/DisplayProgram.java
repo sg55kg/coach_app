@@ -9,17 +9,17 @@ import java.util.UUID;
 public class DisplayProgram {
 
     private UUID id;
-    private Date createdAt;
-    private Date updatedAt;
-    private Date startDate;
-    private Date endDate;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private OffsetDateTime lastEnteredDay;
     private String name;
     private UUID athleteId;
 
     public DisplayProgram() {}
 
-    public DisplayProgram(UUID id, Date createdAt, Date updatedAt, Date startDate, Date endDate, String name) {
+    public DisplayProgram(UUID id, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime startDate, OffsetDateTime endDate, String name) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -33,19 +33,19 @@ public class DisplayProgram {
         return id;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 
@@ -69,19 +69,19 @@ public class DisplayProgram {
         this.id = id;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
 

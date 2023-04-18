@@ -7,10 +7,11 @@
     import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
     import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
 
-    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading } = getContext('athlete-program')
+    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading, getCurrentDayIdx } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()
+    const idx = getCurrentDayIdx()
 
     let selectedExerciseIdx: number = -1
     $: exercisesComplete = () => {
@@ -26,6 +27,20 @@
         }
         return count
     }
+
+    const incrementDay = () => {
+        if ($idx < $currentProgram.days.length - 1) {
+            $idx = $idx + 1
+            $currentDay = $currentProgram.days[$idx]
+        }
+    }
+
+    const decrementDay = () => {
+        if ($idx > 0) {
+            $idx = $idx - 1
+            $currentDay = $currentProgram.days[$idx]
+        }
+    }
 </script>
 
 <div class="bg-gray-300 w-full">
@@ -33,54 +48,58 @@
         <h2 class="text-3xl font-semibold text-center">{$currentProgram.name}</h2>
         <div class="flex items-center justify-center w-full">
             <div class="relative flex items-center justify-center {$isMobile ? 'w-8/12' : 'w-4/12'} p-2">
-                <button class="h-10 absolute left-0 text-yellow w-6">
+                <button class="h-10 absolute left-0 text-yellow w-6" on:click={decrementDay}>
                     <FaAngleLeft />
                 </button>
-                <h3 class="text-yellow text-2xl font-medium">{$currentDay.date.format('dddd, MMMM DD')}</h3>
-                <button class="h-10 absolute right-0 text-yellow w-6">
+                <h3 class="text-yellow {$isMobile ? 'text-md' : 'text-2xl'} font-medium">{$currentDay.date.format('dddd, MMMM DD')}</h3>
+                <button class="h-10 absolute right-0 text-yellow w-6" on:click={incrementDay}>
                     <FaAngleRight />
                 </button>
             </div>
         </div>
     </header>
-    <div class="flex flex-col w-full">
-        <h4 class="p-1 text-lg">Warm Up</h4>
-        <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
-            No warm up entered for today
-        </div>
-    </div>
-    <div class="flex flex-col w-full">
-        <h4 class="p-1 text-lg">Exercises</h4>
-        {#each $currentDay.exercises as exercise, idx}
-            {#if selectedExerciseIdx === idx}
-                <AthleteExpandedExercise bind:exercise={exercise}
-                                         bind:selectedExerciseIdx={selectedExerciseIdx}
-                />
-            {:else}
-                <AthleteExerciseCard bind:exercise={exercise}
-                                     exerciseIndex={idx}
-                                     bind:selectedExerciseIdx={selectedExerciseIdx}
-                />
-            {/if}
-        {/each}
-    </div>
-    <div class="flex flex-col w-full">
-        <h4 class="p-1 text-lg">Notes from your coach:</h4>
-        <p class="text-textblue p-2"><i>No notes entered for today</i></p>
-    </div>
-    <div class="flex flex-col items-center">
-        <h3 class="p-2 text-xl font-semibold {exercisesComplete() ? 'text-green' : ''}">{exercisesComplete()}/{$currentDay.exercises.length} Exercises Complete</h3>
-        {#if exercisesComplete() !== $currentDay.exercises.length}
-            <div class="flex justify-center items-center p-2 w-full">
-                <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
-                    Skip Day
-                </button>
-                <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm" on:click={() => markDayCompleteAsWritten($currentDay, $currentProgram)}>
-                    Mark Day Finished
-                </button>
+    {#if $currentDay.isRestDay}
+        <h4 class="text-textblue text-center text-lg font-semibold">Rest Day</h4>
+    {:else}
+        <div class="flex flex-col w-full">
+            <h4 class="p-1 text-lg">Warm Up</h4>
+            <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
+                No warm up entered for today
             </div>
-        {/if}
-    </div>
+        </div>
+        <div class="flex flex-col w-full">
+            <h4 class="p-1 text-lg">Exercises</h4>
+            {#each $currentDay.exercises as exercise, idx}
+                {#if selectedExerciseIdx === idx}
+                    <AthleteExpandedExercise bind:exercise={exercise}
+                                             bind:selectedExerciseIdx={selectedExerciseIdx}
+                    />
+                {:else}
+                    <AthleteExerciseCard bind:exercise={exercise}
+                                         exerciseIndex={idx}
+                                         bind:selectedExerciseIdx={selectedExerciseIdx}
+                    />
+                {/if}
+            {/each}
+        </div>
+        <div class="flex flex-col w-full">
+            <h4 class="p-1 text-lg">Notes from your coach:</h4>
+            <p class="text-textblue p-2"><i>No notes entered for today</i></p>
+        </div>
+        <div class="flex flex-col items-center">
+            <h3 class="p-2 text-xl font-semibold {exercisesComplete() ? 'text-green' : ''}">{exercisesComplete()}/{$currentDay.exercises.length} Exercises Complete</h3>
+            {#if exercisesComplete() !== $currentDay.exercises.length}
+                <div class="flex justify-center items-center p-2 w-full">
+                    <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
+                        Skip Day
+                    </button>
+                    <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm" on:click={() => markDayCompleteAsWritten($currentDay, $currentProgram)}>
+                        Mark Day Finished
+                    </button>
+                </div>
+            {/if}
+        </div>
+    {/if}
 </div>
 
 <style></style>

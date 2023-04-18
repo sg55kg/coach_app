@@ -20,10 +20,8 @@
 
 <CalendarCard
         onClick={() => {
-         if(!$isMobile) {
-             $currentDay = day
-             $currentDayIdx = idx
-         }
+         $currentDay = day
+         $currentDayIdx = idx
      }}
         onContextmenu={null}
 >

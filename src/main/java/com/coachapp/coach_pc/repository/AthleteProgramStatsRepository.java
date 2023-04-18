@@ -85,8 +85,8 @@ public class AthleteProgramStatsRepository {
         stats.setActualInol(inolActual);
         stats.setPlannedInol(inolPlanned);
         stats.setProgramName(program.getName());
-        stats.setStartDate(program.getStartDate().toInstant().atOffset(ZoneOffset.UTC));
-        stats.setEndDate(program.getEndDate().toInstant().atOffset(ZoneOffset.UTC));
+        stats.setStartDate(program.getStartDate());
+        stats.setEndDate(program.getEndDate());
 
         return stats;
     }

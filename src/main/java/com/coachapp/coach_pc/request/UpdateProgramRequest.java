@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +14,12 @@ public class UpdateProgramRequest {
 
     private UUID id;
     private String name;
-    private Date startDate;
-    private Date endDate;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
 
     private List<DayRequest> days;
 
-    public UpdateProgramRequest(UUID id, String name, Date startDate, Date endDate) {
+    public UpdateProgramRequest(UUID id, String name, OffsetDateTime startDate, OffsetDateTime endDate) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -33,11 +34,11 @@ public class UpdateProgramRequest {
         return name;
     }
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 

@@ -12,7 +12,6 @@
 
     let daysContainer: HTMLDivElement
     let contextCoordinates: {x: number, y: number} = {x: -1, y: -1}
-$: console.log('CURRENT DAY', $currentDay)
 </script>
 
 <div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
@@ -28,7 +27,7 @@ $: console.log('CURRENT DAY', $currentDay)
 </div>
 {#if $currentDay}
     <div class="fixed top-0 right-0 bottom-0 left-0 z-10" on:click={() => { $currentDay = undefined; $currentIdx = -1 }}></div>
-    <div class="z-20 fixed top-20 right-10 left-10">
+    <div class="z-20 fixed {$isMobile ? 'top-20 right-5 left-5' : 'top-20 right-10 left-10'}">
         <AthleteExpandedDay />
     </div>
 {/if}

@@ -32,7 +32,7 @@
             const today = dayjs()
             const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
 
-            if (day) {
+            if (day && !day.isRestDay && day.exercises.length > 0) {
                 day.exercises.sort((a, b) => a.order - b.order)
                 $currentDay = day
             }

@@ -346,9 +346,9 @@
 <div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
     {#if !$isMobile}
         <nav class="relative bg-gray-100 flex flex-col p-2">
-            <div>
+            <div class="flex">
                 <input type="text" class="bg-gray-300 p-1 rounded w-3/12" bind:value={$program.name} placeholder="Program Name" id="program-name-input">
-                <p><i></i></p>
+                <p class="px-2"><i>Last Updated: {$program.updatedAt.format('ddd MMM DD YYYY hh:mm:ssA')}</i></p>
             </div>
             <div class="py-2">
                 <button class="bg-yellow rounded text-gray-300 text-md font-medium px-2 p-1 mx-2 disabled:bg-gray-400"
@@ -393,11 +393,13 @@
                         </div>
                     {/if}
                 </div>
-                <a href="/home/coach/program/{$program.id}/stats">
-                    <button>
-                        Program Stats
-                    </button>
-                </a>
+                {#if $program.id}
+                    <a href="/home/coach/program/{$program.id}/stats">
+                        <button>
+                            Program Stats
+                        </button>
+                    </a>
+                {/if}
             </div>
         </nav>
     {/if}
