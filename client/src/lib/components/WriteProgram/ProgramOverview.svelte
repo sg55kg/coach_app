@@ -147,6 +147,7 @@
         dayCopy.id = ''
         dayCopy.exercises.forEach((e, i) => {
             e.id = ''
+            e.comments = []
             e.dropSets.forEach(d => d.id = '')
         })
         $dayClipboard = [dayCopy]
