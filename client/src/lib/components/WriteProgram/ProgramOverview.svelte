@@ -145,7 +145,10 @@
         const day = $program.days[idx]
         const dayCopy = JSON.parse(JSON.stringify(day)) as Day
         dayCopy.id = ''
-        dayCopy.exercises.forEach((e, i) => e.id = '')
+        dayCopy.exercises.forEach((e, i) => {
+            e.id = ''
+            e.dropSets.forEach(d => d.id = '')
+        })
         $dayClipboard = [dayCopy]
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
     }
@@ -343,9 +346,9 @@
 <div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
     {#if !$isMobile}
         <nav class="relative bg-gray-100 flex flex-col p-2">
-            <div>
+            <div class="flex">
                 <input type="text" class="bg-gray-300 p-1 rounded w-3/12" bind:value={$program.name} placeholder="Program Name" id="program-name-input">
-                <p><i></i></p>
+                <p class="px-2"><i>Last Updated: {$program.updatedAt.format('ddd MMM DD YYYY hh:mm:ssA')}</i></p>
             </div>
             <div class="py-2">
                 <button class="bg-yellow rounded text-gray-300 text-md font-medium px-2 p-1 mx-2 disabled:bg-gray-400"
@@ -390,6 +393,13 @@
                         </div>
                     {/if}
                 </div>
+                {#if $program.id}
+                    <a href="/home/coach/program/{$program.id}/stats">
+                        <button>
+                            Program Stats
+                        </button>
+                    </a>
+                {/if}
             </div>
         </nav>
     {/if}
@@ -404,12 +414,12 @@
         {/if}
         <ProgramSearch />
     </header>
-    <div class="grid {$isMobile ? 'grid-cols-1 gap-10' : 'grid-cols-7 gap-4'} w-full p-3">
+    <div class="grid {$isMobile ? 'grid-cols-1 gap-10' : 'grid-cols-7 gap-4'} w-full p-3" >
         {#each $program.days as day, index (day.id+index)}
             <DayCard bind:day={day}
                      idx={index}
-                     bind:contextCoordinates={contextCoordinates}
                      container={daysContainer}
+                     bind:contextCoordinates={contextCoordinates}
             />
         {/each}
         <div class="bg-gray-200 aspect-square flex justify-center {$isMobile ? 'mx-10' : ''} items-center hover:scale-105 hover:cursor-pointer" on:click={addDay}>

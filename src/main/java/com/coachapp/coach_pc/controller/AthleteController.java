@@ -1,10 +1,8 @@
 package com.coachapp.coach_pc.controller;
 
 import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.AthleteProgramStats;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.request.AthleteRequest;
-import com.coachapp.coach_pc.service.AthleteProgramStatsService;
 import com.coachapp.coach_pc.service.AthleteService;
 import com.coachapp.coach_pc.view.AthleteViewModel;
 import org.springframework.http.HttpStatus;
@@ -20,11 +18,9 @@ import java.util.UUID;
 public class AthleteController {
 
     private AthleteService athleteService;
-    private AthleteProgramStatsService statsService;
 
-    public AthleteController(AthleteService athleteService, AthleteProgramStatsService statsService) {
+    public AthleteController(AthleteService athleteService) {
         this.athleteService = athleteService;
-        this.statsService = statsService;
     }
 
     // This is probably unnecessary with the general PUT request below
@@ -55,10 +51,5 @@ public class AthleteController {
     @GetMapping("{athleteId}/record")
     public ResponseEntity<List<AthleteRecord>> getAthleteRecords(@PathVariable UUID athleteId) {
         return athleteService.getAthleteRecords(athleteId);
-    }
-
-    @GetMapping("{athleteId}/stats")
-    public ResponseEntity<AthleteProgramStats> getAthleteStats(@PathVariable UUID athleteId) {
-        return statsService.generateAthleteStats(athleteId);
     }
 }

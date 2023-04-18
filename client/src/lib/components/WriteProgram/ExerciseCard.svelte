@@ -4,6 +4,7 @@
     import {getContext} from "svelte";
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
     import {isMobile} from "$lib/stores/authStore";
+    import {EffortIntensity} from "../../classes/program/exercise/enums";
 
     export let exercise: Exercise
     export let index: number
@@ -32,6 +33,19 @@
         })
         $program = $program
         $selectedDay = $program.days[$selectedDayIdx]
+    }
+
+    const formatEffortString = (effort: EffortIntensity) => {
+        switch (effort) {
+            case EffortIntensity.EASY:
+                return 'Easy'
+            case EffortIntensity.MODERATE:
+                return 'Moderate'
+            case EffortIntensity.DIFFICULT:
+                return 'Hard'
+            case EffortIntensity.MAX:
+                return 'Max Effort'
+        }
     }
 </script>
 
@@ -70,7 +84,9 @@
         {:else if exercise.type === ExerciseType.DURATION}
             <h4>Test</h4>
         {:else}
-            <h4>Test</h4>
+            <h4>
+                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.weight + 'kg' : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
+            </h4>
         {/if}
     </div>
 

@@ -4,6 +4,7 @@ import com.coachapp.coach_pc.enums.EffortIntensity;
 import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.exercise.AccessoryExercise;
 import com.coachapp.coach_pc.model.exercise.ComplexExercise;
 import com.coachapp.coach_pc.model.exercise.DurationExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
@@ -87,6 +88,13 @@ public class ExerciseViewModel {
             viewModel.secondsPerSet = ((DurationExercise) exercise).getSecondsPerSet();
             viewModel.secondsPerSetCompleted = ((DurationExercise) exercise).getSecondsPerSetCompleted();
             viewModel.name = ((DurationExercise) exercise).getName();
+        } else if (exercise.getType() == ExerciseType.ACCESSORY) {
+            viewModel.effortIntensity = ((AccessoryExercise) exercise).getEffortIntensity();
+            viewModel.actualIntensity = ((AccessoryExercise) exercise).getActualIntensity();
+            viewModel.equipment = ((AccessoryExercise) exercise).getEquipment();
+            viewModel.name = ((AccessoryExercise) exercise).getName();
+            viewModel.repsPerSet = ((AccessoryExercise) exercise).getRepsPerSet();
+            viewModel.totalRepsCompleted = ((AccessoryExercise) exercise).getTotalRepsCompleted();
         }
 
         return viewModel;

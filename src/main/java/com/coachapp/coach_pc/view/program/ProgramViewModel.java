@@ -6,6 +6,7 @@ import com.blazebit.persistence.view.Mapping;
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.view.DayViewModel;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,9 @@ public interface ProgramViewModel {
     @Mapping("name")
     String getName();
     @Mapping("startDate")
-    Date getStartDate();
+    OffsetDateTime getStartDate();
     @Mapping("endDate")
-    Date getEndDate();
+    OffsetDateTime getEndDate();
+    @Mapping("updatedAt")
+    OffsetDateTime getUpdatedAt();
 }

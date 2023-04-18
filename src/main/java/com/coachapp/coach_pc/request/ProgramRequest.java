@@ -2,14 +2,15 @@ package com.coachapp.coach_pc.request;
 
 import com.coachapp.coach_pc.model.*;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 public class ProgramRequest {
 
     private List<DayRequest> days;
     private String name;
-    private Date startDate;
-    private Date endDate;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private UUID coachId;
     private UUID athleteId;
     private UUID teamId;
@@ -31,19 +32,19 @@ public class ProgramRequest {
         return name;
     }
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
 
