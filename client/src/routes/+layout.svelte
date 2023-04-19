@@ -12,6 +12,7 @@
 	export let data: LayoutServerData
 
 	if (data.user && data.userData) {
+		console.log('data',data.userData)
 		$userDB = User.build(data.userData)
 		$authUser = data.user
 	} else {

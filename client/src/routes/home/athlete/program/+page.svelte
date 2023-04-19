@@ -44,6 +44,7 @@ const fetchCurrentProgram = async () => {
 }
 
 onMount(() => {
+    $currentProgram = $userDB.athleteData.currentProgram
     if (!$currentProgram.id) {
         fetchCurrentProgram()
     }

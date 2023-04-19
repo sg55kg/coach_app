@@ -1,12 +1,13 @@
-import type {Program} from "$lib/classes/program";
+import {Program} from "$lib/classes/program";
 import {CoachData, type CoachDataDTO} from "$lib/classes/user/coach";
 import {DisplayTeam, Team, type TeamDTO} from "$lib/classes/team";
 import {AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user/athlete/records";
+import type {ProgramDTO} from "../../program";
 
 export interface AthleteDataDTO {
     id: string,
     name: string,
-    currentProgram: Program,
+    currentProgram: ProgramDTO,
     programs: Program[],
     coachId: string,
     records: AthleteRecordDTO[]
@@ -27,7 +28,7 @@ export class AthleteData {
 
         athlete.id = data.id
         athlete.name = data.name
-        athlete.currentProgram = data.currentProgram
+        athlete.currentProgram = Program.build(data.currentProgram)
         athlete.programs = data.programs
         athlete.coachId = data.coachId ? data.coachId : ''
         athlete.records = data.records ?

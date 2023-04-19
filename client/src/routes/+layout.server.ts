@@ -27,6 +27,7 @@ export const load: LayoutServerLoad = async ({ cookies, params, url, locals }) =
         try {
             const user = jwtDecode(cookies.get('idToken')!)
             const userData = await _fetchUser(user, cookies.get('accessToken')!)
+            console.log(userData)
             return { user, userData }
         } catch (e) {
             cookies.delete('accessToken', { path: '/'})
