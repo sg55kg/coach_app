@@ -20,10 +20,8 @@ public interface AthleteViewModel {
     UUID getId();
     @Mapping("name")
     String getName();
-    @Mapping(value = "currentProgram")
+    @Mapping(value = "currentProgram", fetch = FetchStrategy.SELECT)
     ProgramWithDays getCurrentProgram();
-//    @Limit(limit = "10", order = "lastUpdated DESC")
-//    List<AthleteRecord> getRecords();
     @Mapping("team")
     TeamViewModel getTeam();
 }

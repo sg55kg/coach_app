@@ -24,19 +24,19 @@
             return
         }
         try {
-            const res = await fetch(`/api/athlete/program/${$userDB.athleteData.currentProgram.id}`)
-            const programData: ProgramDTO = await res.json()
-            console.log('program', programData)
-            const program = Program.build(programData)
-            program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
-            const today = dayjs()
-            const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
-
-            if (day && !day.isRestDay && day.exercises.length > 0) {
-                day.exercises.sort((a, b) => a.order - b.order)
-                $currentDay = day
-            }
-            $currentProgram = program
+            // const res = await fetch(`/api/athlete/program/${$userDB.athleteData.currentProgram.id}`)
+            // const programData: ProgramDTO = await res.json()
+            // console.log('program', programData)
+            // const program = Program.build(programData)
+            // program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
+            // const today = dayjs()
+            // const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
+            //
+            // if (day && !day.isRestDay && day.exercises.length > 0) {
+            //     day.exercises.sort((a, b) => a.order - b.order)
+            //     $currentDay = day
+            // }
+            $currentProgram = $userDB.athleteData.currentProgram
         } catch (e) {
             console.log(e)
         }
@@ -66,7 +66,7 @@
                 <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
             </div>
         {:then e}
-            {#if $currentDay.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
+            {#if $currentDay?.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <AthleteExpandedDay />
             {:else if $currentDay && $currentDay?.isRestDay}
                 <div class="flex flex-col">

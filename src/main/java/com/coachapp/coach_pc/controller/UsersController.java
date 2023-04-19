@@ -31,6 +31,7 @@ public class UsersController {
 
     @GetMapping("/{email}")
     public ResponseEntity<UserWithMappings> getUserData(@PathVariable String email) {
+        logger.info("Received request to fetch user data for user: " + email);
         return userService.getUserData(email);
     }
 

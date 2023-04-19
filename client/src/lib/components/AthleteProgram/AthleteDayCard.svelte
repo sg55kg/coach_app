@@ -4,6 +4,7 @@
     import {Day} from "../../classes/program/day";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import {isMobile} from "$lib/stores/authStore.js";
+    import {EffortIntensity} from "../../classes/program/exercise/enums";
 
     export let idx: number
     export let day: Day
@@ -16,6 +17,18 @@
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()
 
+    const formatEffortString = (effort: EffortIntensity) => {
+        switch (effort) {
+            case EffortIntensity.EASY:
+                return 'Easy'
+            case EffortIntensity.MODERATE:
+                return 'Moderate'
+            case EffortIntensity.DIFFICULT:
+                return 'Hard'
+            case EffortIntensity.MAX:
+                return 'Max Effort'
+        }
+    }
 </script>
 
 <CalendarCard
@@ -51,7 +64,9 @@
                         {:else if exercise.type === ExerciseType.DURATION}
                             <h4>Test</h4>
                         {:else}
-                            <h4>Test</h4>
+                            <h4>
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.weight + 'kg' : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
+                            </h4>
                         {/if}
                     {/each}
                 {/if}

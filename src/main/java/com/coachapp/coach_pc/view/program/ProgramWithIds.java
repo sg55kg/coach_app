@@ -1,6 +1,7 @@
 package com.coachapp.coach_pc.view.program;
 
 import com.blazebit.persistence.view.EntityView;
+import com.blazebit.persistence.view.FetchStrategy;
 import com.blazebit.persistence.view.Mapping;
 import com.coachapp.coach_pc.model.Program;
 
@@ -13,8 +14,6 @@ public interface ProgramWithIds extends ProgramViewModel {
     UUID getAthleteId();
     @Mapping("athlete.name")
     String getAthleteName();
-    @Mapping("coach.id")
+    @Mapping(value = "coach.id", fetch = FetchStrategy.SELECT)
     UUID getCoachId();
-    @Mapping("team.id")
-    UUID getTeamId();
 }

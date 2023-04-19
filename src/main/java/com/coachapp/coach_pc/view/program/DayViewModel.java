@@ -21,6 +21,6 @@ public interface DayViewModel {
     OffsetDateTime getDate();
     @Mapping("isRestDay")
     boolean getIsRestDay();
-    @Mapping(value = "exercises", fetch = FetchStrategy.SUBSELECT)
+    @Mapping(value = "exercises")
     List<Exercise> getExercises();
 }

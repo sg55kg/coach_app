@@ -1,16 +1,9 @@
 <script lang="ts">
-    import {onDestroy} from "svelte";
-    import {currentDay, currentProgram} from "$lib/stores/athleteProgramStore";
-    import {Program} from "$lib/classes/program";
-    import {Day} from "$lib/classes/program/day";
     import {userDB} from "$lib/stores/authStore";
     import {authUser} from "$lib/stores/authStore.js";
     import AthleteHeader from "$lib/components/AthleteHeader.svelte";
 
-    onDestroy(() => {
-        currentProgram.set(new Program())
-        currentDay.set(new Day())
-    })
+
 </script>
 
 <svelte:head>

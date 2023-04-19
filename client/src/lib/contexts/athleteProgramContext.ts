@@ -77,7 +77,6 @@ const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, progr
             return d
         })
         const updated = await ProgramService.updateExercise(exerciseCopy)
-        console.log('updated', updated)
         day.exercises = day.exercises.map(e => e.id === updated.id ? updated : e)
         program.days = program.days.map(d => d.id === day.id ? day : d)
         currentProgram.set(program)

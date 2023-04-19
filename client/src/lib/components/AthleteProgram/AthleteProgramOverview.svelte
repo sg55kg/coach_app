@@ -3,6 +3,7 @@
     import {isMobile} from "$lib/stores/authStore.js";
     import AthleteDayCard from "$lib/components/AthleteProgram/AthleteDayCard.svelte";
     import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
+    import {Day} from "$lib/classes/program/day/index.js";
 
     const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading, getCurrentDayIdx } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
@@ -25,7 +26,7 @@
         {/each}
     </div>
 </div>
-{#if $currentDay}
+{#if $currentDay && $currentIdx > -1}
     <div class="fixed top-0 right-0 bottom-0 left-0 z-10" on:click={() => { $currentDay = undefined; $currentIdx = -1 }}></div>
     <div class="z-20 fixed {$isMobile ? 'top-20 right-5 left-5' : 'top-20 right-10 left-10'}">
         <AthleteExpandedDay />

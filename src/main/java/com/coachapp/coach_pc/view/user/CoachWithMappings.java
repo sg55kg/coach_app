@@ -16,6 +16,6 @@ public interface CoachWithMappings extends CoachViewModel {
     List<AthleteViewModel> getAthletes();
 
     List<TeamViewModel> getTeams();
-    @Mapping("programsList")
-    List<ProgramWithIds> getPrograms();
+//    @Mapping("programsList")
+//    List<ProgramWithIds> getPrograms();
 }
