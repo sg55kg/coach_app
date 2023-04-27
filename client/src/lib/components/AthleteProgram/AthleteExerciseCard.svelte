@@ -1,15 +1,18 @@
 <script lang="ts">
-
     import {Exercise} from "../../classes/program/exercise";
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
     import GoCheck from 'svelte-icons/go/GoCheck.svelte'
     import GoDash from 'svelte-icons/go/GoDash.svelte'
     import {EffortIntensity} from "../../classes/program/exercise/enums";
+    import {getContext} from "svelte";
 
     export let exercise: Exercise
     export let exerciseIndex: number
     export let selectedExerciseIdx: number
+
+    const { getNewRecordExerciseIds } = getContext('athlete-program')
+    const newRecordIds = getNewRecordExerciseIds()
 
     const formatEffortString = (effort: EffortIntensity) => {
         switch (effort) {
@@ -104,6 +107,9 @@
                 </h4>
             </div>
         {/each}
+    {/if}
+    {#if $newRecordIds.length > 0 && $newRecordIds.includes(exercise.id)}
+        <p class="text-green">New Record!</p>
     {/if}
     <button class="absolute right-3 h-4 w-4">
         <FaChevronDown />

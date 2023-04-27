@@ -29,14 +29,14 @@
             // console.log('program', programData)
             // const program = Program.build(programData)
             // program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
-            // const today = dayjs()
-            // const day = program.days.find(d => dayjs(d.date).isSame(today, 'days'))
-            //
-            // if (day && !day.isRestDay && day.exercises.length > 0) {
-            //     day.exercises.sort((a, b) => a.order - b.order)
-            //     $currentDay = day
-            // }
+            const today = dayjs()
             $currentProgram = $userDB.athleteData.currentProgram
+            const day = $currentProgram.days.find(d => dayjs(d.date).isSame(today, 'days'))
+
+            if (day && !day.isRestDay && day.exercises.length > 0) {
+                day.exercises.sort((a, b) => a.order - b.order)
+                $currentDay = day
+            }
         } catch (e) {
             console.log(e)
         }

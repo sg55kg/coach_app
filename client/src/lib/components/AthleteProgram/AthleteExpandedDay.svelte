@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {Day} from "../../classes/program/day";
     import {getContext} from "svelte";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
@@ -7,11 +6,19 @@
     import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
     import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
 
-    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading, getCurrentDayIdx } = getContext('athlete-program')
+    const {
+        getCurrentProgram,
+        getCurrentDay,
+        markDayCompleteAsWritten,
+        getAthleteProgramLoading,
+        getCurrentDayIdx,
+        getAthleteId
+    } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()
     const idx = getCurrentDayIdx()
+    const athleteId = getAthleteId()
 
     let selectedExerciseIdx: number = -1
     $: exercisesComplete = () => {
@@ -87,13 +94,17 @@
             <p class="text-textblue p-2"><i>No notes entered for today</i></p>
         </div>
         <div class="flex flex-col items-center">
-            <h3 class="p-2 text-xl font-semibold {exercisesComplete() ? 'text-green' : ''}">{exercisesComplete()}/{$currentDay.exercises.length} Exercises Complete</h3>
+            <h3 class="p-2 text-xl font-semibold {exercisesComplete() ? 'text-green' : ''}">
+                {exercisesComplete()}/{$currentDay.exercises.length} Exercises Complete
+            </h3>
             {#if exercisesComplete() !== $currentDay.exercises.length}
                 <div class="flex justify-center items-center p-2 w-full">
                     <button class="mx-2 p-2 border-red-shade border-2 text-red-shade rounded-sm">
                         Skip Day
                     </button>
-                    <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm" on:click={() => markDayCompleteAsWritten($currentDay, $currentProgram)}>
+                    <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm"
+                            on:click={() => markDayCompleteAsWritten($athleteId, $currentDay, $currentProgram)}
+                    >
                         Mark Day Finished
                     </button>
                 </div>

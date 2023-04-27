@@ -7,14 +7,24 @@
     import {getContext, onMount} from "svelte";
     import {ExerciseMaxRepsError, ExerciseMaxWeightError} from "../../contexts/athleteProgramContext";
     import {EffortIntensity} from "../../classes/program/exercise/enums";
+    import {userDB} from "$lib/stores/authStore.js";
 
     export let exercise: Exercise
     export let selectedExerciseIdx: number
 
-    const { getAthleteProgramError, skipExercise, getCurrentDay, getCurrentProgram, markExerciseCompleteAsWritten } = getContext('athlete-program')
+    const {
+        getAthleteProgramError,
+        skipExercise,
+        getCurrentDay,
+        getCurrentProgram,
+        markExerciseCompleteAsWritten,
+        getNewRecordExerciseIds
+    } = getContext('athlete-program')
+
     const error = getAthleteProgramError()
     const currentDay = getCurrentDay()
     const currentProgram = getCurrentProgram()
+    const newRecordIds = getNewRecordExerciseIds()
 
     $: $error ? (() => {
         if ($error instanceof ExerciseMaxWeightError) {
@@ -58,6 +68,7 @@
     }
 
     let editMode: boolean = false
+    $: console.log($newRecordIds)
 </script>
 
 <div class="bg-gray-200 mr-2 mb-2 border-l-2 border-l-textblue p-2 relative">
@@ -71,6 +82,9 @@
         {:else if exercise.type === ExerciseType.ACCESSORY}
             <h3 class="text-lg font-semibold text-textblue">{exercise.name}</h3>
         {/if}
+        {#if $newRecordIds.length > 0 && $newRecordIds.includes(exercise.id)}
+            <p class="text-green">New Record!</p>
+        {/if}
         <AthleteEditExerciseRow bind:exercise={exercise} />
         {#each exercise.dropSets as dropSet}
             <AthleteEditExerciseRow bind:exercise={dropSet} />
@@ -78,6 +92,9 @@
     {:else}
         {#if exercise.type === ExerciseType.EXERCISE}
             <h3 class="text-lg font-semibold text-textblue">{exercise.name}</h3>
+            {#if $newRecordIds.length > 0 && $newRecordIds.includes(exercise.id)}
+                <p class="text-green">New Record!</p>
+            {/if}
             {#each [exercise, ...exercise.dropSets] as row}
                 {#if row.isMax}
                     <h5>{row.repsPerSet} Rep Max</h5>
@@ -99,6 +116,9 @@
             {/each}
         {:else if exercise.type === ExerciseType.COMPLEX}
             <h3 class="text-lg font-semibold text-textblue">{exercise.nameArr.join(' + ')}</h3>
+            {#if $newRecordIds.length > 0 && $newRecordIds.includes(exercise.id)}
+                <p class="text-green">New Record!</p>
+            {/if}
             {#each [exercise, ...exercise.dropSets] as row}
                 {#if row.isMax}
                 {:else}
@@ -117,7 +137,7 @@
     {#if (!hasMax || !enteredWeight) && !exercise.isComplete}
         <div class="flex flex-col items-center py-2">
             <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm"
-                on:click={() => markExerciseCompleteAsWritten(exercise, $currentDay, $currentProgram)}
+                on:click={() => markExerciseCompleteAsWritten(exercise, $currentDay, $currentProgram, $userDB.athleteData.id)}
             >
                 {exercise.weightCompleted ? 'Mark Complete' : 'Mark Complete As Written'}
             </button>
