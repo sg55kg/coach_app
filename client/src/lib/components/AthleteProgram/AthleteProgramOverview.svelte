@@ -5,7 +5,13 @@
     import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
     import {Day} from "$lib/classes/program/day/index.js";
 
-    const { getCurrentProgram, getCurrentDay, markDayCompleteAsWritten, getAthleteProgramLoading, getCurrentDayIdx } = getContext('athlete-program')
+    const {
+        getCurrentProgram,
+        getCurrentDay,
+        markDayCompleteAsWritten,
+        getAthleteProgramLoading,
+        getCurrentDayIdx
+    } = getContext('athlete-program')
     const currentProgram = getCurrentProgram()
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()

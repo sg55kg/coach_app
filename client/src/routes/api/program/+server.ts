@@ -16,7 +16,7 @@ export const POST: RequestHandler = async (event) => {
         const programData = await res.json()
         return new Response(JSON.stringify(programData))
     } catch (e) {
-        throw error(405, 'Could not create new team')
+        throw error(405, 'Could not create new program')
     }
 }
 

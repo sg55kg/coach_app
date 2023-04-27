@@ -54,13 +54,29 @@
                 {:else}
                     {#each $currentProgram.days[idx]?.exercises as exercise, idx (exercise?.id+idx)}
                         {#if exercise.type === ExerciseType.EXERCISE}
-                            <h4>
-                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
-                            </h4>
+                            {#if exercise.isMax}
+                                <h4>
+                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.repsPerSet}RM
+                                </h4>
+                            {:else if exercise.isMaxReps}
+                                <h4>
+                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets AMRAP
+                                </h4>
+                            {:else}
+                                <h4>
+                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
+                                </h4>
+                            {/if}
                         {:else if exercise.type === ExerciseType.COMPLEX}
-                            <h4>
-                                {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-                            </h4>
+                            {#if exercise.isMax}
+                                <h4>
+                                    {exercise.nameArr.join(' + ')}: {exercise.repArr.join(' + ')}RM
+                                </h4>
+                            {:else}
+                                <h4>
+                                    {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
+                                </h4>
+                            {/if}
                         {:else if exercise.type === ExerciseType.DURATION}
                             <h4>Test</h4>
                         {:else}

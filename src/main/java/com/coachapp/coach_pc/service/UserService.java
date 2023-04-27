@@ -73,8 +73,6 @@ public class UserService {
         UserData user = o.get();
         athlete.setUser(user);
         athlete.setName(user.getUsername());
-        athlete.setRecords(athleteRequest.getRecords());
-        athleteRequest.getRecords().get(0).setAthlete(athlete);
         user.setAthleteData(athlete);
 
         UserWithMappings updated = userRepo.updateUser(user);

@@ -148,7 +148,19 @@
         dayCopy.exercises.forEach((e, i) => {
             e.id = ''
             e.comments = []
-            e.dropSets.forEach(d => d.id = '')
+            e.weightCompleted = 0
+            e.totalRepsCompleted = 0
+            e.setsCompleted = 0
+            e.repCompletedArr = []
+            e.isComplete = false
+            e.dropSets.forEach(d => {
+                d.id = ''
+                d.weightCompleted = 0
+                d.totalRepsCompleted = 0
+                d.setsCompleted = 0
+                d.repCompletedArr = []
+                d.isComplete = false
+            })
         })
         $dayClipboard = [dayCopy]
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
@@ -163,7 +175,7 @@
         program.update((prev) => {
             console.log(prev)
             let id = prev.days[idx].id
-            prev.days[idx] = {...$dayClipboard[0], id}
+            prev.days[idx] = {...JSON.parse(JSON.stringify($dayClipboard[0])), id}
             return prev
         })
         $program = $program
