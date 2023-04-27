@@ -178,7 +178,7 @@ export default class UserService {
         }
 
         const records: AthleteRecordDTO[] = await res.json()
-        return records.map(r => new AthleteRecord(r))
+        return records.map(r => AthleteRecord.createFrom(r))
     }
 
     static updateAthleteData = async (athlete: AthleteData) => {
@@ -224,7 +224,7 @@ export default class UserService {
         }
 
         const recordDTOs: AthleteRecordDTO[] = await res.json()
-        return recordDTOs.map(r => new AthleteRecord(r))
+        return recordDTOs.map(r => AthleteRecord.createFrom(r))
     }
 
     static fetchAthleteStats = async (athleteId: string) => {
@@ -236,5 +236,41 @@ export default class UserService {
 
         const stats: any = await res.json()
         return stats
+    }
+
+    static createAthleteRecord = async (athleteId: string, newRecord: AthleteRecord) => {
+        const res = await fetch(`/api/athlete/${athleteId}/record`, {
+            method: 'POST',
+            body: JSON.stringify(newRecord)
+        })
+        if (res.status > 307) {
+            console.log(res.statusText)
+            throw new Error('Could not fetch athlete record')
+        }
+        try {
+            const record = await res.json()
+            return AthleteRecord.createFrom(record)
+        } catch (e) {
+            console.log(e)
+            return null
+        }
+    }
+
+    static createAthleteRecords = async (athleteId: string, records: AthleteRecord[]) => {
+        const res = await fetch(`/api/athlete/${athleteId}/record/list`, {
+            method: 'POST',
+            body: JSON.stringify(records)
+        })
+        if (res.status > 307) {
+            console.log(res.statusText)
+            throw new Error('Could not update records')
+        }
+        try {
+            const dtos: AthleteRecordDTO[] = await res.json()
+            return dtos.map(d => AthleteRecord.createFrom(d))
+        } catch (e) {
+            console.log(e)
+            return [] as AthleteRecord[]
+        }
     }
 }

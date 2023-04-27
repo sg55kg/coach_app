@@ -1,7 +1,6 @@
 import {Program} from "$lib/classes/program";
-import {CoachData, type CoachDataDTO} from "$lib/classes/user/coach";
-import {DisplayTeam, Team, type TeamDTO} from "$lib/classes/team";
-import {AthleteRecord, type AthleteRecordDTO} from "$lib/classes/user/athlete/records";
+import {DisplayTeam} from "$lib/classes/team";
+import type {AthleteRecord, AthleteRecordDTO} from "$lib/classes/user/athlete/records";
 import type {ProgramDTO} from "../../program";
 
 export interface AthleteDataDTO {
@@ -28,14 +27,10 @@ export class AthleteData {
 
         athlete.id = data.id
         athlete.name = data.name
-        athlete.currentProgram = Program.build(data.currentProgram)
+        athlete.currentProgram = data.currentProgram ? Program.build(data.currentProgram) : null
         athlete.programs = data.programs
         athlete.coachId = data.coachId ? data.coachId : ''
-        athlete.records = data.records ?
-            data.records
-                .map(r => new AthleteRecord(r))
-                .sort((a, b) => a.lastUpdated.toDate().valueOf() - b.lastUpdated.toDate().valueOf()) :
-            []
+
         athlete.team = data.team ? DisplayTeam.createFrom(data.team) : null
 
         return athlete

@@ -15,7 +15,6 @@ public class AthleteRequest {
     private UUID teamId;
     private UUID coachId;
     private String name;
-    private List<AthleteRecord> records;
 
     public AthleteRequest() {}
 
@@ -37,10 +36,6 @@ public class AthleteRequest {
         this.name = name;
     }
 
-    public void setRecords(List<AthleteRecord> records) {
-        this.records = records;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -57,9 +52,6 @@ public class AthleteRequest {
         return name;
     }
 
-    public List<AthleteRecord> getRecords() {
-        return records;
-    }
 
     public static AthleteData convertRequest(AthleteRequest request, AthleteData athlete) {
         if (request.getCoachId() != null) {
@@ -80,15 +72,6 @@ public class AthleteRequest {
         if (request.getName() != null) {
             athlete.setName(request.getName());
         }
-
-        // TODO: this needs attention
-        if (request.getRecords().size() > 0 && request.getRecords().get(0).getId() != null) {
-            request.getRecords().forEach(r -> {
-                r.setAthlete(athlete);
-            });
-            athlete.setRecords(request.getRecords());
-        }
-
 
         return athlete;
     }

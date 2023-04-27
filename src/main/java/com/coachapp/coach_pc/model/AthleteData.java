@@ -23,21 +23,21 @@ public class AthleteData {
     @OneToOne
     @JoinColumn(name = "current_program_id")
     private Program currentProgram;
-    @OneToMany(mappedBy = "athlete")
+    @OneToMany(mappedBy = "athlete", fetch = FetchType.LAZY)
     @JsonIgnore
     @Fetch(FetchMode.SUBSELECT)
     private List<Program> programsList;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     @JsonIgnore
     private CoachData coach;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SUBSELECT)
-    private List<AthleteRecord> records;
+//    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SUBSELECT)
+//    private List<AthleteRecord> records;
 
     public AthleteData() {}
 
@@ -97,17 +97,17 @@ public class AthleteData {
         this.team = team;
     }
 
-    public List<AthleteRecord> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<AthleteRecord> records) {
-        this.records = records;
-    }
-
-    public void addRecord(AthleteRecord record) {
-        this.records.add(record);
-    }
+//    public List<AthleteRecord> getRecords() {
+//        return records;
+//    }
+//
+//    public void setRecords(List<AthleteRecord> records) {
+//        this.records = records;
+//    }
+//
+//    public void addRecord(AthleteRecord record) {
+//        this.records.add(record);
+//    }
 
     public void addProgram(Program program) {
         this.programsList.add(program);

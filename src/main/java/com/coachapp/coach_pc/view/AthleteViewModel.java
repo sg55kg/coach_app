@@ -13,7 +13,7 @@ public class AthleteViewModel {
     private DisplayTeam team;
     private ProgramViewModel currentProgram;
     private String name;
-    private List<AthleteRecord> records;
+//    private List<AthleteRecord> records;
 
     public AthleteViewModel() {}
 
@@ -57,13 +57,13 @@ public class AthleteViewModel {
         this.name = name;
     }
 
-    public List<AthleteRecord> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<AthleteRecord> records) {
-        this.records = records;
-    }
+//    public List<AthleteRecord> getRecords() {
+//        return records;
+//    }
+//
+//    public void setRecords(List<AthleteRecord> records) {
+//        this.records = records;
+//    }
 
     public static AthleteViewModel convertAthlete(AthleteData athlete) {
         if (athlete == null) {
@@ -85,7 +85,7 @@ public class AthleteViewModel {
         }
 
         viewModel.setName(athlete.getName());
-        viewModel.setRecords(athlete.getRecords());
+//        viewModel.setRecords(athlete.getRecords());
 
         return viewModel;
     }

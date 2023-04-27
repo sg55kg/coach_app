@@ -6,6 +6,9 @@ import type {Day} from "../classes/program/day";
 import {ExerciseType} from "../classes/program/exercise/enums";
 import {ProgramService} from "../service/ProgramService";
 import type {Exercise} from "../classes/program/exercise";
+import UserService from "../service/userService";
+import {AthleteRecord} from "../classes/user/athlete/records";
+import dayjs from "dayjs";
 
 export class ExerciseMaxWeightError extends Error {
     constructor(message: string, id: string) {
@@ -25,14 +28,23 @@ export class ExerciseMaxRepsError extends Error {
     id: string = ''
 }
 
+export class AthleteRecordError extends Error {
+    constructor(message: string) {
+        super();
+        this.message = message
+    }
+}
+
 let currentProgram: Writable<Program> = writable(new Program())
 let currentDay: Writable<Day | undefined> = writable(undefined)
 let currentDayIdx: Writable<number> = writable(-1)
 let athleteProgramLoading: Writable<boolean> = writable(false)
 let athleteProgramSuccess: Writable<string> = writable('')
 let athleteProgramError: Writable<Error | undefined> = writable()
+let athleteId: Writable<string> = writable('')
+let newRecordExerciseIds: Writable<string[]> = writable([])
 
-const markDayCompleteAsWritten = async (day: Day, program: Program) => {
+const markDayCompleteAsWritten = async (athleteId: string, day: Day, program: Program) => {
     athleteProgramLoading.set(true)
     athleteProgramSuccess.set('')
     athleteProgramError.set(undefined)
@@ -49,7 +61,7 @@ const markDayCompleteAsWritten = async (day: Day, program: Program) => {
         const programCopy = JSON.parse(JSON.stringify(program)) as Program
         programCopy.days = programCopy.days.map(d => d.id === dayCopy.id ? dayCopy : d)
         const programRes = await ProgramService.updateProgram(programCopy)
-
+        await checkForAndCreateDayRecords(athleteId, dayCopy)
         currentProgram.set(programRes)
         currentDay.set(programRes.days.find(d => d.id === day.id)!)
         athleteProgramSuccess.set('Updated')
@@ -65,10 +77,11 @@ const markDayCompleteAsWritten = async (day: Day, program: Program) => {
     }
 }
 
-const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, program: Program) => {
+const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, program: Program, athleteId: string) => {
     athleteProgramLoading.set(true)
     athleteProgramSuccess.set('')
     athleteProgramError.set(undefined)
+    let updated: Exercise | undefined
     try {
         let exerciseCopy = JSON.parse(JSON.stringify(exercise)) as Exercise
         exerciseCopy = markExerciseFieldsComplete(exerciseCopy)
@@ -76,22 +89,104 @@ const markExerciseCompleteAsWritten = async (exercise: Exercise, day: Day, progr
             d = markExerciseFieldsComplete(d)
             return d
         })
-        const updated = await ProgramService.updateExercise(exerciseCopy)
-        day.exercises = day.exercises.map(e => e.id === updated.id ? updated : e)
-        program.days = program.days.map(d => d.id === day.id ? day : d)
-        currentProgram.set(program)
-        currentDay.set(day)
+        updated = await ProgramService.updateExercise(exerciseCopy)
+        await checkForAndCreateAthleteRecord(athleteId, updated, day)
+
+        updateProgramStoreAfterExerciseSave(program, day, updated)
         athleteProgramSuccess.set('Saved ' + updated.nameArr.length ? updated.nameArr.join(' + ') : updated.name)
     } catch (e: any) {
         if (e instanceof ExerciseMaxRepsError || e instanceof ExerciseMaxWeightError) {
             athleteProgramError.set(e)
+        } else if (e instanceof AthleteRecordError) {
+            if (updated) {
+                updateProgramStoreAfterExerciseSave(program, day, updated)
+            }
+            athleteProgramError.set(e)
         } else {
             console.log(e)
-            e.message = 'An unknown error occurred while trying to mark this day as complete'
+            e.message = `An unknown error occurred while trying to mark ${exercise.name} as complete`
             athleteProgramError.set(e)
         }
     } finally {
         athleteProgramLoading.set(false)
+    }
+}
+
+const updateProgramStoreAfterExerciseSave = (program: Program, day: Day, exercise: Exercise) => {
+    day.exercises = day.exercises.map(e => e.id === exercise.id ? exercise : e)
+    program.days = program.days.map(d => d.id === day.id ? day : d)
+    currentProgram.set(program)
+    currentDay.set(day)
+}
+
+const checkForAndCreateAthleteRecord = async (athleteId: string, exercise: Exercise, day: Day) => {
+    // TODO: it may make more sense to just save a list of records every time and remove the endpoint for creating a single record
+    if (exercise.dropSets.length) {
+        const records: AthleteRecord[] = []
+
+        const record = AthleteRecord.buildRecord(exercise, day, athleteId)
+        records.push(record)
+        exercise.dropSets.forEach(d => {
+            const rec = AthleteRecord.buildRecord(exercise, day, athleteId)
+            records.push(rec)
+        })
+        try {
+            const newRecords = await UserService.createAthleteRecords(athleteId, records)
+            if (newRecords.length) {
+                newRecordExerciseIds.update(prev => {
+                    records.forEach(r => prev.push(r.exerciseId))
+                    return prev
+                })
+            }
+        } catch (e) {
+            console.log(e)
+            throw new AthleteRecordError(`An unknown error occurred while checking if ${exercise.name} was a personal record`)
+        }
+
+    } else {
+        const record = AthleteRecord.buildRecord(exercise, day, athleteId)
+
+        try {
+            const newRecord = await UserService.createAthleteRecord(athleteId, record)
+            if (newRecord) {
+                newRecordExerciseIds.update(prev => {
+                    prev = [...prev, record.exerciseId]
+                    return prev
+                })
+            }
+        } catch (e) {
+            console.log(e)
+            throw new AthleteRecordError(`An unknown error occurred while checking if ${exercise.name} was a personal record`)
+        }
+    }
+}
+
+const checkForAndCreateDayRecords = async (athleteId: string, day: Day) => {
+    const records: AthleteRecord[] = []
+    for (const ex of day.exercises) {
+        if (ex.type !== ExerciseType.EXERCISE) continue
+
+        const record = AthleteRecord.buildRecord(ex, day, athleteId)
+        records.push(record)
+        ex.dropSets.forEach(d => {
+            const rec = AthleteRecord.buildRecord(d, day, athleteId)
+            records.push(rec)
+        })
+    }
+
+    try {
+        const newRecords = await UserService.createAthleteRecords(athleteId, records)
+        if (newRecords && newRecords.length) {
+            newRecordExerciseIds.update(prev => {
+                records.forEach(r => {
+                    prev.push(r.exerciseId)
+                })
+                return prev
+            })
+        }
+    } catch (e) {
+        console.log(e)
+        throw new AthleteRecordError('An unknown error occurred while checking for personal records')
     }
 }
 
@@ -160,6 +255,8 @@ export const athleteProgramContext = {
     getAthleteProgramLoading: () => athleteProgramLoading,
     getAthleteProgramError: () => athleteProgramError,
     getAthleteProgramSuccess: () => athleteProgramSuccess,
+    getAthleteId: () => athleteId,
+    getNewRecordExerciseIds: () => newRecordExerciseIds,
     markDayCompleteAsWritten,
     markExerciseCompleteAsWritten,
     skipExercise

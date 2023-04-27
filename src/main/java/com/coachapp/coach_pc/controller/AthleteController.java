@@ -3,8 +3,10 @@ package com.coachapp.coach_pc.controller;
 import com.coachapp.coach_pc.model.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.request.AthleteRequest;
+import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.service.AthleteService;
 import com.coachapp.coach_pc.view.AthleteViewModel;
+import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,11 +36,6 @@ public class AthleteController {
         return athleteService.updateAthlete(id, athlete);
     }
 
-    @PutMapping("/{athleteId}/record")
-    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(@PathVariable UUID athleteId, @RequestBody AthleteRecord record) {
-        return athleteService.updateAthleteRecord(athleteId, record);
-    }
-
     @GetMapping("{athleteId}")
     public ResponseEntity<AthleteData> getAthlete(@PathVariable UUID athleteId) {
         AthleteData athlete = athleteService.getAthleteData(athleteId);
@@ -48,8 +45,37 @@ public class AthleteController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("{athleteId}/record")
-    public ResponseEntity<List<AthleteRecord>> getAthleteRecords(@PathVariable UUID athleteId) {
-        return athleteService.getAthleteRecords(athleteId);
+    @GetMapping("{athleteId}/records")
+    public ResponseEntity<List<AthleteRecordViewModel>> getAthleteRecordsByExerciseName(
+            @PathVariable UUID athleteId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer reps,
+            @RequestParam(required = false) Integer weight,
+            @RequestParam(required = true) Boolean current
+    ) {
+        return athleteService.getAthleteRecordsByExerciseName(athleteId, name, reps, weight, current);
+    }
+
+    @GetMapping("/{athleteId}/records/exercise/{exerciseId}")
+    public ResponseEntity<AthleteRecordViewModel> getAthleteRecordByExerciseId(@PathVariable UUID athleteId, @PathVariable UUID exerciseId) {
+        return athleteService.getAthleteRecordByExerciseId(athleteId, exerciseId);
+    }
+
+    @GetMapping("/{athleteId}/records/day/{dayId}")
+    public ResponseEntity<List<AthleteRecordViewModel>> getAthleteRecordByDayId(@PathVariable UUID athleteId, @PathVariable UUID dayId) {
+        return athleteService.getAthleteRecordsByDayId(athleteId, dayId);
+    }
+
+    @PostMapping("/{athleteId}/records")
+    public ResponseEntity<AthleteRecordViewModel> createAthleteRecord(@PathVariable UUID athleteId, @RequestBody AthleteRecordRequestModel request) {
+        return athleteService.createAthleteRecord(athleteId, request);
+    }
+
+    // TODO: Remove '/list' and remove single create record post mapping above
+    @PostMapping("/{athleteId}/records/list")
+    public ResponseEntity<List<AthleteRecordViewModel>> createAthleteRecords(
+            @PathVariable UUID athleteId, @RequestBody List<AthleteRecordRequestModel> request
+    ) {
+        return athleteService.createAthleteRecords(athleteId, request);
     }
 }

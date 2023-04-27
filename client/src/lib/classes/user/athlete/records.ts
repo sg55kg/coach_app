@@ -1,90 +1,58 @@
 import dayjs, {Dayjs} from "dayjs";
+import type {Exercise} from "../../program/exercise";
+import type {Day} from "../../program/day";
 
 export interface AthleteRecordDTO {
     id: string,
     createdAt: string,
-    lastUpdated: string,
-    snatch: number
-    clean_and_jerk: number
-    jerk: number
-    clean: number
-    back_squat: number
-    front_squat: number
-    deadlift: number
-    snatch_deadlift: number
-    push_press: number
-    strict_press: number
-    bent_over_row: number
-    power_snatch: number
-    power_clean: number
-    power_jerk: number
-    hang_snatch: number
-    hang_power_snatch: number
-    hang_power_clean: number
-    block_snatch: number
-    block_clean: number
-    block_power_snatch: number
-    block_power_clean: number
-    clean_pull: number
-    snatch_pull: number
-    snatch_high_pull: number
-    bench_press: number
-    pendlay_rows: number
-    snatch_push_press: number
-    overhead_squat: number
-    squat_jerk: number
-    max_pull_ups: number
-    weighted_pull_up: number
-    max_chin_ups: number
-    weighted_chin_up: number
-    pause_snatch: number
-    pause_clean: number
-    sandbag_carry_meters: number
-    sandbag_carry_weight: number
-    farmer_carry_meters: number
-    farmer_carry_weight: number
-    block_deadlift: number
-    deficit_clean: number
-    deficit_snatch: number
-    deficit_deadlift: number
-    romanian_deadlift: number
-    snatch_romanian_deadlift: number
-    hang_muscle_snatch: number
-    muscle_snatch: number
-    pause_jerk_dip: number
-    pause_jerk_catch: number
-    pause_deadlift: number
-    sumo_deadlift: number
-    low_hang_snatch: number
-    high_hang_snatch: number
-    low_hang_clean: number
-    high_hang_clean: number
+    numReps: number,
+    weight: number,
+    exerciseName: string,
+    exerciseId: string,
+    dayId: string,
+    athleteId: string
 }
 
 export class AthleteRecord {
 
-    public id: string = ''
-    public records: Map<string, number> = new Map<string, number>()
-    public createdAt: Dayjs = dayjs()
-    public lastUpdated: Dayjs = dayjs()
+    public static createFrom(data: AthleteRecordDTO) {
+        const record = new AthleteRecord()
 
-    constructor(data: AthleteRecordDTO) {
-        for (const [key, value] of Object.entries(data)) {
-            if (key.toLowerCase().includes('athlete-stats')) {
-                // potential temporary fix until I find out why JsonIgnore doesn't work here
-                continue
-            }
-            if (key === 'createdAt') {
-                this.createdAt = dayjs(value)
-            } else if (key === 'lastUpdated') {
-                this.lastUpdated = dayjs(value);
-            } else if (key === 'id') {
-                this.id = value;
-            } else {
-                this.records.set(key.toLowerCase(), value)
-            }
-        }
+        record.id = data.id
+        record.createdAt = dayjs(data.createdAt)
+        record.numReps = data.numReps
+        record.weight = data.weight
+        record.exerciseName = data.exerciseName
+        record.exerciseId = data.exerciseId
+        record.dayId = data.dayId
+        record.athleteId = data.athleteId
+
+        return record
     }
+
+    public static buildRecord(exercise: Exercise, day: Day, athleteId: string = '') {
+        const record = new AthleteRecord()
+
+        record.athleteId = athleteId
+        record.createdAt = dayjs()
+        record.dayId = day.id
+        record.exerciseId = exercise.id
+        record.exerciseName = exercise.name
+        record.numReps = exercise.isMax || exercise.isMaxReps ?
+            exercise.totalRepsCompleted :
+            Math.round(exercise.totalRepsCompleted / exercise.setsCompleted)
+        record.weight = exercise.weightCompleted
+
+        return record
+    }
+    public id: string = ''
+    public createdAt: Dayjs = dayjs()
+    public numReps: number = 0
+    public weight: number = 0
+    public exerciseName: string = ''
+    public exerciseId: string = ''
+    public dayId: string = ''
+    public athleteId: string = ''
 }
 
 export const athleteRecordFields = [

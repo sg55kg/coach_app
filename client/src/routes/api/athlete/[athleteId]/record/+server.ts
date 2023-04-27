@@ -47,3 +47,24 @@ export const GET: RequestHandler = async (event) => {
         throw error(404, 'Records not found')
     }
 }
+
+export const POST: RequestHandler = async (event) => {
+    const token = event.cookies.get('accessToken')
+    const athleteId = event.params.athleteId
+    const record = await event.request.json()
+
+    if (!token) {
+        throw redirect(307, '/')
+    }
+    try {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/records`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(record),
+        })
+        return new Response(res.body)
+    } catch (e) {
+        console.log(e)
+        throw error(405, '')
+    }
+}

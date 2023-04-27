@@ -16,7 +16,8 @@ const {
     getCurrentDay,
     getAthleteProgramLoading,
     getAthleteProgramError,
-    getAthleteProgramSuccess
+    getAthleteProgramSuccess,
+    getAthleteId
 } = getContext('athlete-program')
 
 const currentProgram = getCurrentProgram()
@@ -24,6 +25,7 @@ const currentDay = getCurrentDay()
 const loading = getAthleteProgramLoading()
 const error = getAthleteProgramError()
 const success = getAthleteProgramSuccess()
+const athleteId = getAthleteId()
 
 const fetchCurrentProgram = async () => {
     if (!$userDB?.athleteData?.currentProgram) {
@@ -48,6 +50,7 @@ onMount(() => {
     if (!$currentProgram.id) {
         fetchCurrentProgram()
     }
+    $athleteId = $userDB.athleteData.id
 })
 
 onDestroy(() => {
