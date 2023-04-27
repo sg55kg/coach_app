@@ -48,5 +48,15 @@ When you are ready, make a PR to be merged into the `feature` branch. After bein
 a PR will be made to the `develop` branch. Once the new feature or features are finished and ready to be deployed, a 
 final PR will be made for the `main` branch, where the code will automatically be deployed.
 
+## Migrations
+
+The goal is to only add 1 migration per feature. However, this can be broken if two people are working on separate feature
+branches that will be merged into the same feature branch at a later time.
+
+In order to keep to one migration in most cases, create a migration file in src/main/resources/db.migrations. Add the migration
+code and restart your application to apply the migration. Later, if you need to make changes to your migration, go to 
+the query tool in pgAdmin and delete the most recent migration from the flyway_schema_history table, and then make any changes
+necessary to your migration file. When you are ready, start the application again to apply the new changes.
+
 ## License
 
