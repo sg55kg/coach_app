@@ -1,9 +1,8 @@
 package com.coachapp.coach_pc.view;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.Team;
-import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.model.user.UserData;
 
 import java.util.*;
 

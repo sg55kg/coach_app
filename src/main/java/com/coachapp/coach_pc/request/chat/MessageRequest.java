@@ -1,6 +1,5 @@
 package com.coachapp.coach_pc.request.chat;
 
-import com.coachapp.coach_pc.model.UserData;
 import com.coachapp.coach_pc.model.chat.ChatRoom;
 import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 import com.coachapp.coach_pc.model.chat.Message;

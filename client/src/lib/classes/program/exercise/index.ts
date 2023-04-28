@@ -1,4 +1,5 @@
 import {EffortIntensity, ExerciseType, WeightIntensity} from "$lib/classes/program/exercise/enums";
+import {WeightUnit} from "../../units/weight";
 
 export interface ExerciseDTO {
     id: string
@@ -63,6 +64,27 @@ export class Exercise {
     isMaxReps: boolean = false
     repsPerSetComplete: number = 0
 
+    private _wgt: WeightUnit = new WeightUnit(0)
+    private _wgtComp: WeightUnit = new WeightUnit(0)
+
+    wgt(unit: 'kg' | 'lb') {
+        return this._wgt.getValue(unit)
+    }
+
+    setWgt(val: number, unit: 'kg' | 'lb') {
+        this._wgt.setValue(val, unit)
+        this.weight = this._wgt.value
+    }
+
+    wgtComp(unit: 'kg' | 'lb') {
+        return this._wgtComp.getValue(unit)
+    }
+
+    setWgtComp(val: number, unit: 'kg' | 'lb') {
+        this._wgtComp.setValue(val, unit)
+        this.weightCompleted = this._wgtComp.value
+    }
+
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
 
@@ -75,6 +97,8 @@ export class Exercise {
         exercise.order = data.order
         exercise.isComplete = data.isComplete
         exercise.weightCompleted = data.weightCompleted
+        exercise.setWgt(data.weight, 'kg')
+        exercise.setWgtComp(data.weightCompleted, 'kg')
         if (data.type === ExerciseType.COMPLEX) {
             console.log(data)
             exercise.repCompletedArr = typeof(data.repCompletedArr) === 'string' ? data.repCompletedArr.split(',').map(r => parseInt(r)) : data.repCompletedArr

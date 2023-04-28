@@ -1,16 +1,13 @@
 package com.coachapp.coach_pc.model;
 
 import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 

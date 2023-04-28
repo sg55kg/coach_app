@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.model.user.UserData;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

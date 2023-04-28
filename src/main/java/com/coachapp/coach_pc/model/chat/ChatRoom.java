@@ -1,12 +1,7 @@
 package com.coachapp.coach_pc.model.chat;
 
-import com.blazebit.persistence.view.Limit;
 import com.coachapp.coach_pc.model.Team;
-import com.coachapp.coach_pc.model.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

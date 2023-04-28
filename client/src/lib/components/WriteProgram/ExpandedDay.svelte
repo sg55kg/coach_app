@@ -1,7 +1,7 @@
 <script lang="ts">
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte'
     import ExerciseCard from "$lib/components/WriteProgram/ExerciseCard.svelte";
-    import {getContext, onDestroy} from "svelte";
+    import {getContext, onDestroy, onMount} from "svelte";
     import FaChevronLeft from 'svelte-icons/fa/FaChevronLeft.svelte'
     import FaChevronRight from 'svelte-icons/fa/FaChevronRight.svelte'
     import ExpandedExercise from "$lib/components/WriteProgram/ExpandedExercise.svelte";
@@ -71,6 +71,7 @@
             $exerciseIndex = -1
         }
     })
+
 </script>
 
 <div class="absolute top-12 left-0 right-0 bottom-0 w-screen flex">
@@ -88,7 +89,7 @@
                 <FaChevronRight />
             </button>
         </div>
-        <div class="flex flex-col self-start justify-start items-start w-full pr-2">
+        <div class="flex flex-col self-start justify-start items-start w-full pr-2 mt-6">
             {#if $selectedDay.isRestDay}
                 <h4 class="text-2xl font-semibold m-2 text-center w-full">Rest Day</h4>
             {:else}
@@ -136,4 +137,6 @@
     </button>
 </div>
 
-<style></style>
+<style>
+
+</style>

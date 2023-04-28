@@ -16,23 +16,11 @@ $: console.log($userDB)
 
         let updatedAthlete: AthleteData = JSON.parse(JSON.stringify($userDB.athleteData)) as AthleteData
 
-        const recordsDTO = []
-        $userDB.athleteData.records.forEach(r => {
-            let recordFields = {
-                ...Object.fromEntries(r.records),
-                lastUpdated: r.lastUpdated,
-                createdAt: r.createdAt,
-                id: r.id
-            }
-            recordsDTO.push(recordFields)
-        })
 
         if ($userDB.athleteData.team === null) {
-            updatedAthlete.records = recordsDTO
             updatedAthlete.team = team as Team
             updatedAthlete.coachId = team.coachId
         } else {
-            updatedAthlete.records = recordsDTO
             updatedAthlete.team = null
             updatedAthlete.coachId = null
         }

@@ -1,5 +1,7 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.model.user.AthleteData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;

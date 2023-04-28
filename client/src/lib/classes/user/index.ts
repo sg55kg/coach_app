@@ -3,6 +3,7 @@ import {CoachData, type CoachDataDTO} from "$lib/classes/user/coach";
 import {AthleteData, type AthleteDataDTO} from "$lib/classes/user/athlete";
 import type {ChatMemberDTO} from "$lib/classes/chat";
 import {ChatMember} from "$lib/classes/chat";
+import {UserPreferences, type UserPreferencesDTO} from "./preferences";
 
 export interface UserDTO {
     id: string,
@@ -14,7 +15,8 @@ export interface UserDTO {
     updatedAt: string,
     username: string,
     members: Array<ChatMemberDTO>,
-    photoUrl: string
+    photoUrl: string,
+    preferences: UserPreferencesDTO
 }
 
 export class User {
@@ -32,6 +34,7 @@ export class User {
         user.roles = userDTO.roles
         user.members = userDTO.members ? userDTO.members.map(m => ChatMember.createFrom(m)) : []
         user.photoUrl = userDTO.photoUrl
+        user.preferences = UserPreferences.createFrom(userDTO.preferences)
 
         return user
     }
@@ -46,4 +49,5 @@ export class User {
     username: string = ''
     members: ChatMember[] = []
     photoUrl: string = ''
+    preferences: UserPreferences = new UserPreferences()
 }

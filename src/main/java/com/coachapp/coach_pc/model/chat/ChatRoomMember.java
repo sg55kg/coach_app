@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.model.chat;
 
-import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.model.user.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 

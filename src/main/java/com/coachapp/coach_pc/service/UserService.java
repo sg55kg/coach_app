@@ -1,13 +1,12 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.AthleteData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.Team;
-import com.coachapp.coach_pc.model.UserData;
-import com.coachapp.coach_pc.repository.UserDataRepo;
+import com.coachapp.coach_pc.model.user.UserData;
+import com.coachapp.coach_pc.model.user.UserPreference;
 import com.coachapp.coach_pc.repository.UserRepository;
 import com.coachapp.coach_pc.request.*;
-import com.coachapp.coach_pc.view.user.UserViewModel;
 import com.coachapp.coach_pc.view.user.UserWithMappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +42,7 @@ public class UserService {
         userData.setEmail(userRequest.getEmail());
         userData.setUsername(userRequest.getName());
         userData.setPhotoUrl(userRequest.getPhotoUrl());
+        userData.setPreferences(new UserPreference());
 
         UserWithMappings dbUser = userRepo.addUser(userData);
         return new ResponseEntity<>(dbUser, HttpStatus.CREATED);
@@ -92,6 +92,9 @@ public class UserService {
         if (userRequest.getAthleteName() != null) {
             user.getAthleteData().setName(userRequest.getAthleteName());
         }
+
+        userRequest.getPreferences().setUser(user);
+        user.setPreferences(userRequest.getPreferences());
 
         UserWithMappings updated = userRepo.updateUser(user);
         return new ResponseEntity<>(updated, HttpStatus.OK);

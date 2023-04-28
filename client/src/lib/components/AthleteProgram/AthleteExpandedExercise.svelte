@@ -36,6 +36,9 @@
 
     let hasMax: boolean = false
     let enteredWeight: boolean = false
+    let unit: 'kg' | 'lb' = $userDB.preferences.weight
+    $: unit = $userDB.preferences.weight
+
     onMount(() => {
         if (exercise.isMaxReps || exercise.isMax) {
             hasMax = true
@@ -54,7 +57,6 @@
     })
 
     const formatEffortString = (effort: EffortIntensity) => {
-        console.log(effort, exercise)
         switch (effort) {
             case EffortIntensity.EASY:
                 return 'Easy'
@@ -68,7 +70,6 @@
     }
 
     let editMode: boolean = false
-    $: console.log($newRecordIds)
 </script>
 
 <div class="bg-gray-200 mr-2 mb-2 border-l-2 border-l-textblue p-2 relative">
@@ -101,17 +102,18 @@
                     <input type="number"
                            class="bg-gray-300 p-1 rounded {$error && $error.id === row.id ? 'error-highlight' : ''}"
                            id="max-weight-input-{row.id}"
-                           bind:value={row.weightCompleted}
+                           value={row.wgtComp(unit)}
+                           on:change={(e) => row.setWgtComp(e.target.value, unit)}
                     >
                 {:else if row.isMaxReps}
-                    <h5>{row.weight}kg - {exercise.sets} sets for as many reps as possible</h5>
+                    <h5>{row.wgt(unit)}{unit} - {exercise.sets} sets for as many reps as possible</h5>
                     <input type="number"
                            class="bg-gray-300 p-1 rounded {$error && $error.id === row.id ? 'error-highlight' : ''}"
                            id="rep-max-input-{row.id}"
                            bind:value={row.totalRepsCompleted}
                     >
                 {:else}
-                    <h5>{row.weight}kg - {row.sets} sets of {row.repsPerSet} reps</h5>
+                    <h5>{row.wgt(unit)}{unit} - {row.sets} sets of {row.repsPerSet} reps</h5>
                 {/if}
             {/each}
         {:else if exercise.type === ExerciseType.COMPLEX}
@@ -122,7 +124,7 @@
             {#each [exercise, ...exercise.dropSets] as row}
                 {#if row.isMax}
                 {:else}
-                    <h5>{row.weight}kg - {row.sets} sets of {row.repArr.join(' + ')}</h5>
+                    <h5>{row.wgt(unit)}{unit} - {row.sets} sets of {row.repArr.join(' + ')}</h5>
                 {/if}
             {/each}
         {:else if exercise.type === ExerciseType.DURATION}
@@ -130,7 +132,7 @@
         {:else if exercise.type === ExerciseType.ACCESSORY}
             <h3 class="text-lg font-semibold text-textblue">{exercise.name}</h3>
             {#each [exercise, ...exercise.dropSets] as row}
-                <h5>{row.weight ? row.weight + 'kg' : formatEffortString(row.effortIntensity)} - {exercise.sets} sets of {exercise.repsPerSet} reps</h5>
+                <h5>{row.weight ? row.wgt(unit) + unit : formatEffortString(row.effortIntensity)} - {exercise.sets} sets of {exercise.repsPerSet} reps</h5>
             {/each}
         {/if}
     {/if}

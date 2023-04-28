@@ -2,9 +2,8 @@ package com.coachapp.coach_pc.repository;
 
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
-import com.blazebit.persistence.InsertCriteriaBuilder;
 import com.blazebit.persistence.view.*;
-import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;

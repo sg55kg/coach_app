@@ -1,10 +1,8 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.model.AthleteData;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
-import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
-import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.repository.AthleteRepository;
 import com.coachapp.coach_pc.request.AthleteRequest;
