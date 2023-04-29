@@ -19,7 +19,7 @@ export interface DayDTO {
 }
 
 export class Day implements IDay {
-    static build = (dayDTO: DayDTO) => {
+    static createFrom = (dayDTO: DayDTO) => {
         let day = new Day()
 
         day.id = dayDTO.id
