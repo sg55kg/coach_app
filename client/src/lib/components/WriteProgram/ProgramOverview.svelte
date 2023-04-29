@@ -30,6 +30,7 @@
     import {userDB} from "../../stores/authStore";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
     import UserService from "../../service/userService";
+    import type {DayDTO} from "../../classes/program/day";
 
     export let selectedProgram = new Program()
 
@@ -177,7 +178,8 @@
         program.update((prev) => {
             console.log(prev)
             let id = prev.days[idx].id
-            prev.days[idx] = {...JSON.parse(JSON.stringify($dayClipboard[0])), id}
+            prev.days[idx] = Day.createFrom(JSON.parse(JSON.stringify($dayClipboard[0])))
+            prev.days[idx].id = id
             return prev
         })
         $program = $program

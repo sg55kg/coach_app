@@ -42,7 +42,7 @@ export class Program implements IProgram {
         program.name = programDTO.name
         program.startDate = dayjs(programDTO.startDate)
         program.endDate = dayjs(programDTO.endDate)
-        program.days = programDTO.days.map(d => Day.build(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
+        program.days = programDTO.days.map(d => Day.createFrom(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
         program.coachId = programDTO.coachId ? programDTO.coachId : ''
         program.teamId = programDTO.teamId ? programDTO.teamId : ''
         program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
