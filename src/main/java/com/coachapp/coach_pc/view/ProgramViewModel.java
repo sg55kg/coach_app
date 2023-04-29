@@ -2,6 +2,8 @@ package com.coachapp.coach_pc.view;
 
 import com.coachapp.coach_pc.model.*;
 import com.coachapp.coach_pc.model.exercise.Exercise;
+import com.coachapp.coach_pc.model.user.AthleteData;
+import com.coachapp.coach_pc.model.user.CoachData;
 
 import java.time.OffsetDateTime;
 import java.util.*;

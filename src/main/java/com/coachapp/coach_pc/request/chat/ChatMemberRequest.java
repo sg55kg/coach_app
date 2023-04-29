@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.request.chat;
 
-import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.model.user.UserData;
 import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 
 import java.util.UUID;

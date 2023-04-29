@@ -1,9 +1,7 @@
 package com.coachapp.coach_pc.view;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.AthleteRecord;
+import com.coachapp.coach_pc.model.user.AthleteData;
 
-import java.util.List;
 import java.util.UUID;
 
 public class AthleteViewModel {
@@ -13,7 +11,7 @@ public class AthleteViewModel {
     private DisplayTeam team;
     private ProgramViewModel currentProgram;
     private String name;
-//    private List<AthleteRecord> records;
+
 
     public AthleteViewModel() {}
 
@@ -57,13 +55,6 @@ public class AthleteViewModel {
         this.name = name;
     }
 
-//    public List<AthleteRecord> getRecords() {
-//        return records;
-//    }
-//
-//    public void setRecords(List<AthleteRecord> records) {
-//        this.records = records;
-//    }
 
     public static AthleteViewModel convertAthlete(AthleteData athlete) {
         if (athlete == null) {
@@ -85,7 +76,6 @@ public class AthleteViewModel {
         }
 
         viewModel.setName(athlete.getName());
-//        viewModel.setRecords(athlete.getRecords());
 
         return viewModel;
     }

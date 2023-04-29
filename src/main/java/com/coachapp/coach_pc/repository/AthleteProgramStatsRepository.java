@@ -7,6 +7,7 @@ import com.blazebit.persistence.view.EntityViewSetting;
 import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.exercise.ComplexExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.view.programStats.AthleteProgramStatsView;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
+import static java.lang.Integer.parseInt;
 
 @Repository
 public class AthleteProgramStatsRepository {
@@ -51,6 +54,9 @@ public class AthleteProgramStatsRepository {
             for (Exercise exercise : day.getExercises()) {
                 if (exercise.getType() == ExerciseType.EXERCISE) {
                     mainLifts.add(exercise);
+                } else if (exercise.getType() == ExerciseType.COMPLEX) {
+                    var splitExercises = splitComplexExercise((ComplexExercise) exercise);
+                    mainLifts.addAll(splitExercises);
                 }
             }
         }
@@ -130,13 +136,19 @@ public class AthleteProgramStatsRepository {
                 inolPlanned = 0.0;
                 inolActual = 0.0;
             }
+            List<Exercise> exercises = new ArrayList<>();
+            for (Exercise e : day.getExercises()) {
+                if (e.getType() == ExerciseType.EXERCISE) {
+                    exercises.add(e);
+                } else if (e.getType() == ExerciseType.COMPLEX) {
+                    var splitExercises = splitComplexExercise((ComplexExercise) e);
+                    exercises.addAll(splitExercises);
+                }
+            }
 
             endDate = day.getDate();
 
-            for (Exercise e : day.getExercises()) {
-                if (e.getType() != ExerciseType.EXERCISE) {
-                    continue;
-                }
+            for (Exercise e : exercises) {
                 totalRepsPlanned += formatDouble(e.getRepsPerSet() * e.getSets());
                 totalRepsActual += formatDouble(e.getTotalRepsCompleted());
                 totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
@@ -187,6 +199,15 @@ public class AthleteProgramStatsRepository {
         for (Day day : days) {
             AthleteProgramStatsView currentStats = new AthleteProgramStatsView();
             OffsetDateTime currentDate = day.getDate();
+            List<Exercise> exercises = new ArrayList<>();
+            for (Exercise e : day.getExercises()) {
+                if (e.getType() == ExerciseType.EXERCISE) {
+                    exercises.add(e);
+                } else if (e.getType() == ExerciseType.COMPLEX) {
+                    var splitExercises = splitComplexExercise((ComplexExercise) e);
+                    exercises.addAll(splitExercises);
+                }
+            }
 
             int totalRepsPlanned = 0;
             int totalRepsActual = 0;
@@ -199,10 +220,7 @@ public class AthleteProgramStatsRepository {
             double inolPlanned = 0.0;
             double inolActual = 0.0;
 
-            for (Exercise e : day.getExercises()) {
-                if (e.getType() != ExerciseType.EXERCISE) {
-                    continue;
-                }
+            for (Exercise e : exercises) {
                 totalRepsPlanned += formatDouble(e.getRepsPerSet() * e.getSets());
                 totalRepsActual += formatDouble(e.getTotalRepsCompleted());
                 totalVolumePlanned += formatDouble(((double)e.getRepsPerSet() * e.getSets()) * e.getWeight());
@@ -240,8 +258,28 @@ public class AthleteProgramStatsRepository {
         return result;
     }
 
-    // TODO: Add helper function to break complex exercises into regular exercises
-    // Each item in repArr/NameArr will become a regular exercise with the same weights across
+    private List<Exercise> splitComplexExercise(ComplexExercise complex) {
+        List<Exercise> result = new ArrayList<>();
+        var names = complex.getNameArr().split(",");
+        var reps = complex.getRepArr().split(",");
+        var repsCompleted = complex.getRepCompletedArr().split(",");
+
+        for (int i = 0; i < names.length; i++) {
+            Exercise ex = new Exercise();
+            ex.setName(names[i]);
+            ex.setRepsPerSet(parseInt(reps[i]));
+            ex.setSets(complex.getSets());
+            ex.setWeight(complex.getWeight());
+            ex.setIsComplete(complex.getIsComplete());
+            if (repsCompleted.length >= i) {
+                ex.setTotalRepsCompleted(parseInt(repsCompleted[i]) * complex.getSetsCompleted());
+            }
+            ex.setSetsCompleted(complex.getSetsCompleted());
+
+            result.add(ex);
+        }
+        return result;
+    }
 
     private double formatDouble(double d) {
         DecimalFormat df = new DecimalFormat("#.#####");

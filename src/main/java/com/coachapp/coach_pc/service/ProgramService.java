@@ -1,22 +1,16 @@
 package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.*;
-import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.repository.ProgramRepository;
-import com.coachapp.coach_pc.request.ExerciseRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.request.UpdateProgramRequest;
-import com.coachapp.coach_pc.view.DisplayProgram;
-import com.coachapp.coach_pc.view.ProgramViewModel;
 import com.coachapp.coach_pc.view.program.ProgramWithDays;
 import com.coachapp.coach_pc.view.program.ProgramWithIds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.coachapp.coach_pc.repository.ProgramRepo;
 
-import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service

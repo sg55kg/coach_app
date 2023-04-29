@@ -25,7 +25,7 @@ public class Day {
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
     private boolean isRestDay;
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.MERGE)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "warm_up_id")
     private WarmUp warmUp;
 

@@ -2,9 +2,12 @@
     import {getContext} from "svelte";
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte'
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte'
-    import {isMobile} from "$lib/stores/authStore.js";
+    import {isMobile, userDB} from "$lib/stores/authStore.js";
     import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
     import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
+    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
+    import UserService from "../../service/userService";
+    import RichTextEditor from "$lib/components/shared/texteditor/RichTextEditor.svelte";
 
     const {
         getCurrentProgram,
@@ -48,6 +51,22 @@
             $currentDay = $currentProgram.days[$idx]
         }
     }
+
+    const toggleWeightPreference = async () => {
+        $loading = true
+        if ($userDB.preferences.weight === 'kg') {
+            $userDB.preferences.weight = 'lb'
+        } else {
+            $userDB.preferences.weight = 'kg'
+        }
+        try {
+            await UserService.updateUserData($userDB)
+        } catch (e) {
+            console.log(e)
+        } finally {
+            $loading = false
+        }
+    }
 </script>
 
 <div class="bg-gray-300 w-full">
@@ -64,15 +83,27 @@
                 </button>
             </div>
         </div>
+
+        <div class="flex justify-center">
+            <p class="px-1 text-textblue">Pounds</p>
+            <Toggle checked={$userDB.preferences.weight === 'kg'}
+                    onChange={toggleWeightPreference}
+            />
+            <p class="px-1 text-textblue">Kilograms</p>
+        </div>
     </header>
     {#if $currentDay.isRestDay}
         <h4 class="text-textblue text-center text-lg font-semibold">Rest Day</h4>
     {:else}
         <div class="flex flex-col w-full">
             <h4 class="p-1 text-lg">Warm Up</h4>
-            <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
-                No warm up entered for today
-            </div>
+            {#if $currentDay.warmUp}
+                <RichTextEditor editable={false} content={$currentDay.warmUp.instructions} />
+            {:else}
+                <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
+                    No warm up entered for today
+                </div>
+            {/if}
         </div>
         <div class="flex flex-col w-full">
             <h4 class="p-1 text-lg">Exercises</h4>

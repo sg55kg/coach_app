@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.service;
 
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.repository.CoachRepo;
@@ -9,7 +9,6 @@ import com.coachapp.coach_pc.request.NewTeamRequest;
 import com.coachapp.coach_pc.request.TeamRequest;
 import com.coachapp.coach_pc.view.DisplayTeam;
 import com.coachapp.coach_pc.view.TeamViewModel;
-import com.fasterxml.jackson.annotation.OptBoolean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

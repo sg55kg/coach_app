@@ -5,6 +5,7 @@
     import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import {isMobile} from "$lib/stores/authStore.js";
     import {EffortIntensity} from "../../classes/program/exercise/enums";
+    import {userDB} from "../../stores/authStore";
 
     export let idx: number
     export let day: Day
@@ -16,6 +17,9 @@
     const currentDayIdx = getCurrentDayIdx()
     const currentDay = getCurrentDay()
     const loading = getAthleteProgramLoading()
+
+    let unit: 'kg' | 'lb' = $userDB!.preferences.weight
+    $: unit = $userDB!.preferences.weight
 
     const formatEffortString = (effort: EffortIntensity) => {
         switch (effort) {
@@ -60,11 +64,11 @@
                                 </h4>
                             {:else if exercise.isMaxReps}
                                 <h4>
-                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets AMRAP
+                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(unit)}{unit} {exercise.sets}sets AMRAP
                                 </h4>
                             {:else}
                                 <h4>
-                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
+                                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(unit)}{unit} {exercise.sets}sets {exercise.repsPerSet}reps
                                 </h4>
                             {/if}
                         {:else if exercise.type === ExerciseType.COMPLEX}
@@ -74,14 +78,14 @@
                                 </h4>
                             {:else}
                                 <h4>
-                                    {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
+                                    {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit} {exercise.sets}sets {exercise.repArr.join(' + ')}reps
                                 </h4>
                             {/if}
                         {:else if exercise.type === ExerciseType.DURATION}
                             <h4>Test</h4>
                         {:else}
                             <h4>
-                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.weight + 'kg' : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.wgt(unit) + unit : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
                             </h4>
                         {/if}
                     {/each}

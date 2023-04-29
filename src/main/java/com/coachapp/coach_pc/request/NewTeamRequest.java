@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.Team;
 
 import java.util.List;
