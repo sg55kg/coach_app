@@ -6,6 +6,7 @@
     import GoDash from 'svelte-icons/go/GoDash.svelte'
     import {EffortIntensity} from "../../classes/program/exercise/enums";
     import {getContext} from "svelte";
+    import {userDB} from "../../stores/authStore";
 
     export let exercise: Exercise
     export let exerciseIndex: number
@@ -13,6 +14,8 @@
 
     const { getNewRecordExerciseIds } = getContext('athlete-program')
     const newRecordIds = getNewRecordExerciseIds()
+    let unit: 'kg' | 'lb' = $userDB!.preferences.weight
+    $: unit = $userDB!.preferences.weight
 
     const formatEffortString = (effort: EffortIntensity) => {
         switch (effort) {
@@ -52,7 +55,10 @@
                         <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                     {/if}
                     <h4>
-                        {row.name ? row.name : 'No Name'}: {row.weightCompleted}/{row.weight}kg {row.setsCompleted}/{row.sets}sets AMRAP {row.isComplete ? `- ${row.totalRepsCompleted}reps` : ''}
+                        {row.name ? row.name : 'No Name'}:
+                        {row.wgtComp(unit)}/{row.wgt(unit)}{unit}
+                        {row.setsCompleted}/{row.sets}sets
+                        AMRAP {row.isComplete ? `- ${row.totalRepsCompleted}reps` : ''}
                     </h4>
                 </div>
             {:else}
@@ -63,7 +69,9 @@
                         <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                     {/if}
                     <h4>
-                        {row.name ? row.name : 'No Name'}: {row.weightCompleted}/{row.weight}kg {row.setsCompleted}/{row.sets}sets {row.totalRepsCompleted ? row.totalRepsCompleted/row.setsCompleted : 0}/{row.repsPerSet}reps
+                        {row.name ? row.name : 'No Name'}: {row.wgtComp(unit)}/{row.wgt(unit)}{unit}
+                        {row.setsCompleted}/{row.sets}sets
+                        {row.totalRepsCompleted && row.setsCompleted ? row.totalRepsCompleted/row.setsCompleted : 0}/{row.repsPerSet}reps
                     </h4>
                 </div>
             {/if}
@@ -87,7 +95,7 @@
                     <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                 {/if}
                 <h4>
-                    {row.nameArr.join(' + ')}: {row.weight}kg {row.sets}sets {row.repArr.join(' + ')}reps
+                    {row.nameArr.join(' + ')}: {row.wgt(unit)}{unit} {row.sets}sets {row.repArr.join(' + ')}reps
                 </h4>
             {/if}
             </div>
@@ -103,7 +111,8 @@
                     <span class="h-6 w-6 text-green mr-1"><GoCheck /></span>
                 {/if}
                 <h4>
-                    {row.name ? row.name : 'No Name'}: {row.weight ? row.weight + 'kg' : formatEffortString(row.effortIntensity)} {row.sets}sets {row.repsPerSet}reps
+                    {row.name ? row.name : 'No Name'}:
+                    {row.weight ? row.wgt(unit) + unit : formatEffortString(row.effortIntensity)} {row.sets}sets {row.repsPerSet}reps
                 </h4>
             </div>
         {/each}

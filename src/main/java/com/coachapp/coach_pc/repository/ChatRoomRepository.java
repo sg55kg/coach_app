@@ -4,26 +4,19 @@ import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.view.EntityViewManager;
 import com.blazebit.persistence.view.EntityViewSetting;
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.AthleteData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.chat.ChatRoom;
 import com.coachapp.coach_pc.model.chat.ChatRoomMember;
-import com.coachapp.coach_pc.model.chat.Message;
 import com.coachapp.coach_pc.request.chat.ChatRoomRequest;
-import com.coachapp.coach_pc.view.chat.ChatMemberViewModel;
-import com.coachapp.coach_pc.view.chat.ChatRoomViewModel;
 import com.coachapp.coach_pc.view.chat.ChatWithMappings;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository

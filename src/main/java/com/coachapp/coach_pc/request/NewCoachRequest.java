@@ -1,7 +1,5 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.CoachData;
-
 import java.util.UUID;
 
 public class NewCoachRequest {

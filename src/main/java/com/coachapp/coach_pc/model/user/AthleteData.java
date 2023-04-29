@@ -1,5 +1,7 @@
-package com.coachapp.coach_pc.model;
+package com.coachapp.coach_pc.model.user;
 
+import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.Team;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

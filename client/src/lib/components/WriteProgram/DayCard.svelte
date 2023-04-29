@@ -10,6 +10,7 @@
     import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
     import CalendarCard from "$lib/components/shared/layout/CalendarCard.svelte";
     import {EffortIntensity} from "../../classes/program/exercise/enums";
+    import {userDB} from "../../stores/authStore";
 
     export let day: Day = new Day()
     export let idx: number = 0
@@ -67,6 +68,8 @@
         }
     }
 
+    let unit: 'kg' | 'lb' = $userDB!.preferences.weight
+    $: unit = $userDB!.preferences.weight
 
     onMount(() => {
         document.getElementById(`day-card-${idx}`).addEventListener('touchstart', (e) => {
@@ -126,17 +129,17 @@
                     {#each $program.days[idx]?.exercises as exercise, idx (exercise?.id+idx)}
                         {#if exercise.type === ExerciseType.EXERCISE}
                             <h4>
-                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight}kg {exercise.sets}sets {exercise.repsPerSet}reps
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(unit)}{unit} {exercise.sets}sets {exercise.repsPerSet}reps
                             </h4>
                         {:else if exercise.type === ExerciseType.COMPLEX}
                             <h4>
-                                {exercise.nameArr.join(' + ')}: {exercise.weight}kg {exercise.sets}sets {exercise.repArr.join(' + ')}reps
+                                {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit} {exercise.sets}sets {exercise.repArr.join(' + ')}reps
                             </h4>
                         {:else if exercise.type === ExerciseType.DURATION}
                             <h4>Test</h4>
                         {:else}
                             <h4>
-                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.weight + 'kg' : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
+                                {exercise.name ? exercise.name : 'No Name'}: {exercise.weight ? exercise.wgt(unit) + unit : formatEffortString(exercise.effortIntensity)} {exercise.sets}sets {exercise.repsPerSet}reps
                             </h4>
                         {/if}
                     {/each}

@@ -1,12 +1,14 @@
 <script lang="ts">
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte'
     import ExerciseCard from "$lib/components/WriteProgram/ExerciseCard.svelte";
-    import {getContext, onDestroy} from "svelte";
+    import {getContext, onDestroy, onMount} from "svelte";
     import FaChevronLeft from 'svelte-icons/fa/FaChevronLeft.svelte'
     import FaChevronRight from 'svelte-icons/fa/FaChevronRight.svelte'
     import ExpandedExercise from "$lib/components/WriteProgram/ExpandedExercise.svelte";
     import {Exercise} from "$lib/classes/program/exercise";
     import {userDB} from "$lib/stores/authStore";
+    import RichTextEditor from "$lib/components/shared/texteditor/RichTextEditor.svelte";
+    import {WarmUp} from "../../classes/program/day";
 
     const {
         getProgram,
@@ -65,12 +67,24 @@
         $selectedDay = $program.days[$index]
     }
 
+    const toggleWarmup = () => {
+        if ($program.days[$index].warmUp) {
+            $program.days[$index].warmUp = null
+        } else {
+            $program.days[$index].warmUp = new WarmUp()
+        }
+        $selectedDay = $program.days[$index]
+    }
+
+    let warmupContent: string = ''
+
     onDestroy(() => {
         if ($exerciseIndex > -1) {
             $program.days[index] = $selectedDay
             $exerciseIndex = -1
         }
     })
+
 </script>
 
 <div class="absolute top-12 left-0 right-0 bottom-0 w-screen flex">
@@ -88,10 +102,18 @@
                 <FaChevronRight />
             </button>
         </div>
-        <div class="flex flex-col self-start justify-start items-start w-full pr-2">
+        <div class="flex flex-col self-start justify-start items-start w-full pr-2 mt-6">
             {#if $selectedDay.isRestDay}
                 <h4 class="text-2xl font-semibold m-2 text-center w-full">Rest Day</h4>
             {:else}
+                {#if $selectedDay.warmUp}
+                    <div class="w-full flex justify-center items-center">
+                        <RichTextEditor bind:content={$program.days[$index].warmUp.instructions} />
+                    </div>
+                    <button class="self-center text-red cursor-pointer py-2" on:click={toggleWarmup}>Remove Warm Up</button>
+                {:else}
+                    <button class="self-center text-textblue cursor-pointer py-2" on:click={toggleWarmup}>Add Warm Up</button>
+                {/if}
                 {#each $selectedDay.exercises as exercise, idx}
                     {#if $exerciseIndex === idx}
                         <ExpandedExercise bind:exercise={exercise} />
@@ -136,4 +158,6 @@
     </button>
 </div>
 
-<style></style>
+<style>
+
+</style>

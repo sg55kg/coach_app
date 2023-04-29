@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.user.UserPreference;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -13,6 +14,7 @@ public class UpdateUserRequest {
     private String username;
     private String athleteName;
     private String photoUrl;
+    private UserPreference preferences;
 
     public UpdateUserRequest() {}
 
@@ -46,5 +48,13 @@ public class UpdateUserRequest {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public UserPreference getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(UserPreference preferences) {
+        this.preferences = preferences;
     }
 }

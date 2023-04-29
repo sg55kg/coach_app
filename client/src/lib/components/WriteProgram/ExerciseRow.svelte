@@ -5,10 +5,15 @@
    import MdClose from 'svelte-icons/md/MdClose.svelte'
    import FaPlus from 'svelte-icons/fa/FaPlus.svelte'
    import {EffortIntensity} from "../../classes/program/exercise/enums";
+   import Toggle from "$lib/components/shared/layout/Toggle.svelte";
+   import {userDB} from "../../stores/authStore";
 
    export let exercise: Exercise
    export let isDropSet: boolean = false
    export let useWeightForAccessory: boolean = false
+
+   let unit: 'kg' | 'lb' = $userDB!.preferences.weight
+   $: unit = $userDB!.preferences.weight
 
    const setComplexType = (ex: Exercise) => {
        ex.type = ExerciseType.COMPLEX
@@ -92,8 +97,8 @@
             </div>
         {:else}
             <div class="col-span-2 flex flex-col items-end">
-                <label class="text-sm">Weight (kg)</label>
-                <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
+                <label class="text-sm">Weight ({unit})</label>
+                <input type="text" placeholder="" value={exercise.wgt(unit)} on:change={(e) => exercise.setWgt(e.target.value, unit)} class="bg-gray-300 p-1 w-full text-right">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Sets</label>
@@ -113,19 +118,13 @@
         <div class="{(!exercise.isMax && !exercise.isMaxReps) || exercise.isMaxReps ? 'col-span-2' : 'col-span-4'}"></div>
         {#if !exercise.isMax}
             <div class="col-span-2 flex flex-col items-end justify-center">
-                <label class="switch">
-                    <input type="checkbox" checked={exercise.isMaxReps} on:change={(e) => toggleMaxReps(e.target.checked)}>
-                    <span class="slider round"></span>
-                </label>
+                <Toggle checked={exercise.isMaxReps} onChange={(e) => toggleMaxReps(e.target.checked)} />
                 <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
             </div>
         {/if}
         {#if !exercise.isMaxReps}
             <div class="col-span-2 flex flex-col items-end justify-center">
-                <label class="switch">
-                    <input type="checkbox" checked={exercise.isMax} on:change={(e) => toggleMaxWeight(e.target.checked)}>
-                    <span class="slider round"></span>
-                </label>
+                <Toggle checked={exercise.isMax} onChange={(e) => toggleMaxWeight(e.target.checked)} />
                 <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
             </div>
         {/if}
@@ -154,8 +153,8 @@
         <div class="col-span-1"></div>
         {#if !exercise.isMax}
             <div class="col-span-2 flex flex-col items-end">
-                <label class="text-sm">Weight (kg)</label>
-                <input type="number" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full">
+                <label class="text-sm">Weight ({unit})</label>
+                <input type="number" placeholder="" value={exercise.weight} on:change={(e) => exercise.setWgt(e.target.value, unit)} class="bg-gray-300 p-1 w-full">
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Sets</label>
@@ -178,10 +177,7 @@
 
         <div class="col-span-4"></div>
         <div class="col-span-3 flex flex-col items-end">
-            <label class="switch">
-                <input type="checkbox" checked={exercise.isMax} on:change={(e) => toggleMaxWeight(e.target.checked)}>
-                <span class="slider round"></span>
-            </label>
+            <Toggle checked={exercise.isMax} onChange={(e) => toggleMaxWeight(e.target.checked)} />
             <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
         </div>
     </div>
@@ -197,8 +193,8 @@
         {/if}
         <div class="col-span-2 flex flex-col items-end">
             {#if useWeightForAccessory}
-                <label class="text-sm">Weight (kg)</label>
-                <input type="text" placeholder="" bind:value={exercise.weight} class="bg-gray-300 p-1 w-full text-right">
+                <label class="text-sm">Weight ({unit})</label>
+                <input type="text" placeholder="" value={exercise.weight} on:change={(e) => exercise.setWgt(e.target.value, unit)} class="bg-gray-300 p-1 w-full text-right">
             {:else}
                 <label>Effort</label>
                 <select class="bg-gray-300 p-1 rounded" on:change={(e) => changeExerciseEffort(e.target.value)}>
@@ -222,65 +218,4 @@
 {/if}
 
 <style>
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 55px;
-        height: 28px;
-    }
-
-    /* Hide default HTML checkbox */
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    /* The slider */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 20px;
-        width: 20px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-    input:checked + .slider {
-        background-color: #fde577
-    }
-
-    input:focus + .slider {
-        box-shadow: 0 0 1px #fde577
-    }
-
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
 </style>

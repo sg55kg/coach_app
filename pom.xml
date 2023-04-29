@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.coachapp</groupId>
     <artifactId>coach_pc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.2.3-SNAPSHOT</version>
     <name>coach_pc</name>
     <description>coach_pc</description>
     <properties>

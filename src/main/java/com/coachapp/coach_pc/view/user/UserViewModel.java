@@ -3,7 +3,7 @@ package com.coachapp.coach_pc.view.user;
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.IdMapping;
 import com.blazebit.persistence.view.Mapping;
-import com.coachapp.coach_pc.model.UserData;
+import com.coachapp.coach_pc.model.user.UserData;
 
 import java.util.Date;
 import java.util.UUID;
@@ -23,4 +23,6 @@ public interface UserViewModel {
     String getUsername();
     @Mapping("photoUrl")
     String getPhotoUrl();
+    @Mapping("preferences")
+    UserPreferenceViewModel getPreferences();
 }

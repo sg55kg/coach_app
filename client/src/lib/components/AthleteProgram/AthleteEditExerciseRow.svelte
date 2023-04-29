@@ -2,6 +2,7 @@
     import {Exercise} from "../../classes/program/exercise";
     import {EffortIntensity, ExerciseType} from "$lib/classes/program/exercise/enums.js";
     import {getContext} from "svelte";
+    import {userDB} from "../../stores/authStore";
 
     export let exercise: Exercise
 
@@ -9,6 +10,8 @@
     exercise.repsPerSetComplete = exercise.isComplete ? Math.floor(exercise.totalRepsCompleted / exercise.setsCompleted) : 0
 
     $: repMaxesPerSetCompleted = exercise.type === ExerciseType.EXERCISE && exercise.isMaxReps ? Array(exercise.sets).fill(0) : []
+    let unit: 'kg' | 'lb' = $userDB!.preferences.weight
+    $: unit = $userDB!.preferences.weight
 
     const setActualIntensity = (str: 'Easy' | 'Moderate' | 'Difficult' | 'Max') => {
         switch (str) {
@@ -30,13 +33,21 @@
     <div class="flex justify-around items-center p-1 pb-6 w-full">
         {#if exercise.isMax}
             <div class="flex flex-col">
-                <p class="text-sm">Weight (kg) for rep max</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit}) for rep max</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}
+                >
             </div>
         {:else if exercise.isMaxReps}
             <div class="flex flex-col">
-                <p class="text-sm">Weight (kg)</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit})</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}
+                >
             </div>
             <div class="flex flex-col">
                 <p class="text-sm">Sets</p>
@@ -50,8 +61,11 @@
             </div>
         {:else}
             <div class="flex flex-col w-24">
-                <p class="text-sm">Weight (kg)</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit})</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}>
             </div>
             <div class="flex flex-col w-24">
                 <p class="text-sm">Sets</p>
@@ -67,13 +81,21 @@
     <div class="flex justify-around items-center p-1 pb-6 w-full">
         {#if exercise.isMax}
             <div class="flex flex-col w-24">
-                <p class="text-sm">Weight (kg) for rep max</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit}) for rep max</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}
+                >
             </div>
         {:else}
             <div class="flex flex-col w-24">
-                <p class="text-sm">Weight (kg)</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit})</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}
+                >
             </div>
             <div class="flex flex-col w-24">
                 <p class="text-sm">Sets</p>
@@ -93,8 +115,12 @@
     <div class="flex justify-around items-center p-1 pb-6 w-full">
         {#if exercise.weight}
             <div class="flex flex-col w-24">
-                <p class="text-sm">Weight (kg)</p>
-                <input type="number" class="bg-gray-300 p-1 rounded" bind:value={exercise.weightCompleted}>
+                <p class="text-sm">Weight ({unit})</p>
+                <input type="number"
+                       class="bg-gray-300 p-1 rounded"
+                       value={exercise.weightCompleted}
+                       on:change={(e) => exercise.setWgtComp(e.target.value, unit)}
+                >
             </div>
         {:else}
             <div class="flex flex-col w-32">

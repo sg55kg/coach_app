@@ -1,8 +1,7 @@
 package com.coachapp.coach_pc.controller;
 
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.request.CoachRequest;
-import com.coachapp.coach_pc.request.NewCoachRequest;
 import com.coachapp.coach_pc.request.ProgramRequest;
 import com.coachapp.coach_pc.service.CoachService;
 import org.slf4j.Logger;

@@ -1,7 +1,7 @@
 //package com.coachapp.coach_pc.manager;
 //
-//import com.coachapp.coach_pc.model.AthleteData;
-//import com.coachapp.coach_pc.model.CoachData;
+//import com.coachapp.coach_pc.model.user.AthleteData;
+//import com.coachapp.coach_pc.model.user.CoachData;
 //import com.coachapp.coach_pc.model.Program;
 //import com.coachapp.coach_pc.model.Team;
 //import com.coachapp.coach_pc.repository.AthleteRepo;

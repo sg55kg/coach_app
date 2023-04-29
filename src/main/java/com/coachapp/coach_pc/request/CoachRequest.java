@@ -1,12 +1,7 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.Program;
-import com.coachapp.coach_pc.model.UserData;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.coachapp.coach_pc.model.user.AthleteData;
 
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.List;
 import java.util.UUID;
 

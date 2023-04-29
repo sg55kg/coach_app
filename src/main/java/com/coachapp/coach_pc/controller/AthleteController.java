@@ -1,7 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.AthleteRecord;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.request.AthleteRequest;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.service.AthleteService;

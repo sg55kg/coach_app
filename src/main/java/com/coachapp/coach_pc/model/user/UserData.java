@@ -1,6 +1,6 @@
-package com.coachapp.coach_pc.model;
+package com.coachapp.coach_pc.model.user;
 
-import com.coachapp.coach_pc.enums.UserType;
+import com.coachapp.coach_pc.model.Role;
 import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,6 +42,8 @@ public class UserData {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ChatRoomMember> members = new ArrayList<>();
     private String photoUrl;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private UserPreference preferences;
 
     public UserData() {}
     public UserData(UUID id,
@@ -141,5 +143,13 @@ public class UserData {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public UserPreference getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(UserPreference preferences) {
+        this.preferences = preferences;
     }
 }

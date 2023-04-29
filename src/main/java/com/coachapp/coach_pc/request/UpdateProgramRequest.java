@@ -1,12 +1,10 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.CoachData;
 import com.coachapp.coach_pc.model.Day;
 import com.coachapp.coach_pc.model.Program;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 

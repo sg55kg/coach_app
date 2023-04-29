@@ -1,12 +1,10 @@
 package com.coachapp.coach_pc.request;
 
-import com.coachapp.coach_pc.model.AthleteData;
-import com.coachapp.coach_pc.model.AthleteRecord;
-import com.coachapp.coach_pc.model.CoachData;
+import com.coachapp.coach_pc.model.user.AthleteData;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.Team;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
 import java.util.UUID;
 
 public class AthleteRequest {
