@@ -23,4 +23,6 @@ public interface DayViewModel {
     boolean getIsRestDay();
     @Mapping(value = "exercises")
     List<Exercise> getExercises();
+    @Mapping("warmUp")
+    WarmUp getWarmUp();
 }

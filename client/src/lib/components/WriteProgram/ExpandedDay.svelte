@@ -7,6 +7,8 @@
     import ExpandedExercise from "$lib/components/WriteProgram/ExpandedExercise.svelte";
     import {Exercise} from "$lib/classes/program/exercise";
     import {userDB} from "$lib/stores/authStore";
+    import RichTextEditor from "$lib/components/shared/texteditor/RichTextEditor.svelte";
+    import {WarmUp} from "../../classes/program/day";
 
     const {
         getProgram,
@@ -65,6 +67,17 @@
         $selectedDay = $program.days[$index]
     }
 
+    const toggleWarmup = () => {
+        if ($program.days[$index].warmUp) {
+            $program.days[$index].warmUp = null
+        } else {
+            $program.days[$index].warmUp = new WarmUp()
+        }
+        $selectedDay = $program.days[$index]
+    }
+
+    let warmupContent: string = ''
+
     onDestroy(() => {
         if ($exerciseIndex > -1) {
             $program.days[index] = $selectedDay
@@ -93,6 +106,14 @@
             {#if $selectedDay.isRestDay}
                 <h4 class="text-2xl font-semibold m-2 text-center w-full">Rest Day</h4>
             {:else}
+                {#if $selectedDay.warmUp}
+                    <div class="w-full flex justify-center items-center">
+                        <RichTextEditor bind:content={$program.days[$index].warmUp.instructions} />
+                    </div>
+                    <button class="self-center text-red cursor-pointer py-2" on:click={toggleWarmup}>Remove Warm Up</button>
+                {:else}
+                    <button class="self-center text-textblue cursor-pointer py-2" on:click={toggleWarmup}>Add Warm Up</button>
+                {/if}
                 {#each $selectedDay.exercises as exercise, idx}
                     {#if $exerciseIndex === idx}
                         <ExpandedExercise bind:exercise={exercise} />
