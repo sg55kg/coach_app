@@ -42,7 +42,7 @@ public class UserData {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ChatRoomMember> members = new ArrayList<>();
     private String photoUrl;
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private UserPreference preferences;
 
     public UserData() {}
