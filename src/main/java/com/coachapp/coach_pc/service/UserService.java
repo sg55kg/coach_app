@@ -42,7 +42,9 @@ public class UserService {
         userData.setEmail(userRequest.getEmail());
         userData.setUsername(userRequest.getName());
         userData.setPhotoUrl(userRequest.getPhotoUrl());
-        userData.setPreferences(new UserPreference());
+        // Connect both sides of the bi-directional relationship
+        userData.setPreferences(userRequest.getPreferences());
+        userData.getPreferences().setUser(userData);
 
         UserWithMappings dbUser = userRepo.addUser(userData);
         return new ResponseEntity<>(dbUser, HttpStatus.CREATED);

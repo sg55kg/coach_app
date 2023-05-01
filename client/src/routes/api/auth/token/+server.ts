@@ -73,7 +73,7 @@ export const _fetchUser = async (user: any, token: string) => {
                     'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email: user.email, name: user.name, photoUrl: user.picture })
+                body: JSON.stringify({ email: user.email, name: user.name, photoUrl: user.picture, preferences: { weight: 'kg', mode: 'dark' } })
             })
 
         }
