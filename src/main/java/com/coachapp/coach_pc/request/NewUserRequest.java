@@ -1,15 +1,19 @@
 package com.coachapp.coach_pc.request;
 
+import com.coachapp.coach_pc.model.user.UserPreference;
+
 public class NewUserRequest {
 
     private String email;
     private String name;
     private String photoUrl;
+    private UserPreference preferences;
 
-    public NewUserRequest(String email, String name, String photoUrl) {
+    public NewUserRequest(String email, String name, String photoUrl, UserPreference preferences) {
         this.email = email;
         this.name = name;
         this.photoUrl = photoUrl;
+        this.preferences = preferences;
     }
 
     public NewUserRequest() {}
@@ -36,5 +40,13 @@ public class NewUserRequest {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public UserPreference getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(UserPreference preferences) {
+        this.preferences = preferences;
     }
 }
