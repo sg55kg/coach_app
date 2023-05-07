@@ -39,7 +39,7 @@
     }
 </script>
 
-<div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
+<div bind:this={daysContainer} class="relative w-screen flex flex-col overflow-y-auto pb-32">
     <div class="flex justify-between p-2">
         <h1 class="text-2xl text-textblue">{$currentProgram?.name}</h1>
         <div class="flex">
