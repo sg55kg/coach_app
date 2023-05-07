@@ -376,7 +376,7 @@
     }
 </script>
 
-<div bind:this={daysContainer} class="relative w-screen flex flex-col h-[83vh] overflow-y-auto pb-32">
+<div bind:this={daysContainer} class="relative w-screen flex flex-col overflow-y-auto pb-32">
     {#if !$isMobile}
         <nav class="relative bg-gray-100 flex flex-col p-2">
             <div class="flex w-screen">
