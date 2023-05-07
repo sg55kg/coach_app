@@ -69,7 +69,7 @@
     }
 </script>
 
-<div class="bg-gray-300 w-full">
+<div class="bg-gray-300 w-full h-[70vh] lg:h-[80vh] overflow-y-auto">
     <header class="flex flex-col p-2 w-full">
         <h2 class="text-3xl font-semibold text-center">{$currentProgram.name}</h2>
         <div class="flex items-center justify-center w-full">
@@ -100,7 +100,7 @@
             {#if $currentDay.warmUp}
                 <RichTextEditor editable={false} content={$currentDay.warmUp.instructions} />
             {:else}
-                <div class="mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
+                <div class="mr-6 lg:mr-2 bg-gray-200 border-l-2 border-l-textblue p-2">
                     No warm up entered for today
                 </div>
             {/if}

@@ -31,13 +31,14 @@
     }
 </script>
 
-<div class="relative bg-gray-200 mr-2 border-l-2 border-l-textblue mb-2 p-2 hover:cursor-pointer flex flex-col justify-center items-start"
+<div class="relative bg-gray-200 mr-6 lg:mr-2 border-l-2 border-l-textblue
+            mb-2 p-2 hover:cursor-pointer flex flex-col justify-center items-start"
      on:click={() => selectedExerciseIdx = exerciseIndex}
 >
     {#if exercise.type === ExerciseType.EXERCISE}
         {#each [exercise, ...exercise.dropSets] as row}
             {#if row.isMax}
-                <div class="flex">
+                <div class="flex w-11/12">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
                         <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
@@ -48,7 +49,7 @@
                     </h4>
                 </div>
             {:else if row.isMaxReps}
-                <div class="flex">
+                <div class="flex w-11/12">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
                         <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
@@ -62,7 +63,7 @@
                     </h4>
                 </div>
             {:else}
-                <div class="flex">
+                <div class="flex w-11/12">
                     {#if row.isComplete && (row.weightCompleted < 1 && row.totalRepsCompleted < 1)}
                         <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
                     {:else if row.isComplete}
@@ -78,7 +79,7 @@
         {/each}
     {:else if exercise.type === ExerciseType.COMPLEX}
         {#each [exercise, ...exercise.dropSets] as row}
-            <div class="flex">
+            <div class="flex w-11/12">
             {#if row.isMax}
                 {#if row.isComplete && (row.weightCompleted < 1 && !row.repCompletedArr[0])}
                     <span class="h-6 w-6 text-orange-shade mr-1"><GoDash /></span>
