@@ -1,4 +1,4 @@
-import type {Handle} from "@sveltejs/kit";
+import type {Handle, HandleFetch} from "@sveltejs/kit";
 import {redirect} from "@sveltejs/kit";
 
 
@@ -9,6 +9,16 @@ export const handle: Handle = async ({ event, resolve }) => {
         throw redirect(302, '/')
     }
 
-    const response = await resolve(event)
-    return response
+    return await resolve(event)
+}
+
+export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
+    const token = event.cookies.get('accessToken')
+    console.log('fired')
+
+    if (!token) {
+        throw redirect(302, '/')
+    }
+
+    return await fetch(request)
 }
