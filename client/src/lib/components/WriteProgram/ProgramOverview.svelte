@@ -62,7 +62,6 @@
         })
         $program.endDate = currentDate.subtract(1, 'day')
         $program = $program
-        console.log('program after dates', $program)
     }
 
     const updateProgram = async () => {
@@ -176,7 +175,6 @@
             return
         }
         program.update((prev) => {
-            console.log(prev)
             let id = prev.days[idx].id
             prev.days[idx] = Day.createFrom(JSON.parse(JSON.stringify($dayClipboard[0])))
             prev.days[idx].id = id
@@ -325,7 +323,6 @@
             })
             return d
         })
-        console.log(programCopy)
         await createProgram(programCopy)
     }
 
@@ -354,7 +351,6 @@
         }
     }
 
-
     $: $programError ? setTimeout(() => {programError.set('')}, 5000) : null
     $: $programSuccess ? setTimeout(() => {programSuccess.set('')}, 5000) : null
 
@@ -367,7 +363,6 @@
         }
         try {
             userDB.set(await UserService.updateUserData($userDB!))
-            console.log($userDB?.preferences)
         } catch (e) {
             console.log(e)
         } finally {
@@ -468,18 +463,17 @@
             </div>
         </div>
     </div>
-
 </div>
 {#if $isMobile}
-    <button class="absolute bottom-5 left-10 right-10 p-4 bg-yellow text-gray-300 rounded font-bold"
+    <button class="fixed bottom-5 left-10 right-10 p-4 bg-yellow text-gray-300 rounded font-bold"
             on:click={() => showActionContext = !showActionContext}
     >
         Options
     </button>
 
     {#if showActionContext}
-        <div class="absolute top-0 bottom-0 right-0 left-0 z-0" on:click={() => showActionContext = false}></div>
-        <div class="absolute transition-all transform ease-in-out bottom-0 bg-gray-400 flex flex-col w-screen right-0 left-0 text-center z-10
+        <div class="fixed top-0 bottom-0 right-0 left-0 z-0" on:click={() => showActionContext = false}></div>
+        <div class="fixed transition-all transform ease-in-out bottom-0 bg-gray-400 flex flex-col w-screen right-0 left-0 text-center z-10
         {showActionContext ? ' -translate-y-0' : ' translate-y-0'}">
             <button class="h-6 w-full pt-2" on:click={() => showActionContext = false}>
                 <FaChevronDown />

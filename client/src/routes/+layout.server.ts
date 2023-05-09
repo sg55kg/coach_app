@@ -18,16 +18,12 @@ const state: string = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCD
 export const load: LayoutServerLoad = async ({ cookies, params, url, locals }) => {
     const encoded = state
     if (!cookies.get('accessToken')) {
-        if (url && url.pathname !== '/') {
-            //throw redirect(307, '/')
-        }
         return { state: encoded }
     }
     if (cookies.get('accessToken') && cookies.get('idToken')) {
         try {
             const user = jwtDecode(cookies.get('idToken')!)
             const userData = await _fetchUser(user, cookies.get('accessToken')!)
-            console.log(userData)
             return { user, userData }
         } catch (e) {
             cookies.delete('accessToken', { path: '/'})
