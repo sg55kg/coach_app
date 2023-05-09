@@ -15,7 +15,7 @@ export const load: LayoutLoad = async (event) => {
             const { user, userData } = await res.json()
             return { user, userData }
         } catch (e) {
-            throw redirect(307, '/')
+            throw redirect(302, '/')
         }
     }
 }
