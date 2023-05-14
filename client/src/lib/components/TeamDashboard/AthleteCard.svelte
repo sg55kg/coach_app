@@ -10,12 +10,15 @@
     import {isMobile} from "$lib/stores/authStore.js";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {team} from "$lib/stores/teamStore.js";
+    import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
+    import UserService from "../../service/userService";
 
     export let athlete: AthleteData
 
     let updateSeverity: 'low' | 'moderate' | 'severe' | 'none' | 'over'
     let lastDay: dayjs = dayjs()
     let editProgramName: boolean = false
+    let showAthleteOptions: boolean = false
 
     const saveProgramName = async () => {
 
@@ -30,6 +33,23 @@
             })
             athlete.currentProgram = program
             editProgramName = false
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const handleRemoveAthlete = async () => {
+        try {
+            const updatedAthlete = AthleteData.createFrom(JSON.parse(JSON.stringify(athlete)))
+            updatedAthlete.coachId = ''
+            updatedAthlete.team = null
+            await UserService.updateAthleteData(updatedAthlete)
+            $team.athletes = $team.athletes.filter(a => a.id !== updatedAthlete.id)
+            for (const t of $userDB.coachData.teams) {
+                if (t.id === $team.id) {
+                    t.athletes = t.athletes.filter(a => a.id !== updatedAthlete.id)
+                }
+            }
         } catch (e) {
             console.log(e)
         }
@@ -70,16 +90,13 @@
     })
 </script>
 
-<div class="rounded bg-gray-200 p-2 my-2">
+<div class="rounded bg-gray-200 p-2 my-2 relative">
     <div class="flex flex-col items-center lg:flex-row lg:justify-between">
         <a href="/home/coach/team/athlete/{athlete.id}">
             <h2 class="font-semibold text-xl">
                 {athlete.name}
             </h2>
         </a>
-        <!--{#if !$isMobile && athlete?.currentProgram}-->
-        <!--    {dayjs(athlete.currentProgram.startDate).format('ddd MMM DD')} - {dayjs(athlete.currentProgram.endDate).format('ddd MMM DD')}-->
-        <!--{/if}-->
     </div>
 
     {#if athlete.currentProgram}
@@ -124,39 +141,36 @@
             {#if athlete?.currentProgram}
                 <a href={`/home/coach/program/${athlete.currentProgram.id}`}>
                     <button class="flex items-center my-2 text-gray-300 hover:bg-yellow-shade bg-yellow px-1 py-px rounded-sm">
-                        <div class="h-3 w-3 mx-1"><FaPen /></div>
+                        <span class="h-3 w-3 mx-1"><FaPen /></span>
                         Edit Program
                     </button>
                 </a>
             {/if}
         </div>
-<!--        <div class="mt-2 flex justify-around">-->
-<!--            <div class="h-6 text-link hover:text-link-shade duration-300">-->
-<!--                <a class="flex" href={`/home/coach/create-program?athlete=${athlete.id}`}>-->
-<!--                    <span class="h-6 mr-1 lg:mr-4"><FaRegPlusSquare /></span> New Program-->
-<!--                </a>-->
-<!--            </div>-->
-<!--            <div class="h-6 text-link hover:text-link-shade duration-300">-->
-<!--                <a class="flex h-6" href={`/home/coach/athlete-stats/${athlete.id}`}>-->
-<!--                    <span class="h-6 mr-1 lg:mr-4"><FaRegChartBar /></span> Stats-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </div>-->
     {:else}
         <p class="m-0 text-base font-normal">{athlete.name} does not have a current program</p>
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link hover:text-link-shade duration-300">
                 <a class="flex" href={`/home/coach/team/${$team.id}/programs`}>
-                    <p class="h-6 mr-4"><FaRegPlusSquare /></p><p> New Program</p>
+                    <span class="h-6 mr-px lg:mr-4"><FaRegPlusSquare /></span><p> New Program</p>
                 </a>
             </div>
-<!--            <div class="h-6 text-link hover:text-link-shade duration-300">-->
-<!--                <a class="flex" href={`/home/coach/athlete-stats/${athlete.id}`}>-->
-<!--                    <p class="h-6 mr-4"><FaRegChartBar /></p><p> Stats</p>-->
-<!--                </a>-->
-<!--            </div>-->
         </div>
     {/if}
+    <div class="absolute right-0 top-0">
+        <div class="relative">
+            <button class="h-10 w-10 p-2" on:click={() => showAthleteOptions = !showAthleteOptions}>
+                <FaChevronDown />
+            </button>
+            {#if showAthleteOptions}
+                <div class="absolute right-0 p-2 bg-gray-100">
+                    <button class="border rounded border-red text-red w-72 p-2 bg-gray-100 hover:bg-gray-200" on:click={handleRemoveAthlete}>
+                        Remove {athlete.name}
+                    </button>
+                </div>
+            {/if}
+        </div>
+    </div>
 </div>
 
 <style>
