@@ -4,9 +4,9 @@
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {team} from "$lib/stores/teamStore";
 
-    let newLogoSrc: string = ''
-    let newTeamName: string = ''
-    let newTeamDescription: string = ''
+    let newLogoSrc: string = $team.teamLogo
+    let newTeamName: string = $team.name
+    let newTeamDescription: string = $team.description
 
     let showNameInput: boolean = false
     let showDescriptionInput: boolean = false
@@ -52,10 +52,13 @@
     </div>
     <div class="flex flex-col items-start m-2">
         {#if !showNameInput}
-            <div class="flex items-center">
-                <h4 class="font-semibold text-xl">Team Name: {$team.name}</h4>
-                <div title="Edit team name" class="h-4 mx-2 text-textblue" on:click={() => showNameInput = !showNameInput}>
-                    <FaPen />
+            <div class="flex flex-col items-center">
+                <h4 class="font-semibold text-xl">Team Name:</h4>
+                <div class="flex">
+                    <h4>{$team.name}</h4>
+                    <button title="Edit team name" class="h-4 mx-2 text-textblue" on:click={() => showNameInput = !showNameInput}>
+                        <FaPen />
+                    </button>
                 </div>
             </div>
         {:else}
@@ -79,9 +82,9 @@
         {#if !showDescriptionInput}
             <div class="flex justify-start items-center">
                 <p><i>{$team.description}</i></p>
-                <div title="Edit description" class="h-4 mx-2 text-textblue" on:click={() => showDescriptionInput = !showDescriptionInput}>
+                <button title="Edit description" class="h-4 mx-2 text-textblue" on:click={() => showDescriptionInput = !showDescriptionInput}>
                     <FaPen />
-                </div>
+                </button>
             </div>
         {:else}
             <textarea class="w-6/12 bg-gray-300 text-textblue" bind:value={newTeamDescription}></textarea>
