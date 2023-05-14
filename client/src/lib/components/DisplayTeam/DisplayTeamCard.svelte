@@ -24,9 +24,7 @@ $: console.log($userDB)
             updatedAthlete.team = null
             updatedAthlete.coachId = null
         }
-        // let updatedAthlete = $userDB.athleteData.team === null ?
-        //     { ...$userDB.athleteData, team: team, coach: { id: team.coachId } } as AthleteData :
-        //     { ...$userDB.athleteData, team: null, coachId: null } as AthleteData
+
         console.log('before server athlete-stats data', updatedAthlete)
         try {
             const res: AthleteData = await UserService.updateAthleteData(updatedAthlete)
