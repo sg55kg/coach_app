@@ -100,9 +100,16 @@
             </div>
         {/if}
     </div>
+<!--    <div>-->
+<!--        <button class="p-2 px-6 border-textblue border-2 rounded bg-gray-100 hover:bg-gray-300 m-2 mt-4">-->
+<!--            Invite Athlete-->
+<!--        </button>-->
+<!--    </div>-->
+    <hr>
     <div>
-        <button class="p-2 px-6 border-textblue border-2 rounded bg-gray-100 hover:bg-gray-300 m-2 mt-4">
-            Invite Athlete
+        <h3>Payment Information</h3>
+        <button class="text-link font-semibold">
+            Connect with Stripe to enable payments
         </button>
     </div>
 </div>
