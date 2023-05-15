@@ -136,6 +136,10 @@
             {/each}
         {/if}
     {/if}
+    <div class="flex flex-col">
+        <h4 class="text-md mt-1 font-medium text-textblue">Notes:</h4>
+        <p class="text-sm"><i>{exercise.notes ? exercise.notes : 'No notes for this exercise'}</i></p>
+    </div>
     {#if (!hasMax || !enteredWeight) && !exercise.isComplete}
         <div class="flex flex-col items-center py-2">
             <button class="mx-2 p-2 border-yellow border-2 text-yellow-shade rounded-sm"
