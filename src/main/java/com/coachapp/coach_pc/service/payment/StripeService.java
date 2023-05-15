@@ -1,27 +1,65 @@
 package com.coachapp.coach_pc.service.payment;
 
+import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
+import com.stripe.model.AccountLink;
 import com.stripe.param.AccountCreateParams;
+import com.stripe.param.AccountLinkCreateParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StripeService {
 
-    private String STRIPE_API_KEY = "sk_test_51MTzH1JNTyetRpYc10q46o3FyoW8EPAIBeGBOlafvSj8wd14G7lJPq6Lu131EvUs3PzVY3r3i7QDJOyQ5nADS3Ov00pDn36ALL";
+    @Value("${stripe-api-key}")
+    private String STRIPE_API_KEY;
+    @Value("${stripe-account-link-return-url}")
+    private String STRIPE_ACCOUNT_LINK_RETURN_URL;
+    private final Logger logger = LoggerFactory.getLogger(StripeService.class);
 
-    public ResponseEntity<String> connectNewStripAccount() {
+    public ResponseEntity<String> connectNewStripAccount(NewStripeAccountRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
 
         AccountCreateParams params =
-                AccountCreateParams.builder().setType(AccountCreateParams.Type.STANDARD).build();
+                AccountCreateParams.builder()
+                        .setType(AccountCreateParams.Type.STANDARD)
+                        .setEmail(request.getEmail())
+                        .setCountry(request.getCountryCode())
+                        .setDefaultCurrency(request.getCurrency())
+                        .build();
 
         try {
             Account account = Account.create(params);
-        } catch (StripeException e) {
+            String stripeAccountId = account.getId();
+            // TODO: Add account id to users' coach data
+
             return null;
+        } catch (StripeException e) {
+            logger.error(e.getMessage());
+            return null; // TODO: handle error response
+        }
+    }
+
+    public ResponseEntity<String> createAccountLink(String stripeAccountId) {
+        try {
+            AccountLinkCreateParams params = AccountLinkCreateParams.builder()
+                    .setAccount(stripeAccountId)
+                    .setRefreshUrl(STRIPE_ACCOUNT_LINK_RETURN_URL)
+                    .setReturnUrl(STRIPE_ACCOUNT_LINK_RETURN_URL)
+                    .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                    .build();
+
+            AccountLink accountLink = AccountLink.create(params);
+            return new ResponseEntity<>(accountLink.getUrl(), HttpStatus.SEE_OTHER); // TODO: check http status
+        } catch (StripeException e) {
+            logger.error(e.getMessage());
+            return null; // TODO: handle error response
         }
     }
 }
