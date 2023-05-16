@@ -6,6 +6,7 @@ public class NewStripeAccountRequest {
 
     private UUID userId;
     private UUID coachId;
+    private UUID teamId;
     private String email;
     private String username;
     private String countryCode = "";
@@ -59,5 +60,13 @@ public class NewStripeAccountRequest {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public UUID getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(UUID teamId) {
+        this.teamId = teamId;
     }
 }

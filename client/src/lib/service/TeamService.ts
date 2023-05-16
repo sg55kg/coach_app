@@ -27,6 +27,7 @@ export class TeamService {
 
     static getTeam = async (teamId: string) => {
         const res = await fetch(`/api/team/${teamId}`)
+        console.log('this one vvv')
         return Team.createFrom(await res.json())
     }
 

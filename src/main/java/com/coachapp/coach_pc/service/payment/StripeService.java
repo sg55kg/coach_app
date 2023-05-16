@@ -1,6 +1,8 @@
 package com.coachapp.coach_pc.service.payment;
 
+import com.coachapp.coach_pc.repository.PaymentRepository;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
+import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
@@ -19,9 +21,14 @@ public class StripeService {
 
     @Value("${stripe-api-key}")
     private String STRIPE_API_KEY;
-    @Value("${stripe-account-link-return-url}")
-    private String STRIPE_ACCOUNT_LINK_RETURN_URL;
+    @Value("${client-url}")
+    private String CLIENT_URL;
     private final Logger logger = LoggerFactory.getLogger(StripeService.class);
+    private final PaymentRepository repository;
+
+    public StripeService(PaymentRepository repository) {
+        this.repository = repository;
+    }
 
     public ResponseEntity<String> connectNewStripAccount(NewStripeAccountRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
@@ -37,6 +44,8 @@ public class StripeService {
         try {
             Account account = Account.create(params);
             String stripeAccountId = account.getId();
+
+            TeamFinanceViewModel vm = repository.createTeamFinance(request, stripeAccountId);
             // TODO: Add account id to users' coach data
 
             return null;
@@ -46,12 +55,14 @@ public class StripeService {
         }
     }
 
-    public ResponseEntity<String> createAccountLink(String stripeAccountId) {
+    public ResponseEntity<String> createAccountLink(String stripeAccountId, String returnUrl) {
+        String fullReturnUrl = CLIENT_URL + "/" + returnUrl;
+
         try {
             AccountLinkCreateParams params = AccountLinkCreateParams.builder()
                     .setAccount(stripeAccountId)
-                    .setRefreshUrl(STRIPE_ACCOUNT_LINK_RETURN_URL)
-                    .setReturnUrl(STRIPE_ACCOUNT_LINK_RETURN_URL)
+                    .setRefreshUrl(fullReturnUrl)
+                    .setReturnUrl(fullReturnUrl)
                     .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                     .build();
 

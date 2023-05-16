@@ -2,13 +2,12 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.Team;
-import com.coachapp.coach_pc.repository.AthleteRepo;
-import com.coachapp.coach_pc.repository.CoachRepo;
-import com.coachapp.coach_pc.repository.TeamRepo;
+import com.coachapp.coach_pc.repository.TeamRepository;
 import com.coachapp.coach_pc.request.NewTeamRequest;
 import com.coachapp.coach_pc.request.TeamRequest;
-import com.coachapp.coach_pc.view.DisplayTeam;
-import com.coachapp.coach_pc.view.TeamViewModel;
+import com.coachapp.coach_pc.view.team.DisplayTeam;
+import com.coachapp.coach_pc.view.team.TeamViewModel;
+import com.coachapp.coach_pc.view.team.TeamWithAthletes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,75 +20,40 @@ import java.util.UUID;
 @Service
 public class TeamService {
 
-    private TeamRepo teamRepo;
-    private AthleteRepo athleteRepo;
-    private CoachRepo coachRepo;
+    private TeamRepository repository;
 
-    public TeamService(TeamRepo teamRepo, AthleteRepo athleteRepo, CoachRepo coachRepo) {
-        this.teamRepo = teamRepo;
-        this.athleteRepo = athleteRepo;
-        this.coachRepo = coachRepo;
+    public TeamService(TeamRepository repository) {
+        this.repository = repository;
     }
 
-    public ResponseEntity<List<Team>> getCoachTeams(UUID coachId) {
-        Optional<List<Team>> dbTeams = teamRepo.findAllByCoachId(coachId);
+    public ResponseEntity<List<TeamWithAthletes>> getCoachTeams(UUID coachId) {
+        List<TeamWithAthletes> teams = repository.findAllByCoachId(coachId);
 
-        if (dbTeams.isEmpty()) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(dbTeams.get(), HttpStatus.OK);
+        return new ResponseEntity<>(teams, HttpStatus.OK);
     }
 
-    public ResponseEntity<Team> updateTeam(UUID id, TeamRequest request) {
-        Optional<Team> optional = teamRepo.findById(id);
+    public ResponseEntity<TeamViewModel> updateTeam(UUID id, TeamRequest request) {
+        TeamViewModel vm = repository.updateTeam(request);
 
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        Team team = optional.get();
-        team = TeamRequest.convertRequest(team, request);
-
-        team = teamRepo.save(team);
-
-        return new ResponseEntity<>(team, HttpStatus.OK);
+        return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 
-    public ResponseEntity<Team> addTeam(NewTeamRequest request) {
-        Team team = new Team();
-        team.setTeamLogo(request.getTeamLogo());
-        team.setName(request.getName());
-        team.setDescription(request.getDescription());
-
-        CoachData coach = new CoachData();
-        coach.setId(request.getCoachId());
-        team.setCoach(coach);
-        team = teamRepo.save(team);
+    public ResponseEntity<TeamViewModel> addTeam(NewTeamRequest request) {
+        TeamViewModel team = repository.createTeam(request);
 
         return new ResponseEntity<>(team, HttpStatus.CREATED);
     }
 
     public ResponseEntity<List<DisplayTeam>> getDisplayTeams() {
-        List<Team> dbTeams = teamRepo.findAll();
-        List<DisplayTeam> teams = new ArrayList<>();
-
-        dbTeams.forEach(team -> {
-            teams.add(DisplayTeam.convertTeam(team));
-        });
+        List<DisplayTeam> teams = repository.getDisplayTeams();
 
         return new ResponseEntity<>(teams, HttpStatus.OK);
     }
 
-    public ResponseEntity<TeamViewModel> getTeam(UUID id) {
-        Optional<Team> optional = teamRepo.findById(id);
+    public ResponseEntity<TeamWithAthletes> getTeam(UUID id) {
+        Optional<TeamWithAthletes> optional = repository.findById(id);
 
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        Team team = optional.get();
-        TeamViewModel vm = TeamViewModel.convertTeam(team);
-        return new ResponseEntity<>(vm, HttpStatus.OK);
+        return optional.map(teamWithAthletes -> new ResponseEntity<>(teamWithAthletes, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 }

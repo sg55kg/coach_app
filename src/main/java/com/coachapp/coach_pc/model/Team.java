@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.model;
 
+import com.coachapp.coach_pc.model.payment.TeamFinance;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.CoachData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,6 +38,8 @@ public class Team {
     @UpdateTimestamp
     private Date updatedAt;
     private String teamLogo;
+    @OneToOne(mappedBy = "team")
+    private TeamFinance teamFinance;
 
     public Team() {}
 
@@ -102,6 +105,14 @@ public class Team {
 
     public void setTeamLogo(String teamLogo) {
         this.teamLogo = teamLogo;
+    }
+
+    public TeamFinance getTeamFinance() {
+        return teamFinance;
+    }
+
+    public void setTeamFinance(TeamFinance teamFinance) {
+        this.teamFinance = teamFinance;
     }
 
     @Override

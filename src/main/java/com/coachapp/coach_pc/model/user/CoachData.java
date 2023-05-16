@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.model.user;
 
 import com.coachapp.coach_pc.model.Program;
 import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.payment.TeamFinance;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,9 +29,10 @@ public class CoachData {
     @OneToMany(mappedBy = "coach", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<AthleteData> athletes = new ArrayList<>();
-    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams = new ArrayList<>();
-
+    @OneToMany(mappedBy = "coach", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamFinance> teamFinances;
 
     public CoachData() {}
 
@@ -76,5 +78,13 @@ public class CoachData {
 
     public void addProgram(Program program) {
         this.programsList.add(program);
+    }
+
+    public List<TeamFinance> getTeamFinances() {
+        return teamFinances;
+    }
+
+    public void setTeamFinances(List<TeamFinance> teamFinances) {
+        this.teamFinances = teamFinances;
     }
 }

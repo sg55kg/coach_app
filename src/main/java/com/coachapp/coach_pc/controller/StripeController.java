@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/stripe")
 public class StripeController {
 
-    private Logger logger = LoggerFactory.getLogger(StripeController.class);
-    private StripeService service;
+    private final Logger logger = LoggerFactory.getLogger(StripeController.class);
+    private final StripeService service;
 
     public StripeController(StripeService service) {
         this.service = service;
@@ -21,12 +21,13 @@ public class StripeController {
 
     @PostMapping("/onboard")
     public ResponseEntity<String> connectStripeAccount(@RequestBody NewStripeAccountRequest request) {
-        logger.info("Received request to onboard new stripe account");
+        logger.info("Received request to create a new stripe account");
         return this.service.connectNewStripAccount(request);
     }
 
     @GetMapping("{stripeAccountId}/onboard")
-    public ResponseEntity<String> initiateOnboarding(@PathVariable String stripeAccountId) {
-        return this.service.createAccountLink(stripeAccountId);
+    public ResponseEntity<String> initiateOnboarding(@PathVariable String stripeAccountId, @RequestParam String returnUrl) {
+        logger.info("Received request to initiate onboarding for connected Stripe account");
+        return this.service.createAccountLink(stripeAccountId, returnUrl);
     }
 }

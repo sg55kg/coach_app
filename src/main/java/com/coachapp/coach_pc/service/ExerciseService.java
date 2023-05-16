@@ -2,7 +2,6 @@ package com.coachapp.coach_pc.service;
 
 import com.coachapp.coach_pc.model.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.Exercise;
-import com.coachapp.coach_pc.repository.ComplexExerciseRepo;
 import com.coachapp.coach_pc.repository.ExerciseRepo;
 import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 import com.coachapp.coach_pc.request.ExerciseRequest;
@@ -20,12 +19,10 @@ import java.util.UUID;
 public class ExerciseService {
 
     private ExerciseRepo exerciseRepo;
-    private ComplexExerciseRepo complexExerciseRepo;
     private Logger logger = LoggerFactory.getLogger(ExerciseService.class);
 
-    public ExerciseService(ExerciseRepo exerciseRepo, ComplexExerciseRepo complexExerciseRepo) {
+    public ExerciseService(ExerciseRepo exerciseRepo) {
         this.exerciseRepo = exerciseRepo;
-        this.complexExerciseRepo = complexExerciseRepo;
     }
 
     public ResponseEntity<ExerciseViewModel> updateExercise(ExerciseRequest request) {
