@@ -145,25 +145,7 @@
 
     const copyDay = (idx: number) => {
         const day = $program.days[idx]
-        const dayCopy = JSON.parse(JSON.stringify(day)) as Day
-        dayCopy.id = ''
-        dayCopy.exercises.forEach((e, i) => {
-            e.id = ''
-            e.comments = []
-            e.weightCompleted = 0
-            e.totalRepsCompleted = 0
-            e.setsCompleted = 0
-            e.repCompletedArr = []
-            e.isComplete = false
-            e.dropSets.forEach(d => {
-                d.id = ''
-                d.weightCompleted = 0
-                d.totalRepsCompleted = 0
-                d.setsCompleted = 0
-                d.repCompletedArr = []
-                d.isComplete = false
-            })
-        })
+        const dayCopy = day.copy()
         $dayClipboard = [dayCopy]
         document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
     }
@@ -171,12 +153,12 @@
     const pasteDay = (idx: number) => {
         if ($dayClipboard.length < 1) {
             document.getElementById(`day-card-${idx}`).classList.remove('selected-day')
-
             return
         }
+
         program.update((prev) => {
             let id = prev.days[idx].id
-            prev.days[idx] = Day.createFrom(JSON.parse(JSON.stringify($dayClipboard[0])))
+            prev.days[idx] = $dayClipboard[0].copy()
             prev.days[idx].id = id
             return prev
         })
@@ -293,36 +275,7 @@
     const makeACopy = async () => {
         if (!$program.id) return
 
-        let programCopy = JSON.parse(JSON.stringify($program))
-        programCopy.id = ''
-        programCopy.name = 'Copy of ' + programCopy.name
-        programCopy.startDate = null
-        programCopy.endDate = null
-        programCopy.athleteId = null
-        programCopy.isCurrent = false
-        programCopy.days.forEach(d => {
-            d.id = ''
-            d.date = null
-            d.exercises.forEach(e => {
-                e.id = ''
-                e.weightCompleted = 0
-                e.secondsPerSetCompleted = 0
-                e.totalRepsCompleted = 0
-                e.repCompletedArr = []
-                e.distanceCompletedMeters = 0
-                e.dropSets.forEach(ds => {
-                    ds.id = ''
-                    ds.weightCompleted = 0
-                    ds.secondsPerSetCompleted = 0
-                    ds.totalRepsCompleted = 0
-                    ds.repCompletedArr = []
-                    ds.distanceCompletedMeters = 0
-                    return ds
-                })
-                return e
-            })
-            return d
-        })
+        let programCopy = $program.copy()
         await createProgram(programCopy)
     }
 

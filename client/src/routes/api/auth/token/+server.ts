@@ -37,7 +37,6 @@ export const _fetchToken = async (code: string) => {
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(options)
         })
-        console.log(res.status)
 
         const data = await res.json()
 

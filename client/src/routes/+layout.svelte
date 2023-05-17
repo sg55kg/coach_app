@@ -12,7 +12,6 @@
 	export let data: LayoutServerData
 
 	if (data.user && data.userData) {
-		console.log('data',data.userData)
 		$userDB = User.build(data.userData)
 		$authUser = data.user
 	} else {
@@ -67,11 +66,9 @@
 
 		if (mobileDevices.some(d => navigator.userAgent.match(d))) {
 			$isMobile = true
-			console.log($isMobile)
 		}
 
 		if ((($userDB && $authUser) || (data.user && data.userData)) && window.location.pathname === '/') {
-			console.log('Found')
 			await goto('/home')
 		} else if (!$userDB && !data.user && window.location.pathname !== '/') {
 			await goto('/')

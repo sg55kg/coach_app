@@ -4,6 +4,7 @@ import {redirect} from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
     const token = event.cookies.get('accessToken')
+    console.log('fired handle')
 
     if (!token) {
         throw redirect(302, '/')
@@ -14,7 +15,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
     const token = event.cookies.get('accessToken')
-    console.log('fired')
+    console.log('fired handle fetch')
 
     if (!token) {
         throw redirect(302, '/')

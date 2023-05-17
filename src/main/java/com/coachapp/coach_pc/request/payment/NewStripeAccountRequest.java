@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public class NewStripeAccountRequest {
 
-    private UUID userId;
     private UUID coachId;
     private UUID teamId;
     private String email;
@@ -13,14 +12,6 @@ public class NewStripeAccountRequest {
     private String currency = "";
 
     public NewStripeAccountRequest() {}
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
 
     public UUID getCoachId() {
         return coachId;

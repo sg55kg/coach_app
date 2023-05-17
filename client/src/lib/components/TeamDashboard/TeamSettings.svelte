@@ -3,6 +3,9 @@
     import {TeamService} from "$lib/service/TeamService";
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {team} from "$lib/stores/teamStore";
+    import {userDB} from "../../stores/authStore";
+    import {StripeStatus} from "$lib/classes/team/teamFinance.js";
+    import {onMount} from "svelte";
 
     let newLogoSrc: string = $team.teamLogo
     let newTeamName: string = $team.name
@@ -10,6 +13,8 @@
 
     let showNameInput: boolean = false
     let showDescriptionInput: boolean = false
+    let stripeAccountCreated: boolean = true
+    let stripeAccount: any = null
 
     $: athleteList = $team ? $team.athletes : []
 
@@ -28,10 +33,52 @@
             athleteList = $team.athletes
             showNameInput = false
             showDescriptionInput = false
+            console.log(teamRes)
+            stripeAccountCreated = true
         } catch (e) {
             console.log(e)
         }
     }
+
+    $: console.log($team)
+
+    const createStripeConnect = async () => {
+        const data = {
+            coachId: $userDB?.coachData?.id,
+            teamId: $team.id,
+            email: $userDB?.email,
+            username: $userDB?.username,
+            countryCode: 'US',
+            currency: 'USD'
+        }
+        try {
+            const res = await TeamService.connectStripeAccount(data)
+            if (res.id) {
+                $team.teamFinance = res
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const getStripeRedirectUrl = async () => {
+        try {
+            await TeamService.getStripeRedirectUrl($team.teamFinance.stripeConnectId, $team.id)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    onMount(async () => {
+        if ($team?.teamFinance && $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING) {
+            const res = await TeamService.getStripeAccount($team.teamFinance.stripeConnectId)
+            console.log(res)
+            stripeAccount = res
+            if (res.details_submitted) {
+                // TODO: save team finance as created and display stripe data on this page
+            }
+        }
+    })
 </script>
 
 <div class="w-11/12 flex flex-col p-3">
@@ -53,7 +100,7 @@
     <div class="flex flex-col items-start m-2">
         {#if !showNameInput}
             <div class="flex flex-col items-center">
-                <h4 class="font-semibold text-xl">Team Name:</h4>
+                <h4 class="font-medium text-lg">Team Name:</h4>
                 <div class="flex">
                     <h4>{$team.name}</h4>
                     <button title="Edit team name" class="h-4 mx-2 text-textblue" on:click={() => showNameInput = !showNameInput}>
@@ -77,7 +124,7 @@
     </div>
     <div class="flex flex-col text-md m-2">
         <div>
-            <h5 class="font-semibold text-xl">Description:</h5>
+            <h4 class="font-medium text-lg">Description:</h4>
         </div>
         {#if !showDescriptionInput}
             <div class="flex justify-start items-center">
@@ -105,12 +152,21 @@
 <!--            Invite Athlete-->
 <!--        </button>-->
 <!--    </div>-->
-    <hr>
+    <hr class="my-2">
     <div>
-        <h3>Payment Information</h3>
-        <button class="text-link font-semibold">
-            Connect with Stripe to enable payments
-        </button>
+        <h3 class="text-xl font-semibold tracking-wider my-1">Payment Information</h3>
+        {#if !$team.teamFinance}
+            <button class="text-link font-semibold" on:click={createStripeConnect}>
+                Connect with Stripe to enable payments
+            </button>
+        {:else if $team.teamFinance.stripeStatus === StripeStatus.NEW}
+            {#if stripeAccountCreated}
+                <p class="text-green py-1 text-sm">Success! Click below to setting up your payment information on Stripe</p>
+            {/if}
+            <button class="text-link font-semibold" on:click={getStripeRedirectUrl}>
+                Finish set up with Stripe
+            </button>
+        {/if}
     </div>
 </div>
 

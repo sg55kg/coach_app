@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.model.payment;
 import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.model.user.CoachData;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import java.util.UUID;
 public class TeamFinance {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID id;
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")

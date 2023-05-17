@@ -85,6 +85,13 @@ export class Exercise {
         this.weightCompleted = this._wgtComp.value
     }
 
+    copy() {
+        const copy = Exercise.createFrom(JSON.parse(JSON.stringify(this)))
+        copy.id = ''
+        copy.dropSets.forEach(d => d.id = '')
+        return copy
+    }
+
     static createFrom(data: ExerciseDTO) {
         const exercise = new Exercise()
 

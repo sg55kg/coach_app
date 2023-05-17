@@ -1,4 +1,5 @@
 import type {AthleteData} from "$lib/classes/user/athlete";
+import type {TeamFinance} from "./teamFinance";
 
 
 export interface TeamDTO {
@@ -10,6 +11,7 @@ export interface TeamDTO {
     athletes?: AthleteData[],
     teamLogo: string
     numAthletes?: number
+    teamFinance: TeamFinance
 }
 
 export class Team {
@@ -25,6 +27,7 @@ export class Team {
         team.athletes = teamDto.athletes ? [...teamDto.athletes] : []
         team.teamLogo = teamDto.teamLogo
         team.numAthletes = teamDto.numAthletes ? teamDto.numAthletes : 0
+        team.teamFinance = teamDto.teamFinance
 
         return team
     }
@@ -37,6 +40,7 @@ export class Team {
     athletes: AthleteData[] = []
     teamLogo: string = ''
     numAthletes: number = 0
+    teamFinance: TeamFinance | null = null
 }
 
 export interface DisplayTeamDTO {

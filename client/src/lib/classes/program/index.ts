@@ -42,13 +42,24 @@ export class Program implements IProgram {
         program.name = programDTO.name
         program.startDate = dayjs(programDTO.startDate)
         program.endDate = dayjs(programDTO.endDate)
-        program.days = programDTO.days.map(d => Day.createFrom(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf())
+        program.days = programDTO.days.map(d => Day.createFrom(d)).sort((a, b) => a.date.valueOf() - b.date.valueOf()) as Day[]
         program.coachId = programDTO.coachId ? programDTO.coachId : ''
         program.teamId = programDTO.teamId ? programDTO.teamId : ''
         program.athleteId = programDTO.athleteId ? programDTO.athleteId : ''
         program.updatedAt = programDTO.updatedAt ? dayjs(programDTO.updatedAt) : dayjs()
 
         return { ...program }
+    }
+
+    copy() {
+        let copy = Program.build(JSON.parse(JSON.stringify(this)))
+        copy.id = ''
+        copy.startDate = null!
+        copy.endDate = null!
+        copy.athleteId = ''
+        copy.days.forEach(d => d = d.copy())
+
+        return copy
     }
 
     id: string = ''

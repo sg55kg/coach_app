@@ -1,14 +1,18 @@
 package com.coachapp.coach_pc.repository;
 
+import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.view.EntityViewBuilder;
 import com.blazebit.persistence.view.EntityViewManager;
+import com.blazebit.persistence.view.EntityViewSetting;
 import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.model.Team;
 import com.coachapp.coach_pc.model.payment.TeamFinance;
 import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
+import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
+import com.coachapp.coach_pc.view.payment.UpdatableTeamFinanceViewModel;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,7 +31,7 @@ public class PaymentRepository {
     }
 
     @Transactional
-    public TeamFinanceViewModel createTeamFinance(NewStripeAccountRequest request, String stripeConnectId) {
+    public TeamFinanceWithIds createTeamFinance(NewStripeAccountRequest request, String stripeConnectId) {
         CoachData coach = new CoachData();
         Team team = new Team();
         TeamFinance finance = new TeamFinance();
@@ -42,7 +46,7 @@ public class PaymentRepository {
         em.persist(finance);
         em.flush();
 
-        TeamFinanceViewModel vm = evm.createBuilder(TeamFinanceViewModel.class)
+        TeamFinanceWithIds vm = evm.createBuilder(TeamFinanceWithIds.class)
                 .with("id", finance.getId())
                 .with("coachId", finance.getCoach().getId())
                 .with("teamId", finance.getTeam().getId())
@@ -53,5 +57,18 @@ public class PaymentRepository {
 
         return vm;
     }
+
+    @Transactional
+    public void updateTeamFinanceStripeStatus(StripeStatus status, String stripeConnectId) {
+        CriteriaBuilder<TeamFinance> cb = cbf.create(em, TeamFinance.class);
+        UpdatableTeamFinanceViewModel teamFinance = evm
+                .applySetting(EntityViewSetting.create(UpdatableTeamFinanceViewModel.class), cb)
+                .where("stripeConnectId").eq(stripeConnectId)
+                .getSingleResult();
+
+        teamFinance.setStripeStatus(status);
+        evm.save(em, teamFinance);
+    }
+
 
 }

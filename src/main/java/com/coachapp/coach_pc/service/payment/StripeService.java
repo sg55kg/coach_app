@@ -1,8 +1,10 @@
 package com.coachapp.coach_pc.service.payment;
 
+import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.repository.PaymentRepository;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
+import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
@@ -30,7 +32,7 @@ public class StripeService {
         this.repository = repository;
     }
 
-    public ResponseEntity<String> connectNewStripAccount(NewStripeAccountRequest request) {
+    public ResponseEntity<TeamFinanceWithIds> connectNewStripAccount(NewStripeAccountRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
 
         AccountCreateParams params =
@@ -43,34 +45,47 @@ public class StripeService {
 
         try {
             Account account = Account.create(params);
-            String stripeAccountId = account.getId();
+            String stripeConnectId = account.getId();
+            TeamFinanceWithIds vm = repository.createTeamFinance(request, stripeConnectId);
 
-            TeamFinanceViewModel vm = repository.createTeamFinance(request, stripeAccountId);
-            // TODO: Add account id to users' coach data
-
-            return null;
+            return new ResponseEntity<>(vm, HttpStatus.CREATED);
         } catch (StripeException e) {
             logger.error(e.getMessage());
             return null; // TODO: handle error response
         }
     }
 
-    public ResponseEntity<String> createAccountLink(String stripeAccountId, String returnUrl) {
-        String fullReturnUrl = CLIENT_URL + "/" + returnUrl;
+    public ResponseEntity<String> createAccountLink(String stripeConnectId, String returnUrl) {
+        Stripe.apiKey = STRIPE_API_KEY;
+        String fullReturnUrl = CLIENT_URL + returnUrl;
 
         try {
             AccountLinkCreateParams params = AccountLinkCreateParams.builder()
-                    .setAccount(stripeAccountId)
+                    .setAccount(stripeConnectId)
                     .setRefreshUrl(fullReturnUrl)
                     .setReturnUrl(fullReturnUrl)
                     .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                     .build();
 
             AccountLink accountLink = AccountLink.create(params);
-            return new ResponseEntity<>(accountLink.getUrl(), HttpStatus.SEE_OTHER); // TODO: check http status
+            repository.updateTeamFinanceStripeStatus(StripeStatus.ONBOARDING, stripeConnectId);
+
+            return new ResponseEntity<>(accountLink.getUrl(), HttpStatus.SEE_OTHER);
         } catch (StripeException e) {
             logger.error(e.getMessage());
             return null; // TODO: handle error response
+        }
+    }
+
+    public ResponseEntity<String> getStripeAccount(String stripeConnectId) {
+        Stripe.apiKey = STRIPE_API_KEY;
+
+        try {
+            Account account = Account.retrieve(stripeConnectId);
+            return new ResponseEntity<>(account.toJson(), HttpStatus.OK);
+        } catch (StripeException e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 }

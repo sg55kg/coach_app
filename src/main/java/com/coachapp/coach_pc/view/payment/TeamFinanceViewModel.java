@@ -12,10 +12,6 @@ import java.util.UUID;
 public interface TeamFinanceViewModel {
     @IdMapping
     UUID getId();
-    @Mapping("coach.id")
-    UUID getCoachId();
-    @Mapping("team.id")
-    UUID getTeamId();
     String getStripeConnectId();
     StripeStatus getStripeStatus();
     int getTeamPrice();
