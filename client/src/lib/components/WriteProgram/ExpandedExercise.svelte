@@ -63,7 +63,7 @@
 <div class="absolute right-1 left-1 bg-gray-200 h-[70vh] overflow-y-auto flex flex-col items-center lg:p-8 z-20">
     <ExerciseRow bind:exercise={exercise} useWeightForAccessory={useWeightForAccessory} />
     {#each exercise.dropSets as dropSet}
-        <ExerciseRow bind:exercise={dropSet} isDropSet={true} useWeightForAccessory={useWeightForAccessory} />
+        <ExerciseRow bind:exercise={dropSet} parentExerciseId={exercise.id} useWeightForAccessory={useWeightForAccessory} />
     {/each}
     <button class="text-yellow h-7 w-7 my-2" on:click={addDropSet}>
         <FaPlus />

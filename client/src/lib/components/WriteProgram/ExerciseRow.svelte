@@ -7,10 +7,16 @@
    import {EffortIntensity} from "../../classes/program/exercise/enums";
    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
    import {userDB} from "../../stores/authStore";
+   import { getContext } from "svelte";
 
    export let exercise: Exercise
-   export let isDropSet: boolean = false
+   export let parentExerciseId: string = ""
    export let useWeightForAccessory: boolean = false
+
+   const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } = getContext('program')
+   const selectedDayIdx = getSelectedDayIdx()
+   const selectedDay = getSelectedDay()
+   const program = getProgram()
 
    let unit: 'kg' | 'lb' = $userDB!.preferences.weight
    $: unit = $userDB!.preferences.weight
@@ -47,6 +53,33 @@
        return ex
    }
 
+   const removeDropset = async () => {
+        // if an ID exists, make a backend call to delete the exercise
+        if (exercise.id) {
+            try {
+                await deleteExercise(exercise)
+            } catch (e) {
+                return
+            }
+        }
+
+        // If no ID or if successfully deleted on the backend, splice from the frontend
+        const dropSetIdx = $program.days[$selectedDayIdx].exercises
+            .find((e: Exercise) => e.id === parentExerciseId).dropSets
+            .findIndex((d: Exercise) => d.id === exercise.id)
+
+        $program.days[$selectedDayIdx].exercises
+            .find((e: Exercise) => e.id === parentExerciseId).dropSets
+            .splice(dropSetIdx, 1)
+
+        $program.days[$selectedDayIdx].exercises
+            .find((e: Exercise) => e.id === parentExerciseId).dropSets
+            .forEach((d, i) => d.order = i)
+
+        $program = $program
+        $selectedDay = $program.days[$selectedDayIdx]
+   }
+
    const toggleMaxWeight = (isMax: boolean) => {
        exercise.isMax = isMax
        exercise.weight = 0
@@ -77,11 +110,11 @@
 </script>
 
 {#if exercise.type === ExerciseType.EXERCISE}
-    <div class="grid grid-cols-6 p-2 w-full gap-2">
-        {#if !isDropSet}
+    <div class="grid grid-cols-10 p-2 w-full gap-2">
+        {#if !parentExerciseId}
             <input type="text"
                    placeholder="Exercise Name"
-                   class="bg-gray-300 p-1 col-span-5"
+                   class="bg-gray-300 p-1 col-span-9"
                    bind:value={exercise.name}
             >
             <button class="col-span-1 flex items-center justify-center">
@@ -90,40 +123,49 @@
                 </span>
             </button>
         {/if}
+        {#if parentExerciseId}
+            <button class="col-span-1 flex items-center justify-center">
+                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                    <MdClose />
+                </span>
+            </button>
+            {:else}
+                <div class="col-span-1" />
+        {/if}
         {#if exercise.isMax}
-            <div class="col-span-2 flex flex-col items-end">
+            <div class="col-span-3 flex flex-col items-end">
                 <label class="text-sm">Rep Max</label>
                 <input type="text" placeholder="Reps" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
             </div>
         {:else}
-            <div class="col-span-2 flex flex-col items-end">
+            <div class="col-span-3 flex flex-col items-end">
                 <label class="text-sm">Weight ({unit})</label>
                 <input type="text" placeholder="" value={exercise.wgt(unit)} on:change={(e) => exercise.setWgt(e.target.value, unit)} class="bg-gray-300 p-1 w-full text-right">
             </div>
-            <div class="col-span-2 flex flex-col items-end">
+            <div class="col-span-3 flex flex-col items-end">
                 <label class="text-sm">Sets</label>
                 <input type="text" placeholder="" bind:value={exercise.sets} class="bg-gray-300 p-1 w-full text-right">
             </div>
             {#if exercise.isMaxReps}
-                <div class="col-span-2 flex items-end text-center">
+                <div class="col-span-3 flex items-end text-center">
                     <p class="w-full text-lg font-medium text-yellow-lt tracking-wide">AMRAP</p>
                 </div>
             {:else}
-                <div class="col-span-2 flex flex-col items-end">
+                <div class="col-span-3 flex flex-col items-end">
                     <label class="text-sm">Reps</label>
                     <input type="text" placeholder="" bind:value={exercise.repsPerSet} class="bg-gray-300 p-1 w-full text-right">
                 </div>
             {/if}
         {/if}
-        <div class="{(!exercise.isMax && !exercise.isMaxReps) || exercise.isMaxReps ? 'col-span-2' : 'col-span-4'}"></div>
+        <div class="{(!exercise.isMax && !exercise.isMaxReps) || exercise.isMaxReps ? 'col-span-4' : 'col-span-7'}"></div>
         {#if !exercise.isMax}
-            <div class="col-span-2 flex flex-col items-end justify-center">
+            <div class="col-span-3 flex flex-col items-end justify-center">
                 <Toggle checked={exercise.isMaxReps} onChange={(e) => toggleMaxReps(e.target.checked)} />
                 <label class="text-sm">{exercise.isMaxReps ? 'As many reps as possible' : '# of reps'}</label>
             </div>
         {/if}
         {#if !exercise.isMaxReps}
-            <div class="col-span-2 flex flex-col items-end justify-center">
+            <div class="col-span-3 flex flex-col items-end justify-center">
                 <Toggle checked={exercise.isMax} onChange={(e) => toggleMaxWeight(e.target.checked)} />
                 <label class="text-sm">{exercise.isMax ? 'Rep Max' : 'Sets x Reps'}</label>
             </div>
@@ -131,7 +173,7 @@
     </div>
 {:else if exercise.type === ExerciseType.COMPLEX}
     <div class="grid grid-cols-8 p-2 w-full gap-2">
-        {#if !isDropSet}
+        {#if !parentExerciseId}
             {#each exercise.nameArr as name, idx}
                 <button class="col-span-1 flex items-center justify-center">
                         <span class="w-5 flex justify-center" on:click={() => exercise = removeComplexPart(exercise, idx)}>
@@ -150,7 +192,15 @@
                 </button>
             {/each}
         {/if}
-        <div class="col-span-1"></div>
+        {#if !parentExerciseId}
+            <div class="col-span-1"></div>
+        {:else}
+            <button class="col-span-1 flex items-center justify-center">
+                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                    <MdClose />
+                </span>
+            </button>
+        {/if}
         {#if !exercise.isMax}
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Weight ({unit})</label>
@@ -184,7 +234,7 @@
 {:else if exercise.type === ExerciseType.DURATION}
 {:else if exercise.type === ExerciseType.ACCESSORY}
     <div class="grid grid-cols-6 p-2 w-full gap-2">
-        {#if !isDropSet}
+        {#if !parentExerciseId}
             <input type="text"
                    placeholder="Exercise Name"
                    class="bg-gray-300 p-1 col-span-5"
