@@ -10,6 +10,7 @@ import com.stripe.model.Event;
 import com.stripe.net.Webhook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,8 @@ public class StripeController {
 
     private final Logger logger = LoggerFactory.getLogger(StripeController.class);
     private final StripeService service;
+    @Value("${stripe-signed-secret}")
+    private String STRIPE_SIGNED_SECRET;
 
     public StripeController(StripeService service) {
         this.service = service;
@@ -49,7 +52,7 @@ public class StripeController {
     public ResponseEntity<?> handleStripeWebhook(@RequestBody String payload,
                                                  @RequestHeader("Stripe-Signature") String sigHeader) {
         try {
-            Event event = Webhook.constructEvent(payload, sigHeader, "");
+            Event event = Webhook.constructEvent(payload, sigHeader, STRIPE_SIGNED_SECRET);
             return service.handleStripeWebhook(event);
         } catch (SignatureVerificationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

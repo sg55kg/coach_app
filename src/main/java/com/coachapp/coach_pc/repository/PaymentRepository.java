@@ -5,11 +5,15 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.view.EntityViewBuilder;
 import com.blazebit.persistence.view.EntityViewManager;
 import com.blazebit.persistence.view.EntityViewSetting;
+import com.coachapp.coach_pc.enums.PaymentStatus;
 import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.payment.AthletePaymentRecord;
 import com.coachapp.coach_pc.model.payment.TeamFinance;
+import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
+import com.coachapp.coach_pc.view.payment.AthletePaymentRecordWithIds;
 import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
 import com.coachapp.coach_pc.view.payment.UpdatableTeamFinanceViewModel;
@@ -70,5 +74,24 @@ public class PaymentRepository {
         evm.save(em, teamFinance);
     }
 
+    // TODO: Create Stripe payment request class
+    @Transactional
+    public AthletePaymentRecordWithIds createAthletePaymentRecord() {
+        AthletePaymentRecord record = new AthletePaymentRecord();
+        record.setAthlete(new AthleteData()); // TODO
+        record.setPaymentStatus(PaymentStatus.NEW);
+        record.setAmountPaid(1L); // TODO
+        record.setTeamFinance(new TeamFinance()); // TODO
+        em.persist(record);
+        em.flush();
+
+        CriteriaBuilder<AthletePaymentRecord> cb = cbf.create(em, AthletePaymentRecord.class);
+        AthletePaymentRecordWithIds paymentRecord = evm
+                .applySetting(EntityViewSetting.create(AthletePaymentRecordWithIds.class), cb)
+                .where("stripeConnectId").eq("TODO")
+                .getSingleResult();
+
+        return paymentRecord;
+    }
 
 }

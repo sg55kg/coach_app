@@ -15,5 +15,7 @@ public interface AthletePaymentRecordWithIds extends AthletePaymentRecordViewMod
     UUID getTeamFinanceId();
     @Mapping("athlete.user.email")
     String getAthleteUserEmail();
+    @Mapping("teamFinance.coach.user.email")
+    String getCoachEmail();
 
 }

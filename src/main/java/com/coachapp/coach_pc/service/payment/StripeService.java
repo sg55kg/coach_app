@@ -3,15 +3,17 @@ package com.coachapp.coach_pc.service.payment;
 import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.repository.PaymentRepository;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
+import com.coachapp.coach_pc.view.payment.AthletePaymentRecordWithIds;
 import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Account;
-import com.stripe.model.AccountLink;
-import com.stripe.model.Event;
+import com.stripe.model.*;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +97,49 @@ public class StripeService {
         }
     }
 
+    public ResponseEntity<String> createStripeCheckoutSession() {
+        Stripe.apiKey = STRIPE_API_KEY;
+        Stripe.clientId = STRIPE_CLIENT_ID;
+
+        try {
+            SessionCreateParams params = SessionCreateParams.builder()
+                    .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+                    .addLineItem(
+                            SessionCreateParams.LineItem.builder()
+                                    .setPrice("1")
+                                    .setQuantity(1L)
+                                    .build()
+                    )
+                    .setPaymentIntentData(
+                            SessionCreateParams.PaymentIntentData.builder()
+                                    .setApplicationFeeAmount(123L)
+                                    .build()
+                    )
+                    .setSuccessUrl("TODO")
+                    .setCancelUrl("TODO")
+                    .build();
+
+            RequestOptions requestOptions = RequestOptions.builder().setStripeAccount("TODO").build();
+
+            Session session = Session.create(params, requestOptions);
+            String url = session.getUrl();
+            // TODO: save payment info to database
+            AthletePaymentRecordWithIds paymentRecord = repository.createAthletePaymentRecord();
+            return new ResponseEntity<>(url, HttpStatus.SEE_OTHER);
+        } catch (StripeException e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public ResponseEntity<?> handleStripeWebhook(Event event) {
+        EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
+        StripeObject stripeObject = null;
+        if (dataObjectDeserializer.getObject().isPresent()) {
+            stripeObject = dataObjectDeserializer.getObject().get();
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         switch (event.getType()) {
             case "checkout.session.async_payment_failed": {
                 logger.info("Received async payment failed for account: " + event.getAccount());
@@ -115,6 +159,18 @@ public class StripeService {
             case "checkout.session.expired": {
                 logger.info("Received checkout session expired for account: " + event.getAccount());
                 // Then define and call a function to handle the event checkout.session.expired
+                break;
+            }
+            case "charge.succeeded": {
+                logger.info("Received successful charge event for account: " + event.getAccount());
+                break;
+            }
+            case "payment_intent.created": {
+                logger.info("Received payment intent creation event for account: " + event.getAccount());
+                break;
+            }
+            case "payment_intent.succeeded": {
+                logger.info("Received successful payment intent event for account: " + event.getAccount());
                 break;
             }
             default:
