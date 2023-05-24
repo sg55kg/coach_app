@@ -9,6 +9,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
+import com.stripe.model.Event;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ public class StripeService {
 
     @Value("${stripe-api-key}")
     private String STRIPE_API_KEY;
+    @Value("${stripe-client-id}")
+    private String STRIPE_CLIENT_ID;
     @Value("${client-url}")
     private String CLIENT_URL;
     private final Logger logger = LoggerFactory.getLogger(StripeService.class);
@@ -34,6 +37,7 @@ public class StripeService {
 
     public ResponseEntity<TeamFinanceWithIds> connectNewStripAccount(NewStripeAccountRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
+        Stripe.clientId = STRIPE_CLIENT_ID;
 
         AccountCreateParams params =
                 AccountCreateParams.builder()
@@ -57,6 +61,7 @@ public class StripeService {
 
     public ResponseEntity<String> createAccountLink(String stripeConnectId, String returnUrl) {
         Stripe.apiKey = STRIPE_API_KEY;
+        Stripe.clientId = STRIPE_CLIENT_ID;
         String fullReturnUrl = CLIENT_URL + returnUrl;
 
         try {
@@ -79,6 +84,7 @@ public class StripeService {
 
     public ResponseEntity<String> getStripeAccount(String stripeConnectId) {
         Stripe.apiKey = STRIPE_API_KEY;
+        Stripe.clientId = STRIPE_CLIENT_ID;
 
         try {
             Account account = Account.retrieve(stripeConnectId);
@@ -87,5 +93,33 @@ public class StripeService {
             logger.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    public ResponseEntity<?> handleStripeWebhook(Event event) {
+        switch (event.getType()) {
+            case "checkout.session.async_payment_failed": {
+                logger.info("Received async payment failed for account: " + event.getAccount());
+                // implement repository method to update payment
+                break;
+            }
+            case "checkout.session.async_payment_succeeded": {
+                logger.info("Received async payment succeeded for account: " + event.getAccount());
+                // Then define and call a function to handle the event checkout.session.async_payment_succeeded
+                break;
+            }
+            case "checkout.session.completed": {
+                logger.info("Received checkout session completed for account: " + event.getAccount());
+                // Then define and call a function to handle the event checkout.session.completed
+                break;
+            }
+            case "checkout.session.expired": {
+                logger.info("Received checkout session expired for account: " + event.getAccount());
+                // Then define and call a function to handle the event checkout.session.expired
+                break;
+            }
+            default:
+                logger.error("Unhandled Stripe event type: " + event.getType());
+        }
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 }

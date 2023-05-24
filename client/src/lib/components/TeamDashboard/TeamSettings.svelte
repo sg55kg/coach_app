@@ -6,6 +6,7 @@
     import {userDB} from "../../stores/authStore";
     import {StripeStatus} from "$lib/classes/team/teamFinance.js";
     import {onMount} from "svelte";
+    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
 
     let newLogoSrc: string = $team.teamLogo
     let newTeamName: string = $team.name
@@ -15,6 +16,7 @@
     let showDescriptionInput: boolean = false
     let stripeAccountCreated: boolean = true
     let stripeAccount: any = null
+    let loadingStripeConnect: boolean = false
 
     $: athleteList = $team ? $team.athletes : []
 
@@ -43,6 +45,7 @@
     $: console.log($team)
 
     const createStripeConnect = async () => {
+        loadingStripeConnect = true
         const data = {
             coachId: $userDB?.coachData?.id,
             teamId: $team.id,
@@ -58,14 +61,19 @@
             }
         } catch (e) {
             console.log(e)
+        } finally {
+            loadingStripeConnect = false
         }
     }
 
     const getStripeRedirectUrl = async () => {
+        loadingStripeConnect = true
         try {
             await TeamService.getStripeRedirectUrl($team.teamFinance.stripeConnectId, $team.id)
         } catch (e) {
             console.log(e)
+        } finally {
+            loadingStripeConnect = false
         }
     }
 
@@ -156,16 +164,30 @@
     <div>
         <h3 class="text-xl font-semibold tracking-wider my-1">Payment Information</h3>
         {#if !$team.teamFinance}
-            <button class="text-link font-semibold" on:click={createStripeConnect}>
-                Connect with Stripe to enable payments
-            </button>
-        {:else if $team.teamFinance.stripeStatus === StripeStatus.NEW}
-            {#if stripeAccountCreated}
-                <p class="text-green py-1 text-sm">Success! Click below to setting up your payment information on Stripe</p>
+            {#if loadingStripeConnect}
+                <div class="flex flex-col items-center">
+                    <LoadingSpinner spinnerColor="fill-yellow" />
+                    <p>Creating your Stripe account...</p>
+                </div>
+            {:else}
+                <button class="text-link font-semibold" on:click={createStripeConnect}>
+                    Connect with Stripe to enable payments
+                </button>
             {/if}
-            <button class="text-link font-semibold" on:click={getStripeRedirectUrl}>
-                Finish set up with Stripe
-            </button>
+        {:else if $team.teamFinance.stripeStatus === StripeStatus.NEW}
+            {#if loadingStripeConnect}
+                <div class="flex flex-col items-center">
+                    <LoadingSpinner spinnerColor="fill-yellow" />
+                    <p>Loading your account. You will be redirected to Stripe to finish onboarding in just a moment</p>
+                </div>
+            {:else}
+                {#if stripeAccountCreated}
+                    <p class="text-green py-1 text-sm">Success! Click below to setting up your payment information on Stripe</p>
+                {/if}
+                <button class="text-link font-semibold" on:click={getStripeRedirectUrl}>
+                    Finish set up with Stripe
+                </button>
+            {/if}
         {/if}
     </div>
 </div>
