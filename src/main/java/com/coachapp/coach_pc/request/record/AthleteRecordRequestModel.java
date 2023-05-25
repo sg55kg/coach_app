@@ -1,8 +1,8 @@
 package com.coachapp.coach_pc.request.record;
 
 import com.coachapp.coach_pc.model.user.AthleteData;
-import com.coachapp.coach_pc.model.AthleteRecord;
-import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.model.user.AthleteRecord;
+import com.coachapp.coach_pc.model.program.Day;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.util.UUID;

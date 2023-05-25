@@ -1,7 +1,7 @@
 package com.coachapp.coach_pc.model.payment;
 
 import com.coachapp.coach_pc.enums.StripeStatus;
-import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.team.Team;
 import com.coachapp.coach_pc.model.user.CoachData;
 import org.hibernate.annotations.Type;
 

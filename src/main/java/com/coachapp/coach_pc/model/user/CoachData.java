@@ -1,10 +1,8 @@
 package com.coachapp.coach_pc.model.user;
 
-import com.coachapp.coach_pc.model.Program;
-import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.program.Program;
+import com.coachapp.coach_pc.model.team.Team;
 import com.coachapp.coach_pc.model.payment.TeamFinance;
-import com.coachapp.coach_pc.model.user.AthleteData;
-import com.coachapp.coach_pc.model.user.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Type;

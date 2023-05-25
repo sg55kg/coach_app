@@ -1,7 +1,7 @@
 package com.coachapp.coach_pc.service.payment;
 
 import com.coachapp.coach_pc.enums.StripeStatus;
-import com.coachapp.coach_pc.repository.PaymentRepository;
+import com.coachapp.coach_pc.repository.payment.PaymentRepository;
 import com.coachapp.coach_pc.request.payment.AthletePaymentRequest;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.AthletePaymentRecordWithIds;

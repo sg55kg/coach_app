@@ -1,6 +1,6 @@
 package com.coachapp.coach_pc.service.payment;
 
-import com.coachapp.coach_pc.repository.PaymentRepository;
+import com.coachapp.coach_pc.repository.payment.PaymentRepository;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIdsImpl;
@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 
 import java.util.UUID;
 

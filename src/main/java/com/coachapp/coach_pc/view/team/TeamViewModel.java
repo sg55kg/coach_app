@@ -1,7 +1,7 @@
 package com.coachapp.coach_pc.view.team;
 
 import com.blazebit.persistence.view.*;
-import com.coachapp.coach_pc.model.Team;
+import com.coachapp.coach_pc.model.team.Team;
 
 import java.util.Date;
 import java.util.UUID;
