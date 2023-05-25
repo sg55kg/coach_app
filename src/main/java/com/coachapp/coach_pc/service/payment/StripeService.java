@@ -2,9 +2,9 @@ package com.coachapp.coach_pc.service.payment;
 
 import com.coachapp.coach_pc.enums.StripeStatus;
 import com.coachapp.coach_pc.repository.PaymentRepository;
+import com.coachapp.coach_pc.request.payment.AthletePaymentRequest;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.AthletePaymentRecordWithIds;
-import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -37,7 +37,7 @@ public class StripeService {
         this.repository = repository;
     }
 
-    public ResponseEntity<TeamFinanceWithIds> connectNewStripAccount(NewStripeAccountRequest request) {
+    public ResponseEntity<TeamFinanceWithIds> connectNewStripeAccount(NewStripeAccountRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
         Stripe.clientId = STRIPE_CLIENT_ID;
 
@@ -97,7 +97,7 @@ public class StripeService {
         }
     }
 
-    public ResponseEntity<String> createStripeCheckoutSession() {
+    public ResponseEntity<String> createStripeCheckoutSession(String stripeConnectId, AthletePaymentRequest request) {
         Stripe.apiKey = STRIPE_API_KEY;
         Stripe.clientId = STRIPE_CLIENT_ID;
 
@@ -122,9 +122,10 @@ public class StripeService {
             RequestOptions requestOptions = RequestOptions.builder().setStripeAccount("TODO").build();
 
             Session session = Session.create(params, requestOptions);
+            String sessionId = session.getId();
             String url = session.getUrl();
-            // TODO: save payment info to database
-            AthletePaymentRecordWithIds paymentRecord = repository.createAthletePaymentRecord();
+
+            AthletePaymentRecordWithIds paymentRecord = repository.createAthletePaymentRecord(request, sessionId);
             return new ResponseEntity<>(url, HttpStatus.SEE_OTHER);
         } catch (StripeException e) {
             logger.error(e.getMessage());

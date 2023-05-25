@@ -18,5 +18,6 @@ CREATE TABLE IF NOT EXISTS athlete_payment_record (
     team_finance_id UUID REFERENCES team_finance ON DELETE SET NULL,
     amount_paid bigint DEFAULT 0,
     payment_status TEXT CHECK (payment_status IN ('NEW', 'SUCCESS', 'FAIL')) DEFAULT 'NEW',
+    stripe_session_id TEXT DEFAULT '',
     PRIMARY KEY (id)
 )

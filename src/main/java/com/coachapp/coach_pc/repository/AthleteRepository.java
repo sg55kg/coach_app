@@ -8,6 +8,7 @@ import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
+import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,8 +31,32 @@ public class AthleteRepository {
         this.evm = evm;
     }
 
-    public Optional<AthleteData> findById(UUID athleteId) {
-        return Optional.ofNullable(em.find(AthleteData.class, athleteId));
+    @Transactional
+    public Optional<AthleteWithPrograms> findById(UUID athleteId) {
+        AthleteWithPrograms athlete = evm.find(em, AthleteWithPrograms.class, athleteId);
+        return Optional.ofNullable(athlete);
+    }
+
+    @Transactional
+    public boolean existsById(UUID athleteId) {
+        Long count = cbf.create(em, Long.class)
+                .from(AthleteData.class, "a")
+                .select("COUNT(id)")
+                .getSingleResult();
+        return count > 0;
+    }
+
+    /**
+     * Temporary way to update athlete until there is a better way to associate a program to an athlete via entity view
+     *
+     * @deprecated
+     */
+    @Deprecated
+    @Transactional
+    public AthleteData save(AthleteData athlete) {
+        em.merge(athlete);
+        em.flush();
+        return athlete;
     }
 
     @Transactional
@@ -92,12 +117,18 @@ public class AthleteRepository {
     ) {
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
         try {
-            var query = evm.applySetting(EntityViewSetting.create(UpdatableAthleteRecordViewModel.class), cb)
-                    .where("athlete.id").eq(athleteId).where("isCurrent").eq(true).whereOr();
+            var query =
+                    evm.applySetting(EntityViewSetting.create(UpdatableAthleteRecordViewModel.class), cb)
+                    .where("athlete.id")
+                        .eq(athleteId)
+                    .where("isCurrent")
+                        .eq(true)
+                    .whereOr();
 
             for (String name : names) {
                 query = query.where("exercise.name").like(false).value(name).noEscape();
             }
+
             List<UpdatableAthleteRecordViewModel> results = query.endOr().getResultList();
             return results;
         } catch (NoResultException ex) {

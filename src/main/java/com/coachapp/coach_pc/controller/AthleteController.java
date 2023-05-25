@@ -4,8 +4,8 @@ import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.request.AthleteRequest;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.service.AthleteService;
-import com.coachapp.coach_pc.view.AthleteViewModel;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
+import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,13 +31,13 @@ public class AthleteController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AthleteViewModel> updateAthlete(@PathVariable UUID id, @RequestBody AthleteRequest athlete) {
+    public ResponseEntity<AthleteWithPrograms> updateAthlete(@PathVariable UUID id, @RequestBody AthleteRequest athlete) {
         return athleteService.updateAthlete(id, athlete);
     }
 
     @GetMapping("{athleteId}")
-    public ResponseEntity<AthleteData> getAthlete(@PathVariable UUID athleteId) {
-        AthleteData athlete = athleteService.getAthleteData(athleteId);
+    public ResponseEntity<AthleteWithPrograms> getAthlete(@PathVariable UUID athleteId) {
+        AthleteWithPrograms athlete = athleteService.getAthleteData(athleteId);
         if (athlete != null) {
             return new ResponseEntity<>(athlete, HttpStatus.OK);
         }

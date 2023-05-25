@@ -12,10 +12,11 @@ import com.coachapp.coach_pc.model.payment.AthletePaymentRecord;
 import com.coachapp.coach_pc.model.payment.TeamFinance;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.CoachData;
+import com.coachapp.coach_pc.request.payment.AthletePaymentRequest;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.view.payment.AthletePaymentRecordWithIds;
-import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
 import com.coachapp.coach_pc.view.payment.TeamFinanceWithIds;
+import com.coachapp.coach_pc.view.payment.UpdatableAthletePaymentRecordViewModel;
 import com.coachapp.coach_pc.view.payment.UpdatableTeamFinanceViewModel;
 import org.springframework.stereotype.Repository;
 
@@ -74,24 +75,65 @@ public class PaymentRepository {
         evm.save(em, teamFinance);
     }
 
-    // TODO: Create Stripe payment request class
     @Transactional
-    public AthletePaymentRecordWithIds createAthletePaymentRecord() {
-        AthletePaymentRecord record = new AthletePaymentRecord();
-        record.setAthlete(new AthleteData()); // TODO
-        record.setPaymentStatus(PaymentStatus.NEW);
-        record.setAmountPaid(1L); // TODO
-        record.setTeamFinance(new TeamFinance()); // TODO
+    public AthletePaymentRecordWithIds createAthletePaymentRecord(AthletePaymentRequest request, String sessionId) {
+        AthletePaymentRecord record = getAthletePaymentRecord(request);
+        record.setStripeSessionId(sessionId);
         em.persist(record);
         em.flush();
 
         CriteriaBuilder<AthletePaymentRecord> cb = cbf.create(em, AthletePaymentRecord.class);
         AthletePaymentRecordWithIds paymentRecord = evm
                 .applySetting(EntityViewSetting.create(AthletePaymentRecordWithIds.class), cb)
-                .where("stripeConnectId").eq("TODO")
+                .where("stripeSessionId").eq(sessionId)
                 .getSingleResult();
 
         return paymentRecord;
+    }
+
+    @Transactional
+    public UpdatableAthletePaymentRecordViewModel getUpdatableAthletePaymentRecord(String sessionId) {
+        // TODO
+        CriteriaBuilder<AthletePaymentRecord> cb = cbf.create(em, AthletePaymentRecord.class);
+        UpdatableAthletePaymentRecordViewModel paymentRecord = evm
+                .applySetting(EntityViewSetting.create(UpdatableAthletePaymentRecordViewModel.class), cb)
+                .where("stripeSessionId").eq(sessionId)
+                .getSingleResult();
+
+        return paymentRecord;
+    }
+
+    private static AthletePaymentRecord getAthletePaymentRecord(AthletePaymentRequest request) {
+        AthletePaymentRecord record = new AthletePaymentRecord();
+
+        AthleteData athleteData = new AthleteData();
+        athleteData.setId(request.getAthleteId());
+
+        CoachData coachData = new CoachData();
+        coachData.setId(request.getCoachId());
+
+        TeamFinance teamFinance = new TeamFinance();
+        teamFinance.setId(request.getTeamFinanceId());
+
+        record.setAthlete(athleteData); // TODO - make sure if we need to connect all relationships
+        record.setPaymentStatus(PaymentStatus.NEW);
+        record.setAmountPaid(request.getPrice());
+        record.setTeamFinance(teamFinance);
+
+        return record;
+    }
+
+    private EntityViewBuilder<UpdatableAthletePaymentRecordViewModel> createUpdatablePaymentRecordBuilder(
+            AthletePaymentRecordWithIds record) {
+        EntityViewBuilder<UpdatableAthletePaymentRecordViewModel> builder =
+                evm.createBuilder(UpdatableAthletePaymentRecordViewModel.class)
+                        .with("id", record.getId())
+                        .with("createdAt", record.getCreatedAt())
+                        .with("paymentStatus", record.getPaymentStatus())
+                        .with("stripeConnectId", record.getStripeConnectId())
+                        .with("stripeSessionId", record.getStripeSessionId());
+
+        return builder;
     }
 
 }

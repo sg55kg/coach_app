@@ -28,6 +28,7 @@ public class AthletePaymentRecord {
     private String stripeConnectId;
     private long amountPaid;
     private PaymentStatus paymentStatus;
+    private String stripeSessionId;
 
     public AthletePaymentRecord() {}
 
@@ -77,5 +78,21 @@ public class AthletePaymentRecord {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getStripeConnectId() {
+        return stripeConnectId;
+    }
+
+    public void setStripeConnectId(String stripeConnectId) {
+        this.stripeConnectId = stripeConnectId;
+    }
+
+    public String getStripeSessionId() {
+        return stripeSessionId;
+    }
+
+    public void setStripeSessionId(String stripeSessionId) {
+        this.stripeSessionId = stripeSessionId;
     }
 }

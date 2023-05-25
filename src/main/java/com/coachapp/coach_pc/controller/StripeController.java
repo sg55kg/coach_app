@@ -1,5 +1,6 @@
 package com.coachapp.coach_pc.controller;
 
+import com.coachapp.coach_pc.request.payment.AthletePaymentRequest;
 import com.coachapp.coach_pc.request.payment.NewStripeAccountRequest;
 import com.coachapp.coach_pc.service.payment.StripeService;
 import com.coachapp.coach_pc.view.payment.TeamFinanceViewModel;
@@ -32,7 +33,7 @@ public class StripeController {
     @PostMapping("/connect")
     public ResponseEntity<TeamFinanceWithIds> connectStripeAccount(@RequestBody NewStripeAccountRequest request) {
         logger.info("Received request to create a new stripe account");
-        return this.service.connectNewStripAccount(request);
+        return this.service.connectNewStripeAccount(request);
     }
 
     @GetMapping("/{stripeConnectId}")
@@ -46,6 +47,13 @@ public class StripeController {
                                                      @RequestParam String returnUrl) {
         logger.info("Received request to initiate onboarding for connected Stripe account");
         return this.service.createAccountLink(stripeConnectId, returnUrl);
+    }
+
+    @PostMapping("{stripeConnectId}/payment")
+    public ResponseEntity<String> createAthleteTeamSubscription(@PathVariable String stripeConnectId,
+                                                                @RequestBody AthletePaymentRequest request) {
+        logger.info("Received request for athlete " + request.getAthleteEmail() + " on team " + request.getTeamId());
+        return this.service.createStripeCheckoutSession(stripeConnectId, request);
     }
 
     @PostMapping("/webhook")

@@ -17,5 +17,6 @@ public interface AthletePaymentRecordViewModel {
     OffsetDateTime getCreatedAt();
     long getAmountPaid();
     String getStripeConnectId();
+    String getStripeSessionId();
     PaymentStatus getPaymentStatus();
 }

@@ -3,13 +3,12 @@ package com.coachapp.coach_pc.service;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.AthleteRecord;
 import com.coachapp.coach_pc.model.Program;
-import com.coachapp.coach_pc.repository.AthleteRepo;
 import com.coachapp.coach_pc.repository.AthleteRepository;
 import com.coachapp.coach_pc.request.AthleteRequest;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
-import com.coachapp.coach_pc.view.AthleteViewModel;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
+import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,16 +21,14 @@ import java.util.UUID;
 @Service
 public class AthleteService {
 
-    private AthleteRepo athleteRepo;
     private AthleteRepository repository;
 
-    public AthleteService(AthleteRepo athleteRepo, AthleteRepository repository) {
-        this.athleteRepo = athleteRepo;
+    public AthleteService(AthleteRepository repository) {
         this.repository = repository;
     }
 
     public ResponseEntity<AthleteData> setCurrentProgram(UUID athleteId, UUID programId) {
-        boolean exists = athleteRepo.existsById(athleteId);
+        boolean exists = repository.existsById(athleteId);
 
         if (!exists) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -44,24 +41,17 @@ public class AthleteService {
         athleteData.setId(athleteId);
         athleteData.setCurrentProgram(program);
 
-        athleteData = athleteRepo.save(athleteData);
+        athleteData = repository.save(athleteData);
 
         return new ResponseEntity<>(athleteData, HttpStatus.OK);
     }
 
-    public ResponseEntity<AthleteViewModel> updateAthlete(UUID id, AthleteRequest request) {
-        Optional<AthleteData> optional = athleteRepo.findById(id);
+    public ResponseEntity<AthleteWithPrograms> updateAthlete(UUID id, AthleteRequest request) {
+        Optional<AthleteWithPrograms> optional = repository.findById(id);
 
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        AthleteData athlete = optional.get();
-        athlete = AthleteRequest.convertRequest(request, athlete);
-        athlete = athleteRepo.save(athlete);
-        AthleteViewModel vm = AthleteViewModel.convertAthlete(athlete);
-
-        return new ResponseEntity<>(vm, HttpStatus.OK);
+        return optional
+                .map(athleteWithPrograms -> new ResponseEntity<>(athleteWithPrograms, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
 //    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(UUID athleteId, AthleteRecord record) {
@@ -95,8 +85,8 @@ public class AthleteService {
 //        return new ResponseEntity<>(athlete.getRecords(), HttpStatus.OK);
 //    }
 
-    public AthleteData getAthleteData(UUID athleteId) {
-        Optional<AthleteData> optional = athleteRepo.findById(athleteId);
+    public AthleteWithPrograms getAthleteData(UUID athleteId) {
+        Optional<AthleteWithPrograms> optional = repository.findById(athleteId);
 
         return optional.get();
     }
