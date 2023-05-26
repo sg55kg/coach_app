@@ -1,71 +1,103 @@
 <script lang="ts">
-    import MdMenu from 'svelte-icons/md/MdMenu.svelte'
-    import logo from '../images/logo-yellow.png'
-    import {authUser, userDB} from "$lib/stores/authStore.js";
-    import FaAngleDoubleLeft from 'svelte-icons/fa/FaAngleDoubleLeft.svelte'
-    import FaDoorOpen from 'svelte-icons/fa/FaDoorOpen.svelte'
-    import FaWrench from 'svelte-icons/fa/FaWrench.svelte'
+    import MdMenu from 'svelte-icons/md/MdMenu.svelte';
+    import logo from '../images/logo-yellow.png';
+    import { authUser, userDB } from '$lib/stores/authStore.js';
+    import FaAngleDoubleLeft from 'svelte-icons/fa/FaAngleDoubleLeft.svelte';
+    import FaDoorOpen from 'svelte-icons/fa/FaDoorOpen.svelte';
+    import FaWrench from 'svelte-icons/fa/FaWrench.svelte';
 
-    let showNav: boolean = false
+    let showNav: boolean = false;
 
     const logout = async () => {
         const res = await fetch('/api/auth/logout', {
-            method: 'POST'
-        })
-        const body = await res.json()
+            method: 'POST',
+        });
+        const body = await res.json();
         if (body.redirectUrl) {
-            window.location.replace(body.redirectUrl)
+            window.location.replace(body.redirectUrl);
         }
-    }
+    };
 </script>
 
-
-<div class="h-full flex items-center justify-center">
-    <div class="w-10 hover:cursor-pointer text-yellow-lt hover:text-yellow" on:click={() => showNav = true}>
+<div class="flex h-full items-center justify-center">
+    <div
+        class="w-10 text-yellow-lt hover:cursor-pointer hover:text-yellow"
+        on:click="{() => (showNav = true)}"
+    >
         <MdMenu />
     </div>
 </div>
-<div class="fixed overflow-hidden z-40 overlay inset-0 transform ease-in-out
-    {showNav ?
-    'transition-opacity opacity-100 duration-100 translate-x-0' :
-    'transition-all delay-500 opacity-0 translate-x-full'}"
+<div
+    class="overlay fixed inset-0 z-40 transform overflow-hidden ease-in-out
+    {showNav
+        ? 'translate-x-0 opacity-100 transition-opacity duration-100'
+        : 'translate-x-full opacity-0 transition-all delay-500'}"
 >
-    <div class="w-9/12 lg:w-2/12 left-0 absolute bg-gray-100 h-full shadow-xl delay-200 duration-200 ease-in-out transition-all transform {showNav ? 'translate-x-0' : 'translate-x-[-30em]'}">
-        <div class="flex p-2 mt-2 items-center w-full">
-            <img class="h-10 m-auto ml-32" src={logo} alt="Coachable Logo">
-            <div class="text-yellow-lt hover:text-yellow w-8 hover:cursor-pointer" on:click={() => showNav = false}>
+    <div
+        class="absolute left-0 h-full w-9/12 transform bg-gray-100 shadow-xl transition-all delay-200 duration-200 ease-in-out lg:w-2/12 {showNav
+            ? 'translate-x-0'
+            : 'translate-x-[-30em]'}"
+    >
+        <div class="mt-2 flex w-full items-center p-2">
+            <img class="m-auto ml-32 h-10" src="{logo}" alt="Coachable Logo" />
+            <div
+                class="w-8 text-yellow-lt hover:cursor-pointer hover:text-yellow"
+                on:click="{() => (showNav = false)}"
+            >
                 <FaAngleDoubleLeft />
             </div>
         </div>
-        <div class="flex flex-col items-center mt-4">
-            <a class="self-start pl-4 font-medium text-lg"
-               href="/home/coach"
-            >
+        <div class="mt-4 flex flex-col items-center">
+            <a class="self-start pl-4 text-lg font-medium" href="/home/coach">
                 <h3>My Teams</h3>
             </a>
-            <hr class="w-full h-1 my-2 text-gray-400">
+            <hr class="my-2 h-1 w-full text-gray-400" />
             {#if $userDB?.coachData}
                 {#each $userDB.coachData.teams as team}
-                    <a class="text-textblue hover:text-link text-md font-medium hover:cursor-pointer" href="/home/coach/team/{team.id}/athletes" on:click={() => showNav = false}>
+                    <a
+                        class="text-md font-medium text-textblue hover:cursor-pointer hover:text-link"
+                        href="/home/coach/team/{team.id}/athletes"
+                        on:click="{() => (showNav = false)}"
+                    >
                         {team.name}
                     </a>
                 {/each}
             {/if}
-            <h3 class="self-start pl-4 font-medium text-lg mt-8">Feed</h3>
-            <hr class="w-full h-1 my-2 text-gray-400">
-            <div class="mt-12 w-full flex flex-col">
-                <img src={$authUser?.picture} alt="profile" class="rounded-full h-14 mb-4 self-center">
-                <div class="flex flex-col items-center lg:items-start w-full lg:pl-4">
-                    <a class="hover:text-yellow-lt" on:click={() => { showNav = false; logout() }}>
-                        <button class="h-8 w-full flex items-center text-lg font-medium">
+            <h3 class="mt-8 self-start pl-4 text-lg font-medium">Feed</h3>
+            <hr class="my-2 h-1 w-full text-gray-400" />
+            <div class="mt-12 flex w-full flex-col">
+                <img
+                    src="{$authUser?.picture}"
+                    alt="profile"
+                    class="mb-4 h-14 self-center rounded-full"
+                />
+                <div
+                    class="flex w-full flex-col items-center lg:items-start lg:pl-4"
+                >
+                    <a
+                        class="hover:text-yellow-lt"
+                        on:click="{() => {
+                            showNav = false;
+                            logout();
+                        }}"
+                    >
+                        <button
+                            class="flex h-8 w-full items-center text-lg font-medium"
+                        >
                             <span class="h-4 w-8 lg:mr-4">
                                 <FaDoorOpen />
                             </span>
                             Sign Out
                         </button>
                     </a>
-                    <a class="hover:text-yellow-lt" href="/home/user" on:click={() => showNav = false}>
-                        <button class="h-8 flex items-center text-lg font-medium">
+                    <a
+                        class="hover:text-yellow-lt"
+                        href="/home/user"
+                        on:click="{() => (showNav = false)}"
+                    >
+                        <button
+                            class="flex h-8 items-center text-lg font-medium"
+                        >
                             <span class="h-4 w-8 lg:mr-4">
                                 <FaWrench />
                             </span>
@@ -75,13 +107,13 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 {#if showNav}
-    <div class="w-2/12 lg:w-9/12 absolute right-0 top-0 h-screen hover:cursor-pointer z-50" on:click={() => showNav = false}>
-
-    </div>
+    <div
+        class="absolute right-0 top-0 z-50 h-screen w-2/12 hover:cursor-pointer lg:w-9/12"
+        on:click="{() => (showNav = false)}"
+    ></div>
 {/if}
 
 <style></style>

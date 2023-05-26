@@ -1,24 +1,22 @@
-
-
 export class WeightUnit {
     constructor(value: number) {
-        this.value = value
+        this.value = value;
     }
-    value: number = 0
+    value: number = 0;
 
     public getValue(units: 'kg' | 'lb') {
         if (units === 'kg') {
-            return this.value
+            return this.value;
         } else {
-            return Math.round(this.value * 2.20462)
+            return Math.round(this.value * 2.20462);
         }
     }
 
     public setValue(val: number, units: 'kg' | 'lb') {
         if (units === 'kg') {
-            this.value = val
+            this.value = val;
         } else {
-            this.value = Math.round(val / 2.20462)
+            this.value = Math.round(val / 2.20462);
         }
     }
 }

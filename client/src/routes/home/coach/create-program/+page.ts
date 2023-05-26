@@ -1,10 +1,9 @@
-import type {PageLoad} from "./$types";
+import type { PageLoad } from './$types';
 
-
-export const load: PageLoad = (event) => {
-    const athleteId = event.url.searchParams.get('athlete')
+export const load: PageLoad = event => {
+    const athleteId = event.url.searchParams.get('athlete');
 
     if (athleteId) {
-        return { athleteId }
+        return { athleteId };
     }
-}
+};

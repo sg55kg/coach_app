@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {authUser, userDB} from "$lib/stores/authStore.js";
-import AuthHeader from "$lib/components/AuthHeader.svelte";
+    import { authUser, userDB } from '$lib/stores/authStore.js';
+    import AuthHeader from '$lib/components/AuthHeader.svelte';
 </script>
 
 {#if $authUser}
@@ -9,5 +9,4 @@ import AuthHeader from "$lib/components/AuthHeader.svelte";
 <slot />
 
 <style>
-
 </style>

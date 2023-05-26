@@ -1,11 +1,10 @@
 <script lang="ts">
     import { confetti } from '@neoconfetti/svelte';
-    import {allowed, words, Game} from "./words";
-    import {userDB} from "$lib/stores/authStore.js";
+    import { allowed, words, Game } from './words';
+    import { userDB } from '$lib/stores/authStore.js';
 
-
-    let game: Game = new Game()
-    let badGuess: boolean = false
+    let game: Game = new Game();
+    let badGuess: boolean = false;
 
     $: won = game.answers.at(-1) === 'xxxxx';
 
@@ -15,7 +14,7 @@
     /** Whether the current guess can be submitted */
     $: submittable = game.guesses[index]?.length === 5;
 
-    let showInstructions = false
+    let showInstructions = false;
 
     /**
      * A map of classnames for all letters that have been guessed,
@@ -35,12 +34,13 @@
                 if (answer[i] === 'x') {
                     classnames[letter] = 'exact';
                 } else if (!classnames[letter]) {
-                    classnames[letter] = answer[i] === 'c' ? 'close' : 'missing';
+                    classnames[letter] =
+                        answer[i] === 'c' ? 'close' : 'missing';
                 }
             }
         });
 
-        classnames = classnames
+        classnames = classnames;
     }
 
     /**
@@ -75,38 +75,39 @@
             ?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
     }
 
-        /**
-         * Modify game state in reaction to a guessed word. This logic always runs on
-         * the server, so that people can't cheat by peeking at the JavaScript
-         */
+    /**
+     * Modify game state in reaction to a guessed word. This logic always runs on
+     * the server, so that people can't cheat by peeking at the JavaScript
+     */
     function enter(guess: string[]) {
         if (!game.enter(guess)) {
-            return badGuess = true
+            return (badGuess = true);
         }
-        index = game.answers.length
+        index = game.answers.length;
 
-            game.answers.forEach((answer, i) => {
-                const guess = game.guesses[i];
+        game.answers.forEach((answer, i) => {
+            const guess = game.guesses[i];
 
-                for (let i = 0; i < 5; i += 1) {
-                    const letter = guess[i];
+            for (let i = 0; i < 5; i += 1) {
+                const letter = guess[i];
 
-                    if (answer[i] === 'x') {
-                        classnames[letter] = 'exact';
-                    } else if (!classnames[letter]) {
-                        classnames[letter] = answer[i] === 'c' ? 'close' : 'missing';
-                    }
+                if (answer[i] === 'x') {
+                    classnames[letter] = 'exact';
+                } else if (!classnames[letter]) {
+                    classnames[letter] =
+                        answer[i] === 'c' ? 'close' : 'missing';
                 }
-            });
-            won = game.answers.at(-1) === 'xxxxx'
+            }
+        });
+        won = game.answers.at(-1) === 'xxxxx';
     }
 
     function restart() {
-        game = new Game()
+        game = new Game();
     }
 </script>
 
-<svelte:window on:keydown={keydown} />
+<svelte:window on:keydown="{keydown}" />
 
 <svelte:head>
     <title>Error</title>
@@ -116,24 +117,30 @@
 <div class="flex flex-col items-center justify-center text-center">
     <div class="my-4">
         <h1 class="text-3xl font-bold">Uh oh! Something went wrong</h1>
-        <p class="text-xl font-bold">If you're seeing this page, an error on our end has occurred. While you're here, why not play some Wordle? </p>
-        <a class="text-link hover:text-link-shade" href={$userDB ? '/home' : '/'}>Return to home</a>
+        <p class="text-xl font-bold">
+            If you're seeing this page, an error on our end has occurred. While
+            you're here, why not play some Wordle?
+        </p>
+        <a
+            class="text-link hover:text-link-shade"
+            href="{$userDB ? '/home' : '/'}">Return to home</a
+        >
     </div>
-    <div class="grid" class:playing={!won} class:bad-guess={badGuess}>
+    <div class="grid" class:playing="{!won}" class:bad-guess="{badGuess}">
         {#each Array(6) as _, row}
-
-            <div class={`row ${index === row ? 'current' : ''}`}>
+            <div class="{`row ${index === row ? 'current' : ''}`}">
                 {#each Array(5) as _, column}
                     {@const answer = game.answers[row]?.[column]}
 
                     <input
-                            name="guess"
-                            disabled={row !== index}
-                            readonly
-                            class:exact={answer === 'x'}
-                            class:close={answer === 'c'}
-                            aria-selected={row === index && column === game.guesses[row].length}
-                            value={game.guesses[row]?.[column] ?? ''}
+                        name="guess"
+                        disabled="{row !== index}"
+                        readonly
+                        class:exact="{answer === 'x'}"
+                        class:close="{answer === 'c'}"
+                        aria-selected="{row === index &&
+                            column === game.guesses[row].length}"
+                        value="{game.guesses[row]?.[column] ?? ''}"
                     />
                 {/each}
             </div>
@@ -145,18 +152,28 @@
             {#if !won && game.answer}
                 <p>the answer was "{game.answer}"</p>
             {/if}
-            <button data-key="enter" aria-selected="true" class="restart" on:click={restart}>
+            <button
+                data-key="enter"
+                aria-selected="true"
+                class="restart"
+                on:click="{restart}"
+            >
                 {won ? 'you won :)' : `game over :(`} play again?
             </button>
         {:else}
             <div class="keyboard">
-                <button data-key="enter" aria-selected={submittable} disabled={!submittable} on:click={() => enter(game.guesses[index])}>enter</button>
+                <button
+                    data-key="enter"
+                    aria-selected="{submittable}"
+                    disabled="{!submittable}"
+                    on:click="{() => enter(game.guesses[index])}">enter</button
+                >
 
                 <button
-                        on:click={update}
-                        data-key="backspace"
-                        name="key"
-                        value="backspace"
+                    on:click="{update}"
+                    data-key="backspace"
+                    name="key"
+                    value="backspace"
                 >
                     back
                 </button>
@@ -165,12 +182,12 @@
                     <div class="row">
                         {#each row as letter}
                             <button
-                                    on:click={update}
-                                    data-key={letter}
-                                    class={classnames[letter]}
-                                    disabled={game.guesses[index].length === 5}
-                                    name="key"
-                                    value={letter}
+                                on:click="{update}"
+                                data-key="{letter}"
+                                class="{classnames[letter]}"
+                                disabled="{game.guesses[index].length === 5}"
+                                name="key"
+                                value="{letter}"
                             >
                                 {letter}
                             </button>
@@ -180,17 +197,21 @@
             </div>
         {/if}
     </div>
-    <button on:click={() => showInstructions = !showInstructions} class="how-to-play mt-4 underline font-bold" href="/sverdle/how-to-play">How to play</button>
+    <button
+        on:click="{() => (showInstructions = !showInstructions)}"
+        class="how-to-play mt-4 font-bold underline"
+        href="/sverdle/how-to-play">How to play</button
+    >
 </div>
 {#if won}
     <div
-            style="position: absolute; left: 50%; top: 30%"
-            use:confetti={{
-			force: 0.7,
-			stageWidth: window.innerWidth,
-			stageHeight: window.innerHeight,
-			colors: ['#ff3e00', '#40b3ff', '#676778']
-		}}
+        style="position: absolute; left: 50%; top: 30%"
+        use:confetti="{{
+            force: 0.7,
+            stageWidth: window.innerWidth,
+            stageHeight: window.innerHeight,
+            colors: ['#ff3e00', '#40b3ff', '#676778'],
+        }}"
     ></div>
 {/if}
 {#if showInstructions}
@@ -198,8 +219,9 @@
         <h1>How to play Sverdle</h1>
 
         <p>
-            <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> is a
-            word guessing game. To play, enter a five-letter English word. For example:
+            <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a>
+            is a word guessing game. To play, enter a five-letter English word. For
+            example:
         </p>
 
         <div class="example">
@@ -211,10 +233,12 @@
         </div>
 
         <p>
-            The <span class="exact">y</span> is in the right place. <span class="close">r</span> and
+            The <span class="exact">y</span> is in the right place.
+            <span class="close">r</span>
+            and
             <span class="close">t</span>
-            are the right letters, but in the wrong place. The other letters are wrong, and can be discarded.
-            Let's make another guess:
+            are the right letters, but in the wrong place. The other letters are
+            wrong, and can be discarded. Let's make another guess:
         </p>
 
         <div class="example">
@@ -225,7 +249,10 @@
             <span class="exact">y</span>
         </div>
 
-        <p>This time we guessed right! You have <strong>six</strong> guesses to get the word.</p>
+        <p>
+            This time we guessed right! You have <strong>six</strong> guesses to
+            get the word.
+        </p>
     </div>
 
     <style>
@@ -278,9 +305,7 @@
             margin: 0 1em;
         }
     </style>
-
 {/if}
-
 
 <style>
     form {
