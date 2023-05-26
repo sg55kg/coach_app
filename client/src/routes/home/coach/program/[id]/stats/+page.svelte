@@ -19,7 +19,6 @@
         if (overallStats) return
 
         const programId = $page.params.id
-        console.log($page.params)
         try {
             const res = await ProgramService.getProgramStats(programId)
             console.log(res)

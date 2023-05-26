@@ -3,7 +3,6 @@ import {error} from "@sveltejs/kit";
 
 
 export const GET: RequestHandler = async (event) => {
-    console.log('fired')
     const token = event.cookies.get('accessToken')
     const id = event.params.teamId
 
@@ -12,7 +11,6 @@ export const GET: RequestHandler = async (event) => {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
         })
-        console.log(res.status)
         const teamData = await res.json()
         return new Response(JSON.stringify(teamData))
     } catch (e) {

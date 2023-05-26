@@ -9,7 +9,7 @@
 
     export let team: DisplayTeam
     let displayTeamsError: string = ''
-$: console.log($userDB)
+
     const joinTeam = async () => {
         if (!$userDB?.athleteData) return
         displayTeamsError = ''
@@ -25,10 +25,8 @@ $: console.log($userDB)
             updatedAthlete.coachId = null
         }
 
-        console.log('before server athlete-stats data', updatedAthlete)
         try {
             const res: AthleteData = await UserService.updateAthleteData(updatedAthlete)
-            console.log('Updated team athlete-stats response', res)
             userDB.update(prev => {
                 prev!.athleteData = res
                 prev!.athleteData.coach = { id: team.coachId } as CoachData

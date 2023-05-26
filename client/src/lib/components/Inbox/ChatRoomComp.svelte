@@ -95,7 +95,6 @@
     }
 
     const handleUpload = async (file: File) => {
-        console.log(file)
         let reader = new FileReader()
         reader.addEventListener('load', () => {
             const payload = { binary: reader?.result?.split(',', 2)[1], filename: file.name }

@@ -16,7 +16,6 @@
    const confirmDeleteMessage = 'Are you sure you want to delete ' + program.name + '?'
    const deleteSubheader = 'This will permanently remove all exercises and data used for tracking athlete performance'
    $: programAthlete = $userDB?.coachData?.athletes?.find(a => a.id === program.athleteId)
-   $: console.log(program)
 
    const deleteProgram = async () => {
        try {

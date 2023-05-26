@@ -80,7 +80,6 @@
          * the server, so that people can't cheat by peeking at the JavaScript
          */
     function enter(guess: string[]) {
-        console.log(guess)
         if (!game.enter(guess)) {
             return badGuess = true
         }

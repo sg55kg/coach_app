@@ -24,11 +24,6 @@
             return
         }
         try {
-            // const res = await fetch(`/api/athlete/program/${$userDB.athleteData.currentProgram.id}`)
-            // const programData: ProgramDTO = await res.json()
-            // console.log('program', programData)
-            // const program = Program.build(programData)
-            // program.days.forEach(d => d.exercises.sort((a, b) => a.order - b.order))
             const today = dayjs()
             $currentProgram = $userDB.athleteData.currentProgram
             const day = $currentProgram.days.find(d => dayjs(d.date).isSame(today, 'days'))

@@ -5,7 +5,6 @@ import {error} from "@sveltejs/kit";
 
 export const POST: RequestHandler = async (event) => {
     const { code } = await event.request.json()
-    console.log(code)
     if (!code) {
         throw error(405, 'Invalid code provided')
     }
@@ -14,7 +13,6 @@ export const POST: RequestHandler = async (event) => {
         event.cookies.set('accessToken', accessToken, {httpOnly: true, path: '/'})
         event.cookies.set('idToken', idToken, {httpOnly: true, path: '/'})
         const userData = await _fetchUser(user, accessToken)
-        console.log(accessToken)
         return new Response(JSON.stringify({ user, userData }))
     } catch (e) {
         throw error(401, 'Could not validate')

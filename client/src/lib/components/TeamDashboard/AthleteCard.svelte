@@ -11,7 +11,7 @@
     import FaPen from 'svelte-icons/fa/FaPen.svelte'
     import {team} from "$lib/stores/teamStore.js";
     import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte'
-    import UserService from "../../service/userService";
+    import UserService from "../../service/UserService";
 
     export let athlete: AthleteData
 

@@ -30,8 +30,6 @@
 
     onMount(async() => {
         user = JSON.parse(JSON.stringify($userDB))
-        console.log('user data', user)
-
     })
 </script>
 

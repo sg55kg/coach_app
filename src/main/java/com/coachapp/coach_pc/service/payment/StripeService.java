@@ -57,7 +57,7 @@ public class StripeService {
             return new ResponseEntity<>(vm, HttpStatus.CREATED);
         } catch (StripeException e) {
             logger.error(e.getMessage());
-            return null; // TODO: handle error response
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -80,7 +80,7 @@ public class StripeService {
             return new ResponseEntity<>(accountLink.getUrl(), HttpStatus.SEE_OTHER);
         } catch (StripeException e) {
             logger.error(e.getMessage());
-            return null; // TODO: handle error response
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -119,7 +119,7 @@ public class StripeService {
                     .setCancelUrl("TODO")
                     .build();
 
-            RequestOptions requestOptions = RequestOptions.builder().setStripeAccount("TODO").build();
+            RequestOptions requestOptions = RequestOptions.builder().setStripeAccount(stripeConnectId).build();
 
             Session session = Session.create(params, requestOptions);
             String sessionId = session.getId();

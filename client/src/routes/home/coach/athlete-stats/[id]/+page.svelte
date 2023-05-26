@@ -26,7 +26,6 @@
         }
         try {
             const stats: any = await UserService.fetchAthleteStats(athleteId)
-            console.log(stats)
         } catch (e) {
             console.log(e)
             return loadingAthleteData = false

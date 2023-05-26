@@ -19,8 +19,8 @@ import java.util.UUID;
 @RequestMapping("/api/teams")
 public class TeamController {
 
-    private TeamService teamService;
-    private Logger logger = LoggerFactory.getLogger(TeamController.class);
+    private final TeamService teamService;
+    private final Logger logger = LoggerFactory.getLogger(TeamController.class);
 
     public TeamController(TeamService teamService) {
         this.teamService = teamService;

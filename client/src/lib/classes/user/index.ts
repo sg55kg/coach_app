@@ -23,7 +23,7 @@ export class User {
 
     static build(userDTO: UserDTO) {
         const user = new User()
-        console.log(userDTO)
+
         user.athleteData = userDTO.athleteData ? AthleteData.createFrom(userDTO.athleteData) : null
         user.coachData = userDTO.coachData ? CoachData.createFrom(userDTO.coachData) : null
         user.createdAt = userDTO.createdAt ? dayjs(userDTO.createdAt) : dayjs()

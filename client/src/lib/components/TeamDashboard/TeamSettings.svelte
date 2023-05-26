@@ -35,14 +35,12 @@
             athleteList = $team.athletes
             showNameInput = false
             showDescriptionInput = false
-            console.log(teamRes)
             stripeAccountCreated = true
         } catch (e) {
             console.log(e)
         }
     }
 
-    $: console.log($team)
 
     const createStripeConnect = async () => {
         loadingStripeConnect = true
@@ -80,7 +78,6 @@
     onMount(async () => {
         if ($team?.teamFinance && $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING) {
             const res = await TeamService.getStripeAccount($team.teamFinance.stripeConnectId)
-            console.log(res)
             stripeAccount = res
             if (res.details_submitted) {
                 // TODO: save team finance as created and display stripe data on this page

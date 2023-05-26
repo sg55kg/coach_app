@@ -5,7 +5,7 @@
     import AthleteExpandedDay from "$lib/components/AthleteProgram/AthleteExpandedDay.svelte";
     import {Day} from "$lib/classes/program/day/index.js";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import UserService from "../../service/userService";
+    import UserService from "../../service/UserService";
 
     const {
         getCurrentProgram,

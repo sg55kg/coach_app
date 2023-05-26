@@ -1,6 +1,6 @@
 <script lang="ts">
     import {auth0Client, isAuthenticated, userDB} from "../stores/authStore";
-    import UserService from "../service/userService";
+    import UserService from "../service/UserService";
     import {onMount} from "svelte";
     import {authUser} from "$lib/stores/authStore";
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte'

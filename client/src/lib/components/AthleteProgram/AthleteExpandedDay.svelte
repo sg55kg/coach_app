@@ -6,7 +6,7 @@
     import AthleteExerciseCard from "$lib/components/AthleteProgram/AthleteExerciseCard.svelte";
     import AthleteExpandedExercise from "$lib/components/AthleteProgram/AthleteExpandedExercise.svelte";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import UserService from "../../service/userService";
+    import UserService from "../../service/UserService";
     import RichTextEditor from "$lib/components/shared/texteditor/RichTextEditor.svelte";
 
     const {

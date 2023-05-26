@@ -6,7 +6,7 @@ import type {Day} from "../classes/program/day";
 import {ExerciseType} from "../classes/program/exercise/enums";
 import {ProgramService} from "../service/ProgramService";
 import type {Exercise} from "../classes/program/exercise";
-import UserService from "../service/userService";
+import UserService from "../service/UserService";
 import {AthleteRecord} from "../classes/user/athlete/records";
 import dayjs from "dayjs";
 

@@ -107,7 +107,6 @@ export class Exercise {
         exercise.setWgt(data.weight, 'kg')
         exercise.setWgtComp(data.weightCompleted, 'kg')
         if (data.type === ExerciseType.COMPLEX) {
-            console.log(data)
             exercise.repCompletedArr = typeof(data.repCompletedArr) === 'string' ? data.repCompletedArr.split(',').map(r => parseInt(r)) : data.repCompletedArr
             exercise.repArr = typeof(data.repArr) === 'string' ? data.repArr.split(',').map(r => parseInt(r)) : data.repArr
             exercise.nameArr = typeof(data.nameArr) === 'string' ? data.nameArr.split(',') : data.nameArr

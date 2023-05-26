@@ -11,7 +11,6 @@
     let athleteId: string = ''
 
     if (data.athleteId) {
-        console.log(data.athleteId)
         athleteId = data.athleteId
     }
 

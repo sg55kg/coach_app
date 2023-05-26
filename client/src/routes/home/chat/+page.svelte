@@ -35,7 +35,6 @@ const connect = async () => {
     const rooms = await ChatService.getChatRoomsByUser($userDB.id)
 
     if (rooms) {
-        console.log(rooms)
         chatRooms = rooms
     }
 

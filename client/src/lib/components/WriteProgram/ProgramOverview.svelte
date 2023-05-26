@@ -29,7 +29,7 @@
     import {team} from "../../stores/teamStore";
     import {userDB} from "../../stores/authStore";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import UserService from "../../service/userService";
+    import UserService from "../../service/UserService";
     import type {DayDTO} from "../../classes/program/day";
 
     export let selectedProgram = new Program()

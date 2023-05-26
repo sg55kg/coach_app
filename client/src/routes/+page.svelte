@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {auth0Client, isAuthenticated} from '$lib/stores/authStore'
-	import UserService from "../lib/service/userService";
+	import UserService from "../lib/service/UserService";
 	import {goto} from '$app/navigation'
 	import type {PageServerData} from "./$types";
 	import {page} from '$app/stores'
