@@ -184,7 +184,7 @@
     {/if}
     {#if fetchingNextPage}
         <div class="flex w-full justify-center">
-            <LoadingSpinner width="{8}" height="{8}" />
+            <LoadingSpinner width="w-8" height="h-8" />
         </div>
     {/if}
     <div

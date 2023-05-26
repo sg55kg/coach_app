@@ -9,7 +9,6 @@
     import type { LayoutServerData } from '../../.svelte-kit/types/src/routes/$types';
     import { User } from '$lib/classes/user';
     import { onMount } from 'svelte';
-    import { goto } from '$app/navigation';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
 
     export let data: LayoutServerData;
@@ -69,15 +68,6 @@
         if (mobileDevices.some(d => navigator.userAgent.match(d))) {
             $isMobile = true;
         }
-
-        if (
-            (($userDB && $authUser) || (data.user && data.userData)) &&
-            window.location.pathname === '/'
-        ) {
-            await goto('/home');
-        } else if (!$userDB && !data.user && window.location.pathname !== '/') {
-            await goto('/');
-        }
     });
 </script>
 
@@ -102,8 +92,13 @@
             <slot />
         </main>
     {:else}
-        <div class="flex h-screen w-screen items-center justify-center">
-            <LoadingSpinner spinnerColor="fill-yellow" width="16" height="16" />
+        <div class="fixed flex h-screen w-screen items-center justify-center">
+            <LoadingSpinner
+                spinnerColor="fill-yellow"
+                spinnerBackground="text-gray-100"
+                width="w-16"
+                height="w-16"
+            />
         </div>
     {/if}
 </div>

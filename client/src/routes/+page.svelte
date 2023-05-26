@@ -4,13 +4,13 @@
     import { goto } from '$app/navigation';
     import type { PageServerData } from './$types';
     import { page } from '$app/stores';
-    import { loadingAuth } from '$lib/stores/authStore.js';
+    import { authUser, loadingAuth } from '$lib/stores/authStore.js';
 
     export let data: PageServerData;
 
-    const { state } = data;
+    const { state, redirectUri, baseUrl } = data;
 
-    const loginUrl = import.meta.env.VITE_AUTH0_LOGIN_URL + state;
+    const loginUrl = baseUrl + state + '&redirect_uri=' + redirectUri;
 </script>
 
 <svelte:head>
@@ -36,7 +36,7 @@
         <div
             class="m-2 mt-8 flex flex-col items-center justify-center text-center"
         >
-            {#if !$page.data.user}
+            {#if !$authUser}
                 <a
                     href="{loginUrl}"
                     on:click="{() => ($loadingAuth = true)}"

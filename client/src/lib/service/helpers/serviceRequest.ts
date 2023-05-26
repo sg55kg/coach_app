@@ -1,3 +1,7 @@
+import { redirect } from '@sveltejs/kit';
+import { goto } from '$app/navigation';
+import { authUser, userDB } from '../../stores/authStore';
+
 export type ServiceResponse<T> = {
     data: T;
     code: number;
@@ -10,6 +14,14 @@ export const srGet = async <T>(
     const res = await fetch(url, {
         method: 'GET',
     });
+
+    if (res.redirected) {
+        if (res.status > 399) {
+            userDB.set(null);
+            authUser.set(undefined);
+        }
+        await goto(res.url);
+    }
 
     if (res.status > 399) {
         throw new Error(res.statusText);
@@ -38,6 +50,14 @@ export const srPost = async <T>(
         headers: { 'Content-Type': contentType },
         body: body,
     });
+
+    if (res.redirected) {
+        if (res.status > 399) {
+            userDB.set(null);
+            authUser.set(undefined);
+        }
+        await goto(res.url);
+    }
 
     if (res.status > 399) {
         throw new Error(res.statusText);
@@ -70,6 +90,14 @@ export const srPut = async <T>(
         body: body,
     });
 
+    if (res.redirected) {
+        if (res.status > 399) {
+            userDB.set(null);
+            authUser.set(undefined);
+        }
+        await goto(res.url);
+    }
+
     if (res.status > 399) {
         throw new Error(res.statusText);
     }
@@ -91,6 +119,14 @@ export const srDelete = async <T>(url: string): Promise<ServiceResponse<T>> => {
     const res = await fetch(url, {
         method: 'DELETE',
     });
+
+    if (res.redirected) {
+        if (res.status > 399) {
+            userDB.set(null);
+            authUser.set(undefined);
+        }
+        await goto(res.url);
+    }
 
     if (res.status > 399) {
         throw new Error(res.statusText);

@@ -9,6 +9,9 @@ const config = {
 
     kit: {
         adapter: vercel(),
+        files: {
+            hooks: { server: './src/lib/hooks.server.ts' },
+        },
     },
 };
 

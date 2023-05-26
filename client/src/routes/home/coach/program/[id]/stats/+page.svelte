@@ -400,7 +400,11 @@
         <div
             class="flex h-screen w-screen flex-col items-center justify-center"
         >
-            <LoadingSpinner spinnerColor="fill-yellow" height="10" width="10" />
+            <LoadingSpinner
+                spinnerColor="fill-yellow"
+                height="h-10"
+                width="w-10"
+            />
             <p class="font-semibold">Fetching program stats...</p>
         </div>
     {:then stats}

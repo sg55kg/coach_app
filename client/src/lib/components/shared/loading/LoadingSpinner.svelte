@@ -1,6 +1,6 @@
 <script lang="ts">
-    export let width: number = 6;
-    export let height: number = 6;
+    export let width: string = 'w-6';
+    export let height: string = 'h-6';
     export let spinnerColor: string = 'fill-sky-500';
     export let spinnerBackground: string = 'text-gray-200';
 </script>
@@ -8,7 +8,7 @@
 <div role="status">
     <svg
         aria-hidden="true"
-        class="{`w-${width} h-${height} mr-2 ${spinnerBackground} animate-spin ${spinnerColor} dark:text-gray-600`}"
+        class="{`${width} ${height} mr-2 ${spinnerBackground} animate-spin ${spinnerColor} dark:text-gray-600`}"
         viewBox="0 0 100 101"
         xmlns="http://www.w3.org/2000/svg"
     >

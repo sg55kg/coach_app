@@ -5,22 +5,19 @@ export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const id = event.params.teamId;
 
-    try {
-        const res = await fetch(
-            `${import.meta.env.VITE_SERVER_URL}api/teams/${id}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + token,
-                },
-            }
-        );
-        const teamData = await res.json();
-        return new Response(JSON.stringify(teamData));
-    } catch (e) {
-        throw error(404, 'Could not retrieve team');
-    }
+    const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/teams/${id}`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+        }
+    );
+    console.log(res);
+    const teamData = await res?.body;
+    return new Response(teamData, { status: res.status });
 };
 
 export const PUT: RequestHandler = async event => {

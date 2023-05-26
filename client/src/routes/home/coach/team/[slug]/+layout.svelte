@@ -4,6 +4,9 @@
     import { Team } from '$lib/classes/team';
     import { TeamService } from '$lib/service/TeamService';
     import CardLoadingSkeleton from '$lib/components/shared/loading/CardLoadingSkeleton.svelte';
+    import { onMount } from 'svelte';
+
+    let loadingTeam: boolean = true;
 
     const fetchTeam = async () => {
         let pathArr = location.pathname.split('/');
@@ -11,14 +14,15 @@
         if ($team !== null && $team.id === teamId) {
             return;
         }
-        try {
-            const teamRes: Team = await TeamService.getTeam(teamId);
-            $team = teamRes;
-            return teamRes;
-        } catch (e) {
-            console.log(e);
-        }
+        const teamRes: Team = await TeamService.getTeam(teamId);
+        console.log(teamRes);
+        loadingTeam = false;
+        return teamRes;
     };
+
+    onMount(async () => {
+        $team = await fetchTeam();
+    });
 </script>
 
 <div class="flex flex-col items-center">
@@ -49,7 +53,8 @@
             </a>
         </div>
     </div>
-    {#await fetchTeam()}
+    <!--{#await fetchTeam()}-->
+    {#if loadingTeam}
         <div class="flex w-screen flex-col">
             <h1 class="text-center text-3xl font-bold text-white">
                 Loading...
@@ -58,11 +63,13 @@
             <CardLoadingSkeleton />
             <CardLoadingSkeleton />
         </div>
-    {:then teamRes}
+    {:else if $team}
         <slot />
-    {:catch err}
-        <h1>We're sorry, we couldn't fetch your team at this time</h1>
-    {/await}
+    {/if}
+    <!--{:then teamRes}-->
+    <!--{:catch err}-->
+    <!--    <h1>We're sorry, we couldn't fetch your team at this time</h1>-->
+    <!--{/await}-->
 </div>
 
 <style>

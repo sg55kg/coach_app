@@ -5,16 +5,26 @@
     import FaAngleDoubleLeft from 'svelte-icons/fa/FaAngleDoubleLeft.svelte';
     import FaDoorOpen from 'svelte-icons/fa/FaDoorOpen.svelte';
     import FaWrench from 'svelte-icons/fa/FaWrench.svelte';
+    import { loadingAuth } from '../stores/authStore';
+    import { goto } from '$app/navigation';
 
     let showNav: boolean = false;
 
     const logout = async () => {
-        const res = await fetch('/api/auth/logout', {
-            method: 'POST',
-        });
-        const body = await res.json();
-        if (body.redirectUrl) {
-            window.location.replace(body.redirectUrl);
+        $loadingAuth = true;
+        try {
+            const res = await fetch('/api/auth/logout', {
+                method: 'POST',
+            });
+            const body = await res.json();
+            if (body.redirectUrl) {
+                await goto(body.redirectUrl);
+                $loadingAuth = false;
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            $loadingAuth = false;
         }
     };
 </script>
