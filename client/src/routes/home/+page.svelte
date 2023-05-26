@@ -9,7 +9,6 @@
     export let data: LayoutData;
 
     const { user, userData } = data;
-
     if (user && userData) {
         $userDB = User.build(userData);
         $authUser = user;

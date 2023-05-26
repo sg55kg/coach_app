@@ -3,16 +3,18 @@ import { error, redirect } from '@sveltejs/kit';
 import jwtDecode from 'jwt-decode';
 
 export const handle: Handle = async ({ event, resolve }) => {
-    // console.log(event.locals)
-    // if (!event.locals.userData && event.url.pathname !== '/') {
-    //     throw redirect(302, '/');
-    // }
     const code = event.url.searchParams.get('code');
     const token = event.cookies.get('accessToken');
-    if (token && event.locals.userData) {
+    if (token) {
+        if (!event.locals.userData) {
+            event.locals.userData = await _fetchUser(
+                jwtDecode(event.cookies.get('idToken')!),
+                token
+            );
+        }
         return resolve(event);
     }
-    if (event.url.pathname === '/home' && code) {
+    if (code) {
         const { accessToken, user, idToken } = await fetchToken(code);
         event.cookies.set('accessToken', accessToken, {
             httpOnly: true,
@@ -22,7 +24,8 @@ export const handle: Handle = async ({ event, resolve }) => {
         event.locals.userData = await _fetchUser(user, accessToken);
         throw redirect(302, event.locals.lastPage ?? '/home');
     } else if (event.url.pathname !== '/' && !token) {
-        console.log('should redirect');
+        event.cookies.delete('accessToken');
+        event.cookies.delete('idToken');
         event.locals.lastPage = event.url.pathname;
         event.locals.userData = undefined;
         throw redirect(302, '/');

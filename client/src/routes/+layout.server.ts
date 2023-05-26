@@ -34,18 +34,6 @@ export const load: LayoutServerLoad = async ({
                 (locals.lastPage ? locals.lastPage : ''),
             baseUrl: import.meta.env.VITE_AUTH0_LOGIN_URL,
         };
-    }
-    if (accessToken && idToken && !locals.userData) {
-        try {
-            const user = jwtDecode(idToken);
-            const userData = await _fetchUser(user, accessToken);
-            locals.userData = userData;
-            return { user, userData };
-        } catch (e) {
-            cookies.delete('accessToken', { path: '/' });
-            cookies.delete('idToken', { path: '/' });
-            throw redirect(307, '/');
-        }
     } else {
         return {
             state: encoded,
