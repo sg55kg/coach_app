@@ -1,10 +1,9 @@
-import type { LayoutLoad } from './$types';
-import { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
 import jwtDecode from 'jwt-decode';
 
 export const prerender = false;
 
-export const load: LayoutLoad = async event => {
+export const load: LayoutServerLoad = async event => {
     const accessToken = event.cookies.get('accessToken');
     const idToken = event.cookies.get('idToken');
     if (accessToken && idToken && event.locals.userData) {

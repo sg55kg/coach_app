@@ -1,7 +1,5 @@
 import type { LayoutServerLoad } from './$types';
 import jwtDecode from 'jwt-decode';
-import { error, redirect } from '@sveltejs/kit';
-import { _fetchUser } from '../lib/hooks.server';
 
 export const prerender = false;
 const randomString = (length: number, chars: string) => {

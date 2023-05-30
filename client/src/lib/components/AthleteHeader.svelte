@@ -1,9 +1,9 @@
 <script lang="ts">
     import { userDB } from '../stores/authStore';
     import { onMount } from 'svelte';
-    import AthleteNav from '$lib/components/AthleteNav.svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte';
+    import Navbar from "$lib/components/Navbar/Navbar.svelte";
 
     const logout = async () => {
         const res = await fetch('/api/auth/logout', {
@@ -21,7 +21,7 @@
 <header
     class="flex w-screen items-center justify-between bg-gray-200 p-2 align-middle text-textgray lg:mb-4"
 >
-    <AthleteNav />
+    <Navbar />
     <div
         class="flex items-center {$isMobile && 'justify-center'} align-baseline"
     >

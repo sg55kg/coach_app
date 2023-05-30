@@ -3,8 +3,13 @@ CREATE TABLE IF NOT EXISTS team_finance (
     coach_id UUID REFERENCES coach_data ON DELETE CASCADE,
     team_id UUID REFERENCES team ON DELETE CASCADE,
     stripe_connect_id TEXT DEFAULT '' NOT NULL,
-    stripe_status TEXT CHECK (stripe_status IN ('NEW', 'ONBOARDING', 'CREATED')) DEFAULT 'NEW',
+    stripe_status TEXT DEFAULT 'NEW',
     team_price INT DEFAULT 0,
+    invite_only BOOLEAN DEFAULT FALSE,
+    athlete_cap INT DEFAULT 0,
+    request_required BOOLEAN DEFAULT FALSE,
+    CONSTRAINT stripe_status_valid CHECK (stripe_status IN ('NEW', 'ONBOARDING', 'CREATED')),
+    CONSTRAINT athlete_cap_positive CHECK (athlete_cap >= 0),
     PRIMARY KEY (id)
 );
 
@@ -17,7 +22,8 @@ CREATE TABLE IF NOT EXISTS athlete_payment_record (
     stripe_connect_id TEXT DEFAULT '',
     team_finance_id UUID REFERENCES team_finance ON DELETE SET NULL,
     amount_paid bigint DEFAULT 0,
-    payment_status TEXT CHECK (payment_status IN ('NEW', 'SUCCESS', 'FAIL')) DEFAULT 'NEW',
+    payment_status TEXT DEFAULT 'NEW',
     stripe_session_id TEXT DEFAULT '',
+    CONSTRAINT payment_status_valid CHECK (payment_status IN ('NEW', 'SUCCESS', 'FAIL')),
     PRIMARY KEY (id)
 )

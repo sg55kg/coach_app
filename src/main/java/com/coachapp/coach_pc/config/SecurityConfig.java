@@ -47,9 +47,9 @@ public class SecurityConfig {
                     .oauth2ResourceServer()
                         .jwt()
                             .decoder(jwtDecoder());
-
-        http.csrf()
-                .ignoringAntMatchers("/api/stripe/webhook");
+//
+//        http.csrf()
+//                .ignoringAntMatchers("/api/stripe/webhook");
 
         return http.build();
 

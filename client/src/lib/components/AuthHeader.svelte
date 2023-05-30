@@ -2,7 +2,7 @@
     import { userDB } from '../stores/authStore';
     import { onMount } from 'svelte';
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte';
-    import CoachNav from '$lib/components/CoachNav.svelte';
+    import Navbar from "$lib/components/Navbar/Navbar.svelte";
 
     export let ssr = false;
 
@@ -38,7 +38,7 @@
 </script>
 
 <header class="flex justify-between bg-gray-200 p-2 align-middle text-textgray">
-    <CoachNav />
+    <Navbar />
     <div class="flex items-center align-baseline">
         {#if $userDB}
             <a
