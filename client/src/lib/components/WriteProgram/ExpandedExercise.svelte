@@ -75,7 +75,7 @@
     {#each exercise.dropSets as dropSet}
         <ExerciseRow
             bind:exercise="{dropSet}"
-            isDropSet="{true}"
+            parentExerciseId={exercise.id}
             useWeightForAccessory="{useWeightForAccessory}"
         />
     {/each}
