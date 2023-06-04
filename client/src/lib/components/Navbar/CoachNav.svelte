@@ -17,7 +17,7 @@
         } else {
             selectedTeamId = id;
         }
-    }
+    };
 
     const logout = async () => {
         $loadingAuth = true;
@@ -39,22 +39,43 @@
 </script>
 
 <div class="mt-4 flex flex-col items-center">
-    <a class="self-start pl-4 text-lg text-yellow-lt font-medium" href="/home/coach">
+    <a
+        class="self-start pl-4 text-lg font-medium text-yellow-lt"
+        href="/home/coach"
+    >
         <h3>My Teams</h3>
     </a>
     <hr class="my-2 h-1 w-full text-gray-400" />
     {#if $userDB?.coachData}
         {#each $userDB.coachData.teams as team}
-            <div class="flex flex-col w-full border-b border-b-gray-400">
-                <div class="p-2 w-full flex justify-between" on:click={() => selectTeam(team.id)}>
+            <div class="flex w-full flex-col border-b border-b-gray-400">
+                <div
+                    class="flex w-full justify-between p-2"
+                    on:click="{() => selectTeam(team.id)}"
+                >
                     <h3 class="text-md tracking-wider">{team.name}</h3>
                     <button>{selectedTeamId === team.id ? '^' : 'v'}</button>
                 </div>
                 {#if selectedTeamId === team.id}
-                    <div class="flex flex-col p-2 text-textblue font-medium">
-                        <a class="my-1" on:click={() => showNav = false} href="/home/coach/team/{team.id}/athletes">Athletes</a>
-                        <a class="my-1" on:click={() => showNav = false} href="/home/coach/team/{team.id}/programs">Programs</a>
-                        <a class="my-1" on:click={() => showNav = false} href="/home/coach/team/{team.id}/settings">Settings</a>
+                    <div class="flex flex-col p-2 font-medium text-textblue">
+                        <a
+                            class="my-1"
+                            on:click="{() => (showNav = false)}"
+                            href="/home/coach/team/{team.id}/athletes"
+                            >Athletes</a
+                        >
+                        <a
+                            class="my-1"
+                            on:click="{() => (showNav = false)}"
+                            href="/home/coach/team/{team.id}/programs"
+                            >Programs</a
+                        >
+                        <a
+                            class="my-1"
+                            on:click="{() => (showNav = false)}"
+                            href="/home/coach/team/{team.id}/settings"
+                            >Settings</a
+                        >
                     </div>
                 {/if}
             </div>
@@ -68,9 +89,7 @@
             alt="profile"
             class="mb-4 h-14 self-center rounded-full"
         />
-        <div
-            class="flex w-full flex-col items-center lg:items-start lg:pl-4"
-        >
+        <div class="flex w-full flex-col items-center lg:items-start lg:pl-4">
             <a
                 class="hover:text-yellow-lt"
                 on:click="{() => {
@@ -92,9 +111,7 @@
                 href="/home/user"
                 on:click="{() => (showNav = false)}"
             >
-                <button
-                    class="flex h-8 items-center text-lg font-medium"
-                >
+                <button class="flex h-8 items-center text-lg font-medium">
                     <span class="h-4 w-8 lg:mr-4">
                         <FaWrench />
                     </span>

@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte';
-    import Navbar from "$lib/components/Navbar/Navbar.svelte";
+    import Navbar from '$lib/components/Navbar/Navbar.svelte';
 
     const logout = async () => {
         const res = await fetch('/api/auth/logout', {

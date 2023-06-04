@@ -78,7 +78,10 @@
     };
 
     onMount(async () => {
-        const res = await fetch('/api/auth/invite', { method: 'POST', body: '{"test":"test"}' })
+        const res = await fetch('/api/auth/invite', {
+            method: 'POST',
+            body: '{"test":"test"}',
+        });
         if (
             $team?.teamFinance &&
             $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING
