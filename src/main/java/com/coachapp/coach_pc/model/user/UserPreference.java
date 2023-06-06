@@ -17,6 +17,7 @@ public class UserPreference {
     private UserData user;
     private String weight = "kg";
     private String mode = "dark";
+    private String defaultHomePage = "athlete";
 
     public UserPreference() {}
 

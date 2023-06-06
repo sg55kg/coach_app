@@ -49,6 +49,7 @@ export interface DisplayTeamDTO {
     coachId: string;
     numAthletes: number;
     teamLogo: string;
+    teamFinance: TeamFinance;
 }
 
 export class DisplayTeam {
@@ -59,6 +60,7 @@ export class DisplayTeam {
     coachId: string = '';
     numAthletes: number = 0;
     teamLogo: string = '';
+    teamFinance: TeamFinance | null = null;
 
     static createFrom(data: DisplayTeamDTO) {
         const team = new DisplayTeam();
@@ -70,6 +72,7 @@ export class DisplayTeam {
         team.coachName = data.coachName;
         team.numAthletes = data.numAthletes;
         team.teamLogo = data.teamLogo;
+        team.teamFinance = data.teamFinance;
 
         return team;
     }

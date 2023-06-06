@@ -76,6 +76,9 @@ export class Exercise {
     }
 
     setWgt(val: number, unit: 'kg' | 'lb') {
+        if (isNaN(val)) {
+            val = isNaN(parseInt(val + '')) ? 0 : parseInt(val + '');
+        }
         this._wgt.setValue(val, unit);
         this.weight = this._wgt.value;
     }

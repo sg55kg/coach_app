@@ -10,6 +10,7 @@ public class NewStripeAccountRequest {
     private String username;
     private String countryCode = "";
     private String currency = "";
+    private int athleteCap = 0;
 
     public NewStripeAccountRequest() {}
 
@@ -59,5 +60,13 @@ public class NewStripeAccountRequest {
 
     public void setTeamId(UUID teamId) {
         this.teamId = teamId;
+    }
+
+    public int getAthleteCap() {
+        return athleteCap;
+    }
+
+    public void setAthleteCap(int athleteCap) {
+        this.athleteCap = athleteCap;
     }
 }

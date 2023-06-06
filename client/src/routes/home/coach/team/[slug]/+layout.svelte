@@ -4,24 +4,32 @@
     import { Team } from '$lib/classes/team';
     import { TeamService } from '$lib/service/TeamService';
     import CardLoadingSkeleton from '$lib/components/shared/loading/CardLoadingSkeleton.svelte';
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
 
     let loadingTeam: boolean = true;
 
-    const fetchTeam = async () => {
-        let pathArr = location.pathname.split('/');
-        const teamId = pathArr[pathArr.length - 2];
-        if ($team !== null && $team.id === teamId) {
-            return;
+    const fetchTeam = async teamId => {
+        if ($team && $team.id === teamId) {
+            loadingTeam = false;
+            return $team;
         }
         const teamRes: Team = await TeamService.getTeam(teamId);
-        console.log(teamRes);
         loadingTeam = false;
         return teamRes;
     };
 
     onMount(async () => {
-        $team = await fetchTeam();
+        let pathArr = $page.url.pathname.split('/');
+        const teamId = pathArr[pathArr.length - 2];
+        $team = await fetchTeam(teamId);
+    });
+
+    afterUpdate(async () => {
+        let pathArr = $page.url.pathname.split('/');
+        const teamId = pathArr[pathArr.length - 2];
+        if ($team && $team.id !== teamId) {
+            $team = await fetchTeam(teamId);
+        }
     });
 </script>
 

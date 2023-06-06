@@ -6,6 +6,9 @@ import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.user.UserData;
 import com.coachapp.coach_pc.repository.user.UserRepository;
 import com.coachapp.coach_pc.request.user.InviteUserRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -35,7 +39,7 @@ public class Auth0ManagementService {
     @Value("${auth0.m2m.clientId}")
     private String auth0M2MClientId;
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     private final Logger logger = LoggerFactory.getLogger(Auth0ManagementService.class);
 
@@ -45,14 +49,18 @@ public class Auth0ManagementService {
 
     public ResponseEntity<String> createUserAccount(InviteUserRequest request) {
         // TODO: first check if the user has an existing account with us, and skip auth0 registration if necessary
-        String token = getAuth0AccessToken();
-        Map<String, Object> createdUser = (Map<String, Object>) createAuth0Account(token, request);
+        try {
+            String token = getAuth0AccessToken();
+            Map<String, Object> createdUser = createAuth0Account(token, request);
 
-        saveUserData(request);
-        String auth0UserId = (String)createdUser.get("user_id");
-        sendInvitationEmail(auth0UserId, token);
+            saveUserData(request);
+            String auth0UserId = (String)createdUser.get("user_id");
+            sendInvitationEmail(auth0UserId, token);
 
-        return new ResponseEntity<>("Successfully invited user: " + request.getAthleteName(), HttpStatus.CREATED);
+            return new ResponseEntity<>("Successfully invited user: " + request.getAthleteName(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     private void saveUserData(InviteUserRequest request) {
@@ -73,7 +81,7 @@ public class Auth0ManagementService {
         repository.addUser(userToSave);
     }
 
-    public void sendInvitationEmail(String userId, String token) {
+    private void sendInvitationEmail(String userId, String token) {
         // TODO: investigate if query params are needed
         Integer FIVE_DAYS = 432000;
         String res = WebClient.create(auth0Domain)
@@ -91,13 +99,13 @@ public class Auth0ManagementService {
         System.out.println(res);
     }
 
-    private Map<?, ?> createAuth0Account(String token, InviteUserRequest request) {
+    private Map<String, Object> createAuth0Account(String token, InviteUserRequest request) throws JsonProcessingException {
         String password = getSaltString();
         String username = request.getAthleteName();
         String athleteEmail = request.getAthleteEmail();
 
         try {
-            Map createdUser = WebClient.create(auth0Domain)
+            String createdUser = WebClient.create(auth0Domain)
                     .post()
                     .uri("api/v2/users")
                     .bodyValue("{\"email\": \"" + athleteEmail + "\"," +
@@ -112,9 +120,14 @@ public class Auth0ManagementService {
                             "\"username\": \"" + athleteEmail + "\"}")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
-                    .retrieve().bodyToMono(Map.class).block();
-
-            return createdUser;
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            TypeReference<Map<String, Object>> typeRef = new TypeReference<>() {};
+            return new ObjectMapper().readValue(createdUser, typeRef);
+        } catch (JsonProcessingException e) {
+            logger.error("Error parsing JSON response during new user creation");
+            throw e;
         } catch (Exception e) {
             logger.error("Error creating new user: " + e.getMessage());
             throw e;
@@ -139,7 +152,7 @@ public class Auth0ManagementService {
         }
     }
 
-    protected String getSaltString() {
+    private String getSaltString() {
         String SALT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();

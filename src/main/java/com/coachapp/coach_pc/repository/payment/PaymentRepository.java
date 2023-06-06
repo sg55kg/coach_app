@@ -47,6 +47,9 @@ public class PaymentRepository {
         finance.setTeam(team);
         finance.setStripeStatus(StripeStatus.NEW);
         finance.setStripeConnectId(stripeConnectId);
+        finance.setAthleteCap(request.getAthleteCap());
+        finance.setInviteOnly(false);
+        finance.setRequestRequired(false);
 
         em.persist(finance);
         em.flush();
@@ -58,6 +61,9 @@ public class PaymentRepository {
                 .with("stripeStatus", finance.getStripeStatus())
                 .with("stripeConnectId", finance.getStripeConnectId())
                 .with("teamPrice", finance.getTeamPrice())
+                .with("athleteCap", finance.getAthleteCap())
+                .with("inviteOnly", finance.getInviteOnly())
+                .with("requestRequired", finance.getRequestRequired())
                 .build();
 
         return vm;

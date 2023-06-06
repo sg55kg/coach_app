@@ -1,6 +1,6 @@
 <script lang="ts">
     import { DisplayTeam, Team } from '$lib/classes/team';
-    import { auth0Client, userDB } from '$lib/stores/authStore';
+    import { userDB } from '$lib/stores/authStore';
     import UserService from '$lib/service/userService';
     import { CoachData } from '$lib/classes/user/coach';
     import { AthleteData } from '$lib/classes/user/athlete';
@@ -55,7 +55,9 @@
 
 <div class="m-2 bg-gray-300 p-2">
     <div class="flex justify-between">
-        <h1 class="text-xl font-bold">{team.name}</h1>
+        <a href="/team/{team.id}">
+            <h1 class="text-xl font-bold">{team.name}</h1>
+        </a>
         <p>{team.numAthletes} Athletes</p>
     </div>
     <h2 class="text-lg font-bold">Coach: {team.coachName}</h2>

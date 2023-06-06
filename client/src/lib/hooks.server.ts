@@ -9,10 +9,17 @@ export const handle: Handle = async ({ event, resolve }) => {
         if (!event.locals.userData) {
             event.locals.userData = await _fetchUser(
                 jwtDecode(event.cookies.get('idToken')!),
-                token
+                token,
+                event.url.pathname
             );
         }
-        return resolve(event);
+        if (!event.locals.userData) {
+            event.cookies.delete('accessToken');
+            event.cookies.delete('idToken');
+            event.locals.lastPage = event.url.pathname;
+        } else {
+            return resolve(event);
+        }
     }
     if (code) {
         const { accessToken, user, idToken } = await fetchToken(code);
@@ -21,14 +28,20 @@ export const handle: Handle = async ({ event, resolve }) => {
             path: '/',
         });
         event.cookies.set('idToken', idToken, { httpOnly: true, path: '/' });
-        event.locals.userData = await _fetchUser(user, accessToken);
+        event.locals.userData = await _fetchUser(
+            user,
+            accessToken,
+            event.url.pathname
+        );
         throw redirect(302, event.locals.lastPage ?? '/home');
-    } else if (event.url.pathname !== '/' && !token) {
+    } else if (!token || !event.locals.userData) {
         event.cookies.delete('accessToken');
         event.cookies.delete('idToken');
         event.locals.lastPage = event.url.pathname;
         event.locals.userData = undefined;
-        throw redirect(302, '/');
+        if (event.url.pathname !== '/') {
+            throw redirect(302, '/');
+        }
     }
     // Should not reach here
     return resolve(event);
@@ -36,12 +49,27 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
     const token = event.cookies.get('accessToken');
-    if (token && !event.locals.userData) {
-        event.locals.userData = await _fetchUser(user, accessToken);
+    const idToken = event.cookies.get('idToken');
+    if (token && idToken && !event.locals.userData) {
+        console.log('starting fetch in handle fetch');
+        const user = jwtDecode(idToken);
+        event.locals.userData = await _fetchUser(
+            user,
+            token,
+            event.url.pathname
+        );
     }
-    if (!token && event.url.pathname !== '/') {
+    if (!token || !event.locals.userData) {
+        console.log('redirecting in handle fetch');
+        event.locals.userData = undefined;
+        event.cookies.delete('accessToken');
+        event.cookies.delete('idToken');
         event.locals.lastPage = event.url.pathname;
-        throw redirect(302, '/');
+        if (event.url.pathname !== '/') {
+            throw redirect(302, '/');
+        } else {
+            throw error(500, 'Unauthenticated');
+        }
     }
 
     return await fetch(request);
@@ -72,11 +100,15 @@ const fetchToken = async (code: string) => {
 
         return { accessToken, user, idToken };
     } catch (e) {
-        throw error(500, 'Could not fetch tokens');
+        throw redirect(302, '/');
     }
 };
 
-export const _fetchUser = async (user: any, token: string) => {
+export const _fetchUser = async (
+    user: any,
+    token: string,
+    currentUrl: string
+) => {
     if (!user?.email || !user?.name) {
         throw error(405, 'Invalid ID token');
     }
@@ -93,45 +125,58 @@ export const _fetchUser = async (user: any, token: string) => {
         );
 
         if (userRes.status === 404) {
-            userRes = await fetch(
-                `${import.meta.env.VITE_SERVER_URL}api/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        Authorization: 'Bearer ' + token,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: user.email,
-                        name: user.name,
-                        photoUrl: user.picture,
-                        preferences: { weight: 'kg', mode: 'dark' },
-                    }),
-                }
-            );
+            userRes = await createUserData(token, user);
         }
 
         const userData = await userRes.json();
         // TODO: After this has run for a week or 2 remove
         if (!userData.photoUrl) {
-            const res = await fetch(
-                `${import.meta.env.VITE_SERVER_URL}api/users/${userData.id}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: 'Bearer ' + token,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: user.email,
-                        username: user.name,
-                        photoUrl: user.picture,
-                    }),
-                }
-            );
+            await saveUserImage(userData.id, token, {
+                email: user.email,
+                username: user.name,
+                photoUrl: user.picture,
+            });
+            userData.photoUrl = user.picture;
         }
         return userData;
     } catch (e: any) {
-        throw error(404, 'Could not fetch user data');
+        console.log(e);
+        if (currentUrl !== '/') {
+            throw redirect(302, '/');
+        } else {
+            //throw error(500, 'Error fetching user data')
+            return undefined;
+        }
     }
+};
+
+const createUserData = async (token: string, user: any) => {
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}api/users`, {
+        method: 'POST',
+        headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: user.email,
+            name: user.name,
+            photoUrl: user.picture,
+            preferences: { weight: 'kg', mode: 'dark' },
+        }),
+    });
+};
+
+const saveUserImage = async (
+    id: string,
+    token: string,
+    body: { email: string; username: string; photoUrl: string }
+) => {
+    await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${id}`, {
+        method: 'PUT',
+        headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    });
 };

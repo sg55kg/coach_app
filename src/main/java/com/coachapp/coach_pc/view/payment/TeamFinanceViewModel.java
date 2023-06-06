@@ -15,4 +15,7 @@ public interface TeamFinanceViewModel {
     String getStripeConnectId();
     StripeStatus getStripeStatus();
     int getTeamPrice();
+    int getAthleteCap();
+    boolean getInviteOnly();
+    boolean getRequestRequired();
 }

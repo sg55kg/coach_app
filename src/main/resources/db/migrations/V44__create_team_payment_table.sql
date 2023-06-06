@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS team_finance (
     PRIMARY KEY (id)
 );
 
+ALTER TABLE team DROP COLUMN IF EXISTS team_payment;
+
 ALTER TABLE team ADD COLUMN IF NOT EXISTS team_finance_id UUID references team_finance DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS athlete_payment_record (
@@ -26,4 +28,6 @@ CREATE TABLE IF NOT EXISTS athlete_payment_record (
     stripe_session_id TEXT DEFAULT '',
     CONSTRAINT payment_status_valid CHECK (payment_status IN ('NEW', 'SUCCESS', 'FAIL')),
     PRIMARY KEY (id)
-)
+);
+
+ALTER TABLE user_preference ADD COLUMN IF NOT EXISTS default_home_page TEXT CHECK (default_home_page IN ('COACH', 'ATHLETE')) DEFAULT 'ATHLETE';

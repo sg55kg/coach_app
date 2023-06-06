@@ -6,19 +6,21 @@
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import Toggle from '$lib/components/shared/layout/Toggle.svelte';
     import { userDB } from '../../stores/authStore';
-    import { getContext } from "svelte";
+    import { getContext } from 'svelte';
 
     export let exercise: Exercise;
-    export let isDropSet: boolean = false;
+    export let parentExerciseId: string = '';
     export let useWeightForAccessory: boolean = false;
 
-    const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } = getContext('program');
-       const selectedDayIdx = getSelectedDayIdx();
-       const selectedDay = getSelectedDay();
-       const program = getProgram();
+    const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } =
+        getContext('program');
+    const selectedDayIdx = getSelectedDayIdx();
+    const selectedDay = getSelectedDay();
+    const program = getProgram();
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
+    let unitWeight;
 
     const setComplexType = (ex: Exercise) => {
         ex.type = ExerciseType.COMPLEX;
@@ -51,38 +53,38 @@
         return ex;
     };
 
-   const removeDropset = async () => {
+    const removeDropset = async () => {
         // if an ID exists, make a backend call to delete the exercise
         if (exercise.id) {
             try {
-                await deleteExercise(exercise)
+                await deleteExercise(exercise);
             } catch (e) {
-                return
+                return;
             }
         }
 
         // If no ID or if successfully deleted on the backend, splice from the frontend
         const dropSetIdx = $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .findIndex((d: Exercise) => d.id === exercise.id)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.findIndex((d: Exercise) => d.id === exercise.id);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .splice(dropSetIdx, 1)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.splice(dropSetIdx, 1);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .forEach((d, i) => d.order = i)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.forEach((d, i) => (d.order = i));
 
-        $program = $program
-        $selectedDay = $program.days[$selectedDayIdx]
-   }
+        $program = $program;
+        $selectedDay = $program.days[$selectedDayIdx];
+    };
 
-   const toggleMaxWeight = (isMax: boolean) => {
-       exercise.isMax = isMax;
-       exercise.weight = 0;
-       exercise.sets = 1;
-   }
+    const toggleMaxWeight = (isMax: boolean) => {
+        exercise.isMax = isMax;
+        exercise.weight = 0;
+        exercise.sets = 1;
+    };
 
     const toggleMaxReps = (isMaxReps: boolean) => {
         exercise.isMaxReps = isMaxReps;
@@ -106,16 +108,35 @@
                 break;
         }
     };
+
+    const setExerciseNumberField = (
+        value: string,
+        key: 'weight' | 'sets' | 'repsPerSet' | 'repArr',
+        index?: number | undefined
+    ) => {
+        let numValue = parseInt(value);
+        if (isNaN(numValue)) {
+            numValue = 0;
+        }
+        if (key === 'repArr') {
+            exercise.repArr[index] = numValue;
+        } else {
+            exercise[key] = numValue;
+        }
+        $program = $program;
+        $selectedDay = $selectedDay;
+    };
 </script>
 
 {#if exercise.type === ExerciseType.EXERCISE}
-    <div class="grid grid-cols-10 p-2 w-full gap-2">
+    <div class="grid w-full grid-cols-10 gap-2 p-2">
         {#if !parentExerciseId}
-            <input type="text"
-                   placeholder="Exercise Name"
-                   class="bg-gray-300 p-1 col-span-9"
-                   bind:value={exercise.name}
-            >
+            <input
+                type="text"
+                placeholder="Exercise Name"
+                class="col-span-9 bg-gray-300 p-1"
+                bind:value="{exercise.name}"
+            />
             <button class="col-span-1 flex items-center justify-center">
                 <span
                     class="flex w-5 justify-center"
@@ -127,12 +148,15 @@
         {/if}
         {#if parentExerciseId}
             <button class="col-span-1 flex items-center justify-center">
-                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                <span
+                    class="flex w-5 justify-center"
+                    on:click="{removeDropset}"
+                >
                     <MdClose />
                 </span>
             </button>
-            {:else}
-                <div class="col-span-1" />
+        {:else}
+            <div class="col-span-1"></div>
         {/if}
         {#if exercise.isMax}
             <div class="col-span-3 flex flex-col items-end">
@@ -141,6 +165,8 @@
                     type="text"
                     placeholder="Reps"
                     bind:value="{exercise.repsPerSet}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'repsPerSet')}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -149,9 +175,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="text"
-                    placeholder=""
+                    placeholder="Weight"
                     value="{exercise.wgt(unit)}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -159,8 +189,10 @@
                 <label class="text-sm">Sets</label>
                 <input
                     type="text"
-                    placeholder=""
+                    placeholder="Sets"
                     bind:value="{exercise.sets}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'sets')}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -177,8 +209,13 @@
                     <label class="text-sm">Reps</label>
                     <input
                         type="text"
-                        placeholder=""
+                        placeholder="Reps per set"
                         bind:value="{exercise.repsPerSet}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repsPerSet'
+                            )}"
                         class="w-full bg-gray-300 p-1 text-right"
                     />
                 </div>
@@ -249,7 +286,10 @@
             <div class="col-span-1"></div>
         {:else}
             <button class="col-span-1 flex items-center justify-center">
-                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                <span
+                    class="flex w-5 justify-center"
+                    on:click="{removeDropset}"
+                >
                     <MdClose />
                 </span>
             </button>
@@ -259,9 +299,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="number"
-                    placeholder=""
-                    value="{exercise.weight}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    placeholder="Weight"
+                    value="{exercise.wgt(unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1"
                 />
             </div>
@@ -269,18 +313,26 @@
                 <label class="text-sm">Sets</label>
                 <input
                     type="number"
-                    placeholder=""
+                    placeholder="Sets"
                     bind:value="{exercise.sets}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'sets')}"
                     class="w-full bg-gray-300 p-1"
                 />
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Reps</label>
-                {#each exercise.repArr as repGroup}
+                {#each exercise.repArr as repGroup, i}
                     <input
                         type="number"
-                        placeholder=""
+                        placeholder="Reps"
                         bind:value="{repGroup}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repArr',
+                                i
+                            )}"
                         class="mb-2 w-full bg-gray-300 p-1"
                     />
                 {/each}
@@ -288,11 +340,17 @@
         {:else}
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Rep Max</label>
-                {#each exercise.repArr as repGroup}
+                {#each exercise.repArr as repGroup, i}
                     <input
                         type="number"
-                        placeholder=""
+                        placeholder="Reps"
                         bind:value="{repGroup}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repArr',
+                                i
+                            )}"
                         class="mb-2 w-full bg-gray-300 p-1"
                     />
                 {/each}
@@ -325,9 +383,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="text"
-                    placeholder=""
-                    value="{exercise.weight}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    placeholder="Weight"
+                    value="{exercise.wgt(unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             {:else}
@@ -359,8 +421,10 @@
             <label class="text-sm">Sets</label>
             <input
                 type="text"
-                placeholder=""
+                placeholder="Sets"
                 bind:value="{exercise.sets}"
+                on:change="{e =>
+                    setExerciseNumberField(e.target.value, 'sets')}"
                 class="w-full bg-gray-300 p-1 text-right"
             />
         </div>
@@ -368,8 +432,10 @@
             <label class="text-sm">Reps</label>
             <input
                 type="text"
-                placeholder=""
+                placeholder="Reps per set"
                 bind:value="{exercise.repsPerSet}"
+                on:change="{e =>
+                    setExerciseNumberField(e.target.value, 'repsPerSet')}"
                 class="w-full bg-gray-300 p-1 text-right"
             />
         </div>
