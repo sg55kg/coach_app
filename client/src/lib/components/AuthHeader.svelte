@@ -2,7 +2,7 @@
     import { userDB } from '../stores/authStore';
     import { onMount } from 'svelte';
     import FaInbox from 'svelte-icons/fa/FaInbox.svelte';
-    import Navbar from "$lib/components/Navbar/Navbar.svelte";
+    import Navbar from '$lib/components/Navbar/Navbar.svelte';
 
     export let ssr = false;
 

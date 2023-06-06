@@ -6,16 +6,17 @@
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import Toggle from '$lib/components/shared/layout/Toggle.svelte';
     import { userDB } from '../../stores/authStore';
-    import { getContext } from "svelte";
+    import { getContext } from 'svelte';
 
     export let exercise: Exercise;
     export let isDropSet: boolean = false;
     export let useWeightForAccessory: boolean = false;
 
-    const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } = getContext('program');
-       const selectedDayIdx = getSelectedDayIdx();
-       const selectedDay = getSelectedDay();
-       const program = getProgram();
+    const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } =
+        getContext('program');
+    const selectedDayIdx = getSelectedDayIdx();
+    const selectedDay = getSelectedDay();
+    const program = getProgram();
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
@@ -51,38 +52,38 @@
         return ex;
     };
 
-   const removeDropset = async () => {
+    const removeDropset = async () => {
         // if an ID exists, make a backend call to delete the exercise
         if (exercise.id) {
             try {
-                await deleteExercise(exercise)
+                await deleteExercise(exercise);
             } catch (e) {
-                return
+                return;
             }
         }
 
         // If no ID or if successfully deleted on the backend, splice from the frontend
         const dropSetIdx = $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .findIndex((d: Exercise) => d.id === exercise.id)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.findIndex((d: Exercise) => d.id === exercise.id);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .splice(dropSetIdx, 1)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.splice(dropSetIdx, 1);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId).dropSets
-            .forEach((d, i) => d.order = i)
+            .find((e: Exercise) => e.id === parentExerciseId)
+            .dropSets.forEach((d, i) => (d.order = i));
 
-        $program = $program
-        $selectedDay = $program.days[$selectedDayIdx]
-   }
+        $program = $program;
+        $selectedDay = $program.days[$selectedDayIdx];
+    };
 
-   const toggleMaxWeight = (isMax: boolean) => {
-       exercise.isMax = isMax;
-       exercise.weight = 0;
-       exercise.sets = 1;
-   }
+    const toggleMaxWeight = (isMax: boolean) => {
+        exercise.isMax = isMax;
+        exercise.weight = 0;
+        exercise.sets = 1;
+    };
 
     const toggleMaxReps = (isMaxReps: boolean) => {
         exercise.isMaxReps = isMaxReps;
@@ -109,13 +110,14 @@
 </script>
 
 {#if exercise.type === ExerciseType.EXERCISE}
-    <div class="grid grid-cols-10 p-2 w-full gap-2">
+    <div class="grid w-full grid-cols-10 gap-2 p-2">
         {#if !parentExerciseId}
-            <input type="text"
-                   placeholder="Exercise Name"
-                   class="bg-gray-300 p-1 col-span-9"
-                   bind:value={exercise.name}
-            >
+            <input
+                type="text"
+                placeholder="Exercise Name"
+                class="col-span-9 bg-gray-300 p-1"
+                bind:value="{exercise.name}"
+            />
             <button class="col-span-1 flex items-center justify-center">
                 <span
                     class="flex w-5 justify-center"
@@ -127,12 +129,15 @@
         {/if}
         {#if parentExerciseId}
             <button class="col-span-1 flex items-center justify-center">
-                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                <span
+                    class="flex w-5 justify-center"
+                    on:click="{removeDropset}"
+                >
                     <MdClose />
                 </span>
             </button>
-            {:else}
-                <div class="col-span-1" />
+        {:else}
+            <div class="col-span-1"></div>
         {/if}
         {#if exercise.isMax}
             <div class="col-span-3 flex flex-col items-end">
@@ -249,7 +254,10 @@
             <div class="col-span-1"></div>
         {:else}
             <button class="col-span-1 flex items-center justify-center">
-                <span class="w-5 flex justify-center" on:click={removeDropset}>
+                <span
+                    class="flex w-5 justify-center"
+                    on:click="{removeDropset}"
+                >
                     <MdClose />
                 </span>
             </button>

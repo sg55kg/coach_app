@@ -75,9 +75,7 @@
                     logout();
                 }}"
             >
-                <button
-                    class="my-1 flex h-8 items-center text-lg font-medium"
-                >
+                <button class="my-1 flex h-8 items-center text-lg font-medium">
                     <span class="h-4 w-8 lg:mr-4">
                         <FaDoorOpen />
                     </span>
