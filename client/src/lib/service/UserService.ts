@@ -80,4 +80,13 @@ export default class UserService {
         );
         return data.map(d => AthleteRecord.createFrom(d));
     };
+
+    static inviteUser = async (inviteUserRequest: any) => {
+        const { data } = await srPost<string>(
+            `/api/auth/invite`,
+            inviteUserRequest,
+            'text/html;charset=utf-8',
+        );
+        return data;
+    };
 }
