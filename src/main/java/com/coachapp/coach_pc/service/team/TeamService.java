@@ -53,4 +53,11 @@ public class TeamService {
         return optional.map(teamWithAthletes -> new ResponseEntity<>(teamWithAthletes, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
+
+    public ResponseEntity<DisplayTeam> getDisplayTeam(UUID teamId) {
+        Optional<DisplayTeam> optional = repository.findDisplayById(teamId);
+
+        return optional.map(displayTeam -> new ResponseEntity<>(displayTeam, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    }
 }

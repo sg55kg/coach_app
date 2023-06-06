@@ -4,9 +4,30 @@
     import logo from '../../images/logo-yellow.png';
     import CoachNav from '$lib/components/Navbar/CoachNav.svelte';
     import AthleteNav from '$lib/components/Navbar/AthleteNav.svelte';
+    import { userDB } from '../../stores/authStore';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
 
     let showNav: boolean = false;
-    let navView: 'Coach' | 'Athlete' = 'Coach'; // TODO: add this to user preferences
+    let navView: 'coach' | 'athlete' = $userDB!.preferences.defaultHomePage;
+    $: navView = $page.url.pathname.includes('coach') ? 'coach' : 'athlete';
+
+    const changeAthleteCoachView = async (view: 'coach' | 'athlete') => {
+        if (view === 'coach') {
+            if ($userDB!.coachData!.teams.length) {
+                await goto(
+                    `/home/coach/team/${
+                        $userDB!.coachData!.teams[0].id
+                    }/athletes`
+                );
+            } else {
+                await goto('/home/coach/get-started');
+            }
+        } else {
+            await goto('/home/athlete');
+        }
+    };
+    $: console.log(navView);
 </script>
 
 <div class="flex h-full items-center justify-center">
@@ -40,16 +61,20 @@
         <div>
             <select
                 class="w-full bg-gray-200 p-2"
-                on:change="{e => (navView = e.target.value)}"
+                on:change="{e => changeAthleteCoachView(e.target.value)}"
             >
-                <option>Coach</option>
-                <option>Athlete</option>
+                <option value="coach" selected="{navView === 'coach'}"
+                    >Coach</option
+                >
+                <option value="athlete" selected="{navView === 'athlete'}"
+                    >Athlete</option
+                >
             </select>
         </div>
-        {#if navView === 'Coach'}
-            <CoachNav />
+        {#if navView === 'coach'}
+            <CoachNav bind:showNav="{showNav}" />
         {:else}
-            <AthleteNav />
+            <AthleteNav bind:showNav="{showNav}" />
         {/if}
     </div>
 </div>

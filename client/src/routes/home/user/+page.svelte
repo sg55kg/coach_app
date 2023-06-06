@@ -21,7 +21,7 @@
             }
             const updatedUser: User = await UserService.updateUserData(userDto);
             userDB.set(updatedUser);
-            user = JSON.parse(JSON.stringify($userDB));
+            user = User.createFrom($userDB);
         } catch (e) {
             console.log(e);
         }

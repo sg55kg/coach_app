@@ -8,7 +8,6 @@ import com.coachapp.coach_pc.model.team.Team;
 import java.util.Date;
 
 @UpdatableEntityView
-@CreatableEntityView
 @EntityView(Team.class)
 public interface UpdatableTeamViewModel extends TeamViewModel {
 

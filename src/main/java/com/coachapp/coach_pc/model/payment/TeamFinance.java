@@ -25,6 +25,9 @@ public class TeamFinance {
     @Enumerated(EnumType.STRING)
     private StripeStatus stripeStatus;
     private int teamPrice = 0;
+    private int athleteCap = -1;
+    private boolean requestRequired = false;
+    private boolean inviteOnly = false;
 
     public TeamFinance() {}
 
@@ -74,5 +77,29 @@ public class TeamFinance {
 
     public void setTeamPrice(int teamPrice) {
         this.teamPrice = teamPrice;
+    }
+
+    public int getAthleteCap() {
+        return athleteCap;
+    }
+
+    public void setAthleteCap(int athleteCap) {
+        this.athleteCap = athleteCap;
+    }
+
+    public boolean getRequestRequired() {
+        return requestRequired;
+    }
+
+    public void setRequestRequired(boolean requestRequired) {
+        this.requestRequired = requestRequired;
+    }
+
+    public boolean getInviteOnly() {
+        return inviteOnly;
+    }
+
+    public void setInviteOnly(boolean inviteOnly) {
+        this.inviteOnly = inviteOnly;
     }
 }

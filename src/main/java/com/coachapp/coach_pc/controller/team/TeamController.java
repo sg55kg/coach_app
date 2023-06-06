@@ -52,4 +52,9 @@ public class TeamController {
         logger.info("Received request to create a new team");
         return teamService.addTeam(team);
     }
+
+    @GetMapping("/{id}/display")
+    public ResponseEntity<DisplayTeam> getDisplayTeam(@PathVariable UUID id) {
+        return teamService.getDisplayTeam(id);
+    }
 }

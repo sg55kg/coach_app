@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.repository.team;
 
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.UpdateCriteriaBuilder;
 import com.blazebit.persistence.view.EntityViewManager;
 import com.blazebit.persistence.view.EntityViewSetting;
 import com.coachapp.coach_pc.model.team.Team;
@@ -47,6 +48,7 @@ public class TeamRepository {
     public List<DisplayTeam> getDisplayTeams() {
         CriteriaBuilder<Team> cb = cbf.create(em, Team.class);
         List<DisplayTeam> displayTeams = evm.applySetting(EntityViewSetting.create(DisplayTeam.class), cb)
+                .where("inviteOnly").eq(false)
                 .getResultList();
 
         return displayTeams;
@@ -55,15 +57,28 @@ public class TeamRepository {
 
     @Transactional
     public TeamViewModel updateTeam(TeamRequest request) {
-        UpdatableTeamViewModel vm = evm.createBuilder(UpdatableTeamViewModel.class)
-                .with("id", request.getId())
-                .with("name", request.getName())
-                .with("teamLogo", request.getTeamLogo())
-                .with("description", request.getDescription())
-                .build();
+        try {
+            UpdateCriteriaBuilder<Team> cb = cbf.update(em, Team.class)
+                    .set("name", request.getName())
+                    .set("description", request.getDescription())
+                    .set("teamLogo", request.getTeamLogo())
+                    .where("id").eq(request.getId());
+// TODO: remove old team_payment column
+            cb.executeUpdate();
 
-        evm.save(em, vm);
-        return vm;
+            UpdatableTeamViewModel vm = evm.createBuilder(UpdatableTeamViewModel.class)
+                    .with("id", request.getId())
+                    .with("name", request.getName())
+                    .with("teamLogo", request.getTeamLogo())
+                    .with("description", request.getDescription())
+                    .build();
+
+            return vm;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            return null;
+        }
     }
 
     @Transactional
@@ -99,5 +114,9 @@ public class TeamRepository {
                 .getResultList();
 
         return teams;
+    }
+
+    public Optional<DisplayTeam> findDisplayById(UUID teamId) {
+        return Optional.ofNullable(evm.find(em, DisplayTeam.class, teamId));
     }
 }

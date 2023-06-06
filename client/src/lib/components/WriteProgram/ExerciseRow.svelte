@@ -9,7 +9,7 @@
     import { getContext } from 'svelte';
 
     export let exercise: Exercise;
-    export let isDropSet: boolean = false;
+    export let parentExerciseId: string = '';
     export let useWeightForAccessory: boolean = false;
 
     const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } =
@@ -20,6 +20,7 @@
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
+    let unitWeight;
 
     const setComplexType = (ex: Exercise) => {
         ex.type = ExerciseType.COMPLEX;
@@ -107,6 +108,24 @@
                 break;
         }
     };
+
+    const setExerciseNumberField = (
+        value: string,
+        key: 'weight' | 'sets' | 'repsPerSet' | 'repArr',
+        index?: number | undefined
+    ) => {
+        let numValue = parseInt(value);
+        if (isNaN(numValue)) {
+            numValue = 0;
+        }
+        if (key === 'repArr') {
+            exercise.repArr[index] = numValue;
+        } else {
+            exercise[key] = numValue;
+        }
+        $program = $program;
+        $selectedDay = $selectedDay;
+    };
 </script>
 
 {#if exercise.type === ExerciseType.EXERCISE}
@@ -146,6 +165,8 @@
                     type="text"
                     placeholder="Reps"
                     bind:value="{exercise.repsPerSet}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'repsPerSet')}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -154,9 +175,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="text"
-                    placeholder=""
+                    placeholder="Weight"
                     value="{exercise.wgt(unit)}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -164,8 +189,10 @@
                 <label class="text-sm">Sets</label>
                 <input
                     type="text"
-                    placeholder=""
+                    placeholder="Sets"
                     bind:value="{exercise.sets}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'sets')}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             </div>
@@ -182,8 +209,13 @@
                     <label class="text-sm">Reps</label>
                     <input
                         type="text"
-                        placeholder=""
+                        placeholder="Reps per set"
                         bind:value="{exercise.repsPerSet}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repsPerSet'
+                            )}"
                         class="w-full bg-gray-300 p-1 text-right"
                     />
                 </div>
@@ -267,9 +299,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="number"
-                    placeholder=""
-                    value="{exercise.weight}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    placeholder="Weight"
+                    value="{exercise.wgt(unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1"
                 />
             </div>
@@ -277,18 +313,26 @@
                 <label class="text-sm">Sets</label>
                 <input
                     type="number"
-                    placeholder=""
+                    placeholder="Sets"
                     bind:value="{exercise.sets}"
+                    on:change="{e =>
+                        setExerciseNumberField(e.target.value, 'sets')}"
                     class="w-full bg-gray-300 p-1"
                 />
             </div>
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Reps</label>
-                {#each exercise.repArr as repGroup}
+                {#each exercise.repArr as repGroup, i}
                     <input
                         type="number"
-                        placeholder=""
+                        placeholder="Reps"
                         bind:value="{repGroup}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repArr',
+                                i
+                            )}"
                         class="mb-2 w-full bg-gray-300 p-1"
                     />
                 {/each}
@@ -296,11 +340,17 @@
         {:else}
             <div class="col-span-2 flex flex-col items-end">
                 <label class="text-sm">Rep Max</label>
-                {#each exercise.repArr as repGroup}
+                {#each exercise.repArr as repGroup, i}
                     <input
                         type="number"
-                        placeholder=""
+                        placeholder="Reps"
                         bind:value="{repGroup}"
+                        on:change="{e =>
+                            setExerciseNumberField(
+                                e.target.value,
+                                'repArr',
+                                i
+                            )}"
                         class="mb-2 w-full bg-gray-300 p-1"
                     />
                 {/each}
@@ -333,9 +383,13 @@
                 <label class="text-sm">Weight ({unit})</label>
                 <input
                     type="text"
-                    placeholder=""
-                    value="{exercise.weight}"
-                    on:change="{e => exercise.setWgt(e.target.value, unit)}"
+                    placeholder="Weight"
+                    value="{exercise.wgt(unit)}"
+                    bind:this="{unitWeight}"
+                    on:change="{e => {
+                        exercise.setWgt(e.target.value, unit);
+                        unitWeight.value = exercise.wgt(unit);
+                    }}"
                     class="w-full bg-gray-300 p-1 text-right"
                 />
             {:else}
@@ -367,8 +421,10 @@
             <label class="text-sm">Sets</label>
             <input
                 type="text"
-                placeholder=""
+                placeholder="Sets"
                 bind:value="{exercise.sets}"
+                on:change="{e =>
+                    setExerciseNumberField(e.target.value, 'sets')}"
                 class="w-full bg-gray-300 p-1 text-right"
             />
         </div>
@@ -376,8 +432,10 @@
             <label class="text-sm">Reps</label>
             <input
                 type="text"
-                placeholder=""
+                placeholder="Reps per set"
                 bind:value="{exercise.repsPerSet}"
+                on:change="{e =>
+                    setExerciseNumberField(e.target.value, 'repsPerSet')}"
                 class="w-full bg-gray-300 p-1 text-right"
             />
         </div>

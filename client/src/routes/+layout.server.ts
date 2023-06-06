@@ -23,21 +23,19 @@ export const load: LayoutServerLoad = async ({
     const encoded = state;
     const accessToken = cookies.get('accessToken');
     const idToken = cookies.get('idToken');
+    console.log(locals.lastPage);
     if (accessToken && idToken && locals.userData) {
         return {
+            state: encoded,
             user: jwtDecode(idToken),
             userData: locals.userData,
-            redirectUri:
-                import.meta.env.VITE_REDIRECT_URI +
-                (locals.lastPage ? locals.lastPage : ''),
+            redirectUri: import.meta.env.VITE_REDIRECT_URI,
             baseUrl: import.meta.env.VITE_AUTH0_LOGIN_URL,
         };
     } else {
         return {
             state: encoded,
-            redirectUri:
-                import.meta.env.VITE_REDIRECT_URI +
-                (locals.lastPage ? locals.lastPage : ''),
+            redirectUri: import.meta.env.VITE_REDIRECT_URI,
             baseUrl: import.meta.env.VITE_AUTH0_LOGIN_URL,
         };
     }

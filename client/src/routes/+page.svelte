@@ -5,12 +5,17 @@
     import type { PageServerData } from './$types';
     import { page } from '$app/stores';
     import { authUser, loadingAuth } from '$lib/stores/authStore.js';
+    import { onMount } from 'svelte';
 
     export let data: PageServerData;
 
     const { state, redirectUri, baseUrl } = data;
 
     const loginUrl = baseUrl + state + '&redirect_uri=' + redirectUri;
+
+    onMount(() => {
+        // TODO: potentially handle redirect logic here
+    });
 </script>
 
 <svelte:head>
@@ -36,32 +41,23 @@
         <div
             class="m-2 mt-8 flex flex-col items-center justify-center text-center"
         >
-            {#if !$authUser}
+            <a
+                href="{loginUrl}"
+                on:click="{() => ($loadingAuth = true)}"
+                class="mx-2 mt-5 mb-2 justify-center rounded bg-yellow p-4 px-6 text-center font-bold text-gray-200 hover:bg-yellow-shade"
+            >
+                Get Started
+            </a>
+            <div class="flex flex-col items-start">
+                <small>Already have an account?</small>
                 <a
                     href="{loginUrl}"
                     on:click="{() => ($loadingAuth = true)}"
-                    class="mx-2 mt-5 mb-2 justify-center rounded bg-yellow p-4 px-6 text-center font-bold text-gray-200 hover:bg-yellow-shade"
+                    class="self-center font-semibold tracking-wider hover:text-yellow-lt"
                 >
-                    Get Started
+                    Login
                 </a>
-                <div class="flex flex-col items-start">
-                    <small>Already have an account?</small>
-                    <a
-                        href="{loginUrl}"
-                        on:click="{() => ($loadingAuth = true)}"
-                        class="self-center font-semibold tracking-wider hover:text-yellow-lt"
-                    >
-                        Login
-                    </a>
-                </div>
-            {:else}
-                <a
-                    href="/home"
-                    class="mx-2 mt-5 mb-2 rounded bg-yellow p-4 px-6 text-center font-bold text-gray-200 hover:bg-yellow-shade"
-                >
-                    Go To Home
-                </a>
-            {/if}
+            </div>
         </div>
     </div>
 </section>

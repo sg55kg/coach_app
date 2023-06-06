@@ -7,8 +7,9 @@
     import FaWrench from 'svelte-icons/fa/FaWrench.svelte';
     import { loadingAuth } from '../../stores/authStore';
     import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
 
-    let showNav: boolean = false;
+    export let showNav: boolean = false;
     let selectedTeamId: string = '';
 
     const selectTeam = (id: string) => {
@@ -39,10 +40,7 @@
 </script>
 
 <div class="mt-4 flex flex-col items-center">
-    <a
-        class="self-start pl-4 text-lg font-medium text-yellow-lt"
-        href="/home/coach"
-    >
+    <a class="self-start pl-4 text-lg font-medium" href="/home/coach">
         <h3>My Teams</h3>
     </a>
     <hr class="my-2 h-1 w-full text-gray-400" />
@@ -53,25 +51,47 @@
                     class="flex w-full justify-between p-2"
                     on:click="{() => selectTeam(team.id)}"
                 >
-                    <h3 class="text-md tracking-wider">{team.name}</h3>
-                    <button>{selectedTeamId === team.id ? '^' : 'v'}</button>
+                    <h3
+                        class="text-md tracking-wider {$page.url.pathname.includes(
+                            team.id
+                        )
+                            ? 'text-yellow-lt'
+                            : ''}"
+                    >
+                        {team.name}
+                    </h3>
+                    <button>
+                        {selectedTeamId === team.id ? '^' : 'v'}
+                    </button>
                 </div>
                 {#if selectedTeamId === team.id}
                     <div class="flex flex-col p-2 font-medium text-textblue">
                         <a
-                            class="my-1"
+                            class="my-1 {$page.url.pathname.includes(
+                                `home/coach/team/${team.id}/athletes`
+                            )
+                                ? 'text-link'
+                                : ''}"
                             on:click="{() => (showNav = false)}"
                             href="/home/coach/team/{team.id}/athletes"
                             >Athletes</a
                         >
                         <a
-                            class="my-1"
+                            class="my-1 {$page.url.pathname.includes(
+                                `home/coach/team/${team.id}/programs`
+                            )
+                                ? 'text-link'
+                                : ''}"
                             on:click="{() => (showNav = false)}"
                             href="/home/coach/team/{team.id}/programs"
                             >Programs</a
                         >
                         <a
-                            class="my-1"
+                            class="my-1 {$page.url.pathname.includes(
+                                `home/coach/team/${team.id}/settings`
+                            )
+                                ? 'text-link'
+                                : ''}"
                             on:click="{() => (showNav = false)}"
                             href="/home/coach/team/{team.id}/settings"
                             >Settings</a

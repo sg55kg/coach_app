@@ -88,7 +88,9 @@
     });
 </script>
 
-<div class="absolute top-12 left-0 right-0 bottom-0 flex w-screen">
+<div
+    class="absolute top-12 left-0 right-0 bottom-0 flex w-screen overflow-y-auto"
+>
     <div
         class="relative m-auto flex h-[88vh] w-11/12 flex-col items-center bg-gray-300"
     >
@@ -174,7 +176,7 @@
         </div>
     </div>
 </div>
-<div class="absolute bottom-0 left-0 right-0 flex justify-around bg-gray-100">
+<div class="fixed bottom-0 left-0 right-0 flex justify-around bg-gray-100">
     <button
         class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
         on:click="{() => copyDay($index)}"

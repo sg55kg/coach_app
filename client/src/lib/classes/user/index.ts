@@ -5,18 +5,20 @@ import type { ChatMemberDTO } from '$lib/classes/chat';
 import { ChatMember } from '$lib/classes/chat';
 import { UserPreferences, type UserPreferencesDTO } from './preferences';
 
-export interface UserDTO {
-    id: string;
-    athleteData: AthleteDataDTO | null;
-    coachData: CoachDataDTO | null;
-    createdAt: string;
-    email: string;
-    roles: any[];
-    updatedAt: string;
-    username: string;
-    members: Array<ChatMemberDTO>;
-    photoUrl: string;
-    preferences: UserPreferencesDTO;
+declare global {
+    interface UserDTO {
+        id: string;
+        athleteData: AthleteDataDTO | null;
+        coachData: CoachDataDTO | null;
+        createdAt: string;
+        email: string;
+        roles: any[];
+        updatedAt: string;
+        username: string;
+        members: Array<ChatMemberDTO>;
+        photoUrl: string;
+        preferences: UserPreferencesDTO;
+    }
 }
 
 export class User {

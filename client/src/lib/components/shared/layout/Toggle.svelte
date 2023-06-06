@@ -1,10 +1,16 @@
 <script lang="ts">
     export let checked: boolean = false;
     export let onChange: (...args: any[]) => any = () => null;
+    export let disabled: boolean = false;
 </script>
 
 <label class="switch">
-    <input type="checkbox" checked="{checked}" on:change="{onChange}" />
+    <input
+        type="checkbox"
+        disabled="{disabled}"
+        checked="{checked}"
+        on:change="{onChange}"
+    />
     <span class="slider round"></span>
 </label>
 

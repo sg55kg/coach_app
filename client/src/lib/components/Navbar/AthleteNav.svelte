@@ -5,7 +5,7 @@
     import FaDoorOpen from 'svelte-icons/fa/FaDoorOpen.svelte';
     import FaWrench from 'svelte-icons/fa/FaWrench.svelte';
 
-    let showNav: boolean = false;
+    export let showNav: boolean = false;
     //w-screen max-w-lg right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform
     //absolute top-0 left-0 w-7/12 bg-gray-100 h-full z-50 opacity-100
 

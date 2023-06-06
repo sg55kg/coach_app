@@ -401,13 +401,14 @@
                             )}</i
                         >
                     </p>{/if}
-                <div class="flex self-end">
-                    <p class="px-1 text-textblue">Pounds</p>
+                <div class="flex self-end lg:px-2">
                     <Toggle
                         checked="{$userDB.preferences.weight === 'kg'}"
                         onChange="{toggleWeightPreference}"
                     />
-                    <p class="px-1 text-textblue">Kilograms</p>
+                    <p class="px-1 text-textblue">
+                        {$userDB.preferences.weight === 'kg' ? 'kg' : 'lbs'}
+                    </p>
                 </div>
             </div>
             <div class="py-2">

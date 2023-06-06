@@ -7,6 +7,4 @@ export const POST: RequestHandler = async event => {
         body: '{"test":"test"}',
         headers: { Authorization: 'Bearer ' + token },
     });
-return new Response('Hello World')
 };
-
