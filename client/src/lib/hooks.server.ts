@@ -1,4 +1,4 @@
-import type { Handle, HandleFetch } from '@sveltejs/kit';
+import type { Handle, HandleFetch, RequestEvent } from '@sveltejs/kit';
 import { error, redirect } from '@sveltejs/kit';
 import jwtDecode from 'jwt-decode';
 
@@ -22,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         }
     }
     if (code) {
-        const { accessToken, user, idToken } = await fetchToken(code);
+        const { accessToken, user, idToken } = await fetchToken(event, code);
         event.cookies.set('accessToken', accessToken, {
             httpOnly: true,
             path: '/',
@@ -51,7 +51,6 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
     const token = event.cookies.get('accessToken');
     const idToken = event.cookies.get('idToken');
     if (token && idToken && !event.locals.userData) {
-        console.log('starting fetch in handle fetch');
         const user = jwtDecode(idToken);
         event.locals.userData = await _fetchUser(
             user,
@@ -60,7 +59,6 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
         );
     }
     if (!token || !event.locals.userData) {
-        console.log('redirecting in handle fetch');
         event.locals.userData = undefined;
         event.cookies.delete('accessToken');
         event.cookies.delete('idToken');
@@ -75,7 +73,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
     return await fetch(request);
 };
 
-const fetchToken = async (code: string) => {
+const fetchToken = async (event: RequestEvent, code: string) => {
     const options = {
         grant_type: 'authorization_code',
         client_id: import.meta.env.VITE_AUTH0_CLIENT_ID,
@@ -97,9 +95,9 @@ const fetchToken = async (code: string) => {
         const user = jwtDecode(data['id_token']) as any;
         const accessToken = data['access_token'];
         const idToken = data['id_token'];
-
         return { accessToken, user, idToken };
     } catch (e) {
+        console.log(e);
         throw redirect(302, '/');
     }
 };

@@ -15,7 +15,10 @@ export default class UserService {
         return User.build(data);
     };
 
-    static updateAthleteRecords = async (record: AthleteRecord, id: string): Promise<AthleteRecord[]> => {
+    static updateAthleteRecords = async (
+        record: AthleteRecord,
+        id: string
+    ): Promise<AthleteRecord[]> => {
         const { data } = await srPut<AthleteRecordDTO[]>(
             `/api/athlete/${id}/record`,
             record
@@ -23,7 +26,9 @@ export default class UserService {
         return data.map(r => AthleteRecord.createFrom(r));
     };
 
-    static updateAthleteData = async (athlete: AthleteData): Promise<AthleteData> => {
+    static updateAthleteData = async (
+        athlete: AthleteData
+    ): Promise<AthleteData> => {
         const id = athlete.id;
         // TODO: this needs to be reworked, likely need request models for frontend
         const body = JSON.stringify({
@@ -45,14 +50,18 @@ export default class UserService {
         return User.build(data);
     };
 
-    static fetchAthleteRecords = async (athleteId: string): Promise<AthleteRecord[]> => {
+    static fetchAthleteRecords = async (
+        athleteId: string
+    ): Promise<AthleteRecord[]> => {
         const { data } = await srGet<AthleteRecordDTO[]>(
             `/api/athlete/${athleteId}/record`
         );
         return data.map(r => AthleteRecord.createFrom(r));
     };
 
-    static fetchAthleteStats = async (athleteId: string): Promise<AthleteProgramStats[]> => {
+    static fetchAthleteStats = async (
+        athleteId: string
+    ): Promise<AthleteProgramStats[]> => {
         const { data } = await srGet<AthleteProgramStatsDTO[]>(
             `/api/athlete/${athleteId}/stats`
         );
@@ -85,7 +94,7 @@ export default class UserService {
         const { data } = await srPost<string>(
             `/api/auth/invite`,
             inviteUserRequest,
-            'text/html;charset=utf-8',
+            'text/html;charset=utf-8'
         );
         return data;
     };

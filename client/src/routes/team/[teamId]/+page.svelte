@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { PageServerData } from './$types';
     import { onMount } from 'svelte';
-    import {DisplayTeam, Team} from '../../../lib/classes/team';
+    import { DisplayTeam, Team } from '../../../lib/classes/team';
     import AuthHeader from '$lib/components/AuthHeader.svelte';
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
-    import {goto} from "$app/navigation";
-    import {userDB} from "../../../lib/stores/authStore";
-    import {AthleteData} from "../../../lib/classes/user/athlete";
-    import UserService from "../../../lib/service/UserService";
-    import {User} from "../../../lib/classes/user";
+    import { goto } from '$app/navigation';
+    import { userDB } from '../../../lib/stores/authStore';
+    import { AthleteData } from '../../../lib/classes/user/athlete';
+    import UserService from '../../../lib/service/UserService';
+    import { User } from '../../../lib/classes/user';
 
     export let data: PageServerData;
     let team: DisplayTeam;
@@ -31,9 +31,7 @@
         }
 
         try {
-            const res = await UserService.updateAthleteData(
-                updatedAthlete
-            );
+            const res = await UserService.updateAthleteData(updatedAthlete);
             userDB.update((prev: User) => {
                 prev.athleteData = res;
                 prev.athleteData.coachId = team.coachId;
@@ -113,8 +111,9 @@
                         </h3>
                         <button
                             class="my-2 rounded bg-yellow-shade px-6 py-2 text-lg font-medium text-gray-300 shadow-md shadow-gray-200 hover:bg-yellow"
-                            on:click={joinTeam}
-                            disabled="{$userDB?.athleteData && $userDB.athleteData.team.id === team.id}"
+                            on:click="{joinTeam}"
+                            disabled="{$userDB?.athleteData &&
+                                $userDB.athleteData.team.id === team.id}"
                         >
                             Join Now
                         </button>

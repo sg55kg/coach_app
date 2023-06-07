@@ -4,14 +4,14 @@
     export let disabled: boolean = false;
 </script>
 
-<label class="switch">
+<label class="switch {disabled ? 'disabled' : ''}">
     <input
         type="checkbox"
         disabled="{disabled}"
         checked="{checked}"
         on:change="{onChange}"
     />
-    <span class="slider round"></span>
+    <span class="slider round {disabled ? 'disabled' : ''}"></span>
 </label>
 
 <style>
@@ -52,6 +52,10 @@
         background-color: white;
         -webkit-transition: 0.4s;
         transition: 0.4s;
+    }
+
+    .disabled {
+        cursor: not-allowed !important;
     }
 
     input:checked + .slider {

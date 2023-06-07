@@ -1,19 +1,12 @@
 <script lang="ts">
-    import { userDB } from '$lib/stores/authStore';
-    import { TeamService } from '$lib/service/TeamService';
-    import { Team } from '$lib/classes/team';
     import AthleteCard from '$lib/components/TeamDashboard/AthleteCard.svelte';
-    import { onMount } from 'svelte';
     import { team } from '$lib/stores/teamStore';
-    import UserService from '$lib/service/UserService';
-    import { stringify } from 'postcss';
-    import { log10 } from 'chart.js/helpers';
     import InviteUserModal from '$lib/components/modals/InviteUserModal.svelte';
-    
-    
+
     $: athleteList = $team ? $team.athletes : [];
-    
+
     let showModal: boolean = false;
+
     const toggleInviteModal = () => {
         showModal = !showModal;
     };
@@ -35,12 +28,17 @@
         {#each athleteList as athlete, idx (athlete.id)}
             <AthleteCard bind:athlete="{athlete}" />
         {/each}
-        
-        <div>
-            <InviteUserModal showModal={showModal} />
-            <button on:click="{toggleInviteModal}">Invite an Athlete</button>
+        <div class="my-3 flex justify-center">
+            <button
+                on:click="{toggleInviteModal}"
+                class="m-2 mt-4 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-200"
+            >
+                Invite Athlete
+            </button>
         </div>
-        
+        {#if showModal}
+            <InviteUserModal bind:showModal="{showModal}" />
+        {/if}
     </div>
 </div>
 
