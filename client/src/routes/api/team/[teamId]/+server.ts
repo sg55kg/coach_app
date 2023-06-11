@@ -4,13 +4,14 @@ export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const id = event.params.teamId;
 
-    return await event.fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token,
         },
     });
+    return new Response(await res.text());
 };
 
 export const PUT: RequestHandler = async event => {
