@@ -10,19 +10,22 @@
 
     let athleteEmail: string = '';
     let athleteName: string = '';
-    let success: boolean = false;
-    let error: boolean = false;
+    let success: string = '';
+    let error: string = '';
     let loading: boolean = false;
+
 
     $: success
         ? setTimeout(() => {
-              success = false;
+              success = '';
               athleteName = '';
               athleteEmail = '';
           }, 3000)
         : null;
 
     const sendInvite = async () => {
+        error = '';
+        loading = true;
         try {
             const inviteUserRequest = {
                 coachEmail: $userDB?.email,
@@ -31,12 +34,19 @@
                 coachName: $userDB?.username,
                 teamId: $team.id,
                 coachId: $userDB?.coachData?.id,
+                teamName: $team.name
             };
-            await UserService.inviteUser(inviteUserRequest);
-            success = true;
+            const status = await UserService.inviteUser(inviteUserRequest);
+            if (status.startsWith('Success')) {
+                success = status;
+            } else if (status.includes('exists')) {
+                error = status;
+            }
         } catch (e) {
             console.log(e);
-            error = true;
+            error = 'The invitation failed to send';
+        } finally {
+            loading = false;
         }
     };
 </script>
@@ -48,7 +58,7 @@
     ></div>
     <dialog
         open="{showModal}"
-        class="z-[201] w-3/12 rounded bg-gray-200 shadow-lg shadow-gray-300"
+        class="z-[201] w-11/12 lg:w-3/12 rounded bg-gray-200 shadow-lg shadow-gray-300"
     >
         <div class="relative flex flex-col p-2">
             <button
@@ -78,13 +88,13 @@
             />
             <button
                 on:click="{sendInvite}"
-                disabled="{!athleteName || !athleteEmail || success}"
+                disabled="{!athleteName || !athleteEmail || success || loading}"
                 class="my-4 flex cursor-pointer justify-center rounded bg-purple-600 p-2
                        text-white shadow-md shadow-gray-100 hover:bg-purple-500
                        disabled:cursor-not-allowed disabled:bg-purple-900"
             >
                 {#if !loading && !success}
-                    <p>Send</p>
+                    <p in:fade="{{ duration: 0, delay: 800 }}">Send</p>
                 {:else if !success}
                     <LoadingSpinner
                         spinnerColor="fill-white"
@@ -93,14 +103,14 @@
                 {:else if success}
                     <span
                         in:fly="{{ x: 50, duration: 1000 }}"
-                        out:fade="{{ duration: 1000 }}"
-                        >{athleteName} Invited!</span
+                        out:fade="{{ duration: 600 }}"
+                        >{success}</span
                     >
                 {/if}
             </button>
             {#if error}
                 <p class="p-2 text-center text-red">
-                    The invitation failed to send.
+                    {error}
                 </p>
             {/if}
         </div>

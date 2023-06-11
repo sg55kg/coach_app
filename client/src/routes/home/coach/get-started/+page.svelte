@@ -25,7 +25,7 @@
             });
             const updatedUser = await res.json();
             if (updatedUser.coachData) {
-                $userDB = User.build(updatedUser);
+                $userDB = User.createFrom(updatedUser);
                 await goto(`/home/coach/${$userDB.coachData!.id}`);
             }
         } catch (e) {

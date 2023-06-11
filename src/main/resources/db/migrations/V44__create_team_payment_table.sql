@@ -30,4 +30,4 @@ CREATE TABLE IF NOT EXISTS athlete_payment_record (
     PRIMARY KEY (id)
 );
 
-ALTER TABLE user_preference ADD COLUMN IF NOT EXISTS default_home_page TEXT CHECK (default_home_page IN ('COACH', 'ATHLETE')) DEFAULT 'ATHLETE';
+ALTER TABLE user_preference ADD COLUMN IF NOT EXISTS default_home_page TEXT CHECK (default_home_page IN ('coach', 'athlete')) DEFAULT 'athlete';

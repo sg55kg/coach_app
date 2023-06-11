@@ -146,13 +146,6 @@
             </div>
         {/if}
     </div>
-    <div class="my-3 flex justify-center">
-        <button
-            class="m-2 mt-4 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-300"
-        >
-            Invite Athlete
-        </button>
-    </div>
 </div>
 
 <style></style>

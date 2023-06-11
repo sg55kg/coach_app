@@ -52,4 +52,12 @@ public class UserPreference {
     public void setMode(String mode) {
         this.mode = mode;
     }
+
+    public String getDefaultHomePage() {
+        return defaultHomePage;
+    }
+
+    public void setDefaultHomePage(String defaultHomePage) {
+        this.defaultHomePage = defaultHomePage;
+    }
 }

@@ -12,7 +12,7 @@ import { AthleteProgramStats } from '../classes/program/stats';
 export default class UserService {
     static createAthleteData = async (athlete: AthleteData): Promise<User> => {
         const { data } = await srPost<UserDTO>(`/api/athlete`, athlete);
-        return User.build(data);
+        return User.createFrom(data);
     };
 
     static updateAthleteRecords = async (
@@ -47,7 +47,7 @@ export default class UserService {
 
     static updateUserData = async (user: User): Promise<User> => {
         const { data } = await srPut<UserDTO>(`/api/user/${user.id}`, user);
-        return User.build(data);
+        return User.createFrom(data);
     };
 
     static fetchAthleteRecords = async (
@@ -94,7 +94,8 @@ export default class UserService {
         const { data } = await srPost<string>(
             `/api/auth/invite`,
             inviteUserRequest,
-            'text/html;charset=utf-8'
+            'application/json',
+            false
         );
         return data;
     };

@@ -23,7 +23,7 @@ export const load: LayoutServerLoad = async ({
     const encoded = state;
     const accessToken = cookies.get('accessToken');
     const idToken = cookies.get('idToken');
-    console.log(locals.lastPage);
+
     if (accessToken && idToken && locals.userData) {
         return {
             state: encoded,

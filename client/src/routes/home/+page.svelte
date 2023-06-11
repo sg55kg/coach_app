@@ -12,7 +12,7 @@
 
     onMount(async () => {
         if (user && userData) {
-            $userDB = User.build(userData);
+            $userDB = User.createFrom(userData);
             $authUser = user;
         }
         if ($userDB) {

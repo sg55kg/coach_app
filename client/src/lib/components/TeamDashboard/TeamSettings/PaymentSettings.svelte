@@ -6,9 +6,11 @@
     import { userDB } from '../../../stores/authStore';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import Toggle from '$lib/components/shared/layout/Toggle.svelte';
+    import ColorPicker from "$lib/components/shared/layout/ColorPicker.svelte";
+    import type {StripeConnectAccount} from "../../../classes/stripe";
 
     let stripeAccountCreated: boolean = false;
-    let stripeAccount: any = null;
+    let stripeAccount: StripeConnectAccount;
     let loadingStripeConnect: boolean = false;
     let loadingStripeData: boolean = false;
     let showIconOptions: boolean = false;
@@ -16,70 +18,79 @@
     let iconFileUploader: HTMLInputElement;
     let logoFileUploader: HTMLInputElement;
 
+    let primaryColor = '#ffffff';
+    let secondaryColor = '#000000';
+    $: primaryColor = stripeAccount?.settings?.branding?.primary_color
+        ? stripeAccount.settings.branding.primary_color
+        : primaryColor;
+    $: secondaryColor = stripeAccount?.settings?.branding?.secondary_color
+        ? stripeAccount.settings.branding.secondary_color
+        : secondaryColor;
+
     let paymentSettingsDisabled: boolean = false;
     $: paymentSettingsDisabled =
         $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING ||
         $team.teamFinance.stripeStatus === StripeStatus.NEW;
 
     const createStripeConnect = async () => {
-        loadingStripeConnect = true;
-        const data = {
-            coachId: $userDB!.coachData.id,
-            teamId: $team.id,
-            email: $userDB?.email,
-            username: $userDB?.username,
-            countryCode: 'US',
-            currency: 'USD',
-            athleteCap: $team.athletes.length,
-        };
-        try {
-            const res = await TeamService.connectStripeAccount(data);
-            if (res.id) {
-                $team.teamFinance = res;
-            }
-            stripeAccountCreated = true;
-        } catch (e) {
-            console.log(e);
-        } finally {
-            loadingStripeConnect = false;
-        }
+        // loadingStripeConnect = true;
+        // const data = {
+        //     coachId: $userDB!.coachData.id,
+        //     teamId: $team.id,
+        //     email: $userDB?.email,
+        //     username: $userDB?.username,
+        //     countryCode: 'US',
+        //     currency: 'USD',
+        //     athleteCap: $team.athletes.length,
+        // };
+        // try {
+        //     const res = await TeamService.connectStripeAccount(data);
+        //     if (res.id) {
+        //         $team.teamFinance = res;
+        //     }
+        //     stripeAccountCreated = true;
+        // } catch (e) {
+        //     console.log(e);
+        // } finally {
+        //     loadingStripeConnect = false;
+        // }
     };
 
     const getStripeRedirectUrl = async () => {
-        loadingStripeConnect = true;
-        try {
-            await TeamService.getStripeRedirectUrl(
-                $team.teamFinance.stripeConnectId,
-                $team.id
-            );
-        } catch (e) {
-            console.log(e);
-        } finally {
-            loadingStripeConnect = false;
-        }
+        // loadingStripeConnect = true;
+        // try {
+        //     await TeamService.getStripeRedirectUrl(
+        //         $team.teamFinance.stripeConnectId,
+        //         $team.id
+        //     );
+        // } catch (e) {
+        //     console.log(e);
+        // } finally {
+        //     loadingStripeConnect = false;
+        // }
     };
 
     onMount(async () => {
-        if (
-            $team?.teamFinance &&
-            $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING
-        ) {
-            try {
-                loadingStripeData = true;
-                const res = await TeamService.getStripeAccount(
-                    $team.teamFinance.stripeConnectId
-                );
-                stripeAccount = res;
-                console.log(res);
-                if (res.details_submitted) {
-                    // TODO: save team finance as created and display stripe data on this page
-                }
-            } catch (e) {
-                console.log(e);
-            } finally {
-                loadingStripeData = false;
-            }
-        }
+        // if (
+        //     $team?.teamFinance &&
+        //     $team.teamFinance.stripeStatus === StripeStatus.ONBOARDING
+        // ) {
+        //     try {
+        //         loadingStripeData = true;
+        //         const res = await TeamService.getStripeAccount(
+        //             $team.teamFinance.stripeConnectId
+        //         );
+        //         stripeAccount = res;
+        //         console.log(res);
+        //         if (res.details_submitted) {
+        //             // TODO: save team finance as created and display stripe data on this page
+        //         }
+        //     } catch (e) {
+        //         console.log(e);
+        //     } finally {
+        //         loadingStripeData = false;
+        //     }
+        // }
     });
 </script>
 
@@ -96,7 +107,7 @@
         {:else}
             <button
                 class="font-semibold text-link"
-                on:click="{createStripeConnect}"
+                disabled
             >
                 Connect with Stripe to enable payments
             </button>
@@ -245,25 +256,11 @@
                         </div>
                         <div class="my-1 flex flex-col">
                             <p class="my-1">Primary Color:</p>
-                            <input
-                                type="color"
-                                value="{stripeAccount.settings.branding
-                                    .primary_color
-                                    ? stripeAccount.settings.branding
-                                          .primary_color
-                                    : '#FFF'}"
-                            />
+                            <ColorPicker color="{primaryColor}" />
                         </div>
                         <div class="my-1 flex flex-col">
                             <p class="my-1">Secondary Color:</p>
-                            <input
-                                type="color"
-                                value="{stripeAccount.settings.branding
-                                    .secondary_color
-                                    ? stripeAccount.settings.branding
-                                          .secondary_color
-                                    : '#FFF'}"
-                            />
+                            <ColorPicker color="{secondaryColor}" />
                         </div>
                     </div>
                     <div

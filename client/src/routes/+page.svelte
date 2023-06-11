@@ -42,7 +42,7 @@
             class="m-2 mt-8 flex flex-col items-center justify-center text-center"
         >
             <a
-                href="{loginUrl}"
+                href="{loginUrl + '&screen_hint=signup'}"
                 on:click="{() => ($loadingAuth = true)}"
                 class="mx-2 mt-5 mb-2 justify-center rounded bg-yellow p-4 px-6 text-center font-bold text-gray-200 hover:bg-yellow-shade"
             >

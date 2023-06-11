@@ -2,9 +2,10 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
-    return await fetch('http://localhost:8180/api/auth/invite', {
+    const inviteUserRequest = await event.request.text();
+    return await fetch(`${import.meta.env.VITE_SERVER_URL}api/auth/invite`, {
         method: 'POST',
-        body: '{"test":"test"}',
-        headers: { Authorization: 'Bearer ' + token },
+        body: inviteUserRequest,
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     });
 };

@@ -22,7 +22,7 @@ declare global {
 }
 
 export class User {
-    static build(userDTO: UserDTO) {
+    static createFrom(userDTO: UserDTO) {
         const user = new User();
 
         user.athleteData = userDTO.athleteData

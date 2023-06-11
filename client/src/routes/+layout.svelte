@@ -14,7 +14,7 @@
     export let data: LayoutServerData;
 
     if (data.user && data.userData) {
-        $userDB = User.build(data.userData);
+        $userDB = User.createFrom(data.userData);
         $authUser = data.user;
     } else {
         $userDB = null;

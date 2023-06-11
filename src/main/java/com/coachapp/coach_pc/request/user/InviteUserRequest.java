@@ -9,6 +9,7 @@ public class InviteUserRequest {
     private String athleteName;
     private String coachName;
     private UUID teamId;
+    private String teamName;
     private UUID coachId;
 
     public InviteUserRequest() {}
@@ -59,5 +60,13 @@ public class InviteUserRequest {
 
     public void setCoachName(String coachName) {
         this.coachName = coachName;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

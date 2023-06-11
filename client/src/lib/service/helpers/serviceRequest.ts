@@ -40,7 +40,8 @@ export const srGet = async <T>(
 export const srPost = async <T>(
     url: string,
     body: any,
-    contentType: string = 'application/json'
+    contentType: string = 'application/json',
+    parseJson = false
 ): Promise<ServiceResponse<T>> => {
     if (typeof body !== 'string') {
         body = JSON.stringify(body);
@@ -63,7 +64,7 @@ export const srPost = async <T>(
         throw new Error(res.statusText);
     }
 
-    if (contentType.includes('text/html')) {
+    if (!parseJson) {
         return {
             data: (await res.text()) as T,
             code: res.status,

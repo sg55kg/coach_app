@@ -43,11 +43,16 @@ public class UserRepository {
             e.printStackTrace();
             return Optional.ofNullable(null);
         }
+    }
 
-//        return Optional.ofNullable(evm.applySetting(EntityViewSetting.create(UserWithMappings.class), cb)
-//                .from(UserData.class, "user")
-//                .where("user.email").eq(email)
-//                .getSingleResult());
+    @Transactional
+    public boolean userExistsByEmail(String email) {
+        Long result = cbf.create(em, Long.class)
+                .from(UserData.class)
+                .select("COUNT(email)").where("email").eq(email)
+                .getSingleResult();
+
+        return result > 0;
     }
 
     @Transactional

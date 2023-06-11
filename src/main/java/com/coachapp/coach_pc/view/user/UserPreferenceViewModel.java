@@ -12,4 +12,5 @@ public interface UserPreferenceViewModel {
     UUID getId();
     String getWeight();
     String getMode();
+    String getDefaultHomePage();
 }

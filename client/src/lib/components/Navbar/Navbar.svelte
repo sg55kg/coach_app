@@ -14,7 +14,7 @@
 
     const changeAthleteCoachView = async (view: 'coach' | 'athlete') => {
         if (view === 'coach') {
-            if ($userDB!.coachData!.teams.length) {
+            if ($userDB?.coachData?.teams?.length) {
                 await goto(
                     `/home/coach/team/${
                         $userDB!.coachData!.teams[0].id

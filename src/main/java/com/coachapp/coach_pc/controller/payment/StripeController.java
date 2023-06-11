@@ -47,7 +47,7 @@ public class StripeController {
         return this.service.createAccountLink(stripeConnectId, returnUrl);
     }
 
-    @PostMapping("{stripeConnectId}/payment")
+    @PostMapping("/{stripeConnectId}/payment")
     public ResponseEntity<String> createAthleteTeamSubscription(@PathVariable String stripeConnectId,
                                                                 @RequestBody AthletePaymentRequest request) {
         logger.info("Received request for athlete " + request.getAthleteEmail() + " on team " + request.getTeamId());
@@ -63,5 +63,10 @@ public class StripeController {
         } catch (SignatureVerificationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("{stripeConnectId}")
+    public ResponseEntity<?> updateStripeAccount(@PathVariable String stripeConnectId) {
+        return null; // TODO: Request model, service method, response, frontend model(?)
     }
 }

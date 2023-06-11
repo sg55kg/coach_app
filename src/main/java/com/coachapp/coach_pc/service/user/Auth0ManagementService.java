@@ -4,8 +4,10 @@ import com.coachapp.coach_pc.model.team.Team;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.model.user.UserData;
+import com.coachapp.coach_pc.model.user.UserPreference;
 import com.coachapp.coach_pc.repository.user.UserRepository;
 import com.coachapp.coach_pc.request.user.InviteUserRequest;
+import com.coachapp.coach_pc.view.user.UserWithMappings;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -47,25 +50,30 @@ public class Auth0ManagementService {
         this.repository = repository;
     }
 
-    public ResponseEntity<String> createUserAccount(InviteUserRequest request) {
+    public String inviteUser(InviteUserRequest request) {
         // TODO: first check if the user has an existing account with us, and skip auth0 registration if necessary
+        boolean userExists = repository.userExistsByEmail(request.getAthleteEmail());
+        if (userExists) {
+            return "User exists";
+        }
         try {
             String token = getAuth0AccessToken();
             Map<String, Object> createdUser = createAuth0Account(token, request);
 
             saveUserData(request);
             String auth0UserId = (String)createdUser.get("user_id");
-            sendInvitationEmail(auth0UserId, token);
-
-            return new ResponseEntity<>("Successfully invited user: " + request.getAthleteName(), HttpStatus.CREATED);
+            return getEmailInviteUrl(auth0UserId, token);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return null;
         }
     }
 
     private void saveUserData(InviteUserRequest request) {
         UserData userToSave = new UserData();
         CoachData coach = new CoachData();
+        UserPreference preferences = new UserPreference();
+        preferences.setUser(userToSave);
+        userToSave.setPreferences(preferences);
         coach.setId(request.getCoachId());
         Team team = new Team();
         team.setId(request.getTeamId());
@@ -81,43 +89,45 @@ public class Auth0ManagementService {
         repository.addUser(userToSave);
     }
 
-    private void sendInvitationEmail(String userId, String token) {
+    private String getEmailInviteUrl(String userId, String token) throws Exception {
         // TODO: investigate if query params are needed
-        Integer FIVE_DAYS = 432000;
-        String res = WebClient.create(auth0Domain)
-                .post()
-                .uri("api/v2/tickets/password-change")
-                .bodyValue("{ \"user_id\": \"" + userId + "\", " +
-                        "\"ttl_sec\": \"" + FIVE_DAYS + "\", " +
-                        "\"client_id\": " + auth0ClientId +
-                        "\"result_url\": \"https://localhost:5173/home\" }")
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        System.out.println(res);
+        int FIVE_DAYS = 432000;
+        try {
+            String res = WebClient.create(auth0Domain)
+                    .post()
+                    .uri("api/v2/tickets/password-change")
+                    .bodyValue("{\"user_id\":\"" + userId + "\",\"ttl_sec\":" + FIVE_DAYS + ",\"result_url\":\"https://localhost:5173/home\"}")
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
+            Map<String, String> JsonRes = new ObjectMapper().readValue(res, typeRef);
+            String inviteUrl = JsonRes.get("ticket");
+
+            return inviteUrl;
+        } catch (JsonProcessingException e) {
+            logger.error("Could not process Auth0 password change ticket JSON:\n " + e);
+            throw new Exception(e);
+        } catch (Exception e) {
+            logger.error("Error making Auth0 password change ticket:\n " + e);
+            throw new Exception(e);
+        }
     }
 
     private Map<String, Object> createAuth0Account(String token, InviteUserRequest request) throws JsonProcessingException {
         String password = getSaltString();
         String username = request.getAthleteName();
         String athleteEmail = request.getAthleteEmail();
+        String formattedUsername = String.join("_", username.split("\\s+"));
 
         try {
             String createdUser = WebClient.create(auth0Domain)
                     .post()
                     .uri("api/v2/users")
-                    .bodyValue("{\"email\": \"" + athleteEmail + "\"," +
-                            "\"user_metadata\": {}," +
-                            "\"blocked\": false," +
-                            "\"email_verified\": false," +
-                            "\"app_metadata\": {}," +
-                            "\"name\": \"" + username + "\"," +
-                            "\"connection\": \"Username-Password-Authentication\"," +
-                            "\"password\": \"" + password + "\"," +
-                            "\"verify_email\": false," +
-                            "\"username\": \"" + athleteEmail + "\"}")
+                    .bodyValue("{\"email\":\"" + athleteEmail + "\",\"user_metadata\":{},\"blocked\":false,\"email_verified\":false,\"app_metadata\":{},\"name\":\""+ username + "\",\"connection\":\"Username-Password-Authentication\",\"password\":\"" + password + "\",\"verify_email\":false,\"username\":\"" + formattedUsername + "\"}")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
@@ -153,7 +163,7 @@ public class Auth0ManagementService {
     }
 
     private String getSaltString() {
-        String SALT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        String SALT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890$!";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < 18) { // length of the random string.
