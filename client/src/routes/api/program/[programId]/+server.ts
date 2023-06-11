@@ -10,7 +10,7 @@ export const PUT: RequestHandler = async event => {
         {
             method: 'PUT',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: program,
@@ -26,7 +26,7 @@ export const DELETE: RequestHandler = async event => {
         `${import.meta.env.VITE_SERVER_URL}api/programs/${programId}`,
         {
             method: 'DELETE',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { 'Authorization': 'Bearer ' + token },
         }
     );
 };

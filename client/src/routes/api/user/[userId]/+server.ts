@@ -10,7 +10,7 @@ export const PUT: RequestHandler = async event => {
         {
             method: 'PUT',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: user,

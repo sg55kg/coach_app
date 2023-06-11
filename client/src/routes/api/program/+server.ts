@@ -12,7 +12,7 @@ export const POST: RequestHandler = async event => {
             method: 'POST',
             body: JSON.stringify(program),
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async event => {
         {
             method: 'GET',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }

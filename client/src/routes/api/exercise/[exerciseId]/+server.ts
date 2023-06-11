@@ -9,7 +9,7 @@ export const PUT: RequestHandler = async event => {
     return await fetch(`${import.meta.env.VITE_SERVER_URL}api/exercise/${id}`, {
         method: 'PUT',
         headers: {
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
         body: exercise,
@@ -23,7 +23,7 @@ export const DELETE: RequestHandler = async event => {
     return await fetch(`${import.meta.env.VITE_SERVER_URL}api/exercise/${id}`, {
         method: 'DELETE',
         headers: {
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
     });

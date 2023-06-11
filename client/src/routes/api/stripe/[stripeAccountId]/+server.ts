@@ -11,7 +11,7 @@ export const GET: RequestHandler = async event => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
             },
         }
     );

@@ -11,7 +11,7 @@ export const PUT: RequestHandler = async event => {
         {
             method: 'PUT',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: record,
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async event => {
         {
             method: 'GET',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async event => {
         {
             method: 'POST',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: record,

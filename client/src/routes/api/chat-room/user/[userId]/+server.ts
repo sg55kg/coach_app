@@ -10,7 +10,7 @@ export const GET: RequestHandler = async event => {
         {
             method: 'GET',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }
