@@ -1,12 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error, redirect } from '@sveltejs/kit';
 
 export const PUT: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const record = await event.request.text();
     const id = event.params.athleteId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/athletes/${id}/record`,
         {
             method: 'PUT',
@@ -17,13 +16,14 @@ export const PUT: RequestHandler = async event => {
             body: record,
         }
     );
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
 };
 
 export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const athleteId = event.params.athleteId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/record`,
         {
             method: 'GET',
@@ -33,6 +33,7 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
 };
 
 export const POST: RequestHandler = async event => {
@@ -40,7 +41,7 @@ export const POST: RequestHandler = async event => {
     const athleteId = event.params.athleteId;
     const record = await event.request.text();
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/records`,
         {
             method: 'POST',
@@ -51,4 +52,5 @@ export const POST: RequestHandler = async event => {
             body: record,
         }
     );
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
 };

@@ -11,10 +11,10 @@ export const PUT: RequestHandler = async event => {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: user,
         }
     );
-    return new Response(res.body, { status: res.status, headers: res.headers, statusText: res.statusText })
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };

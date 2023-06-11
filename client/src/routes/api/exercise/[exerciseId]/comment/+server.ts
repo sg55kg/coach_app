@@ -1,12 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const comment = await event.request.text();
     const id = await event.params.exerciseId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/exercise/${id}/comment`,
         {
             method: 'POST',
@@ -17,4 +16,5 @@ export const POST: RequestHandler = async event => {
             body: comment,
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };

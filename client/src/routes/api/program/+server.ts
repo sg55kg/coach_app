@@ -1,12 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const program = await event.request.json();
     const coachId = program.coachId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/programs/coach/${coachId}`,
         {
             method: 'POST',
@@ -17,13 +16,14 @@ export const POST: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };
 
 export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const name = event.url.searchParams.get('name');
     const coachId = event.url.searchParams.get('coach');
-    return await fetch(
+    const res = await fetch(
         `${
             import.meta.env.VITE_SERVER_URL
         }api/programs/coach/${coachId}/search?name=${name}`,
@@ -35,4 +35,5 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };

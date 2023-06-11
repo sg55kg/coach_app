@@ -87,7 +87,7 @@ export const srPut = async <T>(
     }
     const res = await fetch(url, {
         method: 'PUT',
-        headers: { 'Content-Type': contentType, 'Accept-Encoding': contentType },
+        headers: { 'Content-Type': contentType },
         body: body,
     });
 

@@ -1,12 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error, redirect } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async event => {
     const athleteId = event.params.athleteId;
     const records = await event.request.text();
     const token = event.cookies.get('accessToken');
 
-    return await fetch(
+    const res = await fetch(
         `${
             import.meta.env.VITE_SERVER_URL
         }api/athletes/${athleteId}/records/list`,
@@ -19,4 +18,5 @@ export const POST: RequestHandler = async event => {
             body: records,
         }
     );
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
 };

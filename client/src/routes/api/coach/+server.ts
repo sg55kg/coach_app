@@ -1,11 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async event => {
     const newCoach = await event.request.text();
     const token = event.cookies.get('accessToken');
 
-    return await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
+    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
         method: 'PUT',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -13,4 +12,5 @@ export const POST: RequestHandler = async event => {
         },
         body: newCoach,
     });
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };
