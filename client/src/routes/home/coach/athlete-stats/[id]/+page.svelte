@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import UserService from '$lib/service/userService';
     import ProgramStats from '$lib/components/Stats/ProgramStats.svelte';
     import { AthleteData, AthleteRecord } from '$lib/classes/user/athlete';
     import { userDB } from '$lib/stores/authStore';
+    import UserService from "../../../../../lib/service/UserService";
 
     let athlete: AthleteData;
     let records: AthleteRecord[] = [];

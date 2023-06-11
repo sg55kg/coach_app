@@ -1,10 +1,10 @@
 <script lang="ts">
     import { DisplayTeam, Team } from '$lib/classes/team';
     import { userDB } from '$lib/stores/authStore';
-    import UserService from '$lib/service/userService';
     import { CoachData } from '$lib/classes/user/coach';
     import { AthleteData } from '$lib/classes/user/athlete';
     import { goto } from '$app/navigation';
+    import UserService from "../../service/UserService";
 
     export let team: DisplayTeam;
     let displayTeamsError: string = '';
