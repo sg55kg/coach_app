@@ -51,6 +51,7 @@ public class UsersController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserWithMappings> updateUserData(@PathVariable UUID id, @RequestBody UpdateUserRequest userRequest) {
+        logger.info("Received request to update user data");
         return userService.updateUserData(id, userRequest);
     }
 }
