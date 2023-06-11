@@ -3,14 +3,14 @@ export enum WeightIntensity {
     MODERATE,
     HEAVY,
     BODY_WEIGHT,
-    NONE
+    NONE,
 }
 
 export enum EffortIntensity {
     EASY,
     MODERATE,
     DIFFICULT,
-    MAX
+    MAX,
 }
 
 export enum ExerciseType {
@@ -18,6 +18,5 @@ export enum ExerciseType {
     CARRY,
     DURATION,
     ACCESSORY,
-    COMPLEX
+    COMPLEX,
 }
-

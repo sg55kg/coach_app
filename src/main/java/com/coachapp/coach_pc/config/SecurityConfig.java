@@ -36,25 +36,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        /*
-        This is where we configure the security required for our endpoints and setup our app to serve as
-        an OAuth2 Resource Server, using JWT validation.
-        */
-        http.authorizeRequests() //.requiresChannel().antMatchers("/api/**").requiresSecure().and().authorizeRequests()
-                //.antMatchers("/auth/").permitAll()
-                //.antMatchers("/api/messages").
-                .anyRequest().authenticated()
-                .and().cors()
+        http.authorizeRequests()
+                .antMatchers("/api/stripe/webhook")
+                    .permitAll()
+                .anyRequest()
+                    .authenticated()
                 .and()
-                .oauth2ResourceServer()
-                //.authenticationEntryPoint(authenticationErrorHandler)
-                .jwt()
-                .decoder(jwtDecoder())
-                //.jwtAuthenticationConverter(makePermissionsConverter())
+                    .cors()
                 .and()
-                ;
-               // .and().and().build();
-               return http.build();
+                    .oauth2ResourceServer()
+                        .jwt()
+                            .decoder(jwtDecoder());
+//
+//        http.csrf()
+//                .ignoringAntMatchers("/api/stripe/webhook");
+
+        return http.build();
 
     }
 

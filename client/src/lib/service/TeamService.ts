@@ -1,43 +1,59 @@
-import {Team} from "$lib/classes/team";
-import type {Auth0Client} from "@auth0/auth0-spa-js";
-
+import { Team } from '$lib/classes/team';
+import type { TeamFinance } from '../classes/team/teamFinance';
+import { goto } from '$app/navigation';
+import { srGet, srPost, srPut } from './helpers/serviceRequest';
+import type { DisplayTeamDTO, TeamDTO } from '../classes/team';
+import { DisplayTeam } from '../classes/team';
+import type {StripeConnectAccount} from "../classes/stripe";
 
 export class TeamService {
-
     static createTeam = async (team: Team) => {
-
-        const res = await fetch(`/api/team`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(team)
-        })
-        
-        return await res.json()
-    }
+        const { data } = await srPost<TeamDTO>(`/api/team`, team);
+        return Team.createFrom(data);
+    };
 
     static getDisplayTeams = async () => {
-
-        const res = await fetch(`/api/team`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        })
-
-        return await res.json()
-    }
+        const { data } = await srGet<DisplayTeamDTO[]>(`/api/team`);
+        return data.map(d => DisplayTeam.createFrom(d));
+    };
 
     static getTeam = async (teamId: string) => {
-        const res = await fetch(`/api/team/${teamId}`)
-        return Team.createFrom(await res.json())
-    }
+        const { data } = await srGet<TeamDTO>(`/api/team/${teamId}`);
+        return Team.createFrom(data);
+    };
 
     static updateTeam = async (team: Team) => {
+        const { data } = await srPut<TeamDTO>(`/api/team/${team.id}`, team);
+        return Team.createFrom(data);
+    };
 
-        const res = await fetch(`/api/team/${team.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(team)
-        })
+    static connectStripeAccount = async (req: any): Promise<TeamFinance> => {
+        const { data } = await srPost<TeamFinance>(`/api/stripe/connect`, req);
+        return data;
+    };
 
-        return Team.createFrom(await res.json())
-    }
+    static getStripeRedirectUrl = async (
+        stripeConnectId: string,
+        teamId: string
+    ) => {
+        const { data } = await srGet<string>(
+            `/api/stripe/${stripeConnectId}/onboard?returnUrl=home/coach/team/${teamId}/settings`,
+            true
+        );
+
+        if (data.includes('stripe')) {
+            await goto(data);
+        } else {
+            // TODO: find a better way to handle checking the redirect URL is correct.. error code?
+            throw new Error('Could not retrieve redirect url');
+        }
+    };
+
+    static getStripeAccount = async (stripeConnectId: string) => {
+        const { data } = await srGet<StripeConnectAccount>(
+            `/api/stripe/${stripeConnectId}`,
+            false
+        );
+        return data; // TODO: add typing for stripe account response
+    };
 }

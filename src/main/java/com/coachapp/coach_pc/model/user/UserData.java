@@ -1,6 +1,5 @@
 package com.coachapp.coach_pc.model.user;
 
-import com.coachapp.coach_pc.model.Role;
 import com.coachapp.coach_pc.model.chat.ChatRoomMember;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;

@@ -1,43 +1,32 @@
-import {ChatRoom, Message, type MessageDTO} from "$lib/classes/chat";
-import type {ChatRoomDTO} from "$lib/classes/chat";
-
-
+import { ChatRoom, Message, type MessageDTO } from '$lib/classes/chat';
+import type { ChatRoomDTO } from '$lib/classes/chat';
+import { srGet, srPost } from './helpers/serviceRequest';
 
 export class ChatService {
-
     static createChatRoom = async (newChat: ChatRoom) => {
-        const roomRes = await fetch('/api/chat-room', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newChat)
-        })
-        const chatRoom: ChatRoomDTO = await roomRes.json()
+        const { data } = await srPost<ChatRoomDTO>('/api/chat-room', newChat);
+        return ChatRoom.createFrom(data);
+    };
 
-        return ChatRoom.createFrom(chatRoom);
-    }
-
-    static deleteChatRoom = async (chatId: string) => {
-
-    }
+    static deleteChatRoom = async (chatId: string) => {};
 
     static getChatRoomsByUser = async (userId: string) => {
-        const res = await fetch(`/api/chat-room/user/${userId}`, { method: 'GET' })
+        const { data } = await srGet<ChatRoomDTO[]>(
+            `/api/chat-room/user/${userId}`
+        );
+        return data.map(r => ChatRoom.createFrom(r));
+    };
 
-        const rooms: ChatRoomDTO[] = await res.json()
-        return rooms.map(r => ChatRoom.createFrom(r))
-    }
+    static getChatRoom = async (chatId: string) => {};
 
-    static getChatRoom = async (chatId: string) => {
-
-    }
-
-    static getNext20Messages = async (chatId: string, start: number, end: number) => {
-        const res = await fetch(`/api/message/${chatId}?start=${start}&end=${end}`, {
-            method: 'GET'
-        })
-        console.log(res)
-        const data: MessageDTO[] = await res.json()
-        return data.map(m => Message.createFrom(m))
-    }
-
+    static getNext20Messages = async (
+        chatId: string,
+        start: number,
+        end: number
+    ) => {
+        const { data } = await srGet<MessageDTO[]>(
+            `/api/message/${chatId}?start=${start}&end=${end}`
+        );
+        return data.map(m => Message.createFrom(m));
+    };
 }

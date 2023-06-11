@@ -1,70 +1,54 @@
-import type {RequestHandler} from "@sveltejs/kit";
-import {error, redirect} from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
+export const PUT: RequestHandler = async event => {
+    const token = event.cookies.get('accessToken');
+    const record = await event.request.text();
+    const id = event.params.athleteId;
 
-export const PUT: RequestHandler = async (event) => {
-    const token = event.cookies.get('accessToken')
-    const record = await event.request.json()
-    const id = event.params.athleteId
-
-    if (!token) {
-        throw redirect(307, '/')
-    }
-    try {
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${id}/record`, {
+    return await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/athletes/${id}/record`,
+        {
             method: 'PUT',
             headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(record)
-        })
-        const updatedRecord = await res.json()
-        return new Response(JSON.stringify(updatedRecord))
-    } catch (e) {
-        throw error(405, 'Could not update record')
-    }
-}
+            body: record,
+        }
+    );
+};
 
-export const GET: RequestHandler = async (event) => {
-    const token = event.cookies.get('accessToken')
-    const athleteId = event.params.athleteId
+export const GET: RequestHandler = async event => {
+    const token = event.cookies.get('accessToken');
+    const athleteId = event.params.athleteId;
 
-    if (!token) {
-        throw redirect(307, '/')
-    }
-    try {
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/record`, {
+    return await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/record`,
+        {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-        const records = await res.json()
-        return new Response(JSON.stringify((records)))
-    } catch (e) {
-        throw error(404, 'Records not found')
-    }
-}
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+};
 
-export const POST: RequestHandler = async (event) => {
-    const token = event.cookies.get('accessToken')
-    const athleteId = event.params.athleteId
-    const record = await event.request.json()
+export const POST: RequestHandler = async event => {
+    const token = event.cookies.get('accessToken');
+    const athleteId = event.params.athleteId;
+    const record = await event.request.text();
 
-    if (!token) {
-        throw redirect(307, '/')
-    }
-    try {
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/records`, {
+    return await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/records`,
+        {
             method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-            body: JSON.stringify(record),
-        })
-        return new Response(res.body)
-    } catch (e) {
-        console.log(e)
-        throw error(405, '')
-    }
-}
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: record,
+        }
+    );
+};
