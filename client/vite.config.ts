@@ -3,7 +3,7 @@ import type { UserConfig } from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 
 const config: UserConfig = {
-    server: { https: true, proxy: {} },
+    server: { https: true },
     define: {
         'process.env.NODE_ENV': '"production"',
     },
