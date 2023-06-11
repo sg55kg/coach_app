@@ -29,7 +29,7 @@ export const srGet = async <T>(
 
     let data = await res.text();
     if (!expectString) {
-        data = JSON.parse(<string>data);
+        data = JSON.parse(data);
     }
     return {
         data: <T>data,
@@ -105,9 +105,9 @@ export const srPut = async <T>(
     }
 
     try {
-        const data = await res.text();
+        const data = await res.json()
         return {
-            data: parseJson ? JSON.parse(data) : data as T,
+            data: data as T,
             code: res.status,
         };
     } catch (e) {
