@@ -13,7 +13,7 @@ export const PUT: RequestHandler = async event => {
         },
         body: exercise,
     });
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };
 
 export const DELETE: RequestHandler = async event => {
@@ -27,5 +27,5 @@ export const DELETE: RequestHandler = async event => {
             'Content-Type': 'application/json',
         },
     });
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };

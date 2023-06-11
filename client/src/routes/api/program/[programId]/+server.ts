@@ -16,7 +16,7 @@ export const PUT: RequestHandler = async event => {
             body: program,
         }
     );
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };
 
 export const DELETE: RequestHandler = async event => {
@@ -30,5 +30,5 @@ export const DELETE: RequestHandler = async event => {
             headers: { 'Authorization': 'Bearer ' + token },
         }
     );
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };

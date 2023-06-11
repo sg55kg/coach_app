@@ -16,5 +16,5 @@ export const PUT: RequestHandler = async event => {
             body: user,
         }
     );
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status });
 };
