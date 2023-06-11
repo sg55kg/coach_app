@@ -80,7 +80,8 @@ export const srPost = async <T>(
 export const srPut = async <T>(
     url: string,
     body: any,
-    contentType: string = 'application/json'
+    contentType: string = 'application/json',
+    parseJson: boolean = false
 ): Promise<ServiceResponse<T>> => {
     if (typeof body !== 'string') {
         body = JSON.stringify(body);
@@ -103,12 +104,17 @@ export const srPut = async <T>(
         throw new Error(res.statusText);
     }
 
-    const data = await res.text();
+    try {
+        const data = await res.text();
+        return {
+            data: parseJson ? JSON.parse(data) : data as T,
+            code: res.status,
+        };
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error decoding response');
+    }
 
-    return {
-        data: contentType.includes('html') ? data : JSON.parse(data),
-        code: res.status,
-    };
 
 };
 

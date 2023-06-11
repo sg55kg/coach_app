@@ -5,7 +5,7 @@ export const PUT: RequestHandler = async event => {
     const user = await event.request.text();
     const userId = event.params.userId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/users/${userId}`,
         {
             method: 'PUT',
@@ -16,4 +16,5 @@ export const PUT: RequestHandler = async event => {
             body: user,
         }
     );
+    return new Response(res.body, { status: res.status, headers: res.headers, statusText: res.statusText })
 };
