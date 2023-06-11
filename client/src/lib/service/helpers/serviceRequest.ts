@@ -103,17 +103,13 @@ export const srPut = async <T>(
         throw new Error(res.statusText);
     }
 
-    if (contentType.includes('text/html')) {
-        return {
-            data: (await res.text()) as T,
-            code: res.status,
-        };
-    } else {
-        return {
-            data: await res.json(),
-            code: res.status,
-        };
-    }
+    const data = await res.text();
+
+    return {
+        data: contentType.includes('html') ? data : JSON.parse(data),
+        code: res.status,
+    };
+
 };
 
 export const srDelete = async <T>(url: string): Promise<ServiceResponse<T>> => {
