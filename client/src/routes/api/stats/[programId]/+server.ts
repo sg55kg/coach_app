@@ -14,5 +14,5 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
-    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };

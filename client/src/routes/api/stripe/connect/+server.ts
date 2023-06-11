@@ -12,5 +12,5 @@ export const POST: RequestHandler = async event => {
         },
         body: newTeamFinanceRequest,
     });
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers});
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };
