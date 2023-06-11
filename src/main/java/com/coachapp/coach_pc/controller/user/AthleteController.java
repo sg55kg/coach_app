@@ -30,12 +30,12 @@ public class AthleteController {
         return athleteService.setCurrentProgram(athleteId, programId);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<AthleteWithPrograms> updateAthlete(@PathVariable UUID id, @RequestBody AthleteRequest athlete) {
         return athleteService.updateAthlete(id, athlete);
     }
 
-    @GetMapping("{athleteId}")
+    @GetMapping("/{athleteId}")
     public ResponseEntity<AthleteWithPrograms> getAthlete(@PathVariable UUID athleteId) {
         AthleteWithPrograms athlete = athleteService.getAthleteData(athleteId);
         if (athlete != null) {
@@ -44,7 +44,7 @@ public class AthleteController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("{athleteId}/records")
+    @GetMapping("/{athleteId}/records")
     public ResponseEntity<List<AthleteRecordViewModel>> getAthleteRecordsByExerciseName(
             @PathVariable UUID athleteId,
             @RequestParam(required = false) String name,

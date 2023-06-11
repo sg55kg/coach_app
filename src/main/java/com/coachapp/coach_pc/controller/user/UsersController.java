@@ -49,7 +49,7 @@ public class UsersController {
         return userService.addAthleteData(athleteRequest);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserWithMappings> updateUserData(@PathVariable UUID id, @RequestBody UpdateUserRequest userRequest) {
         return userService.updateUserData(id, userRequest);
     }
