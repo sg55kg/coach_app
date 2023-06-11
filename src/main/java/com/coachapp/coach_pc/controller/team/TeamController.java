@@ -8,6 +8,7 @@ import com.coachapp.coach_pc.view.team.TeamViewModel;
 import com.coachapp.coach_pc.view.team.TeamWithAthletes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,14 @@ public class TeamController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TeamWithAthletes> getTeam(@PathVariable UUID id) {
-        return teamService.getTeam(id);
+        logger.info("Received request to get team");
+        try {
+            return teamService.getTeam(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Could not retrieve team");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")
