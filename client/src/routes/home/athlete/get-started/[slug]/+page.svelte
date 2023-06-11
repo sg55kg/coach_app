@@ -1,9 +1,9 @@
 <script lang="ts">
     import dayjs from 'dayjs';
     import { userDB } from '$lib/stores/authStore';
-    import UserService from '$lib/service/userService';
     import { goto } from '$app/navigation';
     import { AthleteData, AthleteRecord } from '$lib/classes/user/athlete';
+    import UserService from "../../../../../lib/service/UserService";
 
     let snatch: number = 0;
     let cj: number = 0;

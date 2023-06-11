@@ -3,10 +3,10 @@
     import { onMount } from 'svelte';
     import { userDB } from '$lib/stores/authStore';
     import dayjs from 'dayjs';
-    import UserService from '$lib/service/userService';
     import AuthHeader from '$lib/components/AuthHeader.svelte';
     import AthleteHeader from '$lib/components/AthleteHeader.svelte';
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
+    import UserService from "../../../lib/service/UserService";
 
     let user: User;
 
