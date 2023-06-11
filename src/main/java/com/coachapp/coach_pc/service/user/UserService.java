@@ -11,6 +11,8 @@ import com.coachapp.coach_pc.request.user.NewCoachRequest;
 import com.coachapp.coach_pc.request.user.NewUserRequest;
 import com.coachapp.coach_pc.request.user.UpdateUserRequest;
 import com.coachapp.coach_pc.view.user.UserWithMappings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class UserService {
 
     private UserRepository userRepo;
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserRepository userRepo) {
@@ -90,6 +93,7 @@ public class UserService {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         UserData user = optional.get();
+        logger.info("User retrieved");
         user.setUsername(userRequest.getUsername());
         if (userRequest.getPhotoUrl() != null) {
             user.setPhotoUrl(userRequest.getPhotoUrl());
@@ -102,6 +106,7 @@ public class UserService {
         user.setPreferences(userRequest.getPreferences());
 
         UserWithMappings updated = userRepo.updateUser(user);
+        logger.info("User updated");
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }
