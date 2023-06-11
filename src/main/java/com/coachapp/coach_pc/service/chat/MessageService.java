@@ -1,19 +1,13 @@
 package com.coachapp.coach_pc.service.chat;
 
 import com.blazebit.persistence.PagedList;
-import com.coachapp.coach_pc.model.chat.Message;
-import com.coachapp.coach_pc.repository.MessageRepository;
+import com.coachapp.coach_pc.repository.chat.MessageRepository;
 import com.coachapp.coach_pc.request.chat.MessageRequest;
-import com.coachapp.coach_pc.view.chat.MessageCreateView;
 import com.coachapp.coach_pc.view.chat.MessageViewModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

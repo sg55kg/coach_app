@@ -1,32 +1,32 @@
 {
-  "name": "Coachable",
-  "short_name": "Coachable",
-  "display": "standalone",
-  "start_url": "/",
-  "description": "Write better programs with Coachable",
-  "theme_color": "#FDE577",
-  "background_color": "#2A2E3B",
-  "icons": [
-    {
-      "src": "coachable192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "coachable512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "maskable_icon.png",
-      "sizes": "295x295",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "apple-touch-icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
+    "name": "Coachable",
+    "short_name": "Coachable",
+    "display": "standalone",
+    "start_url": "/",
+    "description": "Write better programs with Coachable",
+    "theme_color": "#FDE577",
+    "background_color": "#2A2E3B",
+    "icons": [
+        {
+            "src": "coachable192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "coachable512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "maskable_icon.png",
+            "sizes": "295x295",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "apple-touch-icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        }
+    ]
 }

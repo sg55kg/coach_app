@@ -1,16 +1,16 @@
 <script lang="ts">
-    import {Editor} from "@tiptap/core";
-    import {onDestroy, onMount} from "svelte";
-    import StarterKit from "@tiptap/starter-kit";
-    import FixedMenu from "$lib/components/shared/texteditor/FixedMenu.svelte";
-    import {BulletList} from "@tiptap/extension-bullet-list";
-    import {ListItem} from "@tiptap/extension-list-item";
+    import { Editor } from '@tiptap/core';
+    import { onDestroy, onMount } from 'svelte';
+    import StarterKit from '@tiptap/starter-kit';
+    import FixedMenu from '$lib/components/shared/texteditor/FixedMenu.svelte';
+    import { BulletList } from '@tiptap/extension-bullet-list';
+    import { ListItem } from '@tiptap/extension-list-item';
 
-    export let content = ''
-    export let editable: boolean = true
+    export let content = '';
+    export let editable: boolean = true;
 
-    let editor: Editor
-    let element
+    let editor: Editor;
+    let element;
 
     onMount(() => {
         editor = new Editor({
@@ -18,23 +18,27 @@
             extensions: [StarterKit],
             content,
             onTransaction: () => {
-                editor = editor
+                editor = editor;
             },
-        })
+        });
         editor.on('update', ({ editor }) => {
-            content = editor.getHTML()
-        })
-        editor.setEditable(editable)
-    })
+            content = editor.getHTML();
+        });
+        editor.setEditable(editable);
+    });
 
     onDestroy(() => {
-        editor.destroy()
-    })
+        editor.destroy();
+    });
 </script>
 
-<div class="{editable ? 'border border-gray-400 w-8/12' : 'mr-2 bg-gray-200 border-l-2 border-l-textblue p-2'}">
-    <FixedMenu {editor} />
-    <div class="element-wrapper" bind:this={element}></div>
+<div
+    class="{editable
+        ? 'w-8/12 border border-gray-400'
+        : 'mr-2 border-l-2 border-l-textblue bg-gray-200 p-2'}"
+>
+    <FixedMenu editor="{editor}" />
+    <div class="element-wrapper" bind:this="{element}"></div>
 </div>
 
 <style>

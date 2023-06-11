@@ -3,7 +3,7 @@ package com.coachapp.coach_pc.view.program;
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.FetchStrategy;
 import com.blazebit.persistence.view.Mapping;
-import com.coachapp.coach_pc.model.Program;
+import com.coachapp.coach_pc.model.program.Program;
 
 import java.util.UUID;
 

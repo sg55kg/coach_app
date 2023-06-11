@@ -1,12 +1,17 @@
 <script lang="ts">
-
-    export let checked: boolean = false
-    export let onChange: (...args: any[]) => any = () => null
+    export let checked: boolean = false;
+    export let onChange: (...args: any[]) => any = () => null;
+    export let disabled: boolean = false;
 </script>
 
-<label class="switch">
-    <input type="checkbox" checked={checked} on:change={onChange}>
-    <span class="slider round"></span>
+<label class="switch {disabled ? 'disabled' : ''}">
+    <input
+        type="checkbox"
+        disabled="{disabled}"
+        checked="{checked}"
+        on:change="{onChange}"
+    />
+    <span class="slider round {disabled ? 'disabled' : ''}"></span>
 </label>
 
 <style>
@@ -33,28 +38,32 @@
         right: 0;
         bottom: 0;
         background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
     }
 
     .slider:before {
         position: absolute;
-        content: "";
+        content: '';
         height: 20px;
         width: 20px;
         left: 4px;
         bottom: 4px;
         background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+    }
+
+    .disabled {
+        cursor: not-allowed !important;
     }
 
     input:checked + .slider {
-        background-color: #fde577
+        background-color: #fde577;
     }
 
     input:focus + .slider {
-        box-shadow: 0 0 1px #fde577
+        box-shadow: 0 0 1px #fde577;
     }
 
     input:checked + .slider:before {

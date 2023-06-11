@@ -1,11 +1,10 @@
-
 /** The list of possible words */
 
 export class Game {
-    index: number = 0
-    guesses: string[] = []
-    answers: string[] = []
-    answer: string = ''
+    index: number = 0;
+    guesses: string[] = [];
+    answers: string[] = [];
+    answer: string = '';
 
     /**
      * Create a game object from the player's cookie, or initialise a new game
@@ -20,7 +19,7 @@ export class Game {
         } else {
             this.index = Math.floor(Math.random() * words.length);
             this.guesses = ['', '', '', '', '', ''];
-            this.answers = [] ;
+            this.answers = [];
         }
 
         this.answer = words[this.index];
@@ -31,7 +30,10 @@ export class Game {
      * true if the guess was valid, false otherwise
      */
     enter(letters: string[]) {
-        const word = typeof(letters) === 'object' ? letters.join('') : letters as string;
+        const word =
+            typeof letters === 'object'
+                ? letters.join('')
+                : (letters as string);
         const valid = allowed.has(word);
 
         if (!valid) return false;
@@ -71,7 +73,9 @@ export class Game {
      * Serialize game state so it can be set as a cookie
      */
     toString() {
-        return `${this.index}-${this.guesses.join(' ')}-${this.answers.join(' ')}`;
+        return `${this.index}-${this.guesses.join(' ')}-${this.answers.join(
+            ' '
+        )}`;
     }
 }
 export const words = [
@@ -2389,7 +2393,7 @@ export const words = [
     'youth',
     'zebra',
     'zesty',
-    'zonal'
+    'zonal',
 ];
 
 /** The list of valid guesses, of which the list of possible words is a subset */
@@ -13051,5 +13055,5 @@ export const allowed = new Set([
     'zygal',
     'zygon',
     'zymes',
-    'zymic'
+    'zymic',
 ]);

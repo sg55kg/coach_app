@@ -1,7 +1,6 @@
 <script lang="ts">
-
-import {team} from "$lib/stores/teamStore.js";
-import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte";
+    import { team } from '$lib/stores/teamStore.js';
+    import ProgramOverview from '$lib/components/WriteProgram/ProgramOverview.svelte';
 </script>
 
 <svelte:head>
@@ -14,8 +13,14 @@ import ProgramOverview from "$lib/components/WriteProgram/ProgramOverview.svelte
 </div>
 
 <style>
-    html, body, p, div, h3, button, header {
-        -webkit-touch-callout:none;
-        -webkit-user-select:none;
+    html,
+    body,
+    p,
+    div,
+    h3,
+    button,
+    header {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
     }
 </style>

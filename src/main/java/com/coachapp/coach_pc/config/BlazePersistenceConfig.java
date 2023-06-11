@@ -24,7 +24,8 @@ import java.util.UUID;
         "com.coachapp.coach_pc.view.team",
         "com.coachapp.coach_pc.view.program",
         "com.coachapp.coach_pc.view.record",
-        "com.coachapp.coach_pc.view.programStats"
+        "com.coachapp.coach_pc.view.programStats",
+        "com.coachapp.coach_pc.view.payment"
 })
 public class BlazePersistenceConfig {
     @PersistenceUnit

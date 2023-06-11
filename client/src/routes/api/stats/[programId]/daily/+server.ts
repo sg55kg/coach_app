@@ -1,21 +1,21 @@
-import type {RequestHandler} from "@sveltejs/kit";
-import {error} from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
 
+export const GET: RequestHandler = async event => {
+    const token = event.cookies.get('accessToken');
+    const programId = event.params.programId;
+    const startDate = event.url.searchParams.get('startDate');
+    const endDate = event.url.searchParams.get('endDate');
 
-export const GET: RequestHandler = async (event) => {
-    const token = event.cookies.get('accessToken')
-    const programId = event.params.programId
-    const startDate = event.url.searchParams.get('startDate')
-    const endDate = event.url.searchParams.get('endDate')
-
-    try {
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/stats/${programId}/daily?startDate=${startDate}&endDate=${endDate}`, {
+    return await fetch(
+        `${
+            import.meta.env.VITE_SERVER_URL
+        }api/stats/${programId}/daily?startDate=${startDate}&endDate=${endDate}`,
+        {
             method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
-        })
-        return new Response(res.body)
-    } catch (e) {
-        console.log(e)
-        throw error(405, 'Could not retrieve stats')
-    }
-}
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+};

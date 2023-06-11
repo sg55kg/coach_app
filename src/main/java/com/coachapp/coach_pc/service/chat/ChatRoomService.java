@@ -1,7 +1,7 @@
 package com.coachapp.coach_pc.service.chat;
 
 import com.coachapp.coach_pc.model.chat.ChatRoom;
-import com.coachapp.coach_pc.repository.ChatRoomRepository;
+import com.coachapp.coach_pc.repository.chat.ChatRoomRepository;
 import com.coachapp.coach_pc.request.chat.ChatRoomRequest;
 import com.coachapp.coach_pc.view.chat.ChatRoomViewModel;
 import com.coachapp.coach_pc.view.chat.ChatWithMappings;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

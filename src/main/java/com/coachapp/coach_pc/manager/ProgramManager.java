@@ -2,16 +2,16 @@
 //
 //import com.coachapp.coach_pc.model.user.AthleteData;
 //import com.coachapp.coach_pc.model.user.CoachData;
-//import com.coachapp.coach_pc.model.Program;
-//import com.coachapp.coach_pc.model.Team;
+//import com.coachapp.coach_pc.model.program.Program;
+//import com.coachapp.coach_pc.model.team.Team;
 //import com.coachapp.coach_pc.repository.AthleteRepo;
-//import com.coachapp.coach_pc.repository.CoachRepo;
+//import com.coachapp.coach_pc.repository.user.CoachRepo;
 //import com.coachapp.coach_pc.repository.TeamRepo;
-//import com.coachapp.coach_pc.request.ProgramRequest;
-//import com.coachapp.coach_pc.service.AthleteService;
-//import com.coachapp.coach_pc.service.CoachService;
-//import com.coachapp.coach_pc.service.ProgramService;
-//import com.coachapp.coach_pc.service.TeamService;
+//import com.coachapp.coach_pc.request.program.ProgramRequest;
+//import com.coachapp.coach_pc.service.user.AthleteService;
+//import com.coachapp.coach_pc.service.user.CoachService;
+//import com.coachapp.coach_pc.service.program.ProgramService;
+//import com.coachapp.coach_pc.service.team.TeamService;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.coachapp.coach_pc.view.record;
 
 import com.blazebit.persistence.view.*;
-import com.coachapp.coach_pc.model.AthleteRecord;
+import com.coachapp.coach_pc.model.user.AthleteRecord;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

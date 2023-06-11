@@ -1,11 +1,10 @@
 package com.coachapp.coach_pc.view.program;
 
 import com.blazebit.persistence.view.EntityView;
-import com.blazebit.persistence.view.FetchStrategy;
 import com.blazebit.persistence.view.IdMapping;
 import com.blazebit.persistence.view.Mapping;
-import com.coachapp.coach_pc.model.Day;
-import com.coachapp.coach_pc.model.WarmUp;
+import com.coachapp.coach_pc.model.program.Day;
+import com.coachapp.coach_pc.model.program.WarmUp;
 import com.coachapp.coach_pc.model.exercise.Exercise;
 
 import java.time.OffsetDateTime;

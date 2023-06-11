@@ -17,6 +17,7 @@ public class UserPreference {
     private UserData user;
     private String weight = "kg";
     private String mode = "dark";
+    private String defaultHomePage = "athlete";
 
     public UserPreference() {}
 
@@ -50,5 +51,13 @@ public class UserPreference {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getDefaultHomePage() {
+        return defaultHomePage;
+    }
+
+    public void setDefaultHomePage(String defaultHomePage) {
+        this.defaultHomePage = defaultHomePage;
     }
 }

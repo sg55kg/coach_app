@@ -1,9 +1,6 @@
 package com.coachapp.coach_pc.view.program;
 
-import com.blazebit.persistence.SubqueryInitiator;
-import com.blazebit.persistence.view.*;
-import com.coachapp.coach_pc.model.Day;
-//import com.coachapp.coach_pc.model.Program;
+//import com.coachapp.coach_pc.model.program.Program;
 //
 //import java.time.OffsetDateTime;
 //

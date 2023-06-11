@@ -3,12 +3,11 @@ package com.coachapp.coach_pc.view;
 import com.coachapp.coach_pc.enums.EffortIntensity;
 import com.coachapp.coach_pc.enums.ExerciseType;
 import com.coachapp.coach_pc.enums.WeightIntensity;
-import com.coachapp.coach_pc.model.AthleteExerciseComment;
+import com.coachapp.coach_pc.model.exercise.AthleteExerciseComment;
 import com.coachapp.coach_pc.model.exercise.AccessoryExercise;
 import com.coachapp.coach_pc.model.exercise.ComplexExercise;
 import com.coachapp.coach_pc.model.exercise.DurationExercise;
 import com.coachapp.coach_pc.model.exercise.Exercise;
-import com.coachapp.coach_pc.request.AthleteExerciseCommentRequest;
 
 import java.util.ArrayList;
 import java.util.List;

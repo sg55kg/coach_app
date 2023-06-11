@@ -1,8 +1,7 @@
 package com.coachapp.coach_pc.model.exercise;
 
 import com.coachapp.coach_pc.enums.ExerciseType;
-import com.coachapp.coach_pc.model.AthleteExerciseComment;
-import com.coachapp.coach_pc.model.Day;
+import com.coachapp.coach_pc.model.program.Day;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Fetch;
