@@ -1,11 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { error } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const chatId = event.params.chatId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/chat-rooms/${chatId}`,
         {
             method: 'GET',
@@ -15,4 +14,5 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };

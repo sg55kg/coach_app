@@ -7,7 +7,7 @@ export const GET: RequestHandler = async event => {
     const start = event.url.searchParams.get('start');
     const end = event.url.searchParams.get('end');
 
-    return await fetch(
+    const res = await fetch(
         `${
             import.meta.env.VITE_SERVER_URL
         }api/messages/chat/${chatId}?start=${start}&end=${end}`,
@@ -19,6 +19,7 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };
 
 export const POST: RequestHandler = async event => {

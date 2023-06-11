@@ -6,7 +6,7 @@ export const GET: RequestHandler = async event => {
     const startDate = event.url.searchParams.get('startDate');
     const endDate = event.url.searchParams.get('endDate');
 
-    return await fetch(
+    const res = await fetch(
         `${
             import.meta.env.VITE_SERVER_URL
         }api/stats/${programId}/daily?startDate=${startDate}&endDate=${endDate}`,
@@ -18,4 +18,5 @@ export const GET: RequestHandler = async event => {
             },
         }
     );
+    return new Response(await res.text(), { status: res.status, headers: res.headers, statusText: res.statusText });
 };

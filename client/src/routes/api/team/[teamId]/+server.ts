@@ -11,7 +11,7 @@ export const GET: RequestHandler = async event => {
             'Authorization': 'Bearer ' + token,
         },
     });
-    return new Response(await res.text());
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers});
 };
 
 export const PUT: RequestHandler = async event => {
@@ -19,7 +19,7 @@ export const PUT: RequestHandler = async event => {
     const team = await event.request.text();
     const teamId = event.params.teamId;
 
-    return await fetch(
+    const res = await fetch(
         `${import.meta.env.VITE_SERVER_URL}api/teams/${teamId}`,
         {
             method: 'PUT',
@@ -30,4 +30,5 @@ export const PUT: RequestHandler = async event => {
             body: team,
         }
     );
+    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers});
 };
