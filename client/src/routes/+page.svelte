@@ -11,7 +11,7 @@
 
     const { state, redirectUri, baseUrl } = data;
 
-    const loginUrl = baseUrl + state + '&redirect_uri=' + redirectUri;
+    const loginUrl = baseUrl + state;
 
     onMount(() => {
         // TODO: potentially handle redirect logic here
