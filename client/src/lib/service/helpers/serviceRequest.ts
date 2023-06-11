@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit';
 import { goto } from '$app/navigation';
 import { authUser, userDB } from '../../stores/authStore';
 
@@ -88,7 +87,7 @@ export const srPut = async <T>(
     }
     const res = await fetch(url, {
         method: 'PUT',
-        headers: { 'Content-Type': contentType },
+        headers: { 'Content-Type': contentType, 'Accept-Encoding': contentType },
         body: body,
     });
 
@@ -105,9 +104,9 @@ export const srPut = async <T>(
     }
 
     try {
-        const data = await res.json()
+        const data = await res.text()
         return {
-            data: data as T,
+            data: parseJson ? JSON.parse(data) : data as T,
             code: res.status,
         };
     } catch (e) {
