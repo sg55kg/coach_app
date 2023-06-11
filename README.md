@@ -10,7 +10,7 @@ Source code for the Coachable web app at https://www.coachablefitness.com
 - pgAdmin
 - IntelliJ IDEA/community edition -OR- vscode with java/spring boot extensions
 - Webstorm -OR- vscode with Sveltekit extensions
-- Extension for Elixir in your IDE of choice
+- Extension for Elixir in your IDE of choice.
 
 ## Set Up Instructions
 
