@@ -9,7 +9,7 @@ export const POST: RequestHandler = async event => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
         },
         body: newTeamFinanceRequest,
     });

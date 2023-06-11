@@ -8,7 +8,7 @@ export const POST: RequestHandler = async event => {
     return await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/coach`, {
         method: 'PUT',
         headers: {
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
         body: newCoach,

@@ -11,7 +11,7 @@ export const POST: RequestHandler = async event => {
         {
             method: 'POST',
             headers: {
-                Authorization: 'Bearer ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: comment,
