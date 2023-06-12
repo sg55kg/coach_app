@@ -48,7 +48,6 @@ public class TeamRepository {
     public List<DisplayTeam> getDisplayTeams() {
         CriteriaBuilder<Team> cb = cbf.create(em, Team.class);
         List<DisplayTeam> displayTeams = evm.applySetting(EntityViewSetting.create(DisplayTeam.class), cb)
-                .where("inviteOnly").eq(false)
                 .getResultList();
 
         return displayTeams;

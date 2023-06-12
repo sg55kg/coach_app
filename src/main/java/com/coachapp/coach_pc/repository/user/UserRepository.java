@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class UserRepository {
 
         try {
             return Optional.ofNullable(cb1.getSingleResult());
-        } catch (Exception e){
+        } catch (NoResultException e){
             logger.info(e.getMessage());
             e.printStackTrace();
             return Optional.ofNullable(null);
