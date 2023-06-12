@@ -8,7 +8,7 @@ export const POST: RequestHandler = async event => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
         },
         body: team,
     });
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async event => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token,
         },
     });
     return new Response(await res.text(), { status: res.status, statusText: res.statusText });
