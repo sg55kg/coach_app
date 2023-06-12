@@ -58,7 +58,7 @@
     ></div>
     <dialog
         open="{showModal}"
-        class="z-[201] w-11/12 lg:w-3/12 rounded bg-gray-200 shadow-lg shadow-gray-300"
+        class="z-[201] w-11/12 lg:w-3/12 fixed rounded bg-gray-200 shadow-lg shadow-gray-300"
     >
         <div class="relative flex flex-col p-2">
             <button

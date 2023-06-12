@@ -212,17 +212,20 @@
             {/if}
         </div>
     {:else}
-        <p class="m-0 text-base font-normal">
+        <p class="m-0 text-base text-center lg:text-left font-normal">
             {athlete.name} does not have a current program
         </p>
         <div class="mt-2 flex justify-around">
             <div class="h-6 text-link duration-300 hover:text-link-shade">
                 <a
-                    class="flex"
                     href="{`/home/coach/team/${$team.id}/programs`}"
                 >
-                    <span class="mr-px h-6 lg:mr-4"><FaRegPlusSquare /></span>
-                    <p>New Program</p>
+                    <button class="flex">
+                        <span class="mr-1 h-6 w-6 lg:mr-4">
+                            <FaRegPlusSquare />
+                        </span>
+                        <span>New Program</span>
+                    </button>
                 </a>
             </div>
         </div>
