@@ -95,7 +95,7 @@ export class Exercise {
     copy() {
         const copy = Exercise.createFrom(JSON.parse(JSON.stringify(this)));
         copy.id = '';
-        copy.dropSets.forEach(d => (d.id = ''));
+        copy.dropSets = copy.dropSets.map(d => d.copy());
         return copy;
     }
 

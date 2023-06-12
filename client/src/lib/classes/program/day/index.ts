@@ -37,7 +37,7 @@ export class Day implements IDay {
         let copy = Day.createFrom(JSON.parse(JSON.stringify(this)));
         copy.id = '';
         copy.warmUp = copy.warmUp ? { ...copy.warmUp, id: '' } : copy.warmUp;
-        copy.exercises.forEach(e => (e = e.copy()));
+        copy.exercises = copy.exercises.map(e => e.copy());
 
         return copy;
     }
