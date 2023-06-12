@@ -29,6 +29,7 @@
             const res: AthleteData = await UserService.updateAthleteData(
                 updatedAthlete
             );
+
             userDB.update(prev => {
                 prev!.athleteData = res;
                 prev!.athleteData.coach = { id: team.coachId } as CoachData;
