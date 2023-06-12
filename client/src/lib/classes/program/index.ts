@@ -54,7 +54,7 @@ export class Program implements IProgram {
         copy.startDate = null!;
         copy.endDate = null!;
         copy.athleteId = '';
-        copy.days.forEach(d => (d = d.copy()));
+        copy.days = copy.days.map(d => d.copy());
 
         return copy;
     }

@@ -148,6 +148,7 @@
     const copyDay = (idx: number) => {
         const day = $program.days[idx];
         const dayCopy = day.copy();
+        console.log(dayCopy)
         $dayClipboard = [dayCopy];
         document
             .getElementById(`day-card-${idx}`)
