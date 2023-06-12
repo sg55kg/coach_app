@@ -45,36 +45,40 @@
         : 'translate-x-full opacity-0 transition-all delay-500'}"
 >
     <div
-        class="fixed left-0 z-[250] h-screen w-9/12 transform bg-gray-100 shadow-xl transition-all delay-200 duration-200 ease-in-out lg:w-2/12 {showNav
+        class="fixed left-0 z-[250] h-screen w-9/12 transform bg-gray-100 shadow-xl
+               transition-all delay-200 duration-200 ease-in-out lg:w-2/12
+        {showNav
             ? 'translate-x-0'
             : 'translate-x-[-30em]'}"
     >
-        <header class="mt-2 flex w-full items-center p-2">
-            <img class="m-auto ml-32 h-10" src="{logo}" alt="Coachable Logo" />
-            <button
-                class="w-8 text-yellow-lt hover:cursor-pointer hover:text-yellow"
-                on:click="{() => (showNav = false)}"
-            >
-                <FaAngleDoubleLeft />
-            </button>
-        </header>
-        <div>
-            <select
-                class="w-full bg-gray-200 p-2"
-                on:change="{e => changeAthleteCoachView(e.target.value)}"
-            >
-                <option value="coach" selected="{navView === 'coach'}"
-                    >Coach</option
+        {#if showNav}
+            <header class="mt-2 flex w-full items-center p-2">
+                <img class="m-auto ml-32 h-10" src="{logo}" alt="Coachable Logo" />
+                <button
+                    class="w-8 text-yellow-lt hover:cursor-pointer hover:text-yellow"
+                    on:click="{() => (showNav = false)}"
                 >
-                <option value="athlete" selected="{navView === 'athlete'}"
-                    >Athlete</option
+                    <FaAngleDoubleLeft />
+                </button>
+            </header>
+            <div>
+                <select
+                    class="w-full bg-gray-200 p-2"
+                    on:change="{e => changeAthleteCoachView(e.target.value)}"
                 >
-            </select>
-        </div>
-        {#if navView === 'coach'}
-            <CoachNav bind:showNav="{showNav}" />
-        {:else}
-            <AthleteNav bind:showNav="{showNav}" />
+                    <option value="coach" selected="{navView === 'coach'}"
+                        >Coach</option
+                    >
+                    <option value="athlete" selected="{navView === 'athlete'}"
+                        >Athlete</option
+                    >
+                </select>
+            </div>
+            {#if navView === 'coach'}
+                <CoachNav bind:showNav="{showNav}" />
+            {:else}
+                <AthleteNav bind:showNav="{showNav}" />
+            {/if}
         {/if}
     </div>
 </div>

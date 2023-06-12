@@ -78,20 +78,24 @@
             {#if $currentDay?.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
                 <AthleteExpandedDay />
             {:else if $currentDay && $currentDay?.isRestDay}
-                <div class="flex flex-col">
+                <div class="flex flex-col items-center">
                     Rest Day
+                    {#if $currentProgram?.id}
                     <a
                         class="text-md font-medium text-link"
                         href="/home/athlete/program">View Full Program</a
                     >
+                    {/if}
                 </div>
             {:else}
                 <div class="flex flex-col py-4 text-center md:text-left">
                     No programming available for today
+                    {#if $currentProgram?.id}
                     <a
                         class="text-md font-medium text-link"
                         href="/home/athlete/program">View Full Program</a
                     >
+                    {/if}
                 </div>
             {/if}
         {:catch e}
