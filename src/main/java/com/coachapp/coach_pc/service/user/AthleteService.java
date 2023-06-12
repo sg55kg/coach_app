@@ -1,13 +1,16 @@
 package com.coachapp.coach_pc.service.user;
 
+import com.coachapp.coach_pc.model.team.Team;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.AthleteRecord;
 import com.coachapp.coach_pc.model.program.Program;
+import com.coachapp.coach_pc.model.user.CoachData;
 import com.coachapp.coach_pc.repository.user.AthleteRepository;
 import com.coachapp.coach_pc.request.user.AthleteRequest;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
+import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +49,30 @@ public class AthleteService {
         return new ResponseEntity<>(athleteData, HttpStatus.OK);
     }
 
-    public ResponseEntity<AthleteWithPrograms> updateAthlete(UUID id, AthleteRequest request) {
-        Optional<AthleteWithPrograms> optional = repository.findById(id);
+    public ResponseEntity<AthleteViewModel> updateAthlete(UUID id, AthleteRequest request) {
+        Optional<AthleteData> optional = repository.findEntityById(id);
 
-        return optional
-                .map(athleteWithPrograms -> new ResponseEntity<>(athleteWithPrograms, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        if (optional.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        AthleteData athlete = optional.get();
+
+        if (request.getCoachId() != null) {
+            CoachData coach = new CoachData();
+            Team team = new Team();
+            team.setId(request.getTeamId());
+            coach.setId(request.getCoachId());
+            athlete.setCoach(coach);
+            athlete.setTeam(team);
+        } else {
+            athlete.setCoach(null);
+            athlete.setTeam(null);
+        }
+
+        repository.save(athlete);
+        AthleteViewModel result = repository.convertEntityToViewModel(athlete);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 //    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(UUID athleteId, AthleteRecord record) {

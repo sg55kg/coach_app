@@ -3,11 +3,18 @@ package com.coachapp.coach_pc.repository.user;
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.view.*;
+import com.coachapp.coach_pc.model.program.Day;
+import com.coachapp.coach_pc.model.program.Program;
+import com.coachapp.coach_pc.model.team.Team;
 import com.coachapp.coach_pc.model.user.AthleteData;
 import com.coachapp.coach_pc.model.user.AthleteRecord;
 import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
+import com.coachapp.coach_pc.view.program.DayViewModel;
+import com.coachapp.coach_pc.view.program.ProgramWithDays;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
+import com.coachapp.coach_pc.view.team.TeamViewModel;
+import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
 import org.springframework.stereotype.Repository;
 
@@ -68,7 +75,7 @@ public class AthleteRepository {
         em.persist(record);
         em.flush();
 
-        EntityViewBuilder<AthleteRecordViewModel> builder = createViewModelBuilder(record);
+        EntityViewBuilder<AthleteRecordViewModel> builder = createAthleteRecordViewModelBuilder(record);
         AthleteRecordViewModel vm = builder.build();
 
         return vm;
@@ -87,7 +94,7 @@ public class AthleteRepository {
         }
         em.flush();
         for (var record : newRecords) {
-            EntityViewBuilder<AthleteRecordViewModel> builder = createViewModelBuilder(record);
+            EntityViewBuilder<AthleteRecordViewModel> builder = createAthleteRecordViewModelBuilder(record);
             AthleteRecordViewModel vm = builder.build();
             result.add(vm);
         }
@@ -136,7 +143,16 @@ public class AthleteRepository {
         }
     }
 
-    private EntityViewBuilder<AthleteRecordViewModel> createViewModelBuilder(AthleteRecord record) {
+    @Transactional
+    public Optional<AthleteData> findEntityById(UUID id) {
+        return Optional.ofNullable(em.find(AthleteData.class, id));
+    }
+
+    public AthleteViewModel convertEntityToViewModel(AthleteData athlete) {
+        return createAthleteViewModelBuilder(athlete).build();
+    }
+
+    private EntityViewBuilder<AthleteRecordViewModel> createAthleteRecordViewModelBuilder(AthleteRecord record) {
         EntityViewBuilder<AthleteRecordViewModel> builder = evm.createBuilder(AthleteRecordViewModel.class)
                 .with("athleteId", record.getAthlete().getId())
                 .with("isCurrent", record.getIsCurrent())
@@ -151,6 +167,63 @@ public class AthleteRepository {
         if (record.getDay() != null) {
             builder = builder.with("dayId", record.getDay().getId());
         }
+        return builder;
+    }
+
+    private EntityViewBuilder<AthleteViewModel> createAthleteViewModelBuilder(AthleteData athlete) {
+        EntityViewBuilder<AthleteViewModel> builder = evm.createBuilder(AthleteViewModel.class)
+                .with("id", athlete.getId())
+                .with("name", athlete.getName());
+
+        if (athlete.getCurrentProgram() != null) {
+            builder.with("currentProgram", createProgramViewModelBuilder(athlete.getCurrentProgram()).build());
+        } else {
+            builder.with("currentProgram", athlete.getCurrentProgram());
+        }
+
+        if (athlete.getTeam() != null) {
+            builder.with("team", createTeamViewModelBuilder(athlete.getTeam()).build());
+        } else {
+            builder.with("team", athlete.getTeam());
+        }
+
+        return builder;
+    }
+
+    private EntityViewBuilder<ProgramWithDays> createProgramViewModelBuilder(Program program) {
+        EntityViewBuilder<ProgramWithDays> builder = evm.createBuilder(ProgramWithDays.class)
+                .with("id", program.getId())
+                .with("name", program.getName())
+                .with("startDate", program.getStartDate())
+                .with("endDate", program.getEndDate())
+                .with("updatedAt", program.getUpdatedAt())
+                .with(
+                        "days",
+                        program.getDays()
+                                .stream()
+                                .map(d -> createDayViewModelBuilder(d).build())
+                                .toList()
+                );
+        return builder;
+    }
+
+    private EntityViewBuilder<DayViewModel> createDayViewModelBuilder(Day day) {
+        EntityViewBuilder<DayViewModel> builder = evm.createBuilder(DayViewModel.class)
+                .with("id", day.getId())
+                .with("date", day.getDate())
+                .with("isRestDay", day.getIsRestDay())
+                .with("warmUp", day.getWarmUp())
+                .with("exercises", day.getExercises());
+        return builder;
+    }
+
+    private EntityViewBuilder<TeamViewModel> createTeamViewModelBuilder(Team team) {
+        EntityViewBuilder<TeamViewModel> builder = evm.createBuilder(TeamViewModel.class)
+                .with("id", team.getId())
+                .with("name", team.getName())
+                .with("description", team.getDescription())
+                .with("createdAt", team.getCreatedAt())
+                .with("teamLogo", team.getTeamLogo());
         return builder;
     }
 }
