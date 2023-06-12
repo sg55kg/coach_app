@@ -27,7 +27,6 @@
             await goto('/home/athlete');
         }
     };
-    $: console.log(navView);
 </script>
 
 <div class="flex h-full items-center justify-center">
@@ -42,7 +41,7 @@
     class="overlay fixed inset-0 z-40 transform overflow-hidden ease-in-out
     {showNav
         ? 'translate-x-0 opacity-100 transition-opacity duration-100'
-        : 'translate-x-full opacity-0 transition-all delay-500'}"
+        : 'translate-x-full opacity-0 transition-all delay-500 w-0'}"
 >
     <div
         class="fixed left-0 z-[250] h-screen w-9/12 transform bg-gray-100 shadow-xl
