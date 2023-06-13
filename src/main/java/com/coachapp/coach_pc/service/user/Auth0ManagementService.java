@@ -99,7 +99,7 @@ public class Auth0ManagementService {
             String res = WebClient.create(auth0Domain)
                     .post()
                     .uri("api/v2/tickets/password-change")
-                    .bodyValue("{\"user_id\":\"" + userId + "\",\"ttl_sec\":" + FIVE_DAYS + ",\"result_url\":\"" + clientUrl + "/home\"}")
+                    .bodyValue("{\"user_id\":\"" + userId + "\",\"ttl_sec\":" + FIVE_DAYS + ",\"result_url\":\"" + clientUrl + "home\"}")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
