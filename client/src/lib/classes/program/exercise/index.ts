@@ -95,6 +95,10 @@ export class Exercise {
     copy() {
         const copy = Exercise.createFrom(JSON.parse(JSON.stringify(this)));
         copy.id = '';
+        copy.weightCompleted = 0;
+        copy.totalRepsCompleted = 0;
+        copy.setsCompleted = 0;
+        copy.repCompletedArr = [];
         copy.dropSets = copy.dropSets.map(d => d.copy());
         return copy;
     }
