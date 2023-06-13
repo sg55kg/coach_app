@@ -42,6 +42,9 @@ public class Auth0ManagementService {
     @Value("${auth0.m2m.clientId}")
     private String auth0M2MClientId;
 
+    @Value("${client-url}")
+    private String clientUrl;
+
     private final UserRepository repository;
 
     private final Logger logger = LoggerFactory.getLogger(Auth0ManagementService.class);
@@ -96,7 +99,7 @@ public class Auth0ManagementService {
             String res = WebClient.create(auth0Domain)
                     .post()
                     .uri("api/v2/tickets/password-change")
-                    .bodyValue("{\"user_id\":\"" + userId + "\",\"ttl_sec\":" + FIVE_DAYS + ",\"result_url\":\"https://localhost:5173/home\"}")
+                    .bodyValue("{\"user_id\":\"" + userId + "\",\"ttl_sec\":" + FIVE_DAYS + ",\"result_url\":\"" + clientUrl + "/home\"}")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
