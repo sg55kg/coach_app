@@ -4,6 +4,7 @@
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
     import { AthleteData } from '../../../classes/user/athlete';
     import { Team } from '../../../classes/team';
+    import {TeamService} from "../../../service/TeamService";
 
     let newLogoSrc: string = $team.teamLogo;
     let newTeamName: string = $team.name;
