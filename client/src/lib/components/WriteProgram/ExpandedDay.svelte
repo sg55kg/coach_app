@@ -1,7 +1,7 @@
 <script lang="ts">
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import ExerciseCard from '$lib/components/WriteProgram/ExerciseCard.svelte';
-    import { getContext, onDestroy, onMount } from 'svelte';
+    import { getContext, onDestroy } from 'svelte';
     import FaChevronLeft from 'svelte-icons/fa/FaChevronLeft.svelte';
     import FaChevronRight from 'svelte-icons/fa/FaChevronRight.svelte';
     import ExpandedExercise from '$lib/components/WriteProgram/ExpandedExercise.svelte';
@@ -9,6 +9,10 @@
     import { userDB } from '$lib/stores/authStore';
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
     import { WarmUp } from '../../classes/program/day';
+    import DayToolbar from "$lib/components/WriteProgram/toolbars/DayToolbar.svelte";
+    import {isMobile} from "$lib/stores/authStore.js";
+    import MdClose from 'svelte-icons/md/MdClose.svelte'
+    import WeekViewNav from "$lib/components/WriteProgram/navigation/WeekViewNav.svelte";
 
     const {
         getProgram,
@@ -17,10 +21,7 @@
         setSelectedDay,
         getSelectedExerciseIdx,
         updateProgram,
-        getDayClipboard,
-        copyDay,
-        pasteDay,
-        clearExercises,
+        getDayClipboard
     } = getContext('program');
 
     const program = getProgram();
@@ -89,123 +90,112 @@
 </script>
 
 <div
-    class="absolute top-12 left-0 right-0 bottom-0 flex w-screen overflow-y-auto"
+    class="fixed lg:top-0 top-12 left-0 right-0 bottom-0 flex w-screen lg:h-screen overflow-y-auto bg-gray-300"
 >
     <div
-        class="relative m-auto flex h-[88vh] w-11/12 flex-col items-center bg-gray-300"
+        class="{$isMobile
+        ? 'm-auto flex flex-col h-[88vh] w-full items-center bg-gray-300 relative'
+        : 'm-0 flex flex-row m-0 h-full w-full bg-gray-100'}"
     >
-        <button
-            class="absolute top-2 right-3 text-2xl font-bold"
-            on:click="{() => setSelectedDay(undefined)}"
-        >
-            X
-        </button>
-        <small class="w-fit self-start p-0.5 text-sm"
-            >{$program.name}{athlete ? ' - ' + athlete.name : ''}</small
-        >
-        <div
-            class="flex items-center justify-center p-2 text-2xl font-bold text-yellow"
-        >
-            <button class="mx-8 h-6 w-3" on:click="{decrementDay}">
-                <FaChevronLeft />
+        {#if $isMobile}
+            <button
+                    class="absolute lg:w-fit w-8 h-8 right-3 top-2 text-lg font-bold"
+                    on:click="{() => setSelectedDay(undefined)}"
+            >
+                <span><MdClose /></span>
             </button>
-            <h1>Day {$index + 1}</h1>
-            <button class="mx-8 h-6 w-3" on:click="{incrementDay}">
-                <FaChevronRight />
-            </button>
-        </div>
-        <div
-            class="mt-6 flex w-full flex-col items-start justify-start self-start pr-2"
-        >
-            {#if $selectedDay.isRestDay}
-                <h4 class="m-2 w-full text-center text-2xl font-semibold">
-                    Rest Day
-                </h4>
-            {:else}
-                {#if $selectedDay.warmUp}
-                    <div class="flex w-full items-center justify-center">
-                        <RichTextEditor
-                            bind:content="{$program.days[$index].warmUp
-                                .instructions}"
-                        />
-                    </div>
-                    <button
-                        class="cursor-pointer self-center py-2 text-red"
-                        on:click="{toggleWarmup}">Remove Warm Up</button
-                    >
-                {:else}
-                    <button
-                        class="cursor-pointer self-center py-2 text-textblue"
-                        on:click="{toggleWarmup}">Add Warm Up</button
-                    >
-                {/if}
-                {#each $selectedDay.exercises as exercise, idx}
-                    {#if $exerciseIndex === idx}
-                        <ExpandedExercise bind:exercise="{exercise}" />
+            <small class="w-fit self-start p-0.5 text-sm">
+                {$program.name}{athlete ? ' - ' + athlete.name : ''}
+            </small>
+        {:else}
+            <WeekViewNav />
+        {/if}
+        <div class="w-full">
+            <div class="flex flex-col lg:flex-row lg:justify-between">
+                <div
+                        class="flex items-center justify-center lg:justify-start p-2 text-2xl font-bold lg:bg-gray-100 text-yellow flex-grow"
+                >
+                    <button class="mx-8 h-6 w-3" on:click="{decrementDay}">
+                        <FaChevronLeft />
+                    </button>
+                    <h1>Day {$index + 1} {$program.id ? $selectedDay.date.format('MMM DD') : ''}</h1>
+                    <button class="mx-8 h-6 w-3" on:click="{incrementDay}">
+                        <FaChevronRight />
+                    </button>
+                </div>
+                <div class="flex flex-col items-center p-4 lg:bg-gray-100">
+                    {#if $program.days[$index].isRestDay}
+                        <button
+                                class="text-md border-textyellow my-2 rounded border p-1"
+                                on:click="{undoRestDay}"
+                        >
+                            Undo Rest Day
+                        </button>
                     {:else}
-                        <ExerciseCard
-                            bind:exercise="{exercise}"
-                            index="{idx}"
-                        />
+                        <button
+                                class="text-md border-textyellow my-2 rounded border p-1"
+                                on:click="{makeRestDay}"
+                        >
+                            Make Rest Day
+                        </button>
                     {/if}
-                {/each}
-            {/if}
-        </div>
-        <div class="flex flex-col items-center p-4">
-            {#if $selectedDay.isRestDay}
-                <button
-                    class="text-md border-textyellow my-2 rounded border p-1"
-                    on:click="{undoRestDay}"
-                >
-                    Undo Rest Day
-                </button>
-            {:else}
-                <button
-                    class="my-2 h-6 w-6 text-yellow"
-                    on:click="{addExercise}"
-                >
-                    <FaPlus />
-                </button>
-                <button
-                    class="text-md border-textyellow my-2 rounded border p-1"
-                    on:click="{makeRestDay}"
-                >
-                    Make Rest Day
-                </button>
-            {/if}
+                </div>
+                {#if !$isMobile}
+                    <div class="flex items-center lg:bg-gray-100">
+                        <button
+                                class="lg:w-fit w-10 h-10 text-lg font-bold px-2"
+                                on:click="{() => setSelectedDay(undefined)}"
+                        >
+                            <span>Back to Calendar</span>
+                        </button>
+                    </div>
+                {/if}
+            </div>
+            <div class="lg:pt-6 flex w-full flex-col items-start justify-start pr-2 lg:p-2 lg:bg-gray-100">
+                {#if $program.days[$index].isRestDay}
+                    <h4 class="m-2 w-full text-center text-2xl font-semibold">
+                        Rest Day
+                    </h4>
+                {:else}
+                    {#if $program.days[$index].warmUp}
+                        <div class="flex w-full items-center justify-center">
+                            <RichTextEditor
+                                    bind:content="{$program.days[$index].warmUp
+                                .instructions}"
+                            />
+                        </div>
+                        <button
+                                class="cursor-pointer self-center py-2 text-red"
+                                on:click="{toggleWarmup}">Remove Warm Up</button
+                        >
+                    {:else}
+                        <button
+                                class="cursor-pointer self-center py-2 text-textblue"
+                                on:click="{toggleWarmup}">Add Warm Up</button
+                        >
+                    {/if}
+                    {#each $program.days[$index].exercises as exercise, idx}
+                        {#if $exerciseIndex === idx}
+                            <ExpandedExercise bind:exercise="{exercise}" />
+                        {:else}
+                            <ExerciseCard
+                                    bind:exercise="{exercise}"
+                                    index="{idx}"
+                            />
+                        {/if}
+                    {/each}
+                    <button
+                            class="my-2 h-6 w-6 text-yellow self-center"
+                            on:click="{addExercise}"
+                    >
+                        <FaPlus />
+                    </button>
+                {/if}
+            </div>
         </div>
     </div>
 </div>
-<div class="fixed bottom-0 left-0 right-0 flex justify-around bg-gray-100">
-    <button
-        class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-        on:click="{() => copyDay($index)}"
-    >
-        Copy
-    </button>
-    {#if dayClipboard.length > 0}
-        <button
-            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-            on:click="{() => pasteDay($index)}"
-        >
-            Paste
-        </button>
-    {/if}
-    {#if $selectedDay.exercises.length > 0}
-        <button
-            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-            on:click="{() => clearExercises($index)}"
-        >
-            Clear Exercises
-        </button>
-    {/if}
-    <button
-        class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-        on:click="{updateProgram}"
-    >
-        Save
-    </button>
-</div>
+<DayToolbar />
 
 <style>
 </style>

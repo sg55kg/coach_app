@@ -1,10 +1,10 @@
 <script lang="ts">
     import FaEllipsisV from 'svelte-icons/fa/FaEllipsisV.svelte';
     import { isMobile } from '$lib/stores/authStore.js';
-    import { DisplayProgram } from '../../classes/program';
-    import { ProgramService } from '../../service/ProgramService';
+    import { DisplayProgram } from '../../../classes/program';
+    import { ProgramService } from '../../../service/ProgramService';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
-    import { userDB } from '../../stores/authStore';
+    import { userDB } from '../../../stores/authStore';
     import { goto } from '$app/navigation';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
     import MdSearch from 'svelte-icons/md/MdSearch.svelte';
