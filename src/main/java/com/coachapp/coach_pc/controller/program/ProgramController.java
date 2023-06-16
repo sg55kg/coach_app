@@ -3,6 +3,7 @@ package com.coachapp.coach_pc.controller.program;
 
 import com.coachapp.coach_pc.request.program.ProgramRequest;
 import com.coachapp.coach_pc.request.program.UpdateProgramRequest;
+import com.coachapp.coach_pc.view.program.ProgramViewModel;
 import com.coachapp.coach_pc.view.program.ProgramWithDays;
 import com.coachapp.coach_pc.view.program.ProgramWithIds;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import com.coachapp.coach_pc.service.program.ProgramService;
 
@@ -72,6 +74,12 @@ public class ProgramController {
     public ResponseEntity<List<ProgramWithIds>> searchProgramsByName(@PathVariable UUID coachId, @RequestParam String name) {
         logger.info("Searching for programs similar to: " + name);
         return _programService.searchProgramsByName(coachId, name);
+    }
+
+    @GetMapping("/coach/{coachId}/templates")
+    public ResponseEntity<List<ProgramWithIds>> getCoachTemplates(@PathVariable UUID coachId) {
+        logger.info("Searching for program templates");
+        return _programService.getCoachTemplates(coachId);
     }
 
 //    @PutMapping("/{id}/day")

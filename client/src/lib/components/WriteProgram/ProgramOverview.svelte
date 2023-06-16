@@ -1,36 +1,21 @@
 <script lang="ts">
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import DayCard from '$lib/components/WriteProgram/DayCard.svelte';
-    import ProgramSearch from '$lib/components/WriteProgram/ProgramSearch.svelte';
+    import ProgramSearch from '$lib/components/WriteProgram/modals/ProgramSearch.svelte';
     import { type Writable, writable } from 'svelte/store';
     import { Program } from '$lib/classes/program';
-    import { onMount, setContext } from 'svelte';
+    import { setContext } from 'svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import { Day } from '$lib/classes/program/day';
     import ExpandedDay from '$lib/components/WriteProgram/ExpandedDay.svelte';
-    import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte';
     import { Exercise } from '$lib/classes/program/exercise';
-    import { ExerciseType } from '$lib/classes/program/exercise/enums';
-    import CreateProgramModal from '$lib/components/WriteProgram/CreateProgramModal.svelte';
+    import CreateProgramModal from '$lib/components/WriteProgram/modals/CreateProgramModal.svelte';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import { ProgramService } from '$lib/service/ProgramService';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
-    import AssignAthleteModal from '$lib/components/WriteProgram/AssignAthleteModal.svelte';
-    import FaCaretDown from 'svelte-icons/fa/FaCaretDown.svelte';
-    import FaRegSave from 'svelte-icons/fa/FaRegSave.svelte';
-    import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte';
-    import FaFileExport from 'svelte-icons/fa/FaFileExport.svelte';
-    import FaUserPlus from 'svelte-icons/fa/FaUserPlus.svelte';
-    import MdAdd from 'svelte-icons/md/MdAdd.svelte';
-    import dayjs from 'dayjs';
-    import { goto } from '$app/navigation';
-    import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
-    import ProgramStats from '../Stats/ProgramStats.svelte';
-    import { team } from '../../stores/teamStore';
-    import { userDB } from '../../stores/authStore';
-    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
-    import UserService from '../../service/UserService';
-    import type { DayDTO } from '../../classes/program/day';
+    import AssignAthleteModal from '$lib/components/WriteProgram/modals/AssignAthleteModal.svelte';
+    import ProgramToolbarDesktop from "$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte";
+    import ProgramToolbarMobile from "$lib/components/WriteProgram/toolbars/ProgramToolbarMobile.svelte";
 
     export let selectedProgram = new Program();
 
@@ -38,7 +23,6 @@
     let contextCoordinates: { x: number; y: number } = { x: -1, y: -1 };
     let showCreateProgram: boolean = false;
     let showAssignAthlete: boolean = false;
-    let showFileMenu: boolean = false;
     let daysContainer: HTMLDivElement;
 
     const program: Writable<Program> = writable(selectedProgram);
@@ -78,26 +62,6 @@
         } finally {
             $programLoading = false;
             showActionContext = false;
-        }
-    };
-
-    const createProgram = async (newProgram: Program) => {
-        $programError = '';
-        $programSuccess = '';
-        $programLoading = true;
-        try {
-            const res = await ProgramService.createProgram(newProgram);
-            if (!res.id) {
-                throw new Error('Could not create program');
-            }
-            $programSuccess = 'Saved!';
-            $program = res;
-            await goto(`/home/coach/program/${res.id}`);
-        } catch (e) {
-            console.log(e);
-            $programError = 'Could not create this program at this time';
-        } finally {
-            $programLoading = false;
         }
     };
 
@@ -148,8 +112,7 @@
     const copyDay = (idx: number) => {
         const day = $program.days[idx];
         const dayCopy = day.copy();
-        console.log(dayCopy)
-        $dayClipboard = [dayCopy];
+        $dayClipboard = [dayCopy, ...$dayClipboard];
         document
             .getElementById(`day-card-${idx}`)
             .classList.remove('selected-day');
@@ -162,18 +125,16 @@
                 .classList.remove('selected-day');
             return;
         }
-
-        program.update(prev => {
-            let id = prev.days[idx].id;
-            prev.days[idx] = $dayClipboard[0].copy();
-            prev.days[idx].id = id;
-            return prev;
-        });
+        const id = $program.days[idx].id;
+        const dayToPaste = $dayClipboard.shift();
+        $dayClipboard = $dayClipboard;
+        $program.days[idx] = dayToPaste;
+        $program.days[idx].id = id;
         $program = $program;
+        $selectedDay = $selectedDay;
         document
             .getElementById(`day-card-${idx}`)
             .classList.remove('selected-day');
-        $selectedDay = $selectedDay;
         formatProgramDates();
     };
 
@@ -190,6 +151,37 @@
             $programLoading = false;
         }
     };
+
+    const addDay = () => {
+        const day = new Day();
+        $program.days = [...$program.days, day];
+        formatProgramDates();
+    };
+
+    const copyExercise = (index: number) => {
+        if ($selectedDayIdx < 0) {
+            return;
+        }
+        const exerciseCopy = $program.days[$selectedDayIdx].exercises[index].copy();
+        $exerciseClipboard = [exerciseCopy, ...$exerciseClipboard];
+    };
+
+    const pasteExercise = () => {
+        if ($selectedDayIdx < 0) {
+            return;
+        }
+        const exerciseToPaste = $exerciseClipboard.shift();
+        $exerciseClipboard = $exerciseClipboard;
+        if ($selectedExerciseIdx > -1) {
+            const id = $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx].id;
+            $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx] = exerciseToPaste;
+            $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx].id = id;
+        } else {
+            $program.days[$selectedDayIdx].exercises.push(exerciseToPaste);
+        }
+        $program = $program;
+        $selectedDay = $selectedDay;
+    }
 
     setContext('program', {
         getProgram: () => program,
@@ -213,145 +205,11 @@
         copyDay,
         pasteDay,
         deleteExercise,
+        addDay,
+        copyExercise,
+        pasteExercise
     });
 
-    const generateCSV = () => {
-        let str =
-            'Day 1\nExercise,Weight,Sets,Reps,Complete,Weight Completed,RPS Completed,Sets Completed,Total Reps Completed,Notes\n';
-        for (let i = 0; i < $program.days.length; i++) {
-            if ($program.days[i].exercises.length < 1) continue;
-            if (i > 0) {
-                str +=
-                    'Day ' +
-                    (i + 1) +
-                    ': ' +
-                    $program.days[i].date.format('ddd MMM DD') +
-                    '\n';
-            }
-            const d = $program.days[i];
-            if (d.isRestDay) {
-                str += 'Rest Day\n';
-                continue;
-            }
-            for (let j = 0; j < d.exercises.length; j++) {
-                const e = d.exercises[j];
-                if (e.type === ExerciseType.EXERCISE) {
-                    str +=
-                        e.name +
-                        ',' +
-                        e.weight +
-                        ',' +
-                        e.sets +
-                        ',' +
-                        e.repsPerSet +
-                        ',' +
-                        e.isComplete +
-                        ',' +
-                        (e.isComplete ? e.weightCompleted : '0') +
-                        ',' +
-                        (e.isComplete && e.setsCompleted > 0
-                            ? e.totalRepsCompleted / e.setsCompleted
-                            : '0') +
-                        ',' +
-                        (e.isComplete ? e.setsCompleted : '0') +
-                        ',' +
-                        (e.isComplete ? e.totalRepsCompleted : '0') +
-                        ',' +
-                        e.notes +
-                        '\n';
-                } else if (e.type === ExerciseType.COMPLEX) {
-                    str +=
-                        e.nameArr.join('+') +
-                        ',' +
-                        e.weight +
-                        ',' +
-                        e.sets +
-                        ',' +
-                        e.repArr.join('+') +
-                        ',' +
-                        e.isComplete +
-                        ',' +
-                        (e.isComplete ? e.weightCompleted : '0') +
-                        ',' +
-                        (e.isComplete
-                            ? e.repCompletedArr.join('+')
-                            : e.repArr.map(_ => 0).join('+')) +
-                        ',' +
-                        (e.isComplete ? e.setsCompleted : '0') +
-                        ',' +
-                        (e.isComplete
-                            ? e.repArr.reduce((a, b) => a + b)
-                            : '0') +
-                        ',' +
-                        e.notes +
-                        '\n';
-                }
-            }
-        }
-
-        const downloadLink = document.createElement('a');
-        const csv = str;
-        const blob = new Blob(['\ufeff', csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const exportFilename = $program.name;
-        downloadLink.href = url;
-        downloadLink.setAttribute('download', exportFilename);
-        downloadLink.click();
-    };
-
-    const addDay = () => {
-        const day = new Day();
-        $program.days = [...$program.days, day];
-        formatProgramDates();
-    };
-
-    const focusNameInput = () => {
-        showActionContext = false;
-        const input = document.getElementById('program-name-input');
-        input.focus();
-        input.classList.add('error-focus');
-        input.addEventListener('focusout', () => {
-            input.classList.remove('error-focus');
-        });
-    };
-
-    const makeACopy = async () => {
-        if (!$program.id) return;
-
-        let programCopy = $program.copy();
-        await createProgram(programCopy);
-    };
-
-    const deleteProgram = async () => {
-        $programLoading = true;
-        $programSuccess = '';
-        $programError = '';
-        try {
-            await ProgramService.deleteProgram($program.id);
-            $programSuccess =
-                'Successfully deleted ' +
-                $program.name +
-                '. Redirecting you to home...';
-            $userDB.coachData.programs = $userDB.coachData.programs.filter(
-                p => p.id !== $program.id
-            );
-            if ($team) {
-                setTimeout(async () => {
-                    await goto(`/home/coach/team/${$team.id}/programs`);
-                }, 2000);
-            } else {
-                setTimeout(async () => {
-                    await goto('/home');
-                }, 2000);
-            }
-        } catch (e) {
-            console.log(e);
-            $programError =
-                "Error, can't delete " + $program.name + ' at this time.';
-        } finally {
-            $programLoading = false;
-        }
-    };
 
     $: $programError
         ? setTimeout(() => {
@@ -364,21 +222,7 @@
           }, 5000)
         : null;
 
-    const toggleWeightPreference = async () => {
-        $programLoading = true;
-        if ($userDB.preferences.weight === 'kg') {
-            $userDB.preferences.weight = 'lb';
-        } else {
-            $userDB.preferences.weight = 'kg';
-        }
-        try {
-            userDB.set(await UserService.updateUserData($userDB!));
-        } catch (e) {
-            console.log(e);
-        } finally {
-            $programLoading = false;
-        }
-    };
+
 </script>
 
 <div
@@ -386,111 +230,7 @@
     class="relative flex h-[90vh] w-screen flex-col overflow-y-auto pb-32"
 >
     {#if !$isMobile}
-        <nav class="relative flex flex-col bg-gray-100 p-2">
-            <div class="flex w-screen">
-                <input
-                    type="text"
-                    class="w-3/12 rounded bg-gray-300 p-1"
-                    bind:value="{$program.name}"
-                    placeholder="Program Name"
-                    id="program-name-input"
-                />
-                {#if $program.id}<p class="px-2">
-                        <i
-                            >Last Updated: {$program.updatedAt.format(
-                                'ddd MMM DD YYYY hh:mm:ssA'
-                            )}</i
-                        >
-                    </p>{/if}
-                <div class="flex self-end lg:px-2">
-                    <Toggle
-                        checked="{$userDB.preferences.weight === 'kg'}"
-                        onChange="{toggleWeightPreference}"
-                    />
-                    <p class="px-1 text-textblue">
-                        {$userDB.preferences.weight === 'kg' ? 'kg' : 'lbs'}
-                    </p>
-                </div>
-            </div>
-            <div class="py-2">
-                <button
-                    class="text-md mx-2 rounded bg-yellow p-1 px-2 font-medium text-gray-300 disabled:bg-gray-400"
-                    on:click="{updateProgram}"
-                    disabled="{!$program.id}"
-                >
-                    Save
-                </button>
-                <div class="dropdown relative inline-block">
-                    <button
-                        class="flex items-center rounded p-1 hover:bg-gray-400"
-                        on:click="{() => (showFileMenu = !showFileMenu)}"
-                    >
-                        File
-                        <span class="mx-1 h-3"><FaCaretDown /></span>
-                    </button>
-                    {#if showFileMenu}
-                        <div
-                            class="fixed top-0 right-0 left-0 bottom-0 z-[114]"
-                            on:click="{() => (showFileMenu = !showFileMenu)}"
-                        ></div>
-                        <div
-                            class="absolute z-[115] w-56 origin-top-right bg-gray-400 p-2 shadow-lg"
-                            on:click="{() =>
-                                setTimeout(() => (showFileMenu = false), 100)}"
-                        >
-                            <!--                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">-->
-                            <!--                                <span class="h-5 mr-2"><FaRegSave /></span>-->
-                            <!--                                Save-->
-                            <!--                            </button>-->
-                            <button
-                                class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                                on:click="{() => (showCreateProgram = true)}"
-                            >
-                                <span class="mr-2 h-5"><MdAdd /></span>
-                                New
-                            </button>
-                            <button
-                                class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                                on:click="{makeACopy}"
-                            >
-                                <span class="mr-2 h-5"><FaRegCopy /></span>
-                                Make a copy
-                            </button>
-                            <button
-                                class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                                on:click="{generateCSV}"
-                            >
-                                <span class="mr-2 h-5"><FaFileExport /></span>
-                                Export to CSV
-                            </button>
-                            <button
-                                class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                                on:click="{() =>
-                                    $program.name
-                                        ? (showAssignAthlete = true)
-                                        : focusNameInput()}"
-                            >
-                                <span class="mr-2 h-5"><FaUserPlus /></span>
-                                Assign to athlete
-                            </button>
-                            <hr />
-                            <button
-                                class="flex w-full items-center p-2 text-left text-red-shade hover:bg-gray-200"
-                                on:click="{deleteProgram}"
-                            >
-                                <span class="mr-2 h-5"><FaTrashAlt /></span>
-                                Delete Program
-                            </button>
-                        </div>
-                    {/if}
-                </div>
-                {#if $program.id}
-                    <a href="/home/coach/program/{$program.id}/stats">
-                        <button> Program Stats </button>
-                    </a>
-                {/if}
-            </div>
-        </nav>
+        <ProgramToolbarDesktop bind:showAssignAthlete={showAssignAthlete} bind:showCreateProgram={showCreateProgram} />
     {/if}
     <header class="flex {$isMobile ? 'flex-row' : 'flex-col'} items-center p-3">
         {#if $isMobile}
@@ -530,60 +270,7 @@
     </div>
 </div>
 {#if $isMobile}
-    <button
-        class="fixed bottom-5 left-10 right-10 rounded bg-yellow p-4 font-bold text-gray-300"
-        on:click="{() => (showActionContext = !showActionContext)}"
-    >
-        Options
-    </button>
-
-    {#if showActionContext}
-        <div
-            class="fixed top-0 bottom-0 right-0 left-0 z-0"
-            on:click="{() => (showActionContext = false)}"
-        ></div>
-        <div
-            class="fixed bottom-0 right-0 left-0 z-10 flex w-screen transform flex-col bg-gray-400 text-center transition-all ease-in-out
-        {showActionContext ? ' -translate-y-0' : ' translate-y-0'}"
-        >
-            <button
-                class="h-6 w-full pt-2"
-                on:click="{() => (showActionContext = false)}"
-            >
-                <FaChevronDown />
-            </button>
-            {#if !$program.id}
-                <button
-                    class="w-full p-4 text-lg"
-                    on:click="{() => (showCreateProgram = true)}"
-                >
-                    Create Program
-                </button>
-            {/if}
-            {#if !$program.athleteId}
-                <button
-                    class="w-full p-4 text-lg"
-                    on:click="{() =>
-                        $program.name
-                            ? (showAssignAthlete = true)
-                            : focusNameInput()}"
-                >
-                    Assign To Athlete
-                </button>
-            {/if}
-            {#if $program.id}
-                <button class="w-full p-4 text-lg"> Make a Copy </button>
-            {/if}
-            <button class="w-full p-4 text-lg" on:click="{generateCSV}">
-                Export to CSV
-            </button>
-            {#if $program.id}
-                <button class="w-full p-4 text-lg" on:click="{updateProgram}">
-                    Save
-                </button>
-            {/if}
-        </div>
-    {/if}
+    <ProgramToolbarMobile bind:showCreateProgram={showCreateProgram} />
 {/if}
 
 {#if $selectedDay}
@@ -591,10 +278,10 @@
 {/if}
 
 {#if showCreateProgram}
-    <CreateProgramModal bind:show="{showCreateProgram}" />
+    <CreateProgramModal bind:show="{showCreateProgram}" programName="{$program.name}" />
 {/if}
 {#if showAssignAthlete}
-    <AssignAthleteModal bind:show="{showAssignAthlete}" />
+    <AssignAthleteModal bind:show="{showAssignAthlete}" bind:showCreateProgram={showCreateProgram} />
 {/if}
 {#if $programLoading}
     <div

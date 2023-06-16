@@ -148,4 +148,19 @@ public class ProgramRepository {
         List<ProgramWithIds> result = cb1.getResultList();
         return result;
     }
+
+    public List<ProgramWithIds> getCoachTemplates(UUID coachId) {
+        CriteriaBuilder<Program> cb = cbf.create(em, Program.class);
+        List<ProgramWithIds> result = evm.applySetting(EntityViewSetting.create(ProgramWithIds.class), cb)
+                .whereOr()
+                    .whereAnd()
+                        .where("coach.id")
+                            .eq(coachId)
+                        .where("athlete.id")
+                            .isNull()
+                    .endAnd()
+                .endOr()
+                .getResultList();
+        return result;
+    }
 }
