@@ -6,6 +6,7 @@
     import { isMobile } from '$lib/stores/authStore';
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import { userDB } from '../../stores/authStore';
+    import ReadOnlyExerciseRow from "$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte";
 
     export let exercise: Exercise;
     export let index: number;
@@ -45,18 +46,7 @@
         $selectedDay = $program.days[$selectedDayIdx];
     };
 
-    const formatEffortString = (effort: EffortIntensity) => {
-        switch (effort) {
-            case EffortIntensity.EASY:
-                return 'Easy';
-            case EffortIntensity.MODERATE:
-                return 'Moderate';
-            case EffortIntensity.DIFFICULT:
-                return 'Hard';
-            case EffortIntensity.MAX:
-                return 'Max Effort';
-        }
-    };
+
 </script>
 
 <div
@@ -78,50 +68,9 @@
         class="hover:cursor-pointer"
         on:click="{() => ($selectedExerciseIdx = index)}"
     >
-        {#if exercise.type === ExerciseType.EXERCISE}
-            {#if exercise.isMax}
-                <h4>
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.repsPerSet}RM
-                </h4>
-            {:else if exercise.isMaxReps}
-                <h4>
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
-                        unit
-                    )}{unit}
-                    {exercise.sets}sets AMRAP
-                </h4>
-            {:else}
-                <h4>
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
-                        unit
-                    )}{unit}
-                    {exercise.sets}sets {exercise.repsPerSet}reps
-                </h4>
-            {/if}
-        {:else if exercise.type === ExerciseType.COMPLEX}
-            {#if exercise.isMax}
-                <h4>
-                    {exercise.nameArr.join(' + ')}: {exercise.repArr.join(
-                        ' + '
-                    )}RM
-                </h4>
-            {:else}
-                <h4>
-                    {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit}
-                    {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-                </h4>
-            {/if}
-        {:else if exercise.type === ExerciseType.DURATION}
-            <h4>Test</h4>
-        {:else}
-            <h4>
-                {exercise.name ? exercise.name : 'No Name'}:
-                {exercise.weight
-                    ? exercise.wgt(unit) + unit
-                    : formatEffortString(exercise.effortIntensity)}
-                {exercise.sets}sets {exercise.repsPerSet}reps
-            </h4>
-        {/if}
+        {#each [exercise, ...exercise.dropSets] as row, idx}
+            <ReadOnlyExerciseRow exercise="{row}" showName="{idx === 0}" />
+        {/each}
     </div>
 </div>
 

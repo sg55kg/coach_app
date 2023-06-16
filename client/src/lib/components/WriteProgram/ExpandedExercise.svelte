@@ -66,7 +66,7 @@
 </script>
 
 <div
-    class="absolute right-1 left-1 z-20 flex h-[70vh] flex-col items-center overflow-y-auto bg-gray-200 lg:p-8"
+    class="absolute lg:relative lg:w-full right-1 left-1 z-[300] flex h-full flex-col items-center overflow-y-auto bg-gray-200 lg:p-8"
 >
     <ExerciseRow
         bind:exercise="{exercise}"

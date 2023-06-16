@@ -40,7 +40,7 @@ export const srPost = async <T>(
     url: string,
     body: any,
     contentType: string = 'application/json',
-    parseJson = false
+    parseJson = true
 ): Promise<ServiceResponse<T>> => {
     if (typeof body !== 'string') {
         body = JSON.stringify(body);

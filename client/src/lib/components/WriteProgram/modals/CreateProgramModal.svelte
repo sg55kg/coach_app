@@ -1,17 +1,19 @@
 <script lang="ts">
     import dayjs from 'dayjs';
     import { isMobile, userDB } from '$lib/stores/authStore.js';
-    import { onMount } from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import { AthleteData } from '$lib/classes/user/athlete';
-    import { Program } from '$lib/classes/program';
     import { ProgramService } from '$lib/service/ProgramService';
     import { goto } from '$app/navigation';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
 
     export let show: boolean = false;
+    export let programName: string = '';
+
+    let { getProgram } = getContext('program');
+    let program = getProgram();
 
     let athletes: AthleteData[] = [];
-    let programName = '';
     let selectedAthleteId: string = '';
 
     const currentYear: number = dayjs().year();
@@ -59,7 +61,7 @@
         success = false;
         loading = true;
         try {
-            const newProgram = new Program();
+            const newProgram = $program;
             newProgram.name = programName;
             newProgram.athleteId = selectedAthleteId;
             newProgram.startDate = dayjs(

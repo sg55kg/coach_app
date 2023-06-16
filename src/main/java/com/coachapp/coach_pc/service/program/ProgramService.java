@@ -78,6 +78,12 @@ public class ProgramService {
         return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
     }
 
+    public ResponseEntity<List<ProgramWithIds>> getCoachTemplates(UUID coachId) {
+        List<ProgramWithIds> dbPrograms = programRepo.getCoachTemplates(coachId);
+
+        return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
+    }
+
 //    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
 //        Optional<Program> optional = _programRepo.findById(id);
 //
