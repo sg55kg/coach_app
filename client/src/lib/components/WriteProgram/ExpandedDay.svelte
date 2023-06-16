@@ -16,16 +16,13 @@
 
     const {
         getProgram,
-        getSelectedDay,
         getSelectedDayIdx,
-        setSelectedDay,
         getSelectedExerciseIdx,
         updateProgram,
         getDayClipboard
     } = getContext('program');
 
     const program = getProgram();
-    const selectedDay = getSelectedDay();
     const index = getSelectedDayIdx();
     const exerciseIndex = getSelectedExerciseIdx();
     const dayClipboard = getDayClipboard();
@@ -39,20 +36,20 @@
     const decrementDay = () => {
         if ($index < 1) return;
         $index = $index - 1;
-        $selectedDay = $program.days[$index];
     };
 
     const incrementDay = () => {
         if ($index === $program.days.length - 1) return;
         $index = $index + 1;
-        $selectedDay = $program.days[$index];
     };
 
     const addExercise = () => {
         let newExercise = new Exercise();
-        newExercise.order = $selectedDay.exercises.length;
-        $selectedDay.exercises = [...$selectedDay.exercises, newExercise];
-        $program.days[$index].exercises = $selectedDay.exercises;
+        newExercise.order = $program.days[$index].exercises.length;
+        $program.days[$index].exercises = [
+            ...$program.days[$index].exercises,
+            newExercise
+        ];
         $program = $program;
     };
 
@@ -60,14 +57,12 @@
         stashedExercises = [...$program.days[$index].exercises];
         $program.days[$index].isRestDay = true;
         $program.days[$index].exercises.length = 0;
-        $selectedDay = $program.days[$index];
     };
 
     const undoRestDay = () => {
         $program.days[$index].isRestDay = false;
         $program.days[$index].exercises = stashedExercises;
         stashedExercises = [];
-        $selectedDay = $program.days[$index];
     };
 
     const toggleWarmup = () => {
@@ -76,14 +71,12 @@
         } else {
             $program.days[$index].warmUp = new WarmUp();
         }
-        $selectedDay = $program.days[$index];
     };
 
     let warmupContent: string = '';
 
     onDestroy(() => {
         if ($exerciseIndex > -1) {
-            $program.days[index] = $selectedDay;
             $exerciseIndex = -1;
         }
     });
@@ -100,7 +93,7 @@
         {#if $isMobile}
             <button
                     class="absolute lg:w-fit w-8 h-8 right-3 top-2 text-lg font-bold"
-                    on:click="{() => setSelectedDay(undefined)}"
+                    on:click="{() => $index = -1}"
             >
                 <span><MdClose /></span>
             </button>
@@ -118,7 +111,7 @@
                     <button class="mx-8 h-6 w-3" on:click="{decrementDay}">
                         <FaChevronLeft />
                     </button>
-                    <h1>Day {$index + 1} {$program.id ? $selectedDay.date.format('MMM DD') : ''}</h1>
+                    <h1>Day {$index + 1} - {$program.id ? $program.days[$index].date.format('MMM DD') : ''}</h1>
                     <button class="mx-8 h-6 w-3" on:click="{incrementDay}">
                         <FaChevronRight />
                     </button>
@@ -144,7 +137,7 @@
                     <div class="flex items-center lg:bg-gray-100">
                         <button
                                 class="lg:w-fit w-10 h-10 text-lg font-bold px-2"
-                                on:click="{() => setSelectedDay(undefined)}"
+                                on:click="{() => $index = -1}"
                         >
                             <span>Back to Calendar</span>
                         </button>

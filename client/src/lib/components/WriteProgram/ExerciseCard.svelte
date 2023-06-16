@@ -15,12 +15,10 @@
         getSelectedExerciseIdx,
         getProgram,
         getSelectedDayIdx,
-        getSelectedDay,
         deleteExercise,
     } = getContext('program');
     const selectedExerciseIdx = getSelectedExerciseIdx();
     const selectedDayIdx = getSelectedDayIdx();
-    const selectedDay = getSelectedDay();
     const program = getProgram();
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
@@ -43,7 +41,6 @@
             return e;
         });
         $program = $program;
-        $selectedDay = $program.days[$selectedDayIdx];
     };
 
 

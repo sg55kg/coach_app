@@ -23,11 +23,8 @@
     export let container: HTMLDivElement;
 
     const {
-        setSelectedDay,
-        setSelectedDayIdx,
-        getSelectedDay,
-        getDayClipboard,
         getProgram,
+        getSelectedDayIdx,
         insertDayRight,
         insertDayLeft,
         clearExercises,
@@ -35,9 +32,8 @@
         pasteDay,
     } = getContext('program');
 
-    const selectedDay = getSelectedDay();
-    const dayClipboard = getDayClipboard();
     const program = getProgram();
+    const selectedDayIdx = getSelectedDayIdx();
 
     $: isPressing
         ? setTimeout(() => {
@@ -104,8 +100,7 @@
                     document
                         .getElementById(`day-card-${idx}`)
                         .classList.remove('selected-day');
-                    setSelectedDay($program.days[idx]);
-                    setSelectedDayIdx(idx);
+                    $selectedDayIdx = idx;
                 }
             });
     });
@@ -124,8 +119,7 @@
     onContextmenu="{handleBrowserContext}"
     onClick="{() => {
         if (!$isMobile) {
-            setSelectedDay(day);
-            setSelectedDayIdx(idx);
+            $selectedDayIdx = idx;
         }
     }}"
     ID="day-card-{idx}"

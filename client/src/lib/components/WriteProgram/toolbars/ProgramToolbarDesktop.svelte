@@ -16,6 +16,7 @@
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
     import {team} from "../../../stores/teamStore";
     import TemplatesModal from "$lib/components/WriteProgram/modals/TemplatesModal.svelte";
+    import {page} from "$app/stores";
 
     export let showCreateProgram: boolean = false;
     export let showAssignAthlete: boolean = false;
@@ -218,7 +219,11 @@
                 Import Template
             </button>
         {/if}
-        {#if $program.id}
+        {#if $program.id && $page.url.pathname.includes('stats')}
+            <a href="/home/coach/program/{$program.id}">
+                <button> Calendar View </button>
+            </a>
+        {:else}
             <a href="/home/coach/program/{$program.id}/stats">
                 <button> Program Stats </button>
             </a>

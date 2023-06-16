@@ -1,7 +1,7 @@
 <script lang="ts">
     import FaChevronUp from 'svelte-icons/fa/FaChevronUp.svelte';
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
-    import { Exercise } from '$lib/classes/program/exercise';
+    import { Exercise } from '../../classes/program/exercise';
     import { getContext, onDestroy } from 'svelte';
     import ExerciseRow from '$lib/components/WriteProgram/ExerciseRow.svelte';
     import { ExerciseType } from '../../classes/program/exercise/enums';
@@ -10,13 +10,13 @@
 
     const {
         getProgram,
-        getSelectedDay,
         getSelectedExerciseIdx,
+        getSelectedDayIdx,
         getProgramError,
     } = getContext('program');
     const program = getProgram();
-    const selectedDay = getSelectedDay();
     const selectedExerciseIdx = getSelectedExerciseIdx();
+    const selectedDayIdx = getSelectedDayIdx();
     const error = getProgramError();
 
     let useWeightForAccessory: boolean = false;
@@ -55,14 +55,13 @@
 
     onDestroy(() => {
         // sync the program with any potential changes that might have been made to this day
-        if (!$selectedDay) return;
-        const day = $program.days.find(d => d.id === $selectedDay.id);
-        let ex: Exercise = day.exercises[$selectedExerciseIdx];
-        ex = exercise;
+        if ($selectedDayIdx < 0) {
+            return;
+        }
+        $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx] = exercise;
         $program = $program;
         $selectedExerciseIdx = -1;
     });
-    $: console.log(useWeightForAccessory);
 </script>
 
 <div

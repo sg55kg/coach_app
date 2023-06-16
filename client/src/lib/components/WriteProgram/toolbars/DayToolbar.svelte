@@ -18,7 +18,6 @@
     } = getContext('program');
     const dayClipboard = getDayClipboard();
     const index = getSelectedDayIdx();
-    const selectedDay = getSelectedDay();
     const program = getProgram();
     const exerciseIndex = getSelectedExerciseIdx();
     const exerciseClipboard = getExerciseClipboard();

@@ -1,18 +1,17 @@
-import type { PageServerLoad } from './$types';
-import { error } from '@sveltejs/kit';
+import {error} from "@sveltejs/kit";
+import type {LayoutServerLoad} from "../../../../../../.svelte-kit/types/src/routes/$types";
 
-export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
-    const token = cookies.get('accessToken');
-    const programId = params.id;
-
+export const load: LayoutServerLoad = async (event) => {
+    const programId = event.params.id;
+    const token = event.cookies.get('accessToken');
     try {
         const res = await fetch(
             `${import.meta.env.VITE_SERVER_URL}api/programs/${programId}`,
             {
                 method: 'GET',
                 headers: {
-                    Authorization: 'Bearer ' + token,
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 },
             }
         );
@@ -21,5 +20,4 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
     } catch (e) {
         console.log(e);
         throw error(404, 'Could not find program');
-    }
-};
+    }}
