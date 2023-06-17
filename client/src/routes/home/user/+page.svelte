@@ -5,8 +5,8 @@
     import dayjs from 'dayjs';
     import AuthHeader from '$lib/components/AuthHeader.svelte';
     import AthleteHeader from '$lib/components/AthleteHeader.svelte';
-    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import UserService from "../../../lib/service/UserService";
+    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
+    import UserService from '../../../lib/service/UserService';
 
     let user: User;
 
@@ -16,7 +16,7 @@
                 id: user.id,
                 username: user.username,
                 athleteName: null,
-                preferences: user.preferences
+                preferences: user.preferences,
             } as any;
             if (user.athleteData) {
                 userDto.athleteName = user.username;
@@ -64,32 +64,32 @@
     {:else}
         <AthleteHeader />
     {/if}
-    <h1 class="text-4xl font-bold m-4">Settings</h1>
+    <h1 class="m-4 text-4xl font-bold">Settings</h1>
     <div class="m-4 grid grid-cols-2">
         <div class="col-span-1">
             <h2 class="text-xl text-textblue">General Settings</h2>
             <div class="my-2 flex flex-col">
                 <label class="text-sm">Email</label>
                 <input
-                        class="w-fit bg-gray-200 p-2 text-lg"
-                        disabled
-                        type="text"
-                        bind:value="{user.email}"
+                    class="w-fit bg-gray-200 p-2 text-lg"
+                    disabled
+                    type="text"
+                    bind:value="{user.email}"
                 />
             </div>
             <div class="my-2 flex flex-col">
                 <label class="text-sm">Username</label>
                 <div>
                     <input
-                            class="w-fit bg-gray-300 p-2 text-lg"
-                            type="text"
-                            bind:value="{user.username}"
+                        class="w-fit bg-gray-300 p-2 text-lg"
+                        type="text"
+                        bind:value="{user.username}"
                     />
                     {#if user.username !== $userDB.username}
                         <button
-                                on:click="{handleSaveUser}"
-                                class="mr-2 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-300"
-                        >Save</button
+                            on:click="{handleSaveUser}"
+                            class="mr-2 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-300"
+                            >Save</button
                         >
                     {/if}
                 </div>
@@ -97,8 +97,8 @@
             <div class="my-2 flex flex-col">
                 <p>
                     Coachable member since: {$userDB.createdAt
-                    ? $userDB.createdAt.format('MMMM DD, YYYY')
-                    : dayjs().format('MMMM DD, YYYY')}
+                        ? $userDB.createdAt.format('MMMM DD, YYYY')
+                        : dayjs().format('MMMM DD, YYYY')}
                 </p>
             </div>
         </div>
@@ -108,19 +108,35 @@
                 <div class="my-2">
                     <p>Weight</p>
                     <div class="flex items-center">
-                        <Toggle checked="{user.preferences.weight === 'kg'}" onChange="{toggleUserPreferenceWeight}" />
-                        <p class="mx-2 text-yellow">{user.preferences.weight}</p>
+                        <Toggle
+                            checked="{user.preferences.weight === 'kg'}"
+                            onChange="{toggleUserPreferenceWeight}"
+                        />
+                        <p class="mx-2 text-yellow">
+                            {user.preferences.weight}
+                        </p>
                     </div>
                 </div>
-               <div class="my-2">
-                   <p>Default Home Page</p>
-                   <div class="flex items-center">
-                       <Toggle checked="{user.preferences.defaultHomePage === 'athlete'}" onChange="{toggleUserPreferenceHomePage}" />
-                       <p class="mx-2 text-yellow">{user.preferences.defaultHomePage === 'athlete' ? 'Athlete Home Page' : 'Coach Home Page'}</p>
-                   </div>
-               </div>
+                <div class="my-2">
+                    <p>Default Home Page</p>
+                    <div class="flex items-center">
+                        <Toggle
+                            checked="{user.preferences.defaultHomePage ===
+                                'athlete'}"
+                            onChange="{toggleUserPreferenceHomePage}"
+                        />
+                        <p class="mx-2 text-yellow">
+                            {user.preferences.defaultHomePage === 'athlete'
+                                ? 'Athlete Home Page'
+                                : 'Coach Home Page'}
+                        </p>
+                    </div>
+                </div>
                 {#if user.preferences.weight !== $userDB.preferences.weight || user.preferences.defaultHomePage !== $userDB.preferences.defaultHomePage}
-                    <button on:click={handleSaveUser} class="mr-2 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-300">
+                    <button
+                        on:click="{handleSaveUser}"
+                        class="mr-2 rounded border-2 border-textblue bg-gray-100 p-2 px-6 hover:bg-gray-300"
+                    >
                         Save
                     </button>
                 {/if}
@@ -148,7 +164,7 @@
             {/if}
         </div>
         <br />
-        <div class="my-2 flex flex-col col-span-2">
+        <div class="col-span-2 my-2 flex flex-col">
             {#if user.coachData?.teams?.length > 0}
                 <h4 class="text-xl text-textblue">My Teams:</h4>
                 {#each user.coachData.teams as team}
@@ -183,7 +199,6 @@
                 </p>
             {/if}
         </div>
-
     </div>
 {/if}
 

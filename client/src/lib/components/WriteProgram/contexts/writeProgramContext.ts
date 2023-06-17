@@ -1,13 +1,12 @@
-import type {Program} from "../../../classes/program";
-import {Day} from "../../../classes/program/day";
-import type {Exercise} from "../../../classes/program/exercise";
-import type {Dayjs} from "dayjs";
-import {ProgramService} from "../../../service/ProgramService";
+import type { Program } from '../../../classes/program';
+import { Day } from '../../../classes/program/day';
+import type { Exercise } from '../../../classes/program/exercise';
+import type { Dayjs } from 'dayjs';
+import { ProgramService } from '../../../service/ProgramService';
 import type { Writable } from 'svelte/store';
-import {get, writable} from "svelte/store";
+import { get, writable } from 'svelte/store';
 
 export const writeProgramContext = (selectedProgram: Program) => {
-
     const program: Writable<Program> = writable(selectedProgram);
     const selectedDayIdx: Writable<number> = writable(-1);
     const selectedExerciseIdx: Writable<number> = writable(-1);
@@ -29,7 +28,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
             });
             prev.endDate = currentDate.subtract(1, 'day');
             return prev;
-        })
+        });
     };
 
     const updateProgram = async () => {
@@ -42,7 +41,9 @@ export const writeProgramContext = (selectedProgram: Program) => {
             program.set(res);
             programSuccess.set('Updated');
         } catch (e) {
-            programError.set(`There was an error while updating ${currentProgram.name}`);
+            programError.set(
+                `There was an error while updating ${currentProgram.name}`
+            );
         } finally {
             programLoading.set(false);
         }
@@ -90,8 +91,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
             prev.days = updatedDays;
             return prev;
         });
-        const dayCard = document
-            .getElementById(`day-card-${idx}`);
+        const dayCard = document.getElementById(`day-card-${idx}`);
         if (dayCard) {
             dayCard.classList.remove('selected-day');
         }
@@ -102,7 +102,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
         program.update(prev => {
             prev.days[idx].exercises = [];
             return prev;
-        })
+        });
     };
 
     const copyDay = (idx: number) => {
@@ -112,7 +112,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
         dayClipboard.update(prev => {
             prev = [dayCopy, ...prev];
             return prev;
-        })
+        });
         const dayCard = document.getElementById(`day-card-${idx}`);
 
         if (dayCard) {
@@ -152,7 +152,9 @@ export const writeProgramContext = (selectedProgram: Program) => {
             await ProgramService.deleteExercise(exercise);
         } catch (e) {
             console.log(e);
-            programError.set('There was an error trying to delete this exercise');
+            programError.set(
+                'There was an error trying to delete this exercise'
+            );
         } finally {
             programLoading.set(false);
         }
@@ -163,7 +165,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
         program.update(prev => {
             prev.days.push(day);
             return prev;
-        })
+        });
         formatProgramDates();
     };
 
@@ -173,11 +175,12 @@ export const writeProgramContext = (selectedProgram: Program) => {
         if (dayIndex < 0) {
             return;
         }
-        const exerciseCopy = currentProgram.days[dayIndex].exercises[index].copy();
+        const exerciseCopy =
+            currentProgram.days[dayIndex].exercises[index].copy();
         exerciseClipboard.update(prev => {
             prev.unshift(exerciseCopy);
             return prev;
-        })
+        });
     };
 
     const pasteExercise = () => {
@@ -191,19 +194,20 @@ export const writeProgramContext = (selectedProgram: Program) => {
         const exerciseToPaste = clipboard.shift() as Exercise;
         exerciseClipboard.set(clipboard);
         if (exerciseIndex > -1) {
-            const id = currentProgram.days[dayIndex].exercises[exerciseIndex].id;
+            const id =
+                currentProgram.days[dayIndex].exercises[exerciseIndex].id;
             program.update(prev => {
                 prev.days[dayIndex].exercises[exerciseIndex] = exerciseToPaste;
                 prev.days[dayIndex].exercises[exerciseIndex].id = id;
                 return prev;
-            })
+            });
         } else {
             program.update(prev => {
                 prev.days[dayIndex].exercises.push(exerciseToPaste);
                 return prev;
-            })
+            });
         }
-    }
+    };
     return {
         getProgram: () => program,
         getSelectedDayIdx: () => selectedDayIdx,
@@ -224,6 +228,6 @@ export const writeProgramContext = (selectedProgram: Program) => {
         addDay,
         copyExercise,
         pasteExercise,
-        getProgramInfo: () => programInfo
+        getProgramInfo: () => programInfo,
     };
-}
+};

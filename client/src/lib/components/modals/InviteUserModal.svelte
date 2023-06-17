@@ -14,7 +14,6 @@
     let error: string = '';
     let loading: boolean = false;
 
-
     $: success
         ? setTimeout(() => {
               success = '';
@@ -34,7 +33,7 @@
                 coachName: $userDB?.username,
                 teamId: $team.id,
                 coachId: $userDB?.coachData?.id,
-                teamName: $team.name
+                teamName: $team.name,
             };
             const status = await UserService.inviteUser(inviteUserRequest);
             if (status.startsWith('Success')) {
@@ -58,7 +57,7 @@
     ></div>
     <dialog
         open="{showModal}"
-        class="z-[201] w-11/12 lg:w-3/12 fixed rounded bg-gray-200 shadow-lg shadow-gray-300"
+        class="fixed z-[201] w-11/12 rounded bg-gray-200 shadow-lg shadow-gray-300 lg:w-3/12"
     >
         <div class="relative flex flex-col p-2">
             <button
@@ -103,8 +102,7 @@
                 {:else if success}
                     <span
                         in:fly="{{ x: 50, duration: 1000 }}"
-                        out:fade="{{ duration: 600 }}"
-                        >{success}</span
+                        out:fade="{{ duration: 600 }}">{success}</span
                     >
                 {/if}
             </button>

@@ -83,7 +83,9 @@ export class ProgramService {
     };
 
     static getCoachTemplates = async (coachId: string) => {
-        const { data } = await srGet<ProgramDTO[]>(`/api/program/coach/${coachId}/templates`);
+        const { data } = await srGet<ProgramDTO[]>(
+            `/api/program/coach/${coachId}/templates`
+        );
         return data.map(d => DisplayProgram.build(d));
-    }
+    };
 }

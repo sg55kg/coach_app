@@ -10,11 +10,14 @@ export const POST: RequestHandler = async event => {
         {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: comment,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

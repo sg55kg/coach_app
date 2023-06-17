@@ -12,11 +12,15 @@ export const POST: RequestHandler = async event => {
         {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: records,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+    });
 };

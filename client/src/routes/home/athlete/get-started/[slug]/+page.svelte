@@ -3,7 +3,7 @@
     import { userDB } from '$lib/stores/authStore';
     import { goto } from '$app/navigation';
     import { AthleteData, AthleteRecord } from '$lib/classes/user/athlete';
-    import UserService from "../../../../../lib/service/UserService";
+    import UserService from '../../../../../lib/service/UserService';
 
     let snatch: number = 0;
     let cj: number = 0;

@@ -1,7 +1,7 @@
 <script lang="ts">
     import dayjs from 'dayjs';
     import { isMobile, userDB } from '$lib/stores/authStore.js';
-    import {getContext, onMount} from 'svelte';
+    import { getContext, onMount } from 'svelte';
     import { AthleteData } from '$lib/classes/user/athlete';
     import { ProgramService } from '$lib/service/ProgramService';
     import { goto } from '$app/navigation';

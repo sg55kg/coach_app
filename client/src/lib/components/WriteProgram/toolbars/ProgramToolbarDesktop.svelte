@@ -1,27 +1,33 @@
 <script lang="ts">
-    import {getContext, onMount} from "svelte";
-    import {userDB} from "$lib/stores/authStore.js";
-    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import UserService from "../../../service/UserService";
-    import {User} from "../../../classes/user";
+    import { getContext, onMount } from 'svelte';
+    import { userDB } from '$lib/stores/authStore.js';
+    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
+    import UserService from '../../../service/UserService';
+    import { User } from '../../../classes/user';
     import FaCaretDown from 'svelte-icons/fa/FaCaretDown.svelte';
     import FaRegCopy from 'svelte-icons/fa/FaRegCopy.svelte';
     import FaFileExport from 'svelte-icons/fa/FaFileExport.svelte';
     import FaUserPlus from 'svelte-icons/fa/FaUserPlus.svelte';
     import MdAdd from 'svelte-icons/md/MdAdd.svelte';
-    import {generateCSV} from "$lib/components/WriteProgram/util/functions.js";
-    import {goto} from "$app/navigation";
-    import {Program} from "../../../classes/program";
-    import {ProgramService} from "../../../service/ProgramService";
+    import { generateCSV } from '$lib/components/WriteProgram/util/functions.js';
+    import { goto } from '$app/navigation';
+    import { Program } from '../../../classes/program';
+    import { ProgramService } from '../../../service/ProgramService';
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
-    import {team} from "../../../stores/teamStore";
-    import TemplatesModal from "$lib/components/WriteProgram/modals/TemplatesModal.svelte";
-    import {page} from "$app/stores";
+    import { team } from '../../../stores/teamStore';
+    import TemplatesModal from '$lib/components/WriteProgram/modals/TemplatesModal.svelte';
+    import { page } from '$app/stores';
 
     export let showCreateProgram: boolean = false;
     export let showAssignAthlete: boolean = false;
 
-    let { getProgram, getProgramLoading, updateProgram, getProgramError, getProgramSuccess } = getContext('program');
+    let {
+        getProgram,
+        getProgramLoading,
+        updateProgram,
+        getProgramError,
+        getProgramSuccess,
+    } = getContext('program');
     let program = getProgram();
     let programLoading = getProgramLoading();
     let programError = getProgramError();
@@ -59,14 +65,14 @@
 
     const toggleWeightPreference = async () => {
         $programLoading = true;
-        const userCopy = User.createFrom(JSON.parse(JSON.stringify($userDB)))
+        const userCopy = User.createFrom(JSON.parse(JSON.stringify($userDB)));
         if (userCopy.preferences.weight === 'kg') {
             userCopy.preferences.weight = 'lb';
         } else {
             userCopy.preferences.weight = 'kg';
         }
         try {
-            const updatedUserData = await UserService.updateUserData(userCopy)
+            const updatedUserData = await UserService.updateUserData(userCopy);
             userDB.set(updatedUserData);
         } catch (e) {
             console.log(e);
@@ -114,29 +120,28 @@
             $programLoading = false;
         }
     };
-
 </script>
 
 <nav class="relative flex flex-col bg-gray-100 p-2">
     <div class="flex w-screen">
         <input
-                type="text"
-                class="w-3/12 rounded bg-gray-300 p-1"
-                bind:value="{$program.name}"
-                placeholder="Program Name"
-                id="program-name-input"
+            type="text"
+            class="w-3/12 rounded bg-gray-300 p-1"
+            bind:value="{$program.name}"
+            placeholder="Program Name"
+            id="program-name-input"
         />
         {#if $program.id}<p class="px-2">
-            <i
-            >Last Updated: {$program.updatedAt.format(
-                'ddd MMM DD YYYY hh:mm:ssA'
-            )}</i
-            >
-        </p>{/if}
+                <i
+                    >Last Updated: {$program.updatedAt.format(
+                        'ddd MMM DD YYYY hh:mm:ssA'
+                    )}</i
+                >
+            </p>{/if}
         <div class="flex self-end lg:px-2">
             <Toggle
-                    checked="{$userDB.preferences.weight === 'kg'}"
-                    onChange="{toggleWeightPreference}"
+                checked="{$userDB.preferences.weight === 'kg'}"
+                onChange="{toggleWeightPreference}"
             />
             <p class="px-1 text-textblue">
                 {$userDB.preferences.weight === 'kg' ? 'kg' : 'lbs'}
@@ -145,69 +150,69 @@
     </div>
     <div class="py-2">
         <button
-                class="text-md mx-2 rounded bg-yellow p-1 px-2 font-medium text-gray-300 disabled:bg-gray-400"
-                on:click="{updateProgram}"
-                disabled="{!$program.id}"
+            class="text-md mx-2 rounded bg-yellow p-1 px-2 font-medium text-gray-300 disabled:bg-gray-400"
+            on:click="{updateProgram}"
+            disabled="{!$program.id}"
         >
             Save
         </button>
         <div class="dropdown relative inline-block">
             <button
-                    class="flex items-center rounded p-1 hover:bg-gray-400"
-                    on:click="{() => (showFileMenu = !showFileMenu)}"
+                class="flex items-center rounded p-1 hover:bg-gray-400"
+                on:click="{() => (showFileMenu = !showFileMenu)}"
             >
                 File
                 <span class="mx-1 h-3"><FaCaretDown /></span>
             </button>
             {#if showFileMenu}
                 <div
-                        class="fixed top-0 right-0 left-0 bottom-0 z-[114]"
-                        on:click="{() => (showFileMenu = !showFileMenu)}"
+                    class="fixed top-0 right-0 left-0 bottom-0 z-[114]"
+                    on:click="{() => (showFileMenu = !showFileMenu)}"
                 ></div>
                 <div
-                        class="absolute z-[115] w-56 origin-top-right bg-gray-400 p-2 shadow-lg"
-                        on:click="{() =>
-                                setTimeout(() => (showFileMenu = false), 100)}"
+                    class="absolute z-[115] w-56 origin-top-right bg-gray-400 p-2 shadow-lg"
+                    on:click="{() =>
+                        setTimeout(() => (showFileMenu = false), 100)}"
                 >
                     <!--                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">-->
                     <!--                                <span class="h-5 mr-2"><FaRegSave /></span>-->
                     <!--                                Save-->
                     <!--                            </button>-->
                     <button
-                            class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                            on:click="{() => (showCreateProgram = true)}"
+                        class="flex w-full items-center p-2 text-left hover:bg-gray-200"
+                        on:click="{() => (showCreateProgram = true)}"
                     >
                         <span class="mr-2 h-5"><MdAdd /></span>
                         New
                     </button>
                     <button
-                            class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                            on:click="{makeACopy}"
+                        class="flex w-full items-center p-2 text-left hover:bg-gray-200"
+                        on:click="{makeACopy}"
                     >
                         <span class="mr-2 h-5"><FaRegCopy /></span>
                         Make a copy
                     </button>
                     <button
-                            class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                            on:click="{generateCSV}"
+                        class="flex w-full items-center p-2 text-left hover:bg-gray-200"
+                        on:click="{generateCSV}"
                     >
                         <span class="mr-2 h-5"><FaFileExport /></span>
                         Export to CSV
                     </button>
                     <button
-                            class="flex w-full items-center p-2 text-left hover:bg-gray-200"
-                            on:click="{() =>
-                                    $program.name
-                                        ? (showAssignAthlete = true)
-                                        : focusNameInput()}"
+                        class="flex w-full items-center p-2 text-left hover:bg-gray-200"
+                        on:click="{() =>
+                            $program.name
+                                ? (showAssignAthlete = true)
+                                : focusNameInput()}"
                     >
                         <span class="mr-2 h-5"><FaUserPlus /></span>
                         Assign to athlete
                     </button>
                     <hr />
                     <button
-                            class="flex w-full items-center p-2 text-left text-red-shade hover:bg-gray-200"
-                            on:click="{deleteProgram}"
+                        class="flex w-full items-center p-2 text-left text-red-shade hover:bg-gray-200"
+                        on:click="{deleteProgram}"
                     >
                         <span class="mr-2 h-5"><FaTrashAlt /></span>
                         Delete Program
@@ -216,7 +221,10 @@
             {/if}
         </div>
         {#if !$program.id}
-            <button class="rounded p-1 hover:bg-gray-400" on:click={() => showTemplateImport = !showTemplateImport}>
+            <button
+                class="rounded p-1 hover:bg-gray-400"
+                on:click="{() => (showTemplateImport = !showTemplateImport)}"
+            >
                 Import Template
             </button>
         {/if}
@@ -232,7 +240,7 @@
     </div>
 </nav>
 {#if showTemplateImport}
-    <TemplatesModal bind:show={showTemplateImport} />
+    <TemplatesModal bind:show="{showTemplateImport}" />
 {/if}
 
 <style>

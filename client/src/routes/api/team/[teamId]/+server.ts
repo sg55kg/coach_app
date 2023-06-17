@@ -4,14 +4,20 @@ export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const id = event.params.teamId;
 
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/teams/${id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-        },
+    const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/teams/${id}`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+        }
+    );
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
     });
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
 };
 
 export const PUT: RequestHandler = async event => {
@@ -25,10 +31,13 @@ export const PUT: RequestHandler = async event => {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
             body: team,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

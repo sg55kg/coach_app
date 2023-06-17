@@ -14,12 +14,15 @@ export const GET: RequestHandler = async event => {
         {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };
 
 export const POST: RequestHandler = async event => {
@@ -30,7 +33,7 @@ export const POST: RequestHandler = async event => {
         const res = await fetch(import.meta.env.VITE_CF_STREAM_URL, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
         });
         return new Response(null);

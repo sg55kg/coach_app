@@ -8,11 +8,14 @@ export const POST: RequestHandler = async event => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
+            Authorization: 'Bearer ' + token,
         },
         body: team,
     });
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };
 
 export const GET: RequestHandler = async event => {
@@ -22,8 +25,11 @@ export const GET: RequestHandler = async event => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
+            Authorization: 'Bearer ' + token,
         },
     });
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

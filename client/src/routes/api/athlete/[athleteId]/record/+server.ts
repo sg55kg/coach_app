@@ -10,13 +10,16 @@ export const PUT: RequestHandler = async event => {
         {
             method: 'PUT',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: record,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };
 
 export const GET: RequestHandler = async event => {
@@ -28,12 +31,16 @@ export const GET: RequestHandler = async event => {
         {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+    });
 };
 
 export const POST: RequestHandler = async event => {
@@ -46,11 +53,15 @@ export const POST: RequestHandler = async event => {
         {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: record,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText, headers: res.headers });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+    });
 };

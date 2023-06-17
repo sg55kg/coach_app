@@ -1,5 +1,5 @@
-import {ExerciseType} from "../../../classes/program/exercise/enums";
-import type {Program} from "../../../classes/program";
+import { ExerciseType } from '../../../classes/program/exercise/enums';
+import type { Program } from '../../../classes/program';
 
 export const generateCSV = (program: Program) => {
     let str =
@@ -65,9 +65,7 @@ export const generateCSV = (program: Program) => {
                     ',' +
                     (e.isComplete ? e.setsCompleted : '0') +
                     ',' +
-                    (e.isComplete
-                        ? e.repArr.reduce((a, b) => a + b)
-                        : '0') +
+                    (e.isComplete ? e.repArr.reduce((a, b) => a + b) : '0') +
                     ',' +
                     e.notes +
                     '\n';

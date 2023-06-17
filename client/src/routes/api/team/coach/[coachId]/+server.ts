@@ -8,8 +8,11 @@ export const GET: RequestHandler = async event => {
         `${import.meta.env.VITE_SERVER_URL}api/programs/coach/${coachId}`,
         {
             method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText })
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

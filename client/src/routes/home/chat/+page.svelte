@@ -17,7 +17,7 @@
     } from '$lib/stores/chatStore.js';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import type { PageServerData } from '../../../../.svelte-kit/types/src/routes/$types';
-    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
+    import Toaster from '$lib/components/shared/layout/Toaster.svelte';
 
     export let data: PageServerData;
     let selectedChatId: string = '';
@@ -298,10 +298,10 @@
     {/if}
 </div>
 {#if $chatError}
-    <Toaster type="error" bind:message={$chatError} />
+    <Toaster type="error" bind:message="{$chatError}" />
 {/if}
 {#if $chatTimeout}
-    <Toaster type="info" bind:message={$chatTimeout} spinner="{true}" />
+    <Toaster type="info" bind:message="{$chatTimeout}" spinner="{true}" />
 {/if}
 
 <style></style>
