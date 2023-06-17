@@ -392,7 +392,7 @@
         <h2 class="text-2xl font-semibold text-textblue">
             Weekly Breakdowns
         </h2>
-        <div class="grid grid-cols-4">
+        <div class="grid grid-cols-4 overflow-y-hidden">
             <div class="col-span-1 flex flex-col">
                 {#each stats as week}
                     <div
@@ -428,18 +428,18 @@
                     </div>
                 {/each}
             </div>
-            <div class="col-span-3">
+            <div class="col-span-3 h-full pb-44">
                 {#if selectedWeek}
                     <div
-                            class="mt-2 h-[80vh] overflow-y-auto bg-gray-400"
+                            class="mt-2 h-full overflow-y-auto bg-gray-400"
                     >
                         <h3
                                 class="p-3 text-xl font-medium text-yellow-lt"
                         >
                             {selectedWeek.startDate.format(
-                                'dddd DD MM'
+                                'ddd MMM DD'
                             )} - {selectedWeek.endDate.format(
-                            'dddd DD MM'
+                            'ddd MMM DD'
                         )}
                         </h3>
                         {#if loadingDaily}
@@ -452,7 +452,7 @@
                             </div>
                         {:else if selectedWeekDays}
                             <div
-                                    class="flex h-full w-full flex-col items-center"
+                                    class="flex h-fit w-full flex-col items-center"
                             >
                                 <div
                                         class="flex h-[15em] w-full justify-center"

@@ -119,14 +119,14 @@
                 <div class="flex flex-col items-center p-4 lg:bg-gray-100">
                     {#if $program.days[$index].isRestDay}
                         <button
-                                class="text-md border-textyellow my-2 rounded border p-1"
+                                class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
                                 on:click="{undoRestDay}"
                         >
                             Undo Rest Day
                         </button>
                     {:else}
                         <button
-                                class="text-md border-textyellow my-2 rounded border p-1"
+                                class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
                                 on:click="{makeRestDay}"
                         >
                             Make Rest Day

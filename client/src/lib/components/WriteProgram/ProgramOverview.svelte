@@ -2,7 +2,6 @@
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import DayCard from '$lib/components/WriteProgram/DayCard.svelte';
     import ProgramSearch from '$lib/components/WriteProgram/modals/ProgramSearch.svelte';
-    import { Program } from '$lib/classes/program';
     import {getContext, setContext} from 'svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import ExpandedDay from '$lib/components/WriteProgram/ExpandedDay.svelte';
@@ -12,6 +11,7 @@
     import AssignAthleteModal from '$lib/components/WriteProgram/modals/AssignAthleteModal.svelte';
     import ProgramToolbarDesktop from "$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte";
     import ProgramToolbarMobile from "$lib/components/WriteProgram/toolbars/ProgramToolbarMobile.svelte";
+    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
 
     let showActionContext: boolean = false;
     let contextCoordinates: { x: number; y: number } = { x: -1, y: -1 };
@@ -25,7 +25,8 @@
         getProgramSuccess,
         getProgramLoading,
         addDay,
-        getSelectedDayIdx
+        getSelectedDayIdx,
+        getProgramInfo
     } = getContext('program');
 
     let program = getProgram();
@@ -33,6 +34,7 @@
     let programSuccess = getProgramSuccess();
     let programLoading = getProgramLoading();
     let selectedDayIdx = getSelectedDayIdx();
+    let programInfo = getProgramInfo();
 
     $: $programError
         ? setTimeout(() => {
@@ -45,6 +47,7 @@
           }, 5000)
         : null;
     $: $programLoading ? showActionContext = false : null;
+    $: $programInfo ? setTimeout(() => $programInfo = '', 2500) : null;
 
 </script>
 
@@ -117,29 +120,11 @@
     </div>
 {/if}
 {#if $programSuccess}
-    <div
-        class="sticky bottom-5 left-10 z-10 flex w-8/12 items-center justify-between border-l-4 border-l-green bg-gray-200 p-4 text-green shadow-2xl shadow-black lg:w-4/12"
-    >
-        {$programSuccess}
-        <button
-            class="h-8 w-8 rounded-full p-1 text-green-dark hover:bg-gray-400 hover:text-green"
-            on:click="{() => ($programSuccess = '')}"
-        >
-            <MdClose />
-        </button>
-    </div>
+    <Toaster type="success" bind:message={$programSuccess} />
 {:else if $programError}
-    <div
-        class="sticky bottom-5 left-10 z-10 flex w-8/12 items-center justify-between border-l-4 border-l-red-shade bg-gray-200 p-4 text-red shadow-2xl shadow-black lg:w-4/12"
-    >
-        {$programError}
-        <button
-            class="h-8 w-8 rounded-full p-1 hover:bg-gray-400 hover:text-red-shade"
-            on:click="{() => ($programError = '')}"
-        >
-            <MdClose />
-        </button>
-    </div>
+    <Toaster type="error" bind:message={$programError} />
+{:else if $programInfo}
+    <Toaster type="info" bind:message={$programInfo} />
 {/if}
 
 <style>

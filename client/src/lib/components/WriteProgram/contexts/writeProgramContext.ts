@@ -16,6 +16,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
     const programError: Writable<string> = writable('');
     const programSuccess: Writable<string> = writable('');
     const programLoading: Writable<boolean> = writable(false);
+    const programInfo: Writable<string> = writable('');
 
     const formatProgramDates = () => {
         let programVal = get(program);
@@ -222,6 +223,7 @@ export const writeProgramContext = (selectedProgram: Program) => {
         deleteExercise,
         addDay,
         copyExercise,
-        pasteExercise
+        pasteExercise,
+        getProgramInfo: () => programInfo
     };
 }

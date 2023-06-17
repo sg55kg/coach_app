@@ -17,6 +17,7 @@
     } from '$lib/stores/chatStore.js';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import type { PageServerData } from '../../../../.svelte-kit/types/src/routes/$types';
+    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
 
     export let data: PageServerData;
     let selectedChatId: string = '';
@@ -297,33 +298,10 @@
     {/if}
 </div>
 {#if $chatError}
-    <div
-        class="sticky bottom-5 left-10 z-10 flex w-9/12 items-center justify-between border-l-4 border-l-red-shade bg-gray-200 p-4 text-red shadow-2xl shadow-black lg:w-4/12"
-    >
-        {$chatError}
-        <button
-            class="h-8 w-8 rounded-full p-1 hover:bg-gray-400 hover:text-red-shade"
-            on:click="{() => ($chatError = '')}"
-        >
-            <MdClose />
-        </button>
-    </div>
+    <Toaster type="error" bind:message={$chatError} />
 {/if}
 {#if $chatTimeout}
-    <div
-        class="sticky bottom-5 left-10 z-10 flex w-8/12 items-center justify-between border-l-4 border-l-sky-500 bg-gray-200 p-4 text-sky-500 shadow-2xl shadow-black lg:w-4/12"
-    >
-        <div class="flex items-center">
-            <p class="mr-3">{$chatTimeout}</p>
-            <LoadingSpinner />
-        </div>
-        <button
-            class="h-8 w-8 rounded-full p-1 hover:bg-gray-400 hover:text-red-shade"
-            on:click="{() => ($chatTimeout = '')}"
-        >
-            <MdClose />
-        </button>
-    </div>
+    <Toaster type="info" bind:message={$chatTimeout} spinner="{true}" />
 {/if}
 
 <style></style>

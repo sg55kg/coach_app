@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getContext} from "svelte";
+    import {getContext, onMount} from "svelte";
     import {userDB} from "$lib/stores/authStore.js";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
     import UserService from "../../../service/UserService";
@@ -114,6 +114,7 @@
             $programLoading = false;
         }
     };
+
 </script>
 
 <nav class="relative flex flex-col bg-gray-100 p-2">
@@ -234,4 +235,5 @@
     <TemplatesModal bind:show={showTemplateImport} />
 {/if}
 
-<style></style>
+<style>
+</style>
