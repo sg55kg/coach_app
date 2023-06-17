@@ -12,10 +12,9 @@
     export let parentExerciseId: string = '';
     export let useWeightForAccessory: boolean = false;
 
-    const { deleteExercise, getSelectedDay, getSelectedDayIdx, getProgram } =
+    const { deleteExercise, getSelectedDayIdx, getProgram } =
         getContext('program');
     const selectedDayIdx = getSelectedDayIdx();
-    const selectedDay = getSelectedDay();
     const program = getProgram();
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
@@ -77,7 +76,6 @@
             .dropSets.forEach((d, i) => (d.order = i));
 
         $program = $program;
-        $selectedDay = $program.days[$selectedDayIdx];
     };
 
     const toggleMaxWeight = (isMax: boolean) => {
@@ -124,7 +122,6 @@
             exercise[key] = numValue;
         }
         $program = $program;
-        $selectedDay = $selectedDay;
     };
 </script>
 

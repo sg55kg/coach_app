@@ -1,12 +1,12 @@
 <script lang="ts">
     import { Exercise } from '$lib/classes/program/exercise';
-    import { ExerciseType } from '$lib/classes/program/exercise/enums.js';
     import { getContext } from 'svelte';
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
     import { isMobile } from '$lib/stores/authStore';
-    import { EffortIntensity } from '../../classes/program/exercise/enums';
     import { userDB } from '../../stores/authStore';
     import ReadOnlyExerciseRow from "$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte";
+    import MdContentCopy from 'svelte-icons/md/MdContentCopy.svelte'
+    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
 
     export let exercise: Exercise;
     export let index: number;
@@ -15,13 +15,14 @@
         getSelectedExerciseIdx,
         getProgram,
         getSelectedDayIdx,
-        getSelectedDay,
         deleteExercise,
+        copyExercise,
+        getProgramInfo
     } = getContext('program');
     const selectedExerciseIdx = getSelectedExerciseIdx();
     const selectedDayIdx = getSelectedDayIdx();
-    const selectedDay = getSelectedDay();
     const program = getProgram();
+    const programInfo = getProgramInfo();
 
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
@@ -43,8 +44,8 @@
             return e;
         });
         $program = $program;
-        $selectedDay = $program.days[$selectedDayIdx];
     };
+
 
 
 </script>
@@ -52,18 +53,25 @@
 <div
     class="border-textgrey relative z-0 my-1 w-full border-l-2 bg-gray-200 p-2"
 >
-    <button
-        class="absolute right-0 flex items-center {$isMobile
+    <div class="absolute right-0 flex">
+        <button class="{$isMobile ? 'h-7 w-7 px-1' : 'h-6 w-10 px-2'}">
+            <span class="text-textgray hover:cursor-pointer hover:text-textblue" on:click={() => { copyExercise(index); $programInfo = `Copied ${exercise.name}`}}>
+                <MdContentCopy />
+            </span>
+        </button>
+        <button
+                class="{$isMobile
             ? 'h-7 w-7 px-1'
             : 'h-6 w-10 px-2'}"
-        on:click="{handleDeleteExercise}"
-    >
-        <span
-            class="h-6 w-6 text-red hover:cursor-pointer hover:text-red-shade"
+                on:click="{handleDeleteExercise}"
         >
-            <FaTrashAlt />
-        </span>
-    </button>
+            <span
+                    class="h-6 w-6 text-red hover:cursor-pointer hover:text-red-shade"
+            >
+                <FaTrashAlt />
+            </span>
+        </button>
+    </div>
     <div
         class="hover:cursor-pointer"
         on:click="{() => ($selectedExerciseIdx = index)}"
