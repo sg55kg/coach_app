@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getContext} from "svelte";
+    import {getContext, onMount} from "svelte";
     import {userDB} from "$lib/stores/authStore.js";
     import Toggle from "$lib/components/shared/layout/Toggle.svelte";
     import UserService from "../../../service/UserService";
@@ -16,6 +16,7 @@
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
     import {team} from "../../../stores/teamStore";
     import TemplatesModal from "$lib/components/WriteProgram/modals/TemplatesModal.svelte";
+    import {page} from "$app/stores";
 
     export let showCreateProgram: boolean = false;
     export let showAssignAthlete: boolean = false;
@@ -113,6 +114,7 @@
             $programLoading = false;
         }
     };
+
 </script>
 
 <nav class="relative flex flex-col bg-gray-100 p-2">
@@ -218,7 +220,11 @@
                 Import Template
             </button>
         {/if}
-        {#if $program.id}
+        {#if $program.id && $page.url.pathname.includes('stats')}
+            <a href="/home/coach/program/{$program.id}">
+                <button> Calendar View </button>
+            </a>
+        {:else}
             <a href="/home/coach/program/{$program.id}/stats">
                 <button> Program Stats </button>
             </a>
@@ -229,4 +235,5 @@
     <TemplatesModal bind:show={showTemplateImport} />
 {/if}
 
-<style></style>
+<style>
+</style>

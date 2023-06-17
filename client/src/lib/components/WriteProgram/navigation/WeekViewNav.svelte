@@ -4,10 +4,9 @@
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import {userDB} from "../../../stores/authStore";
 
-    const { getProgram, getSelectedDayIdx, getSelectedDay, addDay } = getContext('program');
+    const { getProgram, getSelectedDayIdx, addDay } = getContext('program');
     let program = getProgram();
     let selectedDayIdx = getSelectedDayIdx();
-    let selectedDay = getSelectedDay();
 
     onMount(() => {
         const selectedDayCard = document.getElementById(`day-${$selectedDayIdx}`);
@@ -17,7 +16,20 @@
     });
 
     let athleteName: string = '';
-    $: athleteName = $program.athleteId ? $userDB!.coachData!.athletes.find(a => a.id === $program.athleteId).name : 'Template';
+    $: athleteName = (() => {
+        if ($program.athleteId === $userDB?.athleteData.id) {
+            return $userDB?.username;
+        }
+        if ($program.athleteId) {
+            const athlete = $userDB!.coachData!.athletes.find(a => a.id === $program.athleteId);
+            if (athlete) {
+                return athlete.name;
+            } else {
+                return 'Athlete Unavailable'
+            }
+        }
+        return 'Template'
+    })();
 </script>
 
 <div class="flex flex-col w-4/12 h-full overflow-y-hidden bg-gray-300 pb-16">
@@ -32,7 +44,7 @@
         {#each $program.days as day, idx}
             <div id="day-{idx}"
                  class="relative flex flex-col p-6 pt-10 {$selectedDayIdx === idx ? 'bg-gray-100' : 'bg-gray-200'} hover:cursor-pointer"
-                 on:click={() => { $selectedDayIdx = idx; $selectedDay = $program.days[idx] }}
+                 on:click={() => $selectedDayIdx = idx}
             >
                 <span class="text-lg font-bold absolute left-0 top-0 p-2 {$selectedDayIdx === idx ? 'text-yellow' : 'text-link'}">{idx + 1}</span>
                 {#each day.exercises as exercise, i}

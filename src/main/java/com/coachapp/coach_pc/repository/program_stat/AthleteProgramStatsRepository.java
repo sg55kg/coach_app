@@ -14,10 +14,7 @@ import javax.persistence.EntityManager;
 import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
@@ -269,8 +266,10 @@ public class AthleteProgramStatsRepository {
             ex.setSets(complex.getSets());
             ex.setWeight(complex.getWeight());
             ex.setIsComplete(complex.getIsComplete());
-            if (repsCompleted.length >= i) {
-                ex.setTotalRepsCompleted(parseInt(repsCompleted[i]) * complex.getSetsCompleted());
+            if (repsCompleted.length >= i+1) {
+                if (repsCompleted[i] != null && !Objects.equals(repsCompleted[i], "null")) {
+                    ex.setTotalRepsCompleted(parseInt(repsCompleted[i]) * complex.getSetsCompleted());
+                }
             }
             ex.setSetsCompleted(complex.getSetsCompleted());
 

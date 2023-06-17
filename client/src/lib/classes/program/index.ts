@@ -45,7 +45,7 @@ export class Program implements IProgram {
             ? dayjs(programDTO.updatedAt)
             : dayjs();
 
-        return { ...program };
+        return program;
     };
 
     copy() {
