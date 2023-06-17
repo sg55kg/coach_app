@@ -10,9 +10,12 @@ export const GET: RequestHandler = async event => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

@@ -1,12 +1,12 @@
 <script lang="ts">
-    import {AthleteProgramStats} from "../../../classes/program/stats";
-    import {page} from "$app/stores";
-    import {ProgramService} from "../../../service/ProgramService";
-    import dayjs from "dayjs";
-    import {Chart} from "chart.js/auto";
-    import {getRelativePosition} from "chart.js/helpers";
-    import type {ChartConfiguration} from "chart.js";
-    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import { AthleteProgramStats } from '../../../classes/program/stats';
+    import { page } from '$app/stores';
+    import { ProgramService } from '../../../service/ProgramService';
+    import dayjs from 'dayjs';
+    import { Chart } from 'chart.js/auto';
+    import { getRelativePosition } from 'chart.js/helpers';
+    import type { ChartConfiguration } from 'chart.js';
+    import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
 
     export let stats: AthleteProgramStats[];
 
@@ -354,15 +354,13 @@
     $: stats
         ? setTimeout(() => renderOverallTotalVolumeChart(stats), 100)
         : null;
-    $: stats
-        ? setTimeout(() => renderOverallIntensityChart(stats), 100)
-        : null;
+    $: stats ? setTimeout(() => renderOverallIntensityChart(stats), 100) : null;
     $: selectedWeekDays
         ? setTimeout(() => {
-            renderDailyAvgIntensityChart(selectedWeekDays!);
-            renderDailyVolumeChart(selectedWeekDays!);
-            renderDailyRepsChart(selectedWeekDays!);
-        }, 100)
+              renderDailyAvgIntensityChart(selectedWeekDays!);
+              renderDailyVolumeChart(selectedWeekDays!);
+              renderDailyRepsChart(selectedWeekDays!);
+          }, 100)
         : null;
 </script>
 
@@ -373,45 +371,37 @@
         </h2>
         <div class="flex w-screen">
             <div class="flex w-11/12 p-2">
-                <div
-                        class="w-1/2 p-2"
-                        id="overall-total-volume-container"
-                >
+                <div class="w-1/2 p-2" id="overall-total-volume-container">
                     <canvas id="overall-total-volume"></canvas>
                 </div>
-                <div
-                        class="w-1/2 p-2"
-                        id="overall-average-intensity-container"
-                >
+                <div class="w-1/2 p-2" id="overall-average-intensity-container">
                     <canvas id="overall-average-intensity"></canvas>
                 </div>
             </div>
         </div>
     </div>
     <div class="p-4">
-        <h2 class="text-2xl font-semibold text-textblue">
-            Weekly Breakdowns
-        </h2>
+        <h2 class="text-2xl font-semibold text-textblue">Weekly Breakdowns</h2>
         <div class="grid grid-cols-4 overflow-y-hidden">
             <div class="col-span-1 flex flex-col">
                 {#each stats as week}
                     <div
-                            class="{selectedWeek === week
-                                    ? 'bg-gray-400'
-                                    : 'bg-gray-200'} my-2 cursor-pointer border-l-2 border-l-white p-2"
-                            on:click="{() => {
-                                    selectedWeek = week;
-                                    fetchDailyStats();
-                                }}"
+                        class="{selectedWeek === week
+                            ? 'bg-gray-400'
+                            : 'bg-gray-200'} my-2 cursor-pointer border-l-2 border-l-white p-2"
+                        on:click="{() => {
+                            selectedWeek = week;
+                            fetchDailyStats();
+                        }}"
                     >
                         <h3
-                                class="text-lg {selectedWeek === week
-                                        ? 'text-yellow-lt'
-                                        : 'text-textblue'} py-2 font-bold"
+                            class="text-lg {selectedWeek === week
+                                ? 'text-yellow-lt'
+                                : 'text-textblue'} py-2 font-bold"
                         >
                             {week.startDate.format('dddd DD MMM')} - {week.endDate.format(
-                            'dddd DD MMM'
-                        )}
+                                'dddd DD MMM'
+                            )}
                         </h3>
                         <div class="flex justify-between">
                             <h5 class="text-md">Total Volume</h5>
@@ -430,50 +420,39 @@
             </div>
             <div class="col-span-3 h-full pb-44">
                 {#if selectedWeek}
-                    <div
-                            class="mt-2 h-full overflow-y-auto bg-gray-400"
-                    >
-                        <h3
-                                class="p-3 text-xl font-medium text-yellow-lt"
-                        >
-                            {selectedWeek.startDate.format(
+                    <div class="mt-2 h-full overflow-y-auto bg-gray-400">
+                        <h3 class="p-3 text-xl font-medium text-yellow-lt">
+                            {selectedWeek.startDate.format('ddd MMM DD')} - {selectedWeek.endDate.format(
                                 'ddd MMM DD'
-                            )} - {selectedWeek.endDate.format(
-                            'ddd MMM DD'
-                        )}
+                            )}
                         </h3>
                         {#if loadingDaily}
                             <div
-                                    class="flex h-full w-full items-center justify-center"
+                                class="flex h-full w-full items-center justify-center"
                             >
-                                <LoadingSpinner
-                                        spinnerColor="fill-yellow"
-                                />
+                                <LoadingSpinner spinnerColor="fill-yellow" />
                             </div>
                         {:else if selectedWeekDays}
                             <div
-                                    class="flex h-fit w-full flex-col items-center"
+                                class="flex h-fit w-full flex-col items-center"
                             >
                                 <div
-                                        class="flex h-[15em] w-full justify-center"
-                                        id="daily-total-volume-container"
+                                    class="flex h-[15em] w-full justify-center"
+                                    id="daily-total-volume-container"
                                 >
-                                    <canvas id="daily-total-volume"
-                                    ></canvas>
+                                    <canvas id="daily-total-volume"></canvas>
                                 </div>
                                 <div
-                                        class="flex h-[15em] w-full justify-center"
-                                        id="daily-avg-intensity-container"
+                                    class="flex h-[15em] w-full justify-center"
+                                    id="daily-avg-intensity-container"
                                 >
-                                    <canvas id="daily-avg-intensity"
-                                    ></canvas>
+                                    <canvas id="daily-avg-intensity"></canvas>
                                 </div>
                                 <div
-                                        class="flex h-[15em] w-full justify-center"
-                                        id="daily-total-reps-container"
+                                    class="flex h-[15em] w-full justify-center"
+                                    id="daily-total-reps-container"
                                 >
-                                    <canvas id="daily-total-reps"
-                                    ></canvas>
+                                    <canvas id="daily-total-reps"></canvas>
                                 </div>
                             </div>
                         {/if}

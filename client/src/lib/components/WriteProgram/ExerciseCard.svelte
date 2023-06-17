@@ -4,9 +4,8 @@
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
     import { isMobile } from '$lib/stores/authStore';
     import { userDB } from '../../stores/authStore';
-    import ReadOnlyExerciseRow from "$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte";
-    import MdContentCopy from 'svelte-icons/md/MdContentCopy.svelte'
-    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
+    import ReadOnlyExerciseRow from '$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte';
+    import MdContentCopy from 'svelte-icons/md/MdContentCopy.svelte';
 
     export let exercise: Exercise;
     export let index: number;
@@ -17,7 +16,7 @@
         getSelectedDayIdx,
         deleteExercise,
         copyExercise,
-        getProgramInfo
+        getProgramInfo,
     } = getContext('program');
     const selectedExerciseIdx = getSelectedExerciseIdx();
     const selectedDayIdx = getSelectedDayIdx();
@@ -45,9 +44,6 @@
         });
         $program = $program;
     };
-
-
-
 </script>
 
 <div
@@ -55,18 +51,22 @@
 >
     <div class="absolute right-0 flex">
         <button class="{$isMobile ? 'h-7 w-7 px-1' : 'h-6 w-10 px-2'}">
-            <span class="text-textgray hover:cursor-pointer hover:text-textblue" on:click={() => { copyExercise(index); $programInfo = `Copied ${exercise.name}`}}>
+            <span
+                class="text-textgray hover:cursor-pointer hover:text-textblue"
+                on:click="{() => {
+                    copyExercise(index);
+                    $programInfo = `Copied ${exercise.name}`;
+                }}"
+            >
                 <MdContentCopy />
             </span>
         </button>
         <button
-                class="{$isMobile
-            ? 'h-7 w-7 px-1'
-            : 'h-6 w-10 px-2'}"
-                on:click="{handleDeleteExercise}"
+            class="{$isMobile ? 'h-7 w-7 px-1' : 'h-6 w-10 px-2'}"
+            on:click="{handleDeleteExercise}"
         >
             <span
-                    class="h-6 w-6 text-red hover:cursor-pointer hover:text-red-shade"
+                class="h-6 w-6 text-red hover:cursor-pointer hover:text-red-shade"
             >
                 <FaTrashAlt />
             </span>

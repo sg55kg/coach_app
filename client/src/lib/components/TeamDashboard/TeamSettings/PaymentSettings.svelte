@@ -6,8 +6,8 @@
     import { userDB } from '../../../stores/authStore';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import Toggle from '$lib/components/shared/layout/Toggle.svelte';
-    import ColorPicker from "$lib/components/shared/layout/ColorPicker.svelte";
-    import type {StripeConnectAccount} from "../../../classes/stripe";
+    import ColorPicker from '$lib/components/shared/layout/ColorPicker.svelte';
+    import type { StripeConnectAccount } from '../../../classes/stripe';
 
     let stripeAccountCreated: boolean = false;
     let stripeAccount: StripeConnectAccount;
@@ -105,10 +105,7 @@
                 <p>Creating your Stripe account...</p>
             </div>
         {:else}
-            <button
-                class="font-semibold text-link"
-                disabled
-            >
+            <button class="font-semibold text-link" disabled>
                 Connect with Stripe to enable payments
             </button>
         {/if}

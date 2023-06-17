@@ -4,13 +4,22 @@ export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const programId = event.params.programId;
 
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}api/programs/${programId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
-    });
+    const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}api/programs/${programId}`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+        }
+    );
 
-    return new Response(res.body, { status: res.status, statusText: res.statusText });
-}
+    return new Response(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+    });
+};
 
 export const PUT: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
@@ -22,13 +31,16 @@ export const PUT: RequestHandler = async event => {
         {
             method: 'PUT',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: program,
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };
 
 export const DELETE: RequestHandler = async event => {
@@ -39,8 +51,11 @@ export const DELETE: RequestHandler = async event => {
         `${import.meta.env.VITE_SERVER_URL}api/programs/${programId}`,
         {
             method: 'DELETE',
-            headers: { 'Authorization': 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

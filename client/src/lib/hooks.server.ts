@@ -131,10 +131,16 @@ export const _fetchUser = async (
         if (!userData.photoUrl) {
             await saveUserImage(userData.id, token, {
                 id: userData.id,
-                athleteName: userData?.athleteData?.name ? userData.athleteData.name : user.name,
+                athleteName: userData?.athleteData?.name
+                    ? userData.athleteData.name
+                    : user.name,
                 preferences: userData.preferences
                     ? userData.preferences
-                    : { weight: 'kg', mode: 'dark', defaultHomePage: 'athlete' },
+                    : {
+                          weight: 'kg',
+                          mode: 'dark',
+                          defaultHomePage: 'athlete',
+                      },
                 email: user.email,
                 username: user.name,
                 photoUrl: user.picture,
@@ -164,7 +170,11 @@ const createUserData = async (token: string, user: any) => {
             email: user.email,
             name: user.name,
             photoUrl: user.picture,
-            preferences: { weight: 'kg', mode: 'dark', defaultHomePage: 'athlete' },
+            preferences: {
+                weight: 'kg',
+                mode: 'dark',
+                defaultHomePage: 'athlete',
+            },
         }),
     });
 };
@@ -172,7 +182,14 @@ const createUserData = async (token: string, user: any) => {
 const saveUserImage = async (
     id: string,
     token: string,
-    body: { id: string, athleteName: string, preferences: any, email: string; username: string; photoUrl: string }
+    body: {
+        id: string;
+        athleteName: string;
+        preferences: any;
+        email: string;
+        username: string;
+        photoUrl: string;
+    }
 ) => {
     await fetch(`${import.meta.env.VITE_SERVER_URL}api/users/${id}`, {
         method: 'PUT',

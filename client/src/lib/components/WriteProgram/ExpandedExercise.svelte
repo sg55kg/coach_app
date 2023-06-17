@@ -58,14 +58,15 @@
         if ($selectedDayIdx < 0) {
             return;
         }
-        $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx] = exercise;
+        $program.days[$selectedDayIdx].exercises[$selectedExerciseIdx] =
+            exercise;
         $program = $program;
         $selectedExerciseIdx = -1;
     });
 </script>
 
 <div
-    class="absolute lg:relative lg:w-full right-1 left-1 z-[300] flex h-full flex-col items-center overflow-y-auto bg-gray-200 lg:p-8"
+    class="absolute right-1 left-1 z-[300] flex h-full flex-col items-center overflow-y-auto bg-gray-200 lg:relative lg:w-full lg:p-8"
 >
     <ExerciseRow
         bind:exercise="{exercise}"

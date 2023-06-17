@@ -64,15 +64,24 @@
 
         // If no ID or if successfully deleted on the backend, splice from the frontend
         const dropSetIdx = $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId || e.name === exercise.name)
+            .find(
+                (e: Exercise) =>
+                    e.id === parentExerciseId || e.name === exercise.name
+            )
             .dropSets.findIndex((d: Exercise) => d.id === exercise.id);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId || e.name === exercise.name)
+            .find(
+                (e: Exercise) =>
+                    e.id === parentExerciseId || e.name === exercise.name
+            )
             .dropSets.splice(dropSetIdx, 1);
 
         $program.days[$selectedDayIdx].exercises
-            .find((e: Exercise) => e.id === parentExerciseId || e.name === exercise.name)
+            .find(
+                (e: Exercise) =>
+                    e.id === parentExerciseId || e.name === exercise.name
+            )
             .dropSets.forEach((d, i) => (d.order = i));
 
         $program = $program;

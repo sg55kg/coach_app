@@ -2,16 +2,16 @@
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import DayCard from '$lib/components/WriteProgram/DayCard.svelte';
     import ProgramSearch from '$lib/components/WriteProgram/modals/ProgramSearch.svelte';
-    import {getContext, setContext} from 'svelte';
+    import { getContext, setContext } from 'svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import ExpandedDay from '$lib/components/WriteProgram/ExpandedDay.svelte';
     import CreateProgramModal from '$lib/components/WriteProgram/modals/CreateProgramModal.svelte';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
     import AssignAthleteModal from '$lib/components/WriteProgram/modals/AssignAthleteModal.svelte';
-    import ProgramToolbarDesktop from "$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte";
-    import ProgramToolbarMobile from "$lib/components/WriteProgram/toolbars/ProgramToolbarMobile.svelte";
-    import Toaster from "$lib/components/shared/layout/Toaster.svelte";
+    import ProgramToolbarDesktop from '$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte';
+    import ProgramToolbarMobile from '$lib/components/WriteProgram/toolbars/ProgramToolbarMobile.svelte';
+    import Toaster from '$lib/components/shared/layout/Toaster.svelte';
 
     let showActionContext: boolean = false;
     let contextCoordinates: { x: number; y: number } = { x: -1, y: -1 };
@@ -26,7 +26,7 @@
         getProgramLoading,
         addDay,
         getSelectedDayIdx,
-        getProgramInfo
+        getProgramInfo,
     } = getContext('program');
 
     let program = getProgram();
@@ -46,9 +46,8 @@
               programSuccess.set('');
           }, 5000)
         : null;
-    $: $programLoading ? showActionContext = false : null;
-    $: $programInfo ? setTimeout(() => $programInfo = '', 2500) : null;
-
+    $: $programLoading ? (showActionContext = false) : null;
+    $: $programInfo ? setTimeout(() => ($programInfo = ''), 2500) : null;
 </script>
 
 <div
@@ -56,7 +55,10 @@
     class="relative flex h-[90vh] w-screen flex-col overflow-y-auto pb-32"
 >
     {#if !$isMobile}
-        <ProgramToolbarDesktop bind:showAssignAthlete={showAssignAthlete} bind:showCreateProgram={showCreateProgram} />
+        <ProgramToolbarDesktop
+            bind:showAssignAthlete="{showAssignAthlete}"
+            bind:showCreateProgram="{showCreateProgram}"
+        />
     {/if}
     <header class="flex {$isMobile ? 'flex-row' : 'flex-col'} items-center p-3">
         {#if $isMobile}
@@ -96,7 +98,7 @@
     </div>
 </div>
 {#if $isMobile}
-    <ProgramToolbarMobile bind:showCreateProgram={showCreateProgram} />
+    <ProgramToolbarMobile bind:showCreateProgram="{showCreateProgram}" />
 {/if}
 
 {#if $selectedDayIdx > -1}
@@ -104,10 +106,16 @@
 {/if}
 
 {#if showCreateProgram}
-    <CreateProgramModal bind:show="{showCreateProgram}" programName="{$program.name}" />
+    <CreateProgramModal
+        bind:show="{showCreateProgram}"
+        programName="{$program.name}"
+    />
 {/if}
 {#if showAssignAthlete}
-    <AssignAthleteModal bind:show="{showAssignAthlete}" bind:showCreateProgram={showCreateProgram} />
+    <AssignAthleteModal
+        bind:show="{showAssignAthlete}"
+        bind:showCreateProgram="{showCreateProgram}"
+    />
 {/if}
 {#if $programLoading}
     <div
@@ -120,11 +128,11 @@
     </div>
 {/if}
 {#if $programSuccess}
-    <Toaster type="success" bind:message={$programSuccess} />
+    <Toaster type="success" bind:message="{$programSuccess}" />
 {:else if $programError}
-    <Toaster type="error" bind:message={$programError} />
+    <Toaster type="error" bind:message="{$programError}" />
 {:else if $programInfo}
-    <Toaster type="info" bind:message={$programInfo} />
+    <Toaster type="info" bind:message="{$programInfo}" />
 {/if}
 
 <style>

@@ -4,7 +4,7 @@
     import { CoachData } from '$lib/classes/user/coach';
     import { AthleteData } from '$lib/classes/user/athlete';
     import { goto } from '$app/navigation';
-    import UserService from "../../service/UserService";
+    import UserService from '../../service/UserService';
 
     export let team: DisplayTeam;
     let displayTeamsError: string = '';

@@ -13,9 +13,12 @@ export const GET: RequestHandler = async event => {
             method: 'GET',
             headers: {
                 'Content-Type': 'text/html; charset=utf-8',
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
         }
     );
-    return new Response(await res.text(), { status: res.status, statusText: res.statusText });
+    return new Response(await res.text(), {
+        status: res.status,
+        statusText: res.statusText,
+    });
 };

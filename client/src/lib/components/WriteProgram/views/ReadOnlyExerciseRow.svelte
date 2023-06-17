@@ -1,8 +1,8 @@
 <script lang="ts">
-    import {Exercise} from "../../../classes/program/exercise";
-    import {ExerciseType} from "$lib/classes/program/exercise/enums.js";
-    import {userDB} from "../../../stores/authStore";
-    import {EffortIntensity} from "../../../classes/program/exercise/enums";
+    import { Exercise } from '../../../classes/program/exercise';
+    import { ExerciseType } from '$lib/classes/program/exercise/enums.js';
+    import { userDB } from '../../../stores/authStore';
+    import { EffortIntensity } from '../../../classes/program/exercise/enums';
 
     export let exercise: Exercise;
     export let showName: boolean = true;
@@ -24,32 +24,30 @@
     };
 </script>
 
-<h4 class="{showName ? 'mb-2' : 'ml-10 p-1 border-l-2 border-l-textblue'}">
+<h4 class="{showName ? 'mb-2' : 'ml-10 border-l-2 border-l-textblue p-1'}">
     {#if exercise.type === ExerciseType.EXERCISE}
         {#if exercise.isMax}
-                {#if showName}
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.repsPerSet}RM
-                {:else}
-                    {exercise.repsPerSet}RM
-                {/if}
+            {#if showName}
+                {exercise.name ? exercise.name : 'No Name'}: {exercise.repsPerSet}RM
+            {:else}
+                {exercise.repsPerSet}RM
+            {/if}
         {:else if exercise.isMaxReps}
-                {#if showName}
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(unit)}{unit}{exercise.sets}sets AMRAP
-                {:else}
-                    {exercise.wgt(unit)}{unit}{exercise.sets}sets AMRAP
-                {/if}
-        {:else}
-                {#if showName}
-                    {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
+            {#if showName}
+                {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
                     unit
-                )}{unit}
-                    {exercise.sets}sets {exercise.repsPerSet}reps
-                {:else}
-                    {exercise.wgt(
-                        unit
-                    )}{unit}
-                    {exercise.sets}sets {exercise.repsPerSet}reps
-                {/if}
+                )}{unit}{exercise.sets}sets AMRAP
+            {:else}
+                {exercise.wgt(unit)}{unit}{exercise.sets}sets AMRAP
+            {/if}
+        {:else if showName}
+            {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
+                unit
+            )}{unit}
+            {exercise.sets}sets {exercise.repsPerSet}reps
+        {:else}
+            {exercise.wgt(unit)}{unit}
+            {exercise.sets}sets {exercise.repsPerSet}reps
         {/if}
     {:else if exercise.type === ExerciseType.COMPLEX}
         {#if exercise.isMax}
@@ -58,14 +56,12 @@
             {:else}
                 {exercise.repArr.join(' + ')}RM
             {/if}
+        {:else if showName}
+            {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit}
+            {exercise.sets}sets {exercise.repArr.join(' + ')}reps
         {:else}
-            {#if showName}
-                {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit}
-                {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-            {:else}
-                {exercise.wgt(unit)}{unit}
-                {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-            {/if}
+            {exercise.wgt(unit)}{unit}
+            {exercise.sets}sets {exercise.repArr.join(' + ')}reps
         {/if}
     {:else if exercise.type === ExerciseType.ACCESSORY}
         {#if showName}

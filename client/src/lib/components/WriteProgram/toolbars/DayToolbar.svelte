@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {getContext, onMount} from "svelte";
-    import {isMobile} from "$lib/stores/authStore.js";
+    import { getContext, onMount } from 'svelte';
+    import { isMobile } from '$lib/stores/authStore.js';
 
     const {
         getDayClipboard,
@@ -14,7 +14,7 @@
         getSelectedExerciseIdx,
         copyExercise,
         pasteExercise,
-        getExerciseClipboard
+        getExerciseClipboard,
     } = getContext('program');
     const dayClipboard = getDayClipboard();
     const index = getSelectedDayIdx();
@@ -27,7 +27,7 @@
         e: false,
         v: false,
         d: false,
-        c: false
+        c: false,
     };
 
     onMount(() => {
@@ -79,46 +79,48 @@
 
 <div class="fixed bottom-0 left-0 right-0 flex justify-around bg-gray-100">
     {#if $exerciseIndex > -1}
-        <button class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click={() => copyExercise($exerciseIndex)}
+        <button
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{() => copyExercise($exerciseIndex)}"
         >
             Copy Exercise
         </button>
     {:else}
         <button
-                class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click="{() => copyDay($index)}"
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{() => copyDay($index)}"
         >
             Copy Day
         </button>
     {/if}
     {#if $dayClipboard.length > 0 && $exerciseIndex < 0}
         <button
-                class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click="{() => pasteDay($index)}"
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{() => pasteDay($index)}"
         >
             Paste Day
         </button>
     {/if}
     {#if $exerciseClipboard.length > 0}
-        <button class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click={pasteExercise}
+        <button
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{pasteExercise}"
         >
             Paste Exercise
         </button>
     {/if}
     {#if $program.days[$index].exercises.length > 0 && $exerciseIndex < 0}
         <button
-                class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click="{() => clearExercises($index)}"
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{() => clearExercises($index)}"
         >
             Clear Exercises
         </button>
     {/if}
     {#if $program.id}
         <button
-                class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
-                on:click="{updateProgram}"
+            class="my-2 rounded bg-yellow px-4 py-2 text-lg font-bold text-gray-300"
+            on:click="{updateProgram}"
         >
             Save
         </button>

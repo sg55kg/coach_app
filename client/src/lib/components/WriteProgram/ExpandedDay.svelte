@@ -9,17 +9,17 @@
     import { userDB } from '$lib/stores/authStore';
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
     import { WarmUp } from '../../classes/program/day';
-    import DayToolbar from "$lib/components/WriteProgram/toolbars/DayToolbar.svelte";
-    import {isMobile} from "$lib/stores/authStore.js";
-    import MdClose from 'svelte-icons/md/MdClose.svelte'
-    import WeekViewNav from "$lib/components/WriteProgram/navigation/WeekViewNav.svelte";
+    import DayToolbar from '$lib/components/WriteProgram/toolbars/DayToolbar.svelte';
+    import { isMobile } from '$lib/stores/authStore.js';
+    import MdClose from 'svelte-icons/md/MdClose.svelte';
+    import WeekViewNav from '$lib/components/WriteProgram/navigation/WeekViewNav.svelte';
 
     const {
         getProgram,
         getSelectedDayIdx,
         getSelectedExerciseIdx,
         updateProgram,
-        getDayClipboard
+        getDayClipboard,
     } = getContext('program');
 
     const program = getProgram();
@@ -48,7 +48,7 @@
         newExercise.order = $program.days[$index].exercises.length;
         $program.days[$index].exercises = [
             ...$program.days[$index].exercises,
-            newExercise
+            newExercise,
         ];
         $program = $program;
     };
@@ -83,17 +83,17 @@
 </script>
 
 <div
-    class="fixed lg:top-0 top-12 left-0 right-0 bottom-0 flex w-screen lg:h-screen overflow-y-auto bg-gray-300"
+    class="fixed top-12 left-0 right-0 bottom-0 flex w-screen overflow-y-auto bg-gray-300 lg:top-0 lg:h-screen"
 >
     <div
         class="{$isMobile
-        ? 'm-auto flex flex-col h-[88vh] w-full items-center bg-gray-300 relative'
-        : 'm-0 flex flex-row m-0 h-full w-full bg-gray-100'}"
+            ? 'relative m-auto flex h-[88vh] w-full flex-col items-center bg-gray-300'
+            : 'm-0 m-0 flex h-full w-full flex-row bg-gray-100'}"
     >
         {#if $isMobile}
             <button
-                    class="absolute lg:w-fit w-8 h-8 right-3 top-2 text-lg font-bold"
-                    on:click="{() => $index = -1}"
+                class="absolute right-3 top-2 h-8 w-8 text-lg font-bold lg:w-fit"
+                on:click="{() => ($index = -1)}"
             >
                 <span><MdClose /></span>
             </button>
@@ -106,12 +106,16 @@
         <div class="w-full">
             <div class="flex flex-col lg:flex-row lg:justify-between">
                 <div
-                        class="flex items-center justify-center lg:justify-start p-2 text-2xl font-bold lg:bg-gray-100 text-yellow flex-grow"
+                    class="flex flex-grow items-center justify-center p-2 text-2xl font-bold text-yellow lg:justify-start lg:bg-gray-100"
                 >
                     <button class="mx-8 h-6 w-3" on:click="{decrementDay}">
                         <FaChevronLeft />
                     </button>
-                    <h1>Day {$index + 1} - {$program.id ? $program.days[$index].date.format('MMM DD') : ''}</h1>
+                    <h1>
+                        Day {$index + 1} - {$program.id
+                            ? $program.days[$index].date.format('MMM DD')
+                            : ''}
+                    </h1>
                     <button class="mx-8 h-6 w-3" on:click="{incrementDay}">
                         <FaChevronRight />
                     </button>
@@ -119,15 +123,15 @@
                 <div class="flex flex-col items-center p-4 lg:bg-gray-100">
                     {#if $program.days[$index].isRestDay}
                         <button
-                                class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
-                                on:click="{undoRestDay}"
+                            class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
+                            on:click="{undoRestDay}"
                         >
                             Undo Rest Day
                         </button>
                     {:else}
                         <button
-                                class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
-                                on:click="{makeRestDay}"
+                            class="text-md border-textyellow my-2 rounded border p-1 hover:bg-gray-200 hover:text-textblue"
+                            on:click="{makeRestDay}"
                         >
                             Make Rest Day
                         </button>
@@ -136,15 +140,17 @@
                 {#if !$isMobile}
                     <div class="flex items-center lg:bg-gray-100">
                         <button
-                                class="lg:w-fit w-10 h-10 text-lg font-bold px-2"
-                                on:click="{() => $index = -1}"
+                            class="h-10 w-10 px-2 text-lg font-bold lg:w-fit"
+                            on:click="{() => ($index = -1)}"
                         >
                             <span>Back to Calendar</span>
                         </button>
                     </div>
                 {/if}
             </div>
-            <div class="lg:pt-6 flex w-full flex-col items-start justify-start pr-2 lg:p-2 lg:bg-gray-100">
+            <div
+                class="flex w-full flex-col items-start justify-start pr-2 lg:bg-gray-100 lg:p-2 lg:pt-6"
+            >
                 {#if $program.days[$index].isRestDay}
                     <h4 class="m-2 w-full text-center text-2xl font-semibold">
                         Rest Day
@@ -153,18 +159,18 @@
                     {#if $program.days[$index].warmUp}
                         <div class="flex w-full items-center justify-center">
                             <RichTextEditor
-                                    bind:content="{$program.days[$index].warmUp
-                                .instructions}"
+                                bind:content="{$program.days[$index].warmUp
+                                    .instructions}"
                             />
                         </div>
                         <button
-                                class="cursor-pointer self-center py-2 text-red"
-                                on:click="{toggleWarmup}">Remove Warm Up</button
+                            class="cursor-pointer self-center py-2 text-red"
+                            on:click="{toggleWarmup}">Remove Warm Up</button
                         >
                     {:else}
                         <button
-                                class="cursor-pointer self-center py-2 text-textblue"
-                                on:click="{toggleWarmup}">Add Warm Up</button
+                            class="cursor-pointer self-center py-2 text-textblue"
+                            on:click="{toggleWarmup}">Add Warm Up</button
                         >
                     {/if}
                     {#each $program.days[$index].exercises as exercise, idx}
@@ -172,14 +178,14 @@
                             <ExpandedExercise bind:exercise="{exercise}" />
                         {:else}
                             <ExerciseCard
-                                    bind:exercise="{exercise}"
-                                    index="{idx}"
+                                bind:exercise="{exercise}"
+                                index="{idx}"
                             />
                         {/if}
                     {/each}
                     <button
-                            class="my-2 h-6 w-6 text-yellow self-center"
-                            on:click="{addExercise}"
+                        class="my-2 h-6 w-6 self-center text-yellow"
+                        on:click="{addExercise}"
                     >
                         <FaPlus />
                     </button>

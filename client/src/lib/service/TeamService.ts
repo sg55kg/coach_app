@@ -4,7 +4,7 @@ import { goto } from '$app/navigation';
 import { srGet, srPost, srPut } from './helpers/serviceRequest';
 import type { DisplayTeamDTO, TeamDTO } from '../classes/team';
 import { DisplayTeam } from '../classes/team';
-import type {StripeConnectAccount} from "../classes/stripe";
+import type { StripeConnectAccount } from '../classes/stripe';
 
 export class TeamService {
     static createTeam = async (team: Team) => {

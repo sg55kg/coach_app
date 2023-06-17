@@ -41,18 +41,20 @@
     class="overlay fixed inset-0 z-40 transform overflow-hidden ease-in-out
     {showNav
         ? 'translate-x-0 opacity-100 transition-opacity duration-100'
-        : 'translate-x-full opacity-0 transition-all delay-500 w-0'}"
+        : 'w-0 translate-x-full opacity-0 transition-all delay-500'}"
 >
     <div
         class="fixed left-0 z-[250] h-screen w-9/12 transform bg-gray-100 shadow-xl
                transition-all delay-200 duration-200 ease-in-out lg:w-2/12
-        {showNav
-            ? 'translate-x-0'
-            : 'translate-x-[-30em]'}"
+        {showNav ? 'translate-x-0' : 'translate-x-[-30em]'}"
     >
         {#if showNav}
             <header class="mt-2 flex w-full items-center p-2">
-                <img class="m-auto ml-32 h-10" src="{logo}" alt="Coachable Logo" />
+                <img
+                    class="m-auto ml-32 h-10"
+                    src="{logo}"
+                    alt="Coachable Logo"
+                />
                 <button
                     class="w-8 text-yellow-lt hover:cursor-pointer hover:text-yellow"
                     on:click="{() => (showNav = false)}"

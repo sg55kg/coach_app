@@ -81,20 +81,20 @@
                 <div class="flex flex-col items-center">
                     Rest Day
                     {#if $currentProgram?.id}
-                    <a
-                        class="text-md font-medium text-link"
-                        href="/home/athlete/program">View Full Program</a
-                    >
+                        <a
+                            class="text-md font-medium text-link"
+                            href="/home/athlete/program">View Full Program</a
+                        >
                     {/if}
                 </div>
             {:else}
                 <div class="flex flex-col py-4 text-center md:text-left">
                     No programming available for today
                     {#if $currentProgram?.id}
-                    <a
-                        class="text-md font-medium text-link"
-                        href="/home/athlete/program">View Full Program</a
-                    >
+                        <a
+                            class="text-md font-medium text-link"
+                            href="/home/athlete/program">View Full Program</a
+                        >
                     {/if}
                 </div>
             {/if}

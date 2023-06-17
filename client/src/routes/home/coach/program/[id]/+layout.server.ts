@@ -1,7 +1,7 @@
-import {error} from "@sveltejs/kit";
-import type {LayoutServerLoad} from "../../../../../../.svelte-kit/types/src/routes/$types";
+import { error } from '@sveltejs/kit';
+import type { LayoutServerLoad } from '../../../../../../.svelte-kit/types/src/routes/$types';
 
-export const load: LayoutServerLoad = async (event) => {
+export const load: LayoutServerLoad = async event => {
     const programId = event.params.id;
     const token = event.cookies.get('accessToken');
     try {
@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = async (event) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
+                    Authorization: 'Bearer ' + token,
                 },
             }
         );
@@ -20,4 +20,5 @@ export const load: LayoutServerLoad = async (event) => {
     } catch (e) {
         console.log(e);
         throw error(404, 'Could not find program');
-    }}
+    }
+};

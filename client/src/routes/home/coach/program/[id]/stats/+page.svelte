@@ -3,9 +3,9 @@
     import { ProgramService } from '../../../../../../lib/service/ProgramService';
     import { AthleteProgramStats } from '../../../../../../lib/classes/program/stats';
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
-    import ProgramStats from "$lib/components/WriteProgram/views/ProgramStats.svelte";
-    import ProgramToolbarDesktop from "$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte";
-    import {isMobile} from "$lib/stores/authStore.js";
+    import ProgramStats from '$lib/components/WriteProgram/views/ProgramStats.svelte';
+    import ProgramToolbarDesktop from '$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte';
+    import { isMobile } from '$lib/stores/authStore.js';
 
     let weeklyStats: AthleteProgramStats[];
 
@@ -22,8 +22,6 @@
             console.log(e);
         }
     };
-
-
 </script>
 
 <div>
@@ -42,7 +40,7 @@
             <p class="font-semibold">Fetching program stats...</p>
         </div>
     {:then stats}
-        <ProgramStats {stats} />
+        <ProgramStats stats="{stats}" />
     {:catch err}
         <p>Error</p>
     {/await}
