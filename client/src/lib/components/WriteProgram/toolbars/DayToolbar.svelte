@@ -1,6 +1,5 @@
 <script lang="ts">
     import { getContext, onMount } from 'svelte';
-    import { isMobile } from '$lib/stores/authStore.js';
 
     const {
         getDayClipboard,

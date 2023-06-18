@@ -137,7 +137,7 @@
                     bind:value="{exercise.setsCompleted}"
                 />
             </div>
-            <div class="flex flex-col">
+            <div class="flex flex-col w-24">
                 <p class="text-sm">Reps</p>
                 {#each exercise.repArr as complexRep, i}
                     <input

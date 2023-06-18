@@ -3,6 +3,8 @@
     import { ExerciseType } from '$lib/classes/program/exercise/enums.js';
     import { userDB } from '../../../stores/authStore';
     import { EffortIntensity } from '../../../classes/program/exercise/enums';
+    import GoCheck from 'svelte-icons/go/GoCheck.svelte';
+    import GoDash from 'svelte-icons/go/GoDash.svelte';
 
     export let exercise: Exercise;
     export let showName: boolean = true;
@@ -24,7 +26,12 @@
     };
 </script>
 
-<h4 class="{showName ? 'mb-2' : 'ml-10 border-l-2 border-l-textblue p-1'}">
+<div class="{showName ? 'mb-2' : 'ml-10 border-l-2 border-l-textblue p-1'} flex h-6">
+    {#if exercise.isComplete && exercise.weightCompleted < 1 && exercise.totalRepsCompleted < 1}
+        <span class="mr-1 h-6 w-6 text-orange-shade"><GoDash /></span>
+    {:else if exercise.isComplete}
+        <span class="mr-1 h-6 w-6 text-green"><GoCheck /></span>
+    {/if}
     {#if exercise.type === ExerciseType.EXERCISE}
         {#if exercise.isMax}
             {#if showName}
@@ -77,6 +84,6 @@
             {exercise.sets}sets {exercise.repsPerSet}reps
         {/if}
     {/if}
-</h4>
+</div>
 
 <style></style>
