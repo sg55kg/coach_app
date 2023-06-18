@@ -28,7 +28,7 @@ export class AthleteProgramStats {
         stats.plannedAverageIntensity = data.plannedAverageIntensity;
         stats.plannedKValue = data.plannedKValue;
         stats.plannedInol = data.plannedInol;
-        stats.actualTotalVolume = data.plannedTotalVolume;
+        stats.actualTotalVolume = data.actualTotalVolume;
         stats.actualTotalReps = data.actualTotalReps;
         stats.actualAverageIntensity = data.actualAverageIntensity;
         stats.actualKValue = data.actualKValue;

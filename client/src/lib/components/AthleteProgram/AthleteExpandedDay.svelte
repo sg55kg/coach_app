@@ -1,13 +1,11 @@
 <script lang="ts">
     import { getContext } from 'svelte';
-    import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte';
-    import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte';
     import { isMobile, userDB } from '$lib/stores/authStore.js';
     import AthleteExerciseCard from '$lib/components/AthleteProgram/AthleteExerciseCard.svelte';
     import AthleteExpandedExercise from '$lib/components/AthleteProgram/AthleteExpandedExercise.svelte';
-    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
     import UserService from '../../service/UserService';
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
+    import AthleteDayToolbar from "$lib/components/AthleteProgram/toolbars/AthleteDayToolbar.svelte";
 
     const {
         getCurrentProgram,
@@ -43,83 +41,20 @@
         return count;
     };
 
-    const incrementDay = () => {
-        if ($idx < $currentProgram.days.length - 1) {
-            $idx = $idx + 1;
-            $currentDay = $currentProgram.days[$idx];
-        }
-    };
-
-    const decrementDay = () => {
-        if ($idx > 0) {
-            $idx = $idx - 1;
-            $currentDay = $currentProgram.days[$idx];
-        }
-    };
-
-    const toggleWeightPreference = async () => {
-        $loading = true;
-        if ($userDB.preferences.weight === 'kg') {
-            $userDB.preferences.weight = 'lb';
-        } else {
-            $userDB.preferences.weight = 'kg';
-        }
-        try {
-            await UserService.updateUserData($userDB);
-        } catch (e) {
-            console.log(e);
-        } finally {
-            $loading = false;
-        }
-    };
 </script>
 
-<div class="h-[70vh] w-full overflow-y-auto bg-gray-300 lg:h-[80vh]">
-    <header class="flex w-full flex-col p-2">
-        <h2 class="text-center text-3xl font-semibold">
-            {$currentProgram.name}
-        </h2>
-        <div class="flex w-full items-center justify-center">
-            <div
-                class="relative flex items-center justify-center {$isMobile
-                    ? 'w-8/12'
-                    : 'w-4/12'} p-2"
-            >
-                <button
-                    class="absolute left-0 h-10 w-6 text-yellow"
-                    on:click="{decrementDay}"
-                >
-                    <FaAngleLeft />
-                </button>
-                <h3
-                    class="text-yellow {$isMobile
-                        ? 'text-md'
-                        : 'text-2xl'} font-medium"
-                >
-                    {$currentDay.date.format('dddd, MMMM DD')}
-                </h3>
-                <button
-                    class="absolute right-0 h-10 w-6 text-yellow"
-                    on:click="{incrementDay}"
-                >
-                    <FaAngleRight />
-                </button>
-            </div>
-        </div>
-
-        <div class="flex justify-center">
-            <p class="px-1 text-textblue">Pounds</p>
-            <Toggle
-                checked="{$userDB.preferences.weight === 'kg'}"
-                onChange="{toggleWeightPreference}"
-            />
-            <p class="px-1 text-textblue">Kilograms</p>
-        </div>
-    </header>
+<div class="h-full w-full overflow-y-auto bg-gray-100">
+    <AthleteDayToolbar />
     {#if $currentDay.isRestDay}
         <h4 class="text-center text-lg font-semibold text-textblue">
             Rest Day
         </h4>
+    {:else if !$currentDay.exercises.length}
+        <div class="flex justify-center items-center h-full">
+            <h4 class="text-center text-lg font-semibold text-textblue">
+                Nothing entered for today.
+            </h4>
+        </div>
     {:else}
         <div class="flex w-full flex-col">
             <h4 class="p-1 text-lg">Warm Up</h4>

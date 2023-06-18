@@ -4,8 +4,8 @@
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte';
     import { isMobile } from '$lib/stores/authStore';
     import { userDB } from '../../stores/authStore';
-    import ReadOnlyExerciseRow from '$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte';
     import MdContentCopy from 'svelte-icons/md/MdContentCopy.svelte';
+    import ReadOnlyExerciseRow from "$lib/components/shared/layout/ReadOnlyExerciseRow.svelte";
 
     export let exercise: Exercise;
     export let index: number;

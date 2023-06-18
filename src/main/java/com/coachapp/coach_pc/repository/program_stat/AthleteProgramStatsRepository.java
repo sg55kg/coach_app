@@ -267,7 +267,8 @@ public class AthleteProgramStatsRepository {
             ex.setWeight(complex.getWeight());
             ex.setIsComplete(complex.getIsComplete());
             if (repsCompleted.length >= i+1) {
-                if (repsCompleted[i] != null && !Objects.equals(repsCompleted[i], "null")) {
+                // TODO: This is a sign data needs to be cleaned before saving in the first place
+                if (repsCompleted[i] != null && !Objects.equals(repsCompleted[i], "null") && !Objects.equals(repsCompleted[i], "")) {
                     ex.setTotalRepsCompleted(parseInt(repsCompleted[i]) * complex.getSetsCompleted());
                 }
             }
