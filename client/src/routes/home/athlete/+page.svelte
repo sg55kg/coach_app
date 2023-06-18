@@ -9,6 +9,9 @@
     import { athleteProgramContext } from '../../../lib/contexts/athleteProgramContext.js';
     import { Day } from '$lib/classes/program/day';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
+    import {page} from "$app/stores";
+    import {ProgramService} from "../../../lib/service/ProgramService";
+    import {AthleteProgramStats} from "../../../lib/classes/program/stats";
 
     setContext('athlete-program', athleteProgramContext);
 
@@ -18,12 +21,16 @@
         getAthleteProgramError,
         getAthleteProgramLoading,
         getAthleteProgramSuccess,
+        getCurrentDayIdx,
     } = athleteProgramContext;
     const currentProgram = getCurrentProgram();
     const currentDay = getCurrentDay();
     const error = getAthleteProgramError();
     const loading = getAthleteProgramLoading();
     const success = getAthleteProgramSuccess();
+    const dayIdx = getCurrentDayIdx();
+
+    let weeklyStats: AthleteProgramStats[];
 
     const fetchCurrentProgram = async () => {
         if (!$userDB?.athleteData?.currentProgram) {
@@ -32,14 +39,27 @@
         try {
             const today = dayjs();
             $currentProgram = $userDB.athleteData.currentProgram;
-            const day = $currentProgram.days.find(d =>
+            const dayIndex = $currentProgram.days.findIndex(d =>
                 dayjs(d.date).isSame(today, 'days')
             );
 
-            if (day && !day.isRestDay && day.exercises.length > 0) {
-                day.exercises.sort((a, b) => a.order - b.order);
-                $currentDay = day;
+            if (dayIndex > -1) {
+                $currentDay = $currentProgram.days[dayIndex];
+                $dayIdx = dayIndex;
             }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const fetchWeeklyStats = async () => {
+        if (weeklyStats) return;
+
+        const programId = $currentProgram.id;
+        try {
+            const res = await ProgramService.getWeeklyProgramStats(programId);
+            weeklyStats = res;
+            return res;
         } catch (e) {
             console.log(e);
         }
@@ -49,6 +69,7 @@
         if ($userDB && !$userDB?.athleteData) {
             await goto(`/home/athlete/get-started/${$userDB.id}`);
         }
+        await fetchWeeklyStats();
     });
 
     onDestroy(() => {
@@ -75,18 +96,8 @@
                 />
             </div>
         {:then e}
-            {#if $currentDay?.id && !$currentDay?.isRestDay && $currentDay?.exercises?.length > 0}
+            {#if $currentDay?.id}
                 <AthleteExpandedDay />
-            {:else if $currentDay && $currentDay?.isRestDay}
-                <div class="flex flex-col items-center">
-                    Rest Day
-                    {#if $currentProgram?.id}
-                        <a
-                            class="text-md font-medium text-link"
-                            href="/home/athlete/program">View Full Program</a
-                        >
-                    {/if}
-                </div>
             {:else}
                 <div class="flex flex-col py-4 text-center md:text-left">
                     No programming available for today
@@ -105,15 +116,10 @@
     <div class="m-4 flex flex-col">
         {#if $userDB?.athleteData?.team}
             <h4 class="text-center text-2xl">
-                {$userDB?.athleteData?.team?.name
+                Currently a member of {$userDB?.athleteData?.team?.name
                     ? $userDB.athleteData.team.name
                     : 'Your Team'}
             </h4>
-            <p class="m-2 text-center">
-                As we continue to add features to the site, more information
-                about your team will become available here like team-wide
-                messages from your coach
-            </p>
         {:else}
             <a
                 class="text-center text-lg text-link underline md:text-left"

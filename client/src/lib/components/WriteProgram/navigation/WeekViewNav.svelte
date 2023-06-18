@@ -1,8 +1,8 @@
 <script lang="ts">
     import { getContext, onMount } from 'svelte';
-    import ReadOnlyExerciseRow from '$lib/components/WriteProgram/views/ReadOnlyExerciseRow.svelte';
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import { userDB } from '../../../stores/authStore';
+    import ReadOnlyExerciseRow from "$lib/components/shared/layout/ReadOnlyExerciseRow.svelte";
 
     const { getProgram, getSelectedDayIdx, addDay } = getContext('program');
     let program = getProgram();

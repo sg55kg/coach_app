@@ -12334,7 +12334,7 @@ export const allowed = new Set([
     'vices',
     'vichy',
     'viers',
-    'views',
+    'charts',
     'viewy',
     'vifda',
     'viffs',
