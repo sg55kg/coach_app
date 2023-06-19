@@ -55,7 +55,6 @@ export const GET: RequestHandler = async event => {
     return new Response(await res.text(), {
         status: res.status,
         statusText: res.statusText,
-        headers: res.headers,
     });
 };
 
@@ -78,6 +77,5 @@ export const POST: RequestHandler = async event => {
     return new Response(await res.text(), {
         status: res.status,
         statusText: res.statusText,
-        headers: res.headers,
     });
 };
