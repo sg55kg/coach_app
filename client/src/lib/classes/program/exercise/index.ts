@@ -100,6 +100,7 @@ export class Exercise {
         copy.setsCompleted = 0;
         copy.repCompletedArr = [];
         copy.dropSets = copy.dropSets.map(d => d.copy());
+        copy.isComplete = false;
         return copy;
     }
 
