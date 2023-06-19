@@ -25,9 +25,25 @@ export const PUT: RequestHandler = async event => {
 export const GET: RequestHandler = async event => {
     const token = event.cookies.get('accessToken');
     const athleteId = event.params.athleteId;
+    const reps = event.url.searchParams.get('reps') ?? 1;
+    const name = event.url.searchParams.get('name') ?? '';
+    const weight = event.url.searchParams.get('weight') ?? 0;
+    const current = event.url.searchParams.get('current') ?? true;
+
+    let url: string = `${import.meta.env.VITE_SERVER_URL}api/athletes/$${athleteId}/record?current=${current}`;
+
+    if (event.url.searchParams.has('reps')) {
+        url += `&reps=${reps}`;
+    }
+    if (event.url.searchParams.has('name')) {
+        url += `&name=${name}`;
+    }
+    if (event.url.searchParams.has('weight')) {
+        url += `&weight=${weight}`;
+    }
 
     const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/record`,
+        url,
         {
             method: 'GET',
             headers: {

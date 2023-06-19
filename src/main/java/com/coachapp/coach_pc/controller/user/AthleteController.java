@@ -78,4 +78,9 @@ public class AthleteController {
     ) {
         return athleteService.createAthleteRecords(athleteId, request);
     }
+
+    @GetMapping("/{athleteId}/records/common")
+    public ResponseEntity<List<AthleteRecordViewModel>> getCommonAthleteRecords(@PathVariable UUID athleteId) {
+        return athleteService.getCommonAthleteRecords(athleteId);
+    }
 }

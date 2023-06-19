@@ -132,8 +132,10 @@ public class AthleteService {
         } else if (weight == null) {
             // TODO: query for records between 1-10 reps
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } else {
+        } else if (current) {
             // TODO: query for the last PR for an exercise
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } else {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -200,5 +202,10 @@ public class AthleteService {
             List<AthleteRecordViewModel> vms = repository.addRecords(newRecords, prevRecords);
             return new ResponseEntity<>(vms, HttpStatus.CREATED);
         }
+    }
+
+    public ResponseEntity<List<AthleteRecordViewModel>> getCommonAthleteRecords(UUID athleteId) {
+        List<AthleteRecordViewModel> records = repository.getCommonAthleteRecords(athleteId);
+        return new ResponseEntity<>(records, HttpStatus.OK);
     }
 }

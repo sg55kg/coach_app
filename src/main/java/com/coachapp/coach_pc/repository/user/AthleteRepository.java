@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.repository.user;
 
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.WhereOrBuilder;
 import com.blazebit.persistence.view.*;
 import com.coachapp.coach_pc.model.program.Day;
 import com.coachapp.coach_pc.model.program.Program;
@@ -16,6 +17,7 @@ import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
 import com.coachapp.coach_pc.view.team.TeamViewModel;
 import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -225,5 +227,20 @@ public class AthleteRepository {
                 .with("createdAt", team.getCreatedAt())
                 .with("teamLogo", team.getTeamLogo());
         return builder;
+    }
+
+    public List<AthleteRecordViewModel> getCommonAthleteRecords(UUID athleteId) {
+        List<String> commonExerciseNames = new ArrayList<>(List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press"));
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        WhereOrBuilder<CriteriaBuilder<AthleteRecordViewModel>> query =
+                evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                .where("athlete.id").eq(athleteId)
+                .where("isCurrent").eq(true)
+                .whereOr();
+
+        for (String exercise : commonExerciseNames) {
+            query.where("exercise.name").like(false).value(exercise).noEscape();
+        }
+        return query.endOr().getResultList();
     }
 }
