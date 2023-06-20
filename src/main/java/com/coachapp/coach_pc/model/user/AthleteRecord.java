@@ -4,6 +4,8 @@ import com.coachapp.coach_pc.model.exercise.Exercise;
 import com.coachapp.coach_pc.model.program.Day;
 import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -24,6 +26,7 @@ public class AthleteRecord {
     private AthleteData athlete;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @Fetch(FetchMode.SELECT)
     @JsonIgnore
     private Exercise exercise;
     @ManyToOne(fetch = FetchType.LAZY)

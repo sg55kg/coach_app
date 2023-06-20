@@ -5,12 +5,9 @@
     import GoPencil from 'svelte-icons/go/GoPencil.svelte';
     import AthleteEditExerciseRow from '$lib/components/AthleteProgram/AthleteEditExerciseRow.svelte';
     import { getContext, onMount } from 'svelte';
-    import {
-        ExerciseMaxRepsError,
-        ExerciseMaxWeightError,
-    } from '../../contexts/athleteProgramContext';
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import { userDB } from '$lib/stores/authStore.js';
+    import {ExerciseMaxRepsError, ExerciseMaxWeightError} from "../../errors/athlete/athleteErrors";
 
     export let exercise: Exercise;
     export let selectedExerciseIdx: number;

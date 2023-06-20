@@ -13,10 +13,6 @@ public interface AthleteRecordViewModel {
     UUID getId();
     @Mapping("athlete.id")
     UUID getAthleteId();
-    @Mapping("exercise.id")
-    UUID getExerciseId();
-    @Mapping("day.id")
-    UUID getDayId();
     int getNumReps();
     int getWeight();
     OffsetDateTime getCreatedAt();
