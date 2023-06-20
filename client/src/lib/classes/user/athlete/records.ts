@@ -11,6 +11,7 @@ export interface AthleteRecordDTO {
     exerciseId: string;
     dayId: string;
     athleteId: string;
+    isCurrent: boolean;
 }
 
 export class AthleteRecord {
@@ -25,6 +26,7 @@ export class AthleteRecord {
         record.exerciseId = data.exerciseId;
         record.dayId = data.dayId;
         record.athleteId = data.athleteId;
+        record.isCurrent = data.isCurrent;
 
         return record;
     }
@@ -51,6 +53,7 @@ export class AthleteRecord {
 
         return record;
     }
+
     public id: string = '';
     public createdAt: Dayjs = dayjs();
     public numReps: number = 0;
@@ -59,6 +62,7 @@ export class AthleteRecord {
     public exerciseId: string = '';
     public dayId: string = '';
     public athleteId: string = '';
+    public isCurrent: boolean = true;
 }
 
 export const athleteRecordFields = [

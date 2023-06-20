@@ -7,32 +7,7 @@ import { ProgramService } from '../service/ProgramService';
 import type { Exercise } from '../classes/program/exercise';
 import UserService from '../service/UserService';
 import { AthleteRecord } from '../classes/user/athlete/records';
-import dayjs from 'dayjs';
-
-export class ExerciseMaxWeightError extends Error {
-    constructor(message: string, id: string) {
-        super();
-        this.message = message;
-        this.id = id;
-    }
-    id: string = '';
-}
-
-export class ExerciseMaxRepsError extends Error {
-    constructor(message: string, id: string) {
-        super();
-        this.message = message;
-        this.id = id;
-    }
-    id: string = '';
-}
-
-export class AthleteRecordError extends Error {
-    constructor(message: string) {
-        super();
-        this.message = message;
-    }
-}
+import {AthleteRecordError, ExerciseMaxRepsError, ExerciseMaxWeightError} from "../errors/athlete/athleteErrors";
 
 let currentProgram: Writable<Program> = writable(new Program());
 let currentDay: Writable<Day | undefined> = writable(undefined);
@@ -94,7 +69,7 @@ const markExerciseCompleteAsWritten = async (
     athleteProgramLoading.set(true);
     athleteProgramSuccess.set('');
     athleteProgramError.set(undefined);
-    let updated: Exercise | undefined;
+    let updated: Exercise;
     try {
         let exerciseCopy = JSON.parse(JSON.stringify(exercise)) as Exercise;
         exerciseCopy = markExerciseFieldsComplete(exerciseCopy);
@@ -103,7 +78,9 @@ const markExerciseCompleteAsWritten = async (
             return d;
         });
         updated = await ProgramService.updateExercise(exerciseCopy);
-        await checkForAndCreateAthleteRecord(athleteId, updated, day);
+        if (updated.type === ExerciseType.EXERCISE) {
+            await checkForAndCreateAthleteRecord(athleteId, updated, day);
+        }
 
         updateProgramStoreAfterExerciseSave(program, day, updated);
         athleteProgramSuccess.set(
@@ -118,7 +95,7 @@ const markExerciseCompleteAsWritten = async (
         ) {
             athleteProgramError.set(e);
         } else if (e instanceof AthleteRecordError) {
-            if (updated) {
+            if (updated !== undefined) {
                 updateProgramStoreAfterExerciseSave(program, day, updated);
             }
             athleteProgramError.set(e);
@@ -151,6 +128,9 @@ const checkForAndCreateAthleteRecord = async (
     day: Day
 ) => {
     // TODO: it may make more sense to just save a list of records every time and remove the endpoint for creating a single record
+    if (exercise.type !== ExerciseType.EXERCISE) {
+        return;
+    }
     if (exercise.dropSets.length) {
         const records: AthleteRecord[] = [];
 

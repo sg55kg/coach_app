@@ -2,6 +2,7 @@ package com.coachapp.coach_pc.repository.user;
 
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.WhereOrBuilder;
 import com.blazebit.persistence.view.*;
 import com.coachapp.coach_pc.model.program.Day;
 import com.coachapp.coach_pc.model.program.Program;
@@ -12,10 +13,12 @@ import com.coachapp.coach_pc.request.record.AthleteRecordRequestModel;
 import com.coachapp.coach_pc.view.program.DayViewModel;
 import com.coachapp.coach_pc.view.program.ProgramWithDays;
 import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
+import com.coachapp.coach_pc.view.record.AthleteRecordWithIds;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
 import com.coachapp.coach_pc.view.team.TeamViewModel;
 import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -75,7 +78,7 @@ public class AthleteRepository {
         em.persist(record);
         em.flush();
 
-        EntityViewBuilder<AthleteRecordViewModel> builder = createAthleteRecordViewModelBuilder(record);
+        EntityViewBuilder<AthleteRecordWithIds> builder = createAthleteRecordViewModelBuilder(record);
         AthleteRecordViewModel vm = builder.build();
 
         return vm;
@@ -94,7 +97,7 @@ public class AthleteRepository {
         }
         em.flush();
         for (var record : newRecords) {
-            EntityViewBuilder<AthleteRecordViewModel> builder = createAthleteRecordViewModelBuilder(record);
+            EntityViewBuilder<AthleteRecordWithIds> builder = createAthleteRecordViewModelBuilder(record);
             AthleteRecordViewModel vm = builder.build();
             result.add(vm);
         }
@@ -108,7 +111,7 @@ public class AthleteRepository {
             UpdatableAthleteRecordViewModel vm = evm.applySetting(EntityViewSetting.create(UpdatableAthleteRecordViewModel.class), cb)
                     .where("athlete.id").eq(athleteId)
                     .where("isCurrent").eq(true)
-                    .where("exercise.name").like(false).value(request.getExerciseName()).noEscape()
+                    .where("exerciseName").like(false).value(request.getExerciseName()).noEscape()
                     .where("numReps").eq(request.getNumReps())
                     .getSingleResult();
 
@@ -133,7 +136,7 @@ public class AthleteRepository {
                     .whereOr();
 
             for (String name : names) {
-                query = query.where("exercise.name").like(false).value(name).noEscape();
+                query = query.where("exerciseName").like(false).value(name).noEscape();
             }
 
             List<UpdatableAthleteRecordViewModel> results = query.endOr().getResultList();
@@ -152,8 +155,8 @@ public class AthleteRepository {
         return createAthleteViewModelBuilder(athlete).build();
     }
 
-    private EntityViewBuilder<AthleteRecordViewModel> createAthleteRecordViewModelBuilder(AthleteRecord record) {
-        EntityViewBuilder<AthleteRecordViewModel> builder = evm.createBuilder(AthleteRecordViewModel.class)
+    private EntityViewBuilder<AthleteRecordWithIds> createAthleteRecordViewModelBuilder(AthleteRecord record) {
+        EntityViewBuilder<AthleteRecordWithIds> builder = evm.createBuilder(AthleteRecordWithIds.class)
                 .with("athleteId", record.getAthlete().getId())
                 .with("isCurrent", record.getIsCurrent())
                 .with("id", record.getId())
@@ -225,5 +228,74 @@ public class AthleteRepository {
                 .with("createdAt", team.getCreatedAt())
                 .with("teamLogo", team.getTeamLogo());
         return builder;
+    }
+
+    public List<AthleteRecordViewModel> getCommonAthleteRecords(UUID athleteId, Boolean isCurrent) {
+        List<String> commonExerciseNames = new ArrayList<>(List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press"));
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        CriteriaBuilder<AthleteRecordViewModel> query =
+                evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                        .where("athlete.id")
+                            .eq(athleteId)
+                        .where("numReps")
+                            .eq(1);
+
+        if (isCurrent) {
+            query.where("isCurrent").eq(isCurrent);
+        }
+
+        WhereOrBuilder<CriteriaBuilder<AthleteRecordViewModel>> or = query.whereOr();
+
+        for (String exercise : commonExerciseNames) {
+            or.where("exerciseName").like(false).value(exercise).noEscape();
+        }
+
+        return or.endOr().getResultList();
+    }
+
+    public List<AthleteRecordViewModel> getAthleteRecordsByName(UUID athleteId, String name, Boolean isCurrent) {
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                .where("athlete.id")
+                    .eq(athleteId)
+                .where("exerciseName")
+                    .like(false).value(name).noEscape();
+
+        if (isCurrent) {
+            query.where("isCurrent").eq(isCurrent);
+        }
+
+        return query.getResultList();
+    }
+
+    public List<AthleteRecordViewModel> getAthleteRecordsByWeight(UUID athleteId, String name, Integer weight, Boolean isCurrent) {
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                .where("athlete.id")
+                    .eq(athleteId)
+                .where("exerciseName")
+                    .like(false).value(name).noEscape()
+                .where("weight")
+                    .gt(weight);
+
+        if (isCurrent) {
+            query.where("isCurrent").eq(isCurrent);
+        }
+
+        return query.getResultList();
+    }
+
+    public List<AthleteRecordViewModel> getAthleteRecordsByReps(UUID athleteId, String name, Integer reps, Boolean isCurrent) {
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        CriteriaBuilder<AthleteRecordViewModel> query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                .where("athlete.id").eq(athleteId)
+                .where("exerciseName").like(false).value(name).noEscape()
+                .where("numReps").eq(reps);
+
+        if (isCurrent) {
+            query.where("isCurrent").eq(isCurrent);
+        }
+
+        return query.getResultList();
     }
 }

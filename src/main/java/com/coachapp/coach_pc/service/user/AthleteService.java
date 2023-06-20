@@ -120,29 +120,34 @@ public class AthleteService {
             Boolean current
     ) {
         if (name == null) {
-            // TODO: query for 5-10 common exercises, likely for an overview or stats page
+            List<AthleteRecordViewModel> records = repository.getCommonAthleteRecords(athleteId, current);
             // TODO: if weight/reps aren't null factor those into the search
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (reps == null && weight == null) {
-            // TODO: query for records between 1-10 reps and any weight with an exercise name
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            List<AthleteRecordViewModel> records = repository.getAthleteRecordsByName(athleteId, name, current);
+            return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (reps == null) {
-            // TODO: query for any record at or above a certain weight
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            List<AthleteRecordViewModel> records = repository.getAthleteRecordsByWeight(athleteId, name, weight, current);
+            return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (weight == null) {
             // TODO: query for records between 1-10 reps
+            List<AthleteRecordViewModel> records = repository.getAthleteRecordsByReps(athleteId, name, reps, current);
+            return new ResponseEntity<>(records, HttpStatus.OK);
+        } else if (current) {
+            // TODO: query for the last PR for an exercise
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } else {
-            // TODO: query for the last PR for an exercise
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<AthleteRecordViewModel> getAthleteRecordByExerciseId(UUID athleteId, UUID exerciseId) {
+        // TODO
         return null;
     }
 
     public ResponseEntity<List<AthleteRecordViewModel>> getAthleteRecordsByDayId(UUID athleteId, UUID dayId) {
+        // TODO
         return null;
     }
 
@@ -161,7 +166,7 @@ public class AthleteService {
 
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
     }
 
@@ -195,7 +200,7 @@ public class AthleteService {
 
         // Update records that are no longer current and persist new records
         if (newRecords.isEmpty()) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         } else {
             List<AthleteRecordViewModel> vms = repository.addRecords(newRecords, prevRecords);
             return new ResponseEntity<>(vms, HttpStatus.CREATED);

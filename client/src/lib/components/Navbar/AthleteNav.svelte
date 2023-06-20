@@ -37,7 +37,7 @@
     </a>
     <a
         class="my-2 text-lg font-bold text-textblue hover:text-link"
-        href="{`/home/athlete/${$userDB?.athleteData?.id}`}"
+        href="{`/home/athlete/records`}"
         on:click="{() => (showNav = false)}"
     >
         My Progress
@@ -45,7 +45,8 @@
     {#if $userDB?.athleteData?.team}
         <a
             class=" my-2 text-lg font-bold text-gray-400 hover:cursor-default"
-            href=""
+            href="/home/athlete"
+            on:click={() => showNav = false}
         >
             {$userDB?.athleteData?.team?.name
                 ? $userDB.athleteData.team.name
@@ -53,7 +54,9 @@
         </a>
         <a
             class="my-2 text-lg font-bold text-textblue hover:text-link"
-            href="/home/athlete/teams">Browse Teams</a
+            href="/home/athlete/teams"
+            on:click={() => showNav = false}
+        >Browse Teams</a
         >
     {:else}
         <a
