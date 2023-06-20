@@ -105,6 +105,7 @@ public class AthleteRepository {
         return result;
     }
 
+    @Transactional
     public UpdatableAthleteRecordViewModel getLastRecord(UUID athleteId, AthleteRecordRequestModel request) {
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
         try {
@@ -121,6 +122,7 @@ public class AthleteRepository {
         }
     }
 
+    @Transactional
     public List<UpdatableAthleteRecordViewModel> getLastRecordBatch(
             UUID athleteId,
             List<String> names
@@ -230,6 +232,7 @@ public class AthleteRepository {
         return builder;
     }
 
+    @Transactional
     public List<AthleteRecordViewModel> getCommonAthleteRecords(UUID athleteId, Boolean isCurrent) {
         List<String> commonExerciseNames = new ArrayList<>(List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press"));
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
@@ -253,6 +256,7 @@ public class AthleteRepository {
         return or.endOr().getResultList();
     }
 
+    @Transactional
     public List<AthleteRecordViewModel> getAthleteRecordsByName(UUID athleteId, String name, Boolean isCurrent) {
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
         var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
@@ -268,6 +272,7 @@ public class AthleteRepository {
         return query.getResultList();
     }
 
+    @Transactional
     public List<AthleteRecordViewModel> getAthleteRecordsByWeight(UUID athleteId, String name, Integer weight, Boolean isCurrent) {
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
         var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
@@ -285,6 +290,7 @@ public class AthleteRepository {
         return query.getResultList();
     }
 
+    @Transactional
     public List<AthleteRecordViewModel> getAthleteRecordsByReps(UUID athleteId, String name, Integer reps, Boolean isCurrent) {
         CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
         CriteriaBuilder<AthleteRecordViewModel> query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
