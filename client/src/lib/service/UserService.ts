@@ -71,12 +71,18 @@ export default class UserService {
     static createAthleteRecord = async (
         athleteId: string,
         newRecord: AthleteRecord
-    ): Promise<AthleteRecord> => {
-        const { data } = await srPost<AthleteRecordDTO>(
+    ): Promise<AthleteRecord | null> => {
+        const { data } = await srPost<string>(
             `/api/athlete/${athleteId}/record`,
-            newRecord
+            newRecord,
+            'application/json',
+            false
         );
-        return AthleteRecord.createFrom(data);
+        if (!data) {
+            return null;
+        }
+        const dto: AthleteRecordDTO = JSON.parse(data);
+        return AthleteRecord.createFrom(dto);
     };
 
     static createAthleteRecords = async (
@@ -105,7 +111,26 @@ export default class UserService {
         return data;
     };
 
-    static searchAthleteRecordsByExerciseName = async (athleteId: string, exerciseName: string) => {
-        const { data } = await srGet<AthleteRecordDTO[]>(`/api/athlete/${athleteId}/record`)
+    static searchAthleteRecordsByExerciseName = async (athleteId: string, options: AthleteRecordsSearchOptions = { current: true }) => {
+        let url = `/api/athlete/${athleteId}/record?current=${options.current}`;
+        if (options.reps) {
+            url += `&reps=${options.reps}`
+        }
+        if (options.weight !== undefined) {
+            url += `&weight=${options.weight}`
+        }
+        if (options.name) {
+            url += `&name=${options.name}`
+        }
+        const { data } = await srGet<AthleteRecordDTO[]>(url);
+        return data.map(r => AthleteRecord.createFrom(r));
     }
+}
+
+// TODO: move this to it's own file
+export interface AthleteRecordsSearchOptions {
+    name?: string,
+    reps?: number,
+    weight?: number,
+    current: boolean
 }
