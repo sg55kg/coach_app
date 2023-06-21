@@ -18,6 +18,9 @@ import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
 import com.coachapp.coach_pc.view.team.TeamViewModel;
 import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +37,7 @@ public class AthleteRepository {
     private final EntityManager em;
     private final CriteriaBuilderFactory cbf;
     private final EntityViewManager evm;
+    private final Logger logger = LoggerFactory.getLogger(AthleteRepository.class);
 
     public AthleteRepository(EntityManager em, CriteriaBuilderFactory cbf, EntityViewManager evm) {
         this.em = em;
@@ -71,17 +75,25 @@ public class AthleteRepository {
 
     @Transactional
     public AthleteRecordViewModel addRecord(AthleteRecord record, UpdatableAthleteRecordViewModel lastRecord) {
-        if (lastRecord != null) {
-            // Service handles setting isCurrent to false, save the changes
-            evm.save(em, lastRecord);
+        try {
+            if (lastRecord != null) {
+                // Service handles setting isCurrent to false, save the changes
+                evm.save(em, lastRecord);
+            }
+            em.persist(record);
+            em.flush();
+
+            EntityViewBuilder<AthleteRecordWithIds> builder = createAthleteRecordViewModelBuilder(record);
+            AthleteRecordViewModel vm = builder.build();
+
+            return vm;
+        } catch (Exception ex) {
+            logger.error("Error saving new record\n");
+            logger.error(record.toString());
+            logger.error(lastRecord.toString());
+            ex.printStackTrace();
+            throw ex;
         }
-        em.persist(record);
-        em.flush();
-
-        EntityViewBuilder<AthleteRecordWithIds> builder = createAthleteRecordViewModelBuilder(record);
-        AthleteRecordViewModel vm = builder.build();
-
-        return vm;
     }
 
     @Transactional
@@ -119,6 +131,11 @@ public class AthleteRepository {
             return vm;
         } catch (NoResultException ex) {
             return null;
+        } catch (IncorrectResultSizeDataAccessException ex) {
+            logger.error("Error retrieving last record for athlete: " + athleteId);
+            logger.error(request.toString());
+            ex.printStackTrace();
+            throw ex;
         }
     }
 
@@ -145,6 +162,10 @@ public class AthleteRepository {
             return results;
         } catch (NoResultException ex) {
             return new ArrayList<>();
+        } catch (Exception ex) {
+            logger.error("Error fetching last record batch for athlete: " + athleteId);
+            ex.printStackTrace();
+            throw ex;
         }
     }
 
@@ -234,42 +255,57 @@ public class AthleteRepository {
 
     @Transactional
     public List<AthleteRecordViewModel> getCommonAthleteRecords(UUID athleteId, Boolean isCurrent) {
-        List<String> commonExerciseNames = new ArrayList<>(List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press"));
-        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
-        CriteriaBuilder<AthleteRecordViewModel> query =
-                evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
-                        .where("athlete.id")
+        try {
+            List<String> commonExerciseNames =
+                    new ArrayList<>(
+                            List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press")
+                    );
+            CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+            CriteriaBuilder<AthleteRecordViewModel> query =
+                    evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                            .where("athlete.id")
                             .eq(athleteId)
-                        .where("numReps")
+                            .where("numReps")
                             .eq(1);
 
-        if (isCurrent) {
-            query.where("isCurrent").eq(isCurrent);
+            if (isCurrent) {
+                query.where("isCurrent").eq(isCurrent);
+            }
+
+            WhereOrBuilder<CriteriaBuilder<AthleteRecordViewModel>> or = query.whereOr();
+
+            for (String exercise : commonExerciseNames) {
+                or.where("exerciseName").like(false).value(exercise).noEscape();
+            }
+
+            return or.endOr().getResultList();
+        } catch (Exception ex) {
+            logger.error("Error retrieving common records");
+            ex.printStackTrace();
+            throw ex;
         }
-
-        WhereOrBuilder<CriteriaBuilder<AthleteRecordViewModel>> or = query.whereOr();
-
-        for (String exercise : commonExerciseNames) {
-            or.where("exerciseName").like(false).value(exercise).noEscape();
-        }
-
-        return or.endOr().getResultList();
     }
 
     @Transactional
     public List<AthleteRecordViewModel> getAthleteRecordsByName(UUID athleteId, String name, Boolean isCurrent) {
-        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
-        var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
-                .where("athlete.id")
+        try {
+            CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+            var query = evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                    .where("athlete.id")
                     .eq(athleteId)
-                .where("exerciseName")
+                    .where("exerciseName")
                     .like(false).value(name).noEscape();
 
-        if (isCurrent) {
-            query.where("isCurrent").eq(isCurrent);
-        }
+            if (isCurrent) {
+                query.where("isCurrent").eq(isCurrent);
+            }
 
-        return query.getResultList();
+            return query.getResultList();
+        } catch (Exception ex) {
+            logger.error("Error retrieving records by name " + name + " current: " + isCurrent);
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Transactional
