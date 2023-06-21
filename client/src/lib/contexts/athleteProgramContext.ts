@@ -7,7 +7,7 @@ import { ProgramService } from '../service/ProgramService';
 import type { Exercise } from '../classes/program/exercise';
 import UserService from '../service/UserService';
 import { AthleteRecord } from '../classes/user/athlete/records';
-import {AthleteRecordError, ExerciseMaxRepsError, ExerciseMaxWeightError} from "../errors/athlete/athleteErrors";
+import { ExerciseMaxWeightError, ExerciseMaxRepsError, AthleteRecordError } from '$lib/errors/athlete/athleteErrors';
 
 let currentProgram: Writable<Program> = writable(new Program());
 let currentDay: Writable<Day | undefined> = writable(undefined);
