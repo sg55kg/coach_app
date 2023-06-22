@@ -35,6 +35,7 @@ export interface ExerciseDTO {
     repCompletedArr: number[] | string;
     dropSetPercent: number;
     actualIntensity: string;
+    percent: number;
 }
 export class Exercise {
     id: string = '';
@@ -67,6 +68,7 @@ export class Exercise {
     actualIntesity: EffortIntensity | null = null;
     isMaxReps: boolean = false;
     repsPerSetComplete: number = 0;
+    percent: number = 0;
 
     private _wgt: WeightUnit = new WeightUnit(0);
     private _wgtComp: WeightUnit = new WeightUnit(0);
@@ -98,6 +100,7 @@ export class Exercise {
         copy.weightCompleted = 0;
         copy.totalRepsCompleted = 0;
         copy.setsCompleted = 0;
+        copy.percent = 0;
         copy.repCompletedArr = [];
         copy.dropSets = copy.dropSets.map(d => d.copy());
         copy.isComplete = false;
@@ -116,6 +119,7 @@ export class Exercise {
         exercise.order = data.order;
         exercise.isComplete = data.isComplete;
         exercise.weightCompleted = data.weightCompleted;
+        exercise.percent = data.percent;
         exercise.setWgt(data.weight, 'kg');
         exercise.setWgtComp(data.weightCompleted, 'kg');
         if (data.type === ExerciseType.COMPLEX) {
