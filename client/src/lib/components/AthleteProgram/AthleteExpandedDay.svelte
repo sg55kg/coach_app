@@ -5,7 +5,7 @@
     import AthleteExpandedExercise from '$lib/components/AthleteProgram/AthleteExpandedExercise.svelte';
     import UserService from '../../service/UserService';
     import RichTextEditor from '$lib/components/shared/texteditor/RichTextEditor.svelte';
-    import AthleteDayToolbar from "$lib/components/AthleteProgram/toolbars/AthleteDayToolbar.svelte";
+    import AthleteDayToolbar from '$lib/components/AthleteProgram/toolbars/AthleteDayToolbar.svelte';
 
     const {
         getCurrentProgram,
@@ -40,7 +40,6 @@
         }
         return count;
     };
-
 </script>
 
 <div class="h-full w-full overflow-y-auto bg-gray-100">
@@ -50,7 +49,7 @@
             Rest Day
         </h4>
     {:else if !$currentDay.exercises.length}
-        <div class="flex justify-center items-center h-full">
+        <div class="flex h-full items-center justify-center">
             <h4 class="text-center text-lg font-semibold text-textblue">
                 Nothing entered for today.
             </h4>

@@ -1,15 +1,15 @@
 <script lang="ts">
-    import UserService from "../../../service/UserService";
-    import {getContext} from "svelte";
-    import {userDB} from "../../../stores/authStore";
+    import UserService from '../../../service/UserService';
+    import { getContext } from 'svelte';
+    import { userDB } from '../../../stores/authStore';
     import FaAngleLeft from 'svelte-icons/fa/FaAngleLeft.svelte';
     import FaAngleRight from 'svelte-icons/fa/FaAngleRight.svelte';
-    import {isMobile} from "$lib/stores/authStore.js";
-    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import {page} from "$app/stores";
+    import { isMobile } from '$lib/stores/authStore.js';
+    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
+    import { page } from '$app/stores';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
-    import dayjs from "dayjs";
-    import AthleteWeeklyChart from "$lib/components/AthleteProgram/charts/AthleteWeeklyChart.svelte";
+    import dayjs from 'dayjs';
+    import AthleteWeeklyChart from '$lib/components/AthleteProgram/charts/AthleteWeeklyChart.svelte';
 
     const {
         getCurrentProgram,
@@ -17,7 +17,7 @@
         markDayCompleteAsWritten,
         getAthleteProgramLoading,
         getCurrentDayIdx,
-        getAthleteId
+        getAthleteId,
     } = getContext('athlete-program');
 
     let currentProgram = getCurrentProgram();
@@ -31,7 +31,7 @@
             $idx = $idx + 1;
             console.log('idx', $idx);
             $currentDay = $currentProgram.days[$idx];
-            console.log('currentDay', $currentDay)
+            console.log('currentDay', $currentDay);
         }
     };
 
@@ -59,11 +59,14 @@
     };
 </script>
 
-<header class="flex w-full flex-col p-2 relative">
+<header class="relative flex w-full flex-col p-2">
     {#if $page.url.pathname === '/home/athlete/program'}
         <button
-                class="absolute right-3 top-2 h-8 w-8 text-lg font-bold lg:w-fit"
-                on:click="{() => { $idx = -1; $currentDay = undefined }}"
+            class="absolute right-3 top-2 h-8 w-8 text-lg font-bold lg:w-fit"
+            on:click="{() => {
+                $idx = -1;
+                $currentDay = undefined;
+            }}"
         >
             <span><MdClose /></span>
         </button>
@@ -73,30 +76,28 @@
     </h2>
     <div class="flex w-full items-center justify-center">
         <div
-                class="relative flex items-center justify-center {$isMobile
-                    ? 'w-8/12'
-                    : 'w-4/12'} p-2"
+            class="relative flex items-center justify-center {$isMobile
+                ? 'w-8/12'
+                : 'w-4/12'} p-2"
         >
             <button
-                    class="absolute left-0 h-10 w-6 text-yellow"
-                    on:click="{decrementDay}"
+                class="absolute left-0 h-10 w-6 text-yellow"
+                on:click="{decrementDay}"
             >
                 <FaAngleLeft />
             </button>
             <h3
-                    class="{$currentDay.date.isSame(dayjs(), 'day')
-                                ? 'text-yellow'
-                                : 'text-textblue'}
-                           {$isMobile
-                                ? 'text-md'
-                                : 'text-2xl'}
+                class="{$currentDay.date.isSame(dayjs(), 'day')
+                    ? 'text-yellow'
+                    : 'text-textblue'}
+                           {$isMobile ? 'text-md' : 'text-2xl'}
                            font-medium"
             >
                 {$currentDay.date.format('dddd, MMMM DD')}
             </h3>
             <button
-                    class="absolute right-0 h-10 w-6 text-yellow"
-                    on:click="{incrementDay}"
+                class="absolute right-0 h-10 w-6 text-yellow"
+                on:click="{incrementDay}"
             >
                 <FaAngleRight />
             </button>
@@ -105,12 +106,24 @@
     <hr class="my-2" />
     <AthleteWeeklyChart />
     <div class="flex justify-center">
-        <p class="px-1 {$userDB.preferences.weight === 'kg' ? 'text-textblue' : 'text-yellow'}">Pounds</p>
+        <p
+            class="px-1 {$userDB.preferences.weight === 'kg'
+                ? 'text-textblue'
+                : 'text-yellow'}"
+        >
+            Pounds
+        </p>
         <Toggle
-                checked="{$userDB.preferences.weight === 'kg'}"
-                onChange="{toggleWeightPreference}"
+            checked="{$userDB.preferences.weight === 'kg'}"
+            onChange="{toggleWeightPreference}"
         />
-        <p class="px-1 {$userDB.preferences.weight === 'kg' ? 'text-yellow' : 'text-textblue'}">Kilograms</p>
+        <p
+            class="px-1 {$userDB.preferences.weight === 'kg'
+                ? 'text-yellow'
+                : 'text-textblue'}"
+        >
+            Kilograms
+        </p>
     </div>
 </header>
 

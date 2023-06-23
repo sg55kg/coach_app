@@ -30,7 +30,9 @@ export const GET: RequestHandler = async event => {
     const weight = event.url.searchParams.get('weight') ?? 0;
     const current = event.url.searchParams.get('current') ?? true;
 
-    let url: string = `${import.meta.env.VITE_SERVER_URL}api/athletes/${athleteId}/records?current=${current}`;
+    let url: string = `${
+        import.meta.env.VITE_SERVER_URL
+    }api/athletes/${athleteId}/records?current=${current}`;
 
     if (event.url.searchParams.has('reps')) {
         url += `&reps=${reps}`;
@@ -42,16 +44,13 @@ export const GET: RequestHandler = async event => {
         url += `&weight=${weight}`;
     }
 
-    const res = await fetch(
-        url,
-        {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + token,
-                'Content-Type': 'application/json',
-            },
-        }
-    );
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+    });
     return new Response(await res.text(), {
         status: res.status,
         statusText: res.statusText,

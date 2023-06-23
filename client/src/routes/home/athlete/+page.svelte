@@ -9,9 +9,9 @@
     import { athleteProgramContext } from '../../../lib/contexts/athleteProgramContext.js';
     import { Day } from '$lib/classes/program/day';
     import MdClose from 'svelte-icons/md/MdClose.svelte';
-    import {page} from "$app/stores";
-    import {ProgramService} from "../../../lib/service/ProgramService";
-    import {AthleteProgramStats} from "../../../lib/classes/program/stats";
+    import { page } from '$app/stores';
+    import { ProgramService } from '../../../lib/service/ProgramService';
+    import { AthleteProgramStats } from '../../../lib/classes/program/stats';
 
     setContext('athlete-program', athleteProgramContext);
 

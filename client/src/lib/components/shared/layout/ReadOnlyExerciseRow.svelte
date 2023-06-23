@@ -12,6 +12,104 @@
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
 
+    const formatProgrammedString = (exercise: Exercise, showName: boolean) => {
+        let result: string = '';
+        switch (exercise.type) {
+            case ExerciseType.EXERCISE:
+                result = formatExerciseTypeString(result, exercise, showName);
+                break;
+            case ExerciseType.COMPLEX:
+                result = formatComplexTypeString(result, exercise, showName);
+                break;
+            case ExerciseType.ACCESSORY:
+                result = formatAccessoryTypeString(result, exercise, showName);
+                break;
+        }
+        return result;
+    };
+
+    const formatExerciseTypeString = (
+        result: string,
+        exercise: Exercise,
+        showName: boolean
+    ) => {
+        result += showName
+            ? exercise.name
+                ? `${exercise.name} `
+                : 'No Name: '
+            : '';
+        if (exercise.isMax) {
+            result += `${exercise.repsPerSet}RM`;
+        } else if (exercise.isMaxReps) {
+            result += `${exercise.wgt(unit)}${unit} ${exercise.sets}sets AMRAP`;
+        } else {
+            result += `${exercise.wgt(unit)}${unit} ${exercise.sets}sets ${
+                exercise.repsPerSet
+            }reps`;
+        }
+        return result;
+    };
+
+    const formatComplexTypeString = (
+        result: string,
+        exercise: Exercise,
+        showName: boolean
+    ) => {
+        result += showName ? `${exercise.nameArr.join(' + ')} ` : '';
+        if (exercise.isMax) {
+            result += `${exercise.repArr.join(' + ')}RM`;
+        } else {
+            result += `${exercise.wgt(unit)}${unit} ${
+                exercise.sets
+            }sets ${exercise.repArr.join(' + ')}reps`;
+        }
+        return result;
+    };
+
+    const formatAccessoryTypeString = (
+        result: string,
+        exercise: Exercise,
+        showName: boolean
+    ) => {
+        result += showName
+            ? `${exercise.name ? `${exercise.name} ` : 'No Name'}`
+            : '';
+        result += `${
+            exercise.weight
+                ? exercise.wgt(unit) + unit
+                : formatEffortString(exercise.effortIntensity)
+        } ${exercise.sets}sets ${exercise.repsPerSet}reps`;
+        return result;
+    };
+
+    const formatCompletedString = (exercise: Exercise) => {
+        let result: string = '';
+        switch (exercise.type) {
+            case ExerciseType.EXERCISE:
+                result += `${exercise.wgtComp(unit)}${unit} ${
+                    exercise.setsCompleted
+                }sets ${
+                    exercise.totalRepsCompleted / exercise.setsCompleted
+                }reps`;
+                break;
+            case ExerciseType.COMPLEX:
+                result += `${exercise.wgtComp(unit)}${unit} ${
+                    exercise.setsCompleted
+                }sets ${exercise.repCompletedArr.join(' + ')}reps`;
+                break;
+            case ExerciseType.ACCESSORY:
+                result += `${
+                    exercise.weight
+                        ? exercise.wgtComp(unit) + unit
+                        : formatEffortString(exercise.actualIntensity) // TODO: Fix bug associated with this
+                } ${exercise.setsCompleted}sets ${
+                    exercise.repsPerSetComplete
+                }reps`;
+                break;
+        }
+        return result;
+    };
+
     const formatEffortString = (effort: EffortIntensity) => {
         switch (effort) {
             case EffortIntensity.EASY:
@@ -22,67 +120,28 @@
                 return 'Hard';
             case EffortIntensity.MAX:
                 return 'Max Effort';
+            default:
+                return 'Easy';
         }
     };
 </script>
 
-<div class="{showName ? 'mb-2' : 'ml-10 border-l-2 border-l-textblue p-1'} flex h-6">
-    {#if exercise.isComplete && exercise.weightCompleted < 1 && exercise.totalRepsCompleted < 1}
-        <span class="mr-1 h-6 w-6 text-orange-shade"><GoDash /></span>
-    {:else if exercise.isComplete}
-        <span class="mr-1 h-6 w-6 text-green"><GoCheck /></span>
-    {/if}
-    {#if exercise.type === ExerciseType.EXERCISE}
-        {#if exercise.isMax}
-            {#if showName}
-                {exercise.name ? exercise.name : 'No Name'}: {exercise.repsPerSet}RM
-            {:else}
-                {exercise.repsPerSet}RM
-            {/if}
-        {:else if exercise.isMaxReps}
-            {#if showName}
-                {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
-                    unit
-                )}{unit}{exercise.sets}sets AMRAP
-            {:else}
-                {exercise.wgt(unit)}{unit}{exercise.sets}sets AMRAP
-            {/if}
-        {:else if showName}
-            {exercise.name ? exercise.name : 'No Name'}: {exercise.wgt(
-                unit
-            )}{unit}
-            {exercise.sets}sets {exercise.repsPerSet}reps
-        {:else}
-            {exercise.wgt(unit)}{unit}
-            {exercise.sets}sets {exercise.repsPerSet}reps
+<div
+    class="{showName
+        ? 'mb-2'
+        : 'ml-10 border-l-2 border-l-textblue p-1'} flex h-fit flex-col"
+>
+    <div class="flex">
+        {#if exercise.isComplete && exercise.weightCompleted < 1 && exercise.totalRepsCompleted < 1}
+            <span class="mr-1 h-6 w-6 text-orange-shade"><GoDash /></span>
+        {:else if exercise.isComplete}
+            <span class="mr-1 h-6 w-6 text-green"><GoCheck /></span>
         {/if}
-    {:else if exercise.type === ExerciseType.COMPLEX}
-        {#if exercise.isMax}
-            {#if showName}
-                {exercise.nameArr.join(' + ')}: {exercise.repArr.join(' + ')}RM
-            {:else}
-                {exercise.repArr.join(' + ')}RM
-            {/if}
-        {:else if showName}
-            {exercise.nameArr.join(' + ')}: {exercise.wgt(unit)}{unit}
-            {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-        {:else}
-            {exercise.wgt(unit)}{unit}
-            {exercise.sets}sets {exercise.repArr.join(' + ')}reps
-        {/if}
-    {:else if exercise.type === ExerciseType.ACCESSORY}
-        {#if showName}
-            {exercise.name ? exercise.name : 'No Name'}:
-            {exercise.weight
-                ? exercise.wgt(unit) + unit
-                : formatEffortString(exercise.effortIntensity)}
-            {exercise.sets}sets {exercise.repsPerSet}reps
-        {:else}
-            {exercise.weight
-                ? exercise.wgt(unit) + unit
-                : formatEffortString(exercise.effortIntensity)}
-            {exercise.sets}sets {exercise.repsPerSet}reps
-        {/if}
+        <h4 class="">{formatProgrammedString(exercise, showName)}</h4>
+    </div>
+    {#if exercise.isComplete}
+        <hr />
+        <h4 class="text-textblue">{formatCompletedString(exercise)}</h4>
     {/if}
 </div>
 

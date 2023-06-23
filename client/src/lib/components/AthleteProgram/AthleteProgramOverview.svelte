@@ -1,13 +1,13 @@
 <script lang="ts">
-    import {getContext, onMount} from 'svelte';
+    import { getContext, onMount } from 'svelte';
     import { isMobile, userDB } from '$lib/stores/authStore.js';
     import AthleteDayCard from '$lib/components/AthleteProgram/AthleteDayCard.svelte';
     import AthleteExpandedDay from '$lib/components/AthleteProgram/AthleteExpandedDay.svelte';
     import { Day } from '$lib/classes/program/day/index.js';
     import Toggle from '$lib/components/shared/layout/Toggle.svelte';
     import UserService from '../../service/UserService';
-    import {ProgramService} from "../../service/ProgramService";
-    import {AthleteProgramStats} from "../../classes/program/stats";
+    import { ProgramService } from '../../service/ProgramService';
+    import { AthleteProgramStats } from '../../classes/program/stats';
 
     const {
         getCurrentProgram,
@@ -23,15 +23,12 @@
 
     let daysContainer: HTMLDivElement;
     let contextCoordinates: { x: number; y: number } = { x: -1, y: -1 };
-
-
 </script>
 
 <div
     bind:this="{daysContainer}"
     class="relative flex h-[90vh] w-screen flex-col overflow-y-auto pb-32"
 >
-
     <div
         class="grid {$isMobile
             ? 'grid-cols-1 gap-10'

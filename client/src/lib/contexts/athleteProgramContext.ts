@@ -7,7 +7,11 @@ import { ProgramService } from '../service/ProgramService';
 import type { Exercise } from '../classes/program/exercise';
 import UserService from '../service/UserService';
 import { AthleteRecord } from '../classes/user/athlete/records';
-import { ExerciseMaxWeightError, ExerciseMaxRepsError, AthleteRecordError } from '$lib/errors/athlete/athleteErrors';
+import {
+    ExerciseMaxWeightError,
+    ExerciseMaxRepsError,
+    AthleteRecordError,
+} from '$lib/errors/athlete/athleteErrors';
 
 let currentProgram: Writable<Program> = writable(new Program());
 let currentDay: Writable<Day | undefined> = writable(undefined);
@@ -285,7 +289,7 @@ const markExerciseFieldsComplete = (e: Exercise) => {
             ? e.repsPerSetComplete * e.setsCompleted
             : e.repsPerSet * e.setsCompleted;
         e.actualIntesity =
-            e.actualIntesity !== null ? e.actualIntesity : e.effortIntensity;
+            e.actualIntesity !== null && e.actualIntesity !== undefined ? e.actualIntesity : e.effortIntensity;
     }
     return e;
 };

@@ -145,7 +145,7 @@ export class Exercise {
         }
         if (data.type === ExerciseType.ACCESSORY) {
             exercise.effortIntensity = getEffortIntensity(data.effortIntensity);
-            exercise.actualIntesity = data.actualIntensity
+            exercise.actualIntesity = data.actualIntensity !== null
                 ? getEffortIntensity(data.actualIntensity)
                 : null;
         }
