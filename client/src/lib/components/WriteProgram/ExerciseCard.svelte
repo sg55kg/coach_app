@@ -5,7 +5,7 @@
     import { isMobile } from '$lib/stores/authStore';
     import { userDB } from '../../stores/authStore';
     import MdContentCopy from 'svelte-icons/md/MdContentCopy.svelte';
-    import ReadOnlyExerciseRow from "$lib/components/shared/layout/ReadOnlyExerciseRow.svelte";
+    import ReadOnlyExerciseRow from '$lib/components/shared/layout/ReadOnlyExerciseRow.svelte';
 
     export let exercise: Exercise;
     export let index: number;
@@ -47,9 +47,17 @@
 </script>
 
 <div
-    class="border-textgrey relative z-0 my-1 w-full border-l-2 bg-gray-200 p-2"
+    class="border-textgrey z-0 my-1 flex h-fit w-full border-l-2 bg-gray-200 p-2"
 >
-    <div class="absolute right-0 flex">
+    <div
+        class="flex-grow hover:cursor-pointer"
+        on:click="{() => ($selectedExerciseIdx = index)}"
+    >
+        {#each [exercise, ...exercise.dropSets] as row, idx}
+            <ReadOnlyExerciseRow exercise="{row}" showName="{idx === 0}" />
+        {/each}
+    </div>
+    <div class="flex">
         <button class="{$isMobile ? 'h-7 w-7 px-1' : 'h-6 w-10 px-2'}">
             <span
                 class="text-textgray hover:cursor-pointer hover:text-textblue"
@@ -71,14 +79,6 @@
                 <FaTrashAlt />
             </span>
         </button>
-    </div>
-    <div
-        class="hover:cursor-pointer"
-        on:click="{() => ($selectedExerciseIdx = index)}"
-    >
-        {#each [exercise, ...exercise.dropSets] as row, idx}
-            <ReadOnlyExerciseRow exercise="{row}" showName="{idx === 0}" />
-        {/each}
     </div>
 </div>
 
