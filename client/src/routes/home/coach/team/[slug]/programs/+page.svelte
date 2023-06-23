@@ -1,9 +1,9 @@
 <script lang="ts">
     import { team } from '$lib/stores/teamStore.js';
     import ProgramOverview from '$lib/components/WriteProgram/ProgramOverview.svelte';
-    import {setContext} from "svelte";
-    import {writeProgramContext} from "../../../../../../lib/components/WriteProgram/contexts/writeProgramContext";
-    import {Program} from "../../../../../../lib/classes/program";
+    import { setContext } from 'svelte';
+    import { writeProgramContext } from '../../../../../../lib/components/WriteProgram/contexts/writeProgramContext';
+    import { Program } from '../../../../../../lib/classes/program';
 
     // TODO: add optional query params to set some default values for new programs when navigating from athlete card
     setContext('program', writeProgramContext(new Program()));

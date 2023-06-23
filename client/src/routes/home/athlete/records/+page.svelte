@@ -1,22 +1,25 @@
 <script lang="ts">
-    import {AthleteRecord} from "../../../../lib/classes/user/athlete/records";
-    import UserService from "../../../../lib/service/UserService";
-    import {userDB} from "../../../../lib/stores/authStore";
-    import {onMount} from "svelte";
-    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
+    import { AthleteRecord } from '../../../../lib/classes/user/athlete/records';
+    import UserService from '../../../../lib/service/UserService';
+    import { userDB } from '../../../../lib/stores/authStore';
+    import { onMount } from 'svelte';
+    import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import { Chart } from 'chart.js/auto';
     import { getRelativePosition } from 'chart.js/helpers';
     import type { ChartConfiguration } from 'chart.js';
-    import {AthleteProgramStats} from "../../../../lib/classes/program/stats";
-    import dayjs from "dayjs";
-    import AddRecordModal from "$lib/components/modals/AddRecordModal.svelte";
+    import { AthleteProgramStats } from '../../../../lib/classes/program/stats';
+    import dayjs from 'dayjs';
+    import AddRecordModal from '$lib/components/modals/AddRecordModal.svelte';
 
     let recordsKeyList: string[] = [];
     let selectedRecordKey: string = '';
     let selectedRecord: AthleteRecord;
     let loading: boolean = true;
     let loadingNameSearch: boolean = false;
-    let cachedRecordHistories: Map<string, AthleteRecord[]> = new Map<string, AthleteRecord[]>();
+    let cachedRecordHistories: Map<string, AthleteRecord[]> = new Map<
+        string,
+        AthleteRecord[]
+    >();
     let noResults: string = '';
     let showAddRecords: boolean = false;
 
@@ -26,12 +29,15 @@
         } else {
             selectedRecordKey = recordKey;
         }
-    }
+    };
 
     const fetchCommonRecords = async () => {
         loading = true;
         try {
-            const res = await UserService.searchAthleteRecordsByExerciseName($userDB!.athleteData.id, { current: false });
+            const res = await UserService.searchAthleteRecordsByExerciseName(
+                $userDB!.athleteData.id,
+                { current: false }
+            );
             console.log(res);
             res.forEach((record: AthleteRecord) => {
                 addToCachedRecords(record.exerciseName, record);
@@ -44,18 +50,18 @@
         } finally {
             loading = false;
         }
-    }
+    };
 
-    const processSearch = debounce((e) => searchRecordsByName(e), 1000);
+    const processSearch = debounce(e => searchRecordsByName(e), 1000);
 
-    function debounce (func, delay = 1000) {
+    function debounce(func, delay = 1000) {
         let timeoutId;
 
         return (...args) => {
             clearTimeout(timeoutId);
 
             timeoutId = setTimeout(() => {
-                console.log("Inside set timeout")
+                console.log('Inside set timeout');
                 func.apply(this, args);
             }, delay);
         };
@@ -64,11 +70,14 @@
     const searchRecordsByName = async (name: string) => {
         loadingNameSearch = true;
         try {
-            const res = await UserService.searchAthleteRecordsByExerciseName($userDB!.athleteData.id, {
-                current: false,
-                name: name,
-                reps: 1
-            });
+            const res = await UserService.searchAthleteRecordsByExerciseName(
+                $userDB!.athleteData.id,
+                {
+                    current: false,
+                    name: name,
+                    reps: 1,
+                }
+            );
             if (!res.length) {
                 noResults = `No results found for: ${name}`;
             }
@@ -94,25 +103,29 @@
         records.push(record);
         records.sort((a, b) => a.createdAt - b.createdAt);
         // Remove duplicate records
-        records = records.filter((r, idx, arr) => arr.findIndex(e => e.id === r.id) === idx);
+        records = records.filter(
+            (r, idx, arr) => arr.findIndex(e => e.id === r.id) === idx
+        );
         cachedRecordHistories.set(key, records);
         cachedRecordHistories = cachedRecordHistories;
     };
 
     onMount(async () => {
-       await fetchCommonRecords();
+        await fetchCommonRecords();
     });
 
     const getRecord = (key: string) => {
         const records = cachedRecordHistories.get(key);
         let record = records.find(r => r.isCurrent === true);
         if (!record) {
-            record = records[records.length-1];
+            record = records[records.length - 1];
         }
         return record;
     };
 
-    $: selectedRecordKey ? selectedRecord = getRecord(selectedRecordKey) : null;
+    $: selectedRecordKey
+        ? (selectedRecord = getRecord(selectedRecordKey))
+        : null;
 
     let chart: Chart;
 
@@ -126,9 +139,7 @@
 
         const records = cachedRecordHistories.get(recordKey);
 
-        const labels = records.map(
-            r => r.createdAt.format('MMM DD \'YY')
-        );
+        const labels = records.map(r => r.createdAt.format("MMM DD 'YY"));
         const data = records.map(w => w.weight);
 
         chart = new Chart(canvas, {
@@ -155,36 +166,46 @@
                     },
                 },
                 maintainAspectRatio: false,
-                onClick: e => {
-
-                },
+                onClick: e => {},
             },
         } as ChartConfiguration);
     };
 
-    $: noResults ? setTimeout(() => noResults = '', 5000) : null;
-
+    $: noResults ? setTimeout(() => (noResults = ''), 5000) : null;
 </script>
 
 <header class="flex justify-between">
     <h1 class="p-2 text-2xl">My Progress</h1>
-    <button class="text-link p-2 text-sm" on:click={() => showAddRecords = !showAddRecords}>Add Records</button>
+    <button
+        class="p-2 text-sm text-link"
+        on:click="{() => (showAddRecords = !showAddRecords)}"
+        >Add Records</button
+    >
 </header>
 {#if !loading}
-    <div class="p-2 w-full relative">
-        <input type="text" class="bg-gray-300 p-1 rounded w-full" placeholder="Search for records" on:keyup={(e) => processSearch(e.target.value)} />
+    <div class="relative w-full p-2">
+        <input
+            type="text"
+            class="w-full rounded bg-gray-300 p-1"
+            placeholder="Search for records"
+            on:keyup="{e => processSearch(e.target.value)}"
+        />
         {#if loadingNameSearch}
             <div class="loading-bar"></div>
         {/if}
     </div>
-    <div class="w-full text-yellow-lt text-center h-4">
+    <div class="h-4 w-full text-center text-yellow-lt">
         <i>{noResults}</i>
     </div>
-    <div class="grid grid-cols-12 gap-3 w-full p-2 mt-2">
+    <div class="mt-2 grid w-full grid-cols-12 gap-3 p-2">
         {#each recordsKeyList as recordKey}
-            <div on:click={() => { toggleRecord(recordKey); renderHistoryChart(recordKey); }}
-                 class="rounded-xl border border-textblue text-textblue text-xs lg:text-normal text-center p-1 col-span-4 lg:col-span-1 hover:cursor-pointer"
-                 class:selected-record={selectedRecordKey === recordKey}
+            <div
+                on:click="{() => {
+                    toggleRecord(recordKey);
+                    renderHistoryChart(recordKey);
+                }}"
+                class="lg:text-normal col-span-4 rounded-xl border border-textblue p-1 text-center text-xs text-textblue hover:cursor-pointer lg:col-span-1"
+                class:selected-record="{selectedRecordKey === recordKey}"
             >
                 {recordKey}
             </div>
@@ -192,10 +213,14 @@
     </div>
     <div>
         {#if !selectedRecord}
-            <p class="text-center text-textblue mt-4">Select exercises above to see your records</p>
+            <p class="mt-4 text-center text-textblue">
+                Select exercises above to see your records
+            </p>
         {:else}
             <div class="p-2">
-                <h2 class="text-lg text-textblue">{selectedRecord.exerciseName}</h2>
+                <h2 class="text-lg text-textblue">
+                    {selectedRecord.exerciseName}
+                </h2>
                 <p>Current PR: {selectedRecord.weight}kg</p>
                 <p>Set on: {selectedRecord.createdAt.format('MMMM DD YYYY')}</p>
             </div>
@@ -205,16 +230,17 @@
         <canvas id="record-history"></canvas>
     </div>
 {:else}
-    <div class="w-full flex justify-center items-center">
+    <div class="flex w-full items-center justify-center">
         <LoadingSpinner spinnerColor="fill-yellow" height="h-10" width="w-10" />
     </div>
 {/if}
 {#if showAddRecords}
-    <div class="flex flex-col justify-center items-center fixed top-0 right-0 left-0 bottom-0">
-        <AddRecordModal bind:show={showAddRecords} />
+    <div
+        class="fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center justify-center"
+    >
+        <AddRecordModal bind:show="{showAddRecords}" />
     </div>
 {/if}
-
 
 <style>
     .selected-record {
@@ -233,7 +259,7 @@
     }
 
     .loading-bar::before {
-        content: "";
+        content: '';
         display: block;
         position: absolute;
         top: 0;

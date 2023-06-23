@@ -96,10 +96,14 @@ export default class UserService {
         return data.map(d => AthleteRecord.createFrom(d));
     };
 
-    static getCommonAthleteRecords = async (athleteId: string): Promise<AthleteRecord[]> => {
-        const { data } = await srGet<AthleteRecordDTO[]>(`/api/athlete/${athleteId}/record/common`);
+    static getCommonAthleteRecords = async (
+        athleteId: string
+    ): Promise<AthleteRecord[]> => {
+        const { data } = await srGet<AthleteRecordDTO[]>(
+            `/api/athlete/${athleteId}/record/common`
+        );
         return data.map(d => AthleteRecord.createFrom(d));
-    }
+    };
 
     static inviteUser = async (inviteUserRequest: any) => {
         const { data } = await srPost<string>(
@@ -111,26 +115,29 @@ export default class UserService {
         return data;
     };
 
-    static searchAthleteRecordsByExerciseName = async (athleteId: string, options: AthleteRecordsSearchOptions = { current: true }) => {
+    static searchAthleteRecordsByExerciseName = async (
+        athleteId: string,
+        options: AthleteRecordsSearchOptions = { current: true }
+    ) => {
         let url = `/api/athlete/${athleteId}/record?current=${options.current}`;
         if (options.reps) {
-            url += `&reps=${options.reps}`
+            url += `&reps=${options.reps}`;
         }
         if (options.weight !== undefined) {
-            url += `&weight=${options.weight}`
+            url += `&weight=${options.weight}`;
         }
         if (options.name) {
-            url += `&name=${options.name}`
+            url += `&name=${options.name}`;
         }
         const { data } = await srGet<AthleteRecordDTO[]>(url);
         return data.map(r => AthleteRecord.createFrom(r));
-    }
+    };
 }
 
 // TODO: move this to it's own file
 export interface AthleteRecordsSearchOptions {
-    name?: string,
-    reps?: number,
-    weight?: number,
-    current: boolean
+    name?: string;
+    reps?: number;
+    weight?: number;
+    current: boolean;
 }

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {ProgramService} from "../../../service/ProgramService";
-    import {AthleteProgramStats} from "../../../classes/program/stats";
-    import {getContext, onMount} from "svelte";
-    import LoadingSpinner from "$lib/components/shared/loading/LoadingSpinner.svelte";
-    import dayjs from "dayjs";
+    import { ProgramService } from '../../../service/ProgramService';
+    import { AthleteProgramStats } from '../../../classes/program/stats';
+    import { getContext, onMount } from 'svelte';
+    import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
+    import dayjs from 'dayjs';
     import { Chart } from 'chart.js/auto';
     import { getRelativePosition } from 'chart.js/helpers';
     import type { ChartConfiguration } from 'chart.js';
@@ -35,11 +35,8 @@
         const canvas = <HTMLCanvasElement>(
             document.getElementById('weekly-chart')
         );
-        const labels = weeks.map(
-            w =>
-                ' '
-        );
-        console.log(weeks)
+        const labels = weeks.map(w => ' ');
+        console.log(weeks);
         const plannedData = weeks.map(w => w.plannedTotalVolume);
         const actualData = weeks.map(w => w.actualTotalVolume);
         const plannedColors = weeks.map(w => {
@@ -99,11 +96,13 @@
         } as ChartConfiguration);
     };
 
-    $: weeklyStats ? setTimeout(() => renderWeeklyChart(weeklyStats), 100): null;
+    $: weeklyStats
+        ? setTimeout(() => renderWeeklyChart(weeklyStats), 100)
+        : null;
 </script>
 
 {#await fetchWeeklyStats()}
-    <div class="flex justify-center m-3">
+    <div class="m-3 flex justify-center">
         <LoadingSpinner spinnerColor="fill-yellow" height="h-10" width="w-10" />
     </div>
 {:then weeklyStats}
@@ -112,7 +111,6 @@
             <canvas id="weekly-chart"></canvas>
         </div>
     </div>
-
 {:catch err}
     <p>Error Fetching data for chart</p>
 {/await}

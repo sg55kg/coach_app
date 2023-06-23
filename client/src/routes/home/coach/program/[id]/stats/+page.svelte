@@ -5,7 +5,7 @@
     import LoadingSpinner from '$lib/components/shared/loading/LoadingSpinner.svelte';
     import ProgramToolbarDesktop from '$lib/components/WriteProgram/toolbars/ProgramToolbarDesktop.svelte';
     import { isMobile } from '$lib/stores/authStore.js';
-    import ProgramStats from "$lib/components/WriteProgram/views/ProgramStats.svelte";
+    import ProgramStats from '$lib/components/WriteProgram/views/ProgramStats.svelte';
 
     let weeklyStats: AthleteProgramStats[];
 

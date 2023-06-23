@@ -46,7 +46,7 @@
         <a
             class=" my-2 text-lg font-bold text-gray-400 hover:cursor-default"
             href="/home/athlete"
-            on:click={() => showNav = false}
+            on:click="{() => (showNav = false)}"
         >
             {$userDB?.athleteData?.team?.name
                 ? $userDB.athleteData.team.name
@@ -55,8 +55,7 @@
         <a
             class="my-2 text-lg font-bold text-textblue hover:text-link"
             href="/home/athlete/teams"
-            on:click={() => showNav = false}
-        >Browse Teams</a
+            on:click="{() => (showNav = false)}">Browse Teams</a
         >
     {:else}
         <a

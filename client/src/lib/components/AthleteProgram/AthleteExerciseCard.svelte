@@ -7,7 +7,7 @@
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import { getContext } from 'svelte';
     import { userDB } from '../../stores/authStore';
-    import ReadOnlyExerciseRow from "$lib/components/shared/layout/ReadOnlyExerciseRow.svelte";
+    import ReadOnlyExerciseRow from '$lib/components/shared/layout/ReadOnlyExerciseRow.svelte';
 
     export let exercise: Exercise;
     export let exerciseIndex: number;
@@ -37,17 +37,25 @@
             justify-center border-l-2 border-l-textblue bg-gray-200 p-2 hover:cursor-pointer lg:mr-2"
     on:click="{() => (selectedExerciseIdx = exerciseIndex)}"
 >
-
-        {#each [exercise, ...exercise.dropSets] as row, i}
-            <ReadOnlyExerciseRow exercise="{row}" showName="{i === 0}" />
-        {/each}
-
+    <div class="flex w-full">
+        <div class="flex flex-col flex-grow">
+            {#each [exercise, ...exercise.dropSets] as row, i}
+                <ReadOnlyExerciseRow
+                        exercise="{row}"
+                        showName="{i === 0}"
+                        isComplete="{row.isComplete}"
+                />
+            {/each}
+        </div>
+        <button class="mx-2 h-4 w-4 self-center">
+            <FaChevronDown />
+        </button>
+    </div>
     {#if $newRecordIds.length > 0 && $newRecordIds.includes(exercise.id)}
-        <p class="text-green">New Record!</p>
+        <p class="my-2 self-center text-center text-lg text-green">
+            New Record!
+        </p>
     {/if}
-    <button class="absolute right-3 h-4 w-4">
-        <FaChevronDown />
-    </button>
 </div>
 
 <style></style>

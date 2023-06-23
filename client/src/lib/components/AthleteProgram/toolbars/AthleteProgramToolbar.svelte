@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Toggle from "$lib/components/shared/layout/Toggle.svelte";
-    import {userDB} from "$lib/stores/authStore.js";
-    import UserService from "../../../service/UserService";
-    import {getContext} from "svelte";
+    import Toggle from '$lib/components/shared/layout/Toggle.svelte';
+    import { userDB } from '$lib/stores/authStore.js';
+    import UserService from '../../../service/UserService';
+    import { getContext } from 'svelte';
 
     const {
         getCurrentProgram,
@@ -10,7 +10,7 @@
         markDayCompleteAsWritten,
         getAthleteProgramLoading,
         getCurrentDayIdx,
-        getAthleteId
+        getAthleteId,
     } = getContext('athlete-program');
 
     let currentProgram = getCurrentProgram();
@@ -36,13 +36,13 @@
     };
 </script>
 
-<div class="flex flex-col lg:flex-row lg:justify-between p-2">
+<div class="flex flex-col p-2 lg:flex-row lg:justify-between">
     <h1 class="text-2xl text-textblue">{$currentProgram?.name}</h1>
     <div class="flex">
         <p class="px-1 text-textblue">Pounds</p>
         <Toggle
-                checked="{$userDB.preferences.weight === 'kg'}"
-                onChange="{toggleWeightPreference}"
+            checked="{$userDB.preferences.weight === 'kg'}"
+            onChange="{toggleWeightPreference}"
         />
         <p class="px-1 text-textblue">Kilograms</p>
     </div>
