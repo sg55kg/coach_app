@@ -101,7 +101,7 @@
                 result += `${
                     exercise.weight
                         ? exercise.wgtComp(unit) + unit
-                        : formatEffortString(exercise.actualIntesity)
+                        : formatEffortString(exercise.actualIntensity) // TODO: Fix bug associated with this
                 } ${exercise.setsCompleted}sets ${
                     exercise.repsPerSetComplete
                 }reps`;
@@ -120,6 +120,8 @@
                 return 'Hard';
             case EffortIntensity.MAX:
                 return 'Max Effort';
+            default:
+                return 'Easy';
         }
     };
 </script>
