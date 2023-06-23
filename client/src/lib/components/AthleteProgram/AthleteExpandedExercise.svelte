@@ -7,7 +7,10 @@
     import { getContext, onMount } from 'svelte';
     import { EffortIntensity } from '../../classes/program/exercise/enums';
     import { userDB } from '$lib/stores/authStore.js';
-    import {ExerciseMaxRepsError, ExerciseMaxWeightError} from "../../errors/athlete/athleteErrors";
+    import {
+        ExerciseMaxRepsError,
+        ExerciseMaxWeightError,
+    } from '../../errors/athlete/athleteErrors';
 
     export let exercise: Exercise;
     export let selectedExerciseIdx: number;
