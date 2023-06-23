@@ -18,18 +18,6 @@
     let unit: 'kg' | 'lb' = $userDB!.preferences.weight;
     $: unit = $userDB!.preferences.weight;
 
-    const formatEffortString = (effort: EffortIntensity) => {
-        switch (effort) {
-            case EffortIntensity.EASY:
-                return 'Easy';
-            case EffortIntensity.MODERATE:
-                return 'Moderate';
-            case EffortIntensity.DIFFICULT:
-                return 'Hard';
-            case EffortIntensity.MAX:
-                return 'Max Effort';
-        }
-    };
 </script>
 
 <div
@@ -43,7 +31,6 @@
                 <ReadOnlyExerciseRow
                         exercise="{row}"
                         showName="{i === 0}"
-                        isComplete="{row.isComplete}"
                 />
             {/each}
         </div>

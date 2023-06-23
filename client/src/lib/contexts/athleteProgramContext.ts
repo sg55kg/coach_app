@@ -289,7 +289,7 @@ const markExerciseFieldsComplete = (e: Exercise) => {
             ? e.repsPerSetComplete * e.setsCompleted
             : e.repsPerSet * e.setsCompleted;
         e.actualIntesity =
-            e.actualIntesity !== null ? e.actualIntesity : e.effortIntensity;
+            e.actualIntesity !== null && e.actualIntesity !== undefined ? e.actualIntesity : e.effortIntensity;
     }
     return e;
 };
