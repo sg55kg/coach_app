@@ -19,6 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g findById(final UUID id)
+
+
+// Add logs to every repo method indicating request params (masking private data) and response values for debugging
 @Repository
 public class ChatRoomRepository {
 
@@ -35,6 +41,8 @@ public class ChatRoomRepository {
     @Transactional
     public ChatRoom findById(UUID id) {
         try {
+            // highly recommend putting these queries in a separate file for readability + separation of concerns
+            // raw sql is generally frowned upon (sql injection concerns) - e.g use evm.applySetting(EntityViewSetting.create(class_name.class)
             ChatRoom chatRoom = em.createQuery("SELECT c FROM ChatRoom c WHERE c.id = ?1", ChatRoom.class)
                     .setParameter(1, id)
                     .getSingleResult();
@@ -51,11 +59,13 @@ public class ChatRoomRepository {
         ChatRoom chatRoom = new ChatRoom();
         List<ChatRoomMember> members = new ArrayList<>();
 
+        // highly recommend putting these queries in a separate file for readability + separation of concerns
         List<AthleteData> athletes =
                 em.createQuery("SELECT a FROM AthleteData a JOIN a.user u JOIN a.team t WHERE a.team.id = ?1", AthleteData.class)
                 .setParameter(1, request.getTeamId())
                 .getResultList();
 
+        // highly recommend putting these queries in a separate file for readability + separation of concerns
         // This could be included in the above query with the team, but for now I will leave this separate
         CoachData coach = em.createQuery("SELECT c FROM CoachData c JOIN c.user u WHERE c.id = ?1", CoachData.class)
                 .setParameter(1, request.getCoachId())

@@ -1,5 +1,7 @@
 package com.coachapp.coach_pc.repository.chat;
 
+// Generally recommended to import only the specific classes you need
+// - clarity, avoiding name conflicts, optimization and easier to determine if a class or library is no longer required in your project (clean)
 import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.PagedList;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every repo method indicating request params (masking private data) and response values for debugging
 @Repository
 public class MessageRepository {
 

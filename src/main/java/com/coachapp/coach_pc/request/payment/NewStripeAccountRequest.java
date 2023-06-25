@@ -4,10 +4,17 @@ import java.util.UUID;
 
 public class NewStripeAccountRequest {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     private UUID coachId;
     private UUID teamId;
     private String email;
     private String username;
+
+    // recommend setting defaults here
     private String countryCode = "";
     private String currency = "";
     private int athleteCap = 0;

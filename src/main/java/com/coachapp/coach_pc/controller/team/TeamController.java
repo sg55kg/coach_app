@@ -11,11 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+// Generally recommended to import only the specific classes you need
+// - clarity, avoiding name conflicts, optimization and easier to determine if a class or library is no longer required in your project (clean)
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g getChatRoom(final @PathVariable UUID id)
+
+// Add logs to every controller route indicating request params (masking private data) and response
 @Controller
 @RequestMapping("/api/teams")
 public class TeamController {

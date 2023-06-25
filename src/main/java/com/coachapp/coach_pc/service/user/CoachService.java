@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class CoachService {
 
@@ -28,6 +29,9 @@ public class CoachService {
 
     public ResponseEntity<CoachData> getCoachData(UUID id) {
         Optional<CoachData> data = coachRepo.findById(id);
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if (data.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
@@ -54,6 +58,10 @@ public class CoachService {
 
     public ResponseEntity<CoachData> addProgram(ProgramRequest programRequest, UUID id) {
         Optional<CoachData> c = coachRepo.findById(id);
+
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
 
         if (c.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

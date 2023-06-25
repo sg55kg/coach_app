@@ -1,3 +1,6 @@
+// In general you never want commented out code in your main/master branch
+// If you want a wip with work you intend to use later, keep it in a separate branch
+
 //package com.coachapp.coach_pc.config;
 //
 //import org.springframework.beans.factory.annotation.Value;

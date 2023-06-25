@@ -10,6 +10,11 @@ import java.util.UUID;
 @Entity
 public class WarmUp {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
@@ -20,6 +25,10 @@ public class WarmUp {
     private Day day;
     private String instructions;
 
+    // In Java, if you don't explicitly define any constructor in a class,
+    // the compiler automatically provides
+    // a default constructor with no arguments (also known as a no-arg constructor).
+    // so this is not needed
     public WarmUp() {}
 
     public UUID getId() {
@@ -46,6 +55,9 @@ public class WarmUp {
         this.instructions = instructions;
     }
 
+    // Recommend using @EqualsAndHashCode from lombok
+    // https://projectlombok.org/features/EqualsAndHashCode
+    // this annotation will generate these for you and make it more readable, maintainable and less prone to bugs
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

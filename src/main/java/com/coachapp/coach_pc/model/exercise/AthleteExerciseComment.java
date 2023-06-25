@@ -10,10 +10,17 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.UUID;
 
+// There is no universally accepted convention for naming SQL tables, but many developers and database administrators prefer to use plural table names.
+// The reasoning behind this is that a table typically represents a collection of similar entities, and the plural form better reflects this concept.
+// e.g athlete_exercise_comment (each record being a athlete_exercise_comment)
 @Entity
 @Table(name = "athlete_exercise_comment")
 public class AthleteExerciseComment {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")

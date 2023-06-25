@@ -51,6 +51,7 @@ public class AthleteRepository {
         return Optional.ofNullable(athlete);
     }
 
+    // not using the athleteId param here?
     @Transactional
     public boolean existsById(UUID athleteId) {
         Long count = cbf.create(em, Long.class)
@@ -258,6 +259,7 @@ public class AthleteRepository {
         try {
             List<String> commonExerciseNames =
                     new ArrayList<>(
+                            // Would put these in a common config file
                             List.of("Snatch", "Clean and jerk", "Back squat", "Front Squat", "Deadlift", "Bench Press")
                     );
             CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);

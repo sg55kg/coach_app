@@ -11,6 +11,11 @@ import java.util.UUID;
 @Entity
 public class TeamFinance {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
@@ -29,6 +34,10 @@ public class TeamFinance {
     private boolean requestRequired = false;
     private boolean inviteOnly = false;
 
+    // In Java, if you don't explicitly define any constructor in a class,
+    // the compiler automatically provides
+    // a default constructor with no arguments (also known as a no-arg constructor).
+    // so this is not needed
     public TeamFinance() {}
 
     public UUID getId() {
