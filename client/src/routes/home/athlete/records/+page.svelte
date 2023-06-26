@@ -34,7 +34,7 @@
     const fetchCommonRecords = async () => {
         loading = true;
         try {
-            const res = await UserService.searchAthleteRecordsByExerciseName(
+            const res = await UserService.searchAthleteRecords(
                 $userDB!.athleteData.id,
                 { current: false }
             );

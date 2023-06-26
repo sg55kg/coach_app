@@ -96,15 +96,6 @@ export default class UserService {
         return data.map(d => AthleteRecord.createFrom(d));
     };
 
-    static getCommonAthleteRecords = async (
-        athleteId: string
-    ): Promise<AthleteRecord[]> => {
-        const { data } = await srGet<AthleteRecordDTO[]>(
-            `/api/athlete/${athleteId}/record/common`
-        );
-        return data.map(d => AthleteRecord.createFrom(d));
-    };
-
     static inviteUser = async (inviteUserRequest: any) => {
         const { data } = await srPost<string>(
             `/api/auth/invite`,
@@ -115,7 +106,7 @@ export default class UserService {
         return data;
     };
 
-    static searchAthleteRecordsByExerciseName = async (
+    static searchAthleteRecords = async (
         athleteId: string,
         options: AthleteRecordsSearchOptions = { current: true }
     ) => {

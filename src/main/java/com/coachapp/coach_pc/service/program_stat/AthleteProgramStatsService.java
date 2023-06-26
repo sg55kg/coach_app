@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 public class AthleteProgramStatsService {
 
-    private AthleteProgramStatsRepository repository;
+    private final AthleteProgramStatsRepository repository;
 
     public AthleteProgramStatsService(AthleteProgramStatsRepository repository) {
         this.repository = repository;

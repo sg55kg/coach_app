@@ -170,6 +170,33 @@ public class AthleteRepository {
     }
 
     @Transactional
+    public List<AthleteRecordViewModel> getAthleteRecordsByExerciseNames(UUID athleteId, List<String> exerciseNames) {
+        CriteriaBuilder<AthleteRecord> cb = cbf.create(em, AthleteRecord.class);
+        try {
+            var query =
+                    evm.applySetting(EntityViewSetting.create(AthleteRecordViewModel.class), cb)
+                            .where("athlete.id")
+                            .eq(athleteId)
+                            .where("isCurrent")
+                            .eq(true)
+                            .whereOr();
+
+            for (String name : exerciseNames) {
+                query = query.where("exerciseName").like(false).value(name).noEscape();
+            }
+
+            List<AthleteRecordViewModel> results = query.endOr().getResultList();
+            return results;
+        } catch (NoResultException ex) {
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            logger.error("Error fetching last record batch for athlete: " + athleteId);
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    @Transactional
     public Optional<AthleteData> findEntityById(UUID id) {
         return Optional.ofNullable(em.find(AthleteData.class, id));
     }

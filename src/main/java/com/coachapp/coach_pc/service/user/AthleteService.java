@@ -12,6 +12,8 @@ import com.coachapp.coach_pc.view.record.AthleteRecordViewModel;
 import com.coachapp.coach_pc.view.record.UpdatableAthleteRecordViewModel;
 import com.coachapp.coach_pc.view.user.AthleteViewModel;
 import com.coachapp.coach_pc.view.user.AthleteWithPrograms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class AthleteService {
 
     private final AthleteRepository repository;
+    private final Logger logger = LoggerFactory.getLogger(AthleteService.class);
 
     public AthleteService(AthleteRepository repository) {
         this.repository = repository;
@@ -121,17 +124,25 @@ public class AthleteService {
     ) {
         if (name == null) {
             List<AthleteRecordViewModel> records = repository.getCommonAthleteRecords(athleteId, current);
+            logger.info("Found " + records.size() + " records for request:\n");
+            logger.info(name, reps, weight, current);
             // TODO: if weight/reps aren't null factor those into the search
             return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (reps == null && weight == null) {
             List<AthleteRecordViewModel> records = repository.getAthleteRecordsByName(athleteId, name, current);
+            logger.info("Found " + records.size() + " records for request:\n");
+            logger.info(name, reps, weight, current);
             return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (reps == null) {
             List<AthleteRecordViewModel> records = repository.getAthleteRecordsByWeight(athleteId, name, weight, current);
+            logger.info("Found " + records.size() + " records for request:\n");
+            logger.info(name, reps, weight, current);
             return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (weight == null) {
             // TODO: query for records between 1-10 reps
             List<AthleteRecordViewModel> records = repository.getAthleteRecordsByReps(athleteId, name, reps, current);
+            logger.info("Found " + records.size() + " records for request:\n");
+            logger.info(name, reps, weight, current);
             return new ResponseEntity<>(records, HttpStatus.OK);
         } else if (current) {
             // TODO: query for the last PR for an exercise
@@ -205,5 +216,10 @@ public class AthleteService {
             List<AthleteRecordViewModel> vms = repository.addRecords(newRecords, prevRecords);
             return new ResponseEntity<>(vms, HttpStatus.CREATED);
         }
+    }
+
+    public ResponseEntity<List<AthleteRecordViewModel>> getRecordsByExerciseNames(UUID athleteId, List<String> exerciseNames) {
+        List<AthleteRecordViewModel> records = repository.getAthleteRecordsByExerciseNames(athleteId, exerciseNames);
+        return new ResponseEntity<>(records, HttpStatus.OK);
     }
 }

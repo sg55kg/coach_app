@@ -28,7 +28,7 @@ public class ExerciseService {
     public ResponseEntity<ExerciseViewModel> updateExercise(ExerciseRequest request) {
         Optional<? extends Exercise> optional;
 
-        optional = exerciseRepo.findById(request.getId());
+        optional = exerciseRepo.findById(request.id);
 
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

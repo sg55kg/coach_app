@@ -2,7 +2,7 @@
     import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
     import DayCard from '$lib/components/WriteProgram/DayCard.svelte';
     import ProgramSearch from '$lib/components/WriteProgram/modals/ProgramSearch.svelte';
-    import { getContext, setContext } from 'svelte';
+    import {getContext, onMount, setContext} from 'svelte';
     import { isMobile } from '$lib/stores/authStore.js';
     import ExpandedDay from '$lib/components/WriteProgram/ExpandedDay.svelte';
     import CreateProgramModal from '$lib/components/WriteProgram/modals/CreateProgramModal.svelte';
@@ -27,6 +27,7 @@
         addDay,
         getSelectedDayIdx,
         getProgramInfo,
+        getExerciseUnits
     } = getContext('program');
 
     let program = getProgram();
@@ -35,6 +36,7 @@
     let programLoading = getProgramLoading();
     let selectedDayIdx = getSelectedDayIdx();
     let programInfo = getProgramInfo();
+    let exerciseUnits = getExerciseUnits();
 
     $: $programError
         ? setTimeout(() => {
@@ -48,6 +50,14 @@
         : null;
     $: $programLoading ? (showActionContext = false) : null;
     $: $programInfo ? setTimeout(() => ($programInfo = ''), 2500) : null;
+
+    onMount(() => {
+         if ($program.athleteId) {
+             $exerciseUnits = 'weight';
+         } else {
+             $exerciseUnits = 'percent';
+         }
+    });
 </script>
 
 <div

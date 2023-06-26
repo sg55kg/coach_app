@@ -78,4 +78,12 @@ public class AthleteController {
     ) {
         return athleteService.createAthleteRecords(athleteId, request);
     }
+
+    @PostMapping("/{athleteId]/records/exercise/names")
+    public ResponseEntity<List<AthleteRecordViewModel>> getAthleteRecordsByExerciseNames(
+            @PathVariable UUID athleteId,
+            @RequestBody List<String> exerciseNames
+    ) {
+        return athleteService.getRecordsByExerciseNames(athleteId, exerciseNames);
+    }
 }

@@ -5,6 +5,8 @@ import type { Dayjs } from 'dayjs';
 import { ProgramService } from '../../../service/ProgramService';
 import type { Writable } from 'svelte/store';
 import { get, writable } from 'svelte/store';
+import {AthleteRecord} from "../../../classes/user/athlete/records";
+import UserService from "../../../service/UserService";
 
 export const writeProgramContext = (selectedProgram: Program) => {
     const program: Writable<Program> = writable(selectedProgram);
@@ -16,6 +18,8 @@ export const writeProgramContext = (selectedProgram: Program) => {
     const programSuccess: Writable<string> = writable('');
     const programLoading: Writable<boolean> = writable(false);
     const programInfo: Writable<string> = writable('');
+    const exerciseUnits: Writable<'percent' | 'weight'> = writable('weight');
+    const athleteRecords: Writable<AthleteRecord[]> = writable([]);
 
     const formatProgramDates = () => {
         let programVal = get(program);
@@ -208,6 +212,15 @@ export const writeProgramContext = (selectedProgram: Program) => {
             });
         }
     };
+
+    const fetchAndUpdateAthleteRecords = async (athleteId: string) => {
+        try {
+            const res = await UserService.searchAthleteRecordsByExerciseName(athleteId)
+        } catch (e) {
+            programError.set('Error retrieving athlete PRs');
+        }
+    }
+
     return {
         getProgram: () => program,
         getSelectedDayIdx: () => selectedDayIdx,
@@ -229,5 +242,6 @@ export const writeProgramContext = (selectedProgram: Program) => {
         copyExercise,
         pasteExercise,
         getProgramInfo: () => programInfo,
+        getExerciseUnits: () => exerciseUnits
     };
 };

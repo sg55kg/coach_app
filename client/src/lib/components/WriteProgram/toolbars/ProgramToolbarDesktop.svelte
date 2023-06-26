@@ -17,6 +17,8 @@
     import { team } from '../../../stores/teamStore';
     import TemplatesModal from '$lib/components/WriteProgram/modals/TemplatesModal.svelte';
     import { page } from '$app/stores';
+    import MdChevronRight from 'svelte-icons/md/MdChevronRight.svelte'
+    import MdCheck from 'svelte-icons/md/MdCheck.svelte'
 
     export let showCreateProgram: boolean = false;
     export let showAssignAthlete: boolean = false;
@@ -27,14 +29,19 @@
         updateProgram,
         getProgramError,
         getProgramSuccess,
+        getExerciseUnits
     } = getContext('program');
     let program = getProgram();
     let programLoading = getProgramLoading();
     let programError = getProgramError();
     let programSuccess = getProgramSuccess();
+    let exerciseUnits = getExerciseUnits();
 
     let showFileMenu: boolean = false;
+    let showSettingsMenu: boolean = false;
     let showTemplateImport: boolean = false;
+    let showWeightOptions: boolean = false;
+    let showExerciseOptions: boolean = false;
 
     const makeACopy = async () => {
         if (!$program.id) return;
@@ -120,6 +127,10 @@
             $programLoading = false;
         }
     };
+
+    const toggleExerciseUnits = () => {
+        $exerciseUnits = $exerciseUnits === 'weight' ? 'percent' : 'weight';
+    };
 </script>
 
 <nav class="relative flex flex-col bg-gray-100 p-2">
@@ -131,20 +142,22 @@
             placeholder="Program Name"
             id="program-name-input"
         />
-        {#if $program.id}<p class="px-2">
+        {#if $program.id}
+            <p class="px-2">
                 <i
                     >Last Updated: {$program.updatedAt.format(
                         'ddd MMM DD YYYY hh:mm:ssA'
                     )}</i
                 >
-            </p>{/if}
+            </p>
+        {/if}
         <div class="flex self-end lg:px-2">
             <Toggle
-                checked="{$userDB.preferences.weight === 'kg'}"
-                onChange="{toggleWeightPreference}"
+                    checked="{$exerciseUnits === 'weight'}"
+                    onChange="{toggleExerciseUnits}"
             />
             <p class="px-1 text-textblue">
-                {$userDB.preferences.weight === 'kg' ? 'kg' : 'lbs'}
+                {$exerciseUnits === 'weight' ? 'weight' : 'percentage'}
             </p>
         </div>
     </div>
@@ -174,10 +187,6 @@
                     on:click="{() =>
                         setTimeout(() => (showFileMenu = false), 100)}"
                 >
-                    <!--                            <button class="p-2 w-full text-left flex items-center hover:bg-gray-200 disabled:text-gray-100 disabled:hover:bg-gray-400">-->
-                    <!--                                <span class="h-5 mr-2"><FaRegSave /></span>-->
-                    <!--                                Save-->
-                    <!--                            </button>-->
                     <button
                         class="flex w-full items-center p-2 text-left hover:bg-gray-200"
                         on:click="{() => (showCreateProgram = true)}"
@@ -216,6 +225,61 @@
                     >
                         <span class="mr-2 h-5"><FaTrashAlt /></span>
                         Delete Program
+                    </button>
+                </div>
+            {/if}
+        </div>
+        <div class="dropdown relative inline-block">
+            <button
+                    class="flex items-center rounded p-1 hover:bg-gray-400"
+                    on:click="{() => (showSettingsMenu = !showSettingsMenu)}"
+            >
+                Settings
+                <span class="mx-1 h-3"><FaCaretDown /></span>
+            </button>
+            {#if showSettingsMenu}
+                <div
+                    class="fixed top-0 right-0 left-0 bottom-0 z-[114]"
+                    on:click="{() => (showSettingsMenu = !showSettingsMenu)}"
+                ></div>
+                <div
+                    class="absolute z-[115] w-56 origin-top-right bg-gray-400 p-2 shadow-lg shadow-gray-200"
+                    on:click="{() =>
+                        setTimeout(() => (showSettingsMenu = false), 100)}"
+                >
+                    <div class="relative"
+                         on:mouseover={() => showWeightOptions = true}
+                         on:mouseleave={() => showWeightOptions = false}
+                    >
+                        <button
+                                class="flex w-full items-center p-2 text-left justify-between hover:bg-gray-200"
+                        >
+                            Weight
+                            <span class="ml-2 h-5"><MdChevronRight /></span>
+                        </button>
+                        {#if showWeightOptions}
+                            <div class="absolute bg-gray-400 w-56 -right-56 -top-2 p-2">
+                                <button class="flex w-full p-2 items-center text-left hover:bg-gray-200" on:click={toggleWeightPreference}>
+                                    {#if $userDB.preferences.weight === 'kg'}
+                                        <span class="h-5 mr-2"><MdCheck /></span>
+                                    {/if}
+                                    Kilograms
+                                </button>
+                                <button class="flex w-full p-2 items-center text-left hover:bg-gray-200" on:click={toggleWeightPreference}>
+                                    {#if $userDB.preferences.weight === 'lb'}
+                                        <span class="h-5 mr-2"><MdCheck /></span>
+                                    {/if}
+                                    Pounds
+                                </button>
+                            </div>
+                        {/if}
+                    </div>
+                    <button
+                            class="flex w-full items-center p-2 text-left justify-between hover:bg-gray-200"
+                            on:click="{() => (showCreateProgram = true)}"
+                    >
+                        Exercise Options
+                        <span class="ml-2 h-5"><MdChevronRight /></span>
                     </button>
                 </div>
             {/if}

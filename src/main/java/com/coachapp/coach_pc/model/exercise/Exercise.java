@@ -38,9 +38,6 @@ public class Exercise {
     @Column(name = "reps_completed")
     private Integer totalRepsCompleted = 0;
     private Integer setsCompleted = 0;
-//    @ManyToOne
-//    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
-//    private AthleteData athleteCommentId;
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exercise", orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<AthleteExerciseComment> comments = new ArrayList<>();
@@ -58,6 +55,7 @@ public class Exercise {
     private Exercise topSet;
     private int dropSetPercent;
     private boolean isMaxReps;
+    private Integer percent;
 
 
     public Exercise() {}
@@ -235,6 +233,14 @@ public class Exercise {
 
     public void setIsMaxReps(boolean isMaxReps) {
         this.isMaxReps = isMaxReps;
+    }
+
+    public Integer getPercent() {
+        return percent;
+    }
+
+    public void setPercent(Integer percent) {
+        this.percent = percent;
     }
 
     @Override

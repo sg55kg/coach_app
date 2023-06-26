@@ -15,368 +15,148 @@ import java.util.UUID;
 
 public class ExerciseRequest {
 
-    private UUID id;
-    private String name;
-    private int sets;
-    private int repsPerSet;
-    private int weight;
-    private int weightCompleted;
-    private int totalRepsCompleted;
-    private int setsCompleted;
-    private boolean isMax;
-    private WeightIntensity weightIntensity;
-    private List<AthleteExerciseCommentRequest> comments;
-    private boolean isComplete;
-    private UUID dayId;
-    private UUID programId;
-    private String notes;
-    private int order;
-    private List<ExerciseRequest> dropSets;
-    private ExerciseType type;
-    private List<String> nameArr;
-    private List<Integer>  repArr;
-    private List<Integer> repCompletedArr;
-    private int dropSetPercent;
-    private String equipment;
-    private EffortIntensity effortIntensity;
-    private EffortIntensity actualIntensity;
-    private int distanceMeters;
-    private int distanceCompletedMeters;
-    private int secondsPerSet;
-    private int secondsPerSetCompleted;
-    private boolean isMaxReps;
+    @JsonProperty(value = "id")
+    public UUID id;
+    @JsonProperty(value = "name")
+    public String name;
+    @JsonProperty(value = "sets")
+    public int sets;
+    @JsonProperty(value = "repsPerSet")
+    public int repsPerSet;
+    @JsonProperty(value = "weight")
+    public int weight;
+    @JsonProperty(value = "weightCompleted")
+    public int weightCompleted;
+    @JsonProperty(value = "totalRepsCompleted")
+    public int totalRepsCompleted;
+    @JsonProperty(value = "setsCompleted")
+    public int setsCompleted;
+    @JsonProperty(value = "isMax")
+    public boolean isMax;
+    @JsonProperty(value = "weightIntensity")
+    public WeightIntensity weightIntensity;
+    @JsonProperty(value = "comments")
+    public List<AthleteExerciseCommentRequest> comments;
+    @JsonProperty(value = "isComplete")
+    public boolean isComplete;
+    @JsonProperty(value = "dayId")
+    public UUID dayId;
+    @JsonProperty(value = "programId")
+    public UUID programId;
+    @JsonProperty(value = "notes")
+    public String notes;
+    @JsonProperty(value = "order")
+    public int order;
+    @JsonProperty(value = "dropSets")
+    public List<ExerciseRequest> dropSets;
+    @JsonProperty(value = "type")
+    public ExerciseType type;
+    @JsonProperty(value = "nameArr")
+    public List<String> nameArr;
+    @JsonProperty(value = "repArr")
+    public List<Integer>  repArr;
+    @JsonProperty(value = "repCompletedArr")
+    public List<Integer> repCompletedArr;
+    @JsonProperty(value = "dropSetPercent")
+    public int dropSetPercent;
+    @JsonProperty(value = "equipment")
+    public String equipment;
+    @JsonProperty(value = "effortIntensity")
+    public EffortIntensity effortIntensity;
+    @JsonProperty(value = "actualIntensity")
+    public EffortIntensity actualIntensity;
+    @JsonProperty(value = "distanceMeters")
+    public int distanceMeters;
+    @JsonProperty(value = "distanceCompletedMeters")
+    public int distanceCompletedMeters;
+    @JsonProperty(value = "secondsPerSet")
+    public int secondsPerSet;
+    @JsonProperty(value = "secondsPerSetCompleted")
+    public int secondsPerSetCompleted;
+    @JsonProperty(value = "isMaxReps")
+    public boolean isMaxReps;
+    @JsonProperty(value = "percent")
+    public int percent;
 
     public ExerciseRequest() {}
 
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getSets() {
-        return sets;
-    }
-
-    public int getRepsPerSet() {
-        return repsPerSet;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public int getWeightCompleted() {
-        return weightCompleted;
-    }
-
-    public int getTotalRepsCompleted() {
-        return totalRepsCompleted;
-    }
-    @JsonProperty(value="isMax")
-    public boolean getIsMax() {
-        return isMax;
-    }
-
-    public WeightIntensity getWeightIntensity() {
-        return weightIntensity;
-    }
-
-    public List<AthleteExerciseCommentRequest> getComments() {
-        return comments;
-    }
-
-    public boolean getIsComplete() {
-        return isComplete;
-    }
-
-    public void setIsComplete(boolean isComplete) {
-        this.isComplete = isComplete;
-    }
-
-    public UUID getDayId() {
-        return dayId;
-    }
-
-    public UUID getProgramId() {
-        return programId;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public int getSetsCompleted() {
-        return setsCompleted;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSets(int sets) {
-        this.sets = sets;
-    }
-
-    public void setRepsPerSet(int repsPerSet) {
-        this.repsPerSet = repsPerSet;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public void setWeightCompleted(int weightCompleted) {
-        this.weightCompleted = weightCompleted;
-    }
-
-    public void setTotalRepsCompleted(int totalRepsCompleted) {
-        this.totalRepsCompleted = totalRepsCompleted;
-    }
-
-    public void setSetsCompleted(int setsCompleted) {
-        this.setsCompleted = setsCompleted;
-    }
-
-    public boolean isMax() {
-        return isMax;
-    }
-
-    public void setMax(boolean max) {
-        isMax = max;
-    }
-
-    public void setWeightIntensity(WeightIntensity weightIntensity) {
-        this.weightIntensity = weightIntensity;
-    }
-
-    public void setComments(List<AthleteExerciseCommentRequest> comments) {
-        this.comments = comments;
-    }
-
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean complete) {
-        isComplete = complete;
-    }
-
-    public void setDayId(UUID dayId) {
-        this.dayId = dayId;
-    }
-
-    public void setProgramId(UUID programId) {
-        this.programId = programId;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public List<ExerciseRequest> getDropSets() {
-        return dropSets;
-    }
-
-    public void setDropSets(List<ExerciseRequest> dropSets) {
-        this.dropSets = dropSets;
-    }
-
-    public ExerciseType getType() {
-        return type;
-    }
-
-    public void setType(ExerciseType type) {
-        this.type = type;
-    }
-
-    public List<String> getNameArr() {
-        return nameArr;
-    }
-
-    public void setNameArr(List<String> nameArr) {
-        this.nameArr = nameArr;
-    }
-
-    public List<Integer> getRepArr() {
-        return repArr;
-    }
-
-    public void setRepArr(List<Integer> repArr) {
-        this.repArr = repArr;
-    }
-
-    public List<Integer> getRepCompletedArr() {
-        return repCompletedArr;
-    }
-
-    public void setRepCompletedArr(List<Integer> repCompletedArr) {
-        this.repCompletedArr = repCompletedArr;
-    }
-
-    public int getDropSetPercent() {
-        return dropSetPercent;
-    }
-
-    public void setDropSetPercent(int dropSetPercent) {
-        this.dropSetPercent = dropSetPercent;
-    }
-
-    public String getEquipment() {
-        return equipment;
-    }
-
-    public void setEquipment(String equipment) {
-        this.equipment = equipment;
-    }
-
-    public EffortIntensity getEffortIntensity() {
-        return effortIntensity;
-    }
-
-    public void setEffortIntensity(EffortIntensity effortIntensity) {
-        this.effortIntensity = effortIntensity;
-    }
-
-    public EffortIntensity getActualIntensity() {
-        return actualIntensity;
-    }
-
-    public void setActualIntensity(EffortIntensity actualIntensity) {
-        this.actualIntensity = actualIntensity;
-    }
-
-    public int getDistanceMeters() {
-        return distanceMeters;
-    }
-
-    public void setDistanceMeters(int distanceMeters) {
-        this.distanceMeters = distanceMeters;
-    }
-
-    public int getDistanceCompletedMeters() {
-        return distanceCompletedMeters;
-    }
-
-    public void setDistanceCompletedMeters(int distanceCompletedMeters) {
-        this.distanceCompletedMeters = distanceCompletedMeters;
-    }
-
-    public int getSecondsPerSet() {
-        return secondsPerSet;
-    }
-
-    public void setSecondsPerSet(int secondsPerSet) {
-        this.secondsPerSet = secondsPerSet;
-    }
-
-    public int getSecondsPerSetCompleted() {
-        return secondsPerSetCompleted;
-    }
-
-    public void setSecondsPerSetCompleted(int secondsPerSetCompleted) {
-        this.secondsPerSetCompleted = secondsPerSetCompleted;
-    }
-
-    public boolean getIsMaxReps() {
-        return isMaxReps;
-    }
-
-    public void setIsMaxReps(boolean isMaxReps) {
-        this.isMaxReps = isMaxReps;
-    }
-
     public static Exercise convertRequest(Exercise exercise, ExerciseRequest request) {
         if (exercise == null) {
-            if(request.getType() == ExerciseType.EXERCISE) {
+            if(request.type == ExerciseType.EXERCISE) {
                 exercise = new Exercise();
-            } else if (request.getType() == ExerciseType.COMPLEX) {
+            } else if (request.type == ExerciseType.COMPLEX) {
                 exercise = new ComplexExercise();
-            } else if (request.getType() == ExerciseType.DURATION) {
+            } else if (request.type == ExerciseType.DURATION) {
                 exercise = new DurationExercise();
-            } else if (request.getType() == ExerciseType.ACCESSORY) {
+            } else if (request.type == ExerciseType.ACCESSORY) {
                 exercise = new AccessoryExercise();
             }
 
         }
 
-        for (AthleteExerciseCommentRequest commentRequest : request.getComments()) {
+        for (AthleteExerciseCommentRequest commentRequest : request.comments) {
             AthleteExerciseComment comment = AthleteExerciseCommentRequest.convertRequest(commentRequest);
             comment.setExercise(exercise);
             exercise.getComments().add(comment);
         }
 
-        exercise.setId(request.getId());
-        exercise.setWeight(request.getWeight());
-        exercise.setSets(request.getSets());
-        exercise.setWeightCompleted(request.getWeightCompleted());
-        exercise.setIsMax(request.getIsMax());
-        exercise.setNotes(request.getNotes());
-        exercise.setIsComplete(request.getIsComplete());
-        exercise.setOrder(request.getOrder());
-        exercise.setSetsCompleted(request.getSetsCompleted());
+        exercise.setId(request.id);
+        exercise.setWeight(request.weight);
+        exercise.setSets(request.sets);
+        exercise.setWeightCompleted(request.weightCompleted);
+        exercise.setIsMax(request.isMax);
+        exercise.setNotes(request.notes);
+        exercise.setIsComplete(request.isComplete);
+        exercise.setOrder(request.order);
+        exercise.setSetsCompleted(request.setsCompleted);
+        exercise.setPercent(request.percent);
 
-        if (request.getType() == ExerciseType.EXERCISE) {
-            exercise.setName(request.getName());
-            exercise.setRepsPerSet(request.getRepsPerSet());
-            exercise.setTotalRepsCompleted(request.getTotalRepsCompleted());
-            exercise.setIsMaxReps(request.getIsMaxReps());
-        } else if (request.getType() == ExerciseType.COMPLEX) {
+        if (request.type == ExerciseType.EXERCISE) {
+            exercise.setName(request.name);
+            exercise.setRepsPerSet(request.repsPerSet);
+            exercise.setTotalRepsCompleted(request.totalRepsCompleted);
+            exercise.setIsMaxReps(request.isMaxReps);
+        } else if (request.type == ExerciseType.COMPLEX) {
             ((ComplexExercise) exercise).setRepArr(
-                    ComplexExercise.convertRepArrListToString(request.getRepArr())
+                    ComplexExercise.convertRepArrListToString(request.repArr)
             );
             ((ComplexExercise) exercise).setNameArr(
-                    ComplexExercise.convertNameArrListToString(request.getNameArr())
+                    ComplexExercise.convertNameArrListToString(request.nameArr)
             );
             ((ComplexExercise) exercise).setRepCompletedArr(
-                    ComplexExercise.convertRepCompletedArrListToString(request.getRepCompletedArr())
+                    ComplexExercise.convertRepCompletedArrListToString(request.repCompletedArr)
             );
-        } else if (request.getType() == ExerciseType.DURATION) {
-            ((DurationExercise) exercise).setName(request.getName());
-            ((DurationExercise) exercise).setEffortIntensity(request.getEffortIntensity());
-            ((DurationExercise) exercise).setActualIntensity(request.getActualIntensity());
-            ((DurationExercise) exercise).setEquipment(request.getEquipment());
-            ((DurationExercise) exercise).setDistanceMeters(request.getDistanceMeters());
-            ((DurationExercise) exercise).setDistanceCompletedMeters(request.getDistanceCompletedMeters());
-            ((DurationExercise) exercise).setSecondsPerSet(request.getSecondsPerSet());
-            ((DurationExercise) exercise).setSecondsPerSetCompleted(request.getSecondsPerSetCompleted());
-        } else if (request.getType() == ExerciseType.ACCESSORY) {
-            ((AccessoryExercise) exercise).setName(request.getName());
-            ((AccessoryExercise) exercise).setEffortIntensity(request.getEffortIntensity());
-            ((AccessoryExercise) exercise).setActualIntensity(request.getActualIntensity());
-            ((AccessoryExercise) exercise).setRepsPerSet(request.getRepsPerSet());
-            ((AccessoryExercise) exercise).setTotalRepsCompleted(request.getTotalRepsCompleted());
+        } else if (request.type == ExerciseType.DURATION) {
+            ((DurationExercise) exercise).setName(request.name);
+            ((DurationExercise) exercise).setEffortIntensity(request.effortIntensity);
+            ((DurationExercise) exercise).setActualIntensity(request.actualIntensity);
+            ((DurationExercise) exercise).setEquipment(request.equipment);
+            ((DurationExercise) exercise).setDistanceMeters(request.distanceMeters);
+            ((DurationExercise) exercise).setDistanceCompletedMeters(request.distanceCompletedMeters);
+            ((DurationExercise) exercise).setSecondsPerSet(request.secondsPerSet);
+            ((DurationExercise) exercise).setSecondsPerSetCompleted(request.secondsPerSetCompleted);
+        } else if (request.type == ExerciseType.ACCESSORY) {
+            ((AccessoryExercise) exercise).setName(request.name);
+            ((AccessoryExercise) exercise).setEffortIntensity(request.effortIntensity);
+            ((AccessoryExercise) exercise).setActualIntensity(request.actualIntensity);
+            ((AccessoryExercise) exercise).setRepsPerSet(request.repsPerSet);
+            ((AccessoryExercise) exercise).setTotalRepsCompleted(request.totalRepsCompleted);
         }
 
 
-        if (request.getDropSets() != null && request.getDropSets().size() > 0) {
-            for (ExerciseRequest r : request.getDropSets()) {
+        if (request.dropSets != null && request.dropSets.size() > 0) {
+            for (ExerciseRequest r : request.dropSets) {
                 Exercise dropSet = ExerciseRequest.convertRequest(null, r);
-                dropSet.setDropSetPercent(r.getDropSetPercent());
+                dropSet.setDropSetPercent(r.dropSetPercent);
                 if (exercise.getWeightCompleted() > 0 && dropSet.getWeightCompleted() < 1) {
                     int percentOfTopSetWeight =
                             (int)Math.round((dropSet.getDropSetPercent() / 100.0) * exercise.getWeightCompleted());
                     dropSet.setWeightCompleted(percentOfTopSetWeight);
                     dropSet.setIsComplete(true);
                 }
-                //if (r.getId() == null) {
-                    exercise.addDropSet(dropSet);
-                //}
+
+                exercise.addDropSet(dropSet);
                 dropSet.setTopSet(exercise);
             }
         }
