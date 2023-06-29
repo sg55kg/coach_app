@@ -18,6 +18,7 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
+// Add logs to every repo method indicating request params (masking private data) and response values for debugging
 @Repository
 public class AthleteProgramStatsRepository {
 

@@ -8,6 +8,12 @@ import com.coachapp.coach_pc.model.exercise.Exercise;
 import java.util.UUID;
 
 public class AthleteRecordRequestModel {
+
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     private String exerciseName;
     private UUID exerciseId;
     private UUID dayId;

@@ -8,6 +8,11 @@ import java.util.*;
 
 public class ProgramRequest {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     private List<DayRequest> days;
     private String name;
     private OffsetDateTime startDate;
@@ -98,6 +103,8 @@ public class ProgramRequest {
 
         return program;
     }
+
+    // use lombok for equals and hash code
 
 //    @Override
 //    public boolean equals(Object o) {

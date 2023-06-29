@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class AthleteService {
 
@@ -74,6 +75,8 @@ public class AthleteService {
         AthleteViewModel result = repository.convertEntityToViewModel(athlete);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    // remove unused code
 
 //    public ResponseEntity<List<AthleteRecord>> updateAthleteRecord(UUID athleteId, AthleteRecord record) {
 //        Optional<AthleteData> optional = athleteRepo.findById(athleteId);

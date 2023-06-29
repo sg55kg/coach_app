@@ -15,6 +15,11 @@ import java.util.UUID;
 @Entity
 public class AthleteData {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     @Id
     @GeneratedValue(generator = "UUID")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
@@ -37,10 +42,13 @@ public class AthleteData {
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
     private String name;
+
+    // remove commented code
 //    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @Fetch(FetchMode.SUBSELECT)
 //    private List<AthleteRecord> records;
 
+    // java provides default constructor
     public AthleteData() {}
 
     public UUID getId() {
@@ -99,6 +107,7 @@ public class AthleteData {
         this.team = team;
     }
 
+    // remove commented code
 //    public List<AthleteRecord> getRecords() {
 //        return records;
 //    }
@@ -115,6 +124,9 @@ public class AthleteData {
         this.programsList.add(program);
     }
 
+    // Recommend using @EqualsAndHashCode from lombok
+    // https://projectlombok.org/features/EqualsAndHashCode
+    // this annotation will generate these for you and make it more readable, maintainable and less prone to bugs
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

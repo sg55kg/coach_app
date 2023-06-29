@@ -39,7 +39,10 @@ public class UserRepository {
 
         try {
             return Optional.ofNullable(cb1.getSingleResult());
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
+            // some of your loggers use info for errors and others use errors
+            // would suggest employing these practices across the board
+            // https://www.papertrail.com/solution/tips/logging-in-java-best-practices-and-tips/
             logger.info(e.getMessage());
             e.printStackTrace();
             return Optional.ofNullable(null);

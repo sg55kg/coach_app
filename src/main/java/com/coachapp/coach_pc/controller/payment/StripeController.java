@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g getChatRoom(final @PathVariable UUID id)
 @Controller
 @RequestMapping("/api/stripe")
 public class StripeController {

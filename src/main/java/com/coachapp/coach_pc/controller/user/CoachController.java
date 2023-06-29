@@ -9,10 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+// Generally recommended to import only the specific classes you need
+// - clarity, avoiding name conflicts, optimization and easier to determine if a class or library is no longer required in your project (clean)
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g getChatRoom(final @PathVariable UUID id)
 @Controller
 @RequestMapping("/api/coach")
 public class CoachController {

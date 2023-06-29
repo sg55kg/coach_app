@@ -14,10 +14,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g getChatRoom(final @PathVariable UUID id)
+
+// There seems to be a lot of code in here that can be broken out to its individual athelete/coach controllers.
+// e.g addCoachData should live in coach controller
+// e.g addAthleteData should live in athlete controller
+
 @Controller
 @RequestMapping("/api/users")
 public class UsersController {
 
+    // make instance dependency variables final to avoid accidental overwriting
     private UserService userService;
     private Logger logger = LoggerFactory.getLogger(UsersController.class);
 

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class UserService {
 
@@ -34,6 +35,10 @@ public class UserService {
 
     public ResponseEntity<UserWithMappings> getUserData(String email) {
         Optional<UserWithMappings> optional = userRepo.findUserByEmail(email);
+
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
 
         if(optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -59,6 +64,10 @@ public class UserService {
 
     public ResponseEntity<UserWithMappings> addCoachData(NewCoachRequest coachRequest) {
         Optional<UserData> optional = userRepo.findUserById(coachRequest.getUserId());
+
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -74,6 +83,10 @@ public class UserService {
 
     public ResponseEntity<UserWithMappings> addAthleteData(NewAthleteRequest athleteRequest) {
         Optional<UserData> o = userRepo.findUserById(athleteRequest.getUserId());
+
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if(o.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -89,6 +102,10 @@ public class UserService {
 
     public ResponseEntity<UserWithMappings> updateUserData(UUID id, UpdateUserRequest userRequest) {
         Optional<UserData> optional = userRepo.findUserById(id);
+
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

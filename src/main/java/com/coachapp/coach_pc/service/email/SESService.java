@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class SESService {
 

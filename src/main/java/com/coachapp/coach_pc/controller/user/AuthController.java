@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
+// Recommended to make arguments final - you want to avoid accidental modification of inputs
+// e.g getChatRoom(final @PathVariable UUID id)
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {

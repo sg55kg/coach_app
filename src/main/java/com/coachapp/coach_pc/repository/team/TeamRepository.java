@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every repo method indicating request params (masking private data) and response values for debugging
 @Repository
 public class TeamRepository {
     private final EntityManager em;

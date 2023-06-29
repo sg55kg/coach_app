@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+// Add logs to every repo method indicating request params (masking private data) and response values for debugging
 @Repository
 public class PaymentRepository {
     private final EntityManager em;

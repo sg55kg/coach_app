@@ -8,6 +8,11 @@ import java.util.UUID;
 
 public class AthleteExerciseCommentRequest {
 
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
+
     private UUID id;
     @JsonAlias("athleteId")
     @JsonProperty("athleteId")
@@ -51,6 +56,8 @@ public class AthleteExerciseCommentRequest {
 
     public static AthleteExerciseComment convertRequest(AthleteExerciseCommentRequest request) {
         AthleteExerciseComment comment = new AthleteExerciseComment();
+
+        // remove unused code
         //Exercise exercise = new Exercise();
        //exercise.setId(request.getExerciseId());
 
