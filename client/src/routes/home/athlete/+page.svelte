@@ -53,8 +53,9 @@
     };
 
     const fetchWeeklyStats = async () => {
-        if (weeklyStats) return;
-
+        if (weeklyStats || !$userDB?.athleteData?.currentProgram) {
+            return;
+        }
         const programId = $currentProgram.id;
         try {
             const res = await ProgramService.getWeeklyProgramStats(programId);
@@ -100,7 +101,7 @@
                 <AthleteExpandedDay />
             {:else}
                 <div class="flex flex-col py-4 text-center md:text-left">
-                    No programming available for today
+                    {$currentProgram?.id ? 'No programming available for today' : 'You are not currently on a program'}
                     {#if $currentProgram?.id}
                         <a
                             class="text-md font-medium text-link"
