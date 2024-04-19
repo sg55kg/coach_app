@@ -1,6 +1,6 @@
 # Coachable
 
-Source code for the Coachable web app at https://www.coachablefitness.com
+The original source code for the Coachable web app at https://www.coachablefitness.com before the migration to Supabase.
 
 ## Technologies Used
 
