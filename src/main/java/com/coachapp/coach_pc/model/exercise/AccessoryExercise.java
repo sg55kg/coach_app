@@ -6,9 +6,17 @@ import com.coachapp.coach_pc.enums.WeightIntensity;
 
 import javax.persistence.*;
 
+// There is no universally accepted convention for naming SQL tables, but many developers and database administrators prefer to use plural table names.
+// The reasoning behind this is that a table typically represents a collection of similar entities, and the plural form better reflects this concept.
+// e.g accessory_exercises (each record being a accessory_exercise)
 @Entity
 @Table(name = "accessory_exercise")
 public class AccessoryExercise extends Exercise {
+
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
 
     private String equipment;
     private WeightIntensity weightIntensity = WeightIntensity.NONE;

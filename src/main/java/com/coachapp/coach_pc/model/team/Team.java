@@ -14,9 +14,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+// plural table names recommended
 @Entity
 @Table(name = "team")
 public class Team {
+
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -115,6 +121,9 @@ public class Team {
         this.teamFinance = teamFinance;
     }
 
+    // Recommend using @EqualsAndHashCode from lombok
+    // https://projectlombok.org/features/EqualsAndHashCode
+    // this annotation will generate these for you and make it more readable, maintainable and less prone to bugs
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

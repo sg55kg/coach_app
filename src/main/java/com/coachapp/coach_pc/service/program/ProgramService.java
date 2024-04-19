@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class ProgramService {
 
@@ -34,6 +35,9 @@ public class ProgramService {
 
     public ProgramWithDays getProgram(UUID id) {
         Optional<ProgramWithDays> op = programRepo.findById(id);
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if(op.isEmpty()) {
             return null;
         }
@@ -84,6 +88,7 @@ public class ProgramService {
         return new ResponseEntity<>(dbPrograms, HttpStatus.OK);
     }
 
+    // remove unused code
 //    public ResponseEntity<ProgramViewModel> updateProgramDay(UUID id, ExerciseRequest request) {
 //        Optional<Program> optional = _programRepo.findById(id);
 //

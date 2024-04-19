@@ -14,10 +14,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+// There is no universally accepted convention for naming SQL tables, but many developers and database administrators prefer to use plural table names.
+// The reasoning behind this is that a table typically represents a collection of similar entities, and the plural form better reflects this concept.
+// e.g exercises (each record being a exercise)
 @Entity
 @Table(name = "exercise")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Exercise {
+
+    // recommend using lombok @Getter and @Setter for your fields
+    // You can annotate any field with @Getter and/or @Setter, to let lombok generate the default getter/setter automatically.
+    // https://projectlombok.org/features/GetterSetter
+    // makes it more readable and less prone to errors
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -38,6 +46,7 @@ public class Exercise {
     @Column(name = "reps_completed")
     private Integer totalRepsCompleted = 0;
     private Integer setsCompleted = 0;
+
 //    @ManyToOne
 //    @JoinColumn(name = "athlete_comment_id", referencedColumnName = "id")
 //    private AthleteData athleteCommentId;

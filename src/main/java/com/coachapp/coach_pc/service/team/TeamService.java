@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class TeamService {
 

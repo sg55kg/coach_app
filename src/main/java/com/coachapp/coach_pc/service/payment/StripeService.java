@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class StripeService {
 

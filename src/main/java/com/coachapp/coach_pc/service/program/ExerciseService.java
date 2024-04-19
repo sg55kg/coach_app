@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class ExerciseService {
 
@@ -28,6 +29,9 @@ public class ExerciseService {
     public ResponseEntity<ExerciseViewModel> updateExercise(ExerciseRequest request) {
         Optional<? extends Exercise> optional;
 
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         optional = exerciseRepo.findById(request.getId());
 
         if (optional.isEmpty()) {
@@ -55,6 +59,9 @@ public class ExerciseService {
     public ResponseEntity<AthleteExerciseComment> addExerciseComment(UUID exerciseId, AthleteExerciseCommentRequest request) {
         Optional<Exercise> optional = exerciseRepo.findById(exerciseId);
 
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if (optional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

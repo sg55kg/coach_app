@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class MessageService {
 
@@ -21,8 +22,10 @@ public class MessageService {
     }
 
     public ResponseEntity<MessageViewModel> createMessage(MessageRequest message) {
+        // remove unused code
         //Message message1 = MessageRequest.convertRequest(message);
         MessageViewModel vm = messageRepo.save(message);
+        // remove unused code
         //MessageViewModel vm = MessageViewModel.convertMessage(message);
         //return new ResponseEntity<>(vm, HttpStatus.CREATED);
         return new ResponseEntity<>(vm, HttpStatus.CREATED);
@@ -36,13 +39,18 @@ public class MessageService {
     public ResponseEntity<MessageViewModel> updateMessage(MessageRequest request) {
         Optional<MessageViewModel> o = messageRepo.findById(request.getId());
 
+        // use functional optional.map().orElseGet() for readability and maintainability.
+        // in general you always want to assume you have access to the variables in the current scope, which
+        // the map function provides
         if (o.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         MessageViewModel message = o.get();
         message = messageRepo.update(message);
+        // remove unused code
        // MessageViewModel vm = MessageViewModel.convertMessage(message);
         return new ResponseEntity<>(message, HttpStatus.OK);
+        // remove unused code
        // return new ResponseEntity<>(vm, HttpStatus.OK);
     }
 

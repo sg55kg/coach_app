@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+// Add logs to every service method indicating request params (masking private data) and response values for debugging
 @Service
 public class Auth0ManagementService {
 
